@@ -636,6 +636,7 @@ select option { background:var(--earth); color:var(--cream); }
   border-top: 1px solid rgba(180,180,180,0.08);
 }
 .cc-websites-list a:active { background: rgba(180,180,180,0.08); }
+#homeWebsitesList { max-height: 140px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 
 /* ══════════════════════════════════════════
    COMMAND DOCK — arch panel design
@@ -739,7 +740,9 @@ select option { background:var(--earth); color:var(--cream); }
 .cc-trap-wrap {
   display: flex;
   align-items: flex-start;
-  margin-bottom: -16px;   /* keep buttons visible above dock */
+  margin-bottom: -22px;   /* pull communication row toward arch */
+  position: relative;
+  z-index: 3;
 }
 .cc-trap-btn {
   display: flex;
@@ -807,30 +810,32 @@ select option { background:var(--earth); color:var(--cream); }
 }
 
 @media (max-width: 430px), (max-height: 915px) {
-  .cc-header { padding: 6px 12px 6px; }
-  .cc-biz-name { font-size: 1.2rem; letter-spacing: 2px; }
-  .cc-tagline { font-size: 0.52rem; letter-spacing: 2px; }
-  .cc-date-block { font-size: 0.52rem; line-height: 1.35; }
-  .cc-settings-btn { width: 30px; height: 30px; font-size: 0.9rem; }
+  .cc-header { padding: 5px 10px 5px; }
+  .cc-biz-name { font-size: 1.08rem; letter-spacing: 1.8px; }
+  .cc-tagline { font-size: 0.48rem; letter-spacing: 1.5px; }
+  .cc-date-block { font-size: 0.48rem; line-height: 1.2; }
+  .cc-settings-btn { width: 28px; height: 28px; font-size: 0.84rem; }
 
-  .cc-grid { gap: 4px; padding: 6px 8px 0; }
-  .cc-section-label { font-size: 0.54rem; letter-spacing: 2px; padding: 3px 2px 1px; }
+  .cc-grid { gap: 3px; padding: 5px 7px 0; }
+  .cc-section-label { font-size: 0.5rem; letter-spacing: 1.8px; padding: 2px 2px 1px; }
 
   .cc-tile-primary,
-  .cc-tile-secondary { min-height: 74px; padding: 7px 9px 6px; }
-  .cc-tile-link { min-height: 44px; padding: 7px 10px; }
-  .cc-tile-icon { font-size: 1.08rem; margin-bottom: 2px; }
-  .cc-tile-label { font-size: 0.73rem; letter-spacing: 1.5px; }
-  .cc-tile-sub { font-size: 0.54rem; margin-top: 1px; }
-  .cc-websites-toggle { padding: 7px 10px; font-size: 0.76rem; letter-spacing: 1.8px; }
+  .cc-tile-secondary { min-height: 68px; padding: 6px 8px 5px; }
+  .cc-tile-link { min-height: 40px; padding: 6px 9px; }
+  .cc-tile-icon { font-size: 1rem; margin-bottom: 1px; }
+  .cc-tile-label { font-size: 0.68rem; letter-spacing: 1.35px; }
+  .cc-tile-sub { font-size: 0.5rem; margin-top: 0; }
+  .cc-websites-toggle { padding: 6px 9px; font-size: 0.7rem; letter-spacing: 1.5px; }
+  #homeWebsitesLabel { font-size: 0.88rem !important; letter-spacing: 1.5px !important; }
+  #homeWebsitesList { max-height: 108px; }
 
-  .cc-trap-wrap { margin-bottom: -8px; }
-  .cc-trap-btn { min-height: 80px; padding-top: 8px; }
-  .cc-trap-label { font-size: 0.68rem; letter-spacing: 1.8px; }
+  .cc-trap-wrap { margin-top: 2px; margin-bottom: -26px; transform: translateY(10px); }
+  .cc-trap-btn { min-height: 78px; padding-top: 9px; }
+  .cc-trap-label { font-size: 0.64rem; letter-spacing: 1.6px; }
 
-  .cc-dock { height: 116px; }
-  .cc-dock-center { padding-bottom: 30px; }
-  .cc-dock-side { padding-bottom: 8px; }
+  .cc-dock { height: 116px; bottom: 6px; }
+  .cc-dock-center { padding-bottom: 27px; }
+  .cc-dock-side { height: 76px; padding-bottom: 7px; }
 }
 </style>
 <style>
@@ -1393,10 +1398,9 @@ input:focus, select:focus, textarea:focus {
     </div>
 
     <button class="cc-tile cc-tile-link cc-span2" onclick="goTo('screenInventory')">
-      <div class="cc-tile-icon">📦</div>
+      <div class="cc-tile-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;display:block;"><path fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linejoin="round" d="M3 8.5L12 3l9 5.5-9 5.5-9-5.5z"/><path fill="rgba(232,200,122,0.04)" stroke="rgba(232,200,122,0.88)" stroke-width="1.3" stroke-linejoin="round" d="M3 8.5V18l9 3 9-3V8.5"/><path stroke="rgba(232,200,122,0.88)" stroke-width="1.3" stroke-linecap="round" d="M12 14v7"/></svg></div>
       <div style="flex:1">
         <div class="cc-tile-label" style="font-size:1.0rem;letter-spacing:2px;">INVENTORY</div>
-        <div class="cc-tile-sub">Add and manage up to 80 buildings</div>
       </div>
       <div class="cc-tile-arrow">→</div>
     </button>
@@ -2407,7 +2411,7 @@ input:focus, select:focus, textarea:focus {
     <div class="inv-grid2">
       <div class="field-group">
         <label class="field-label">Serial Number <span class="req">*</span></label>
-        <input type="text" id="inv_serialNumber" placeholder="Serial number">
+        <input type="text" id="inv_serialNumber" placeholder="e.g. UPLBC-285667-1232-020526">
       </div>
       <div class="field-group">
         <label class="field-label">Date Of Build</label>
@@ -2424,9 +2428,19 @@ input:focus, select:focus, textarea:focus {
         <input type="text" id="inv_style" placeholder="e.g. Lofted Barn">
       </div>
     </div>
+    <div class="inv-grid2">
+      <div class="field-group">
+        <label class="field-label">Roof Color</label>
+        <input type="text" id="inv_roofColor" placeholder="e.g. Black">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Wall Color</label>
+        <input type="text" id="inv_wallColor" placeholder="e.g. Chestnut Brown">
+      </div>
+    </div>
     <div class="field-group">
-      <label class="field-label">Colors</label>
-      <input type="text" id="inv_colors" placeholder="Roof / siding / trim">
+      <label class="field-label">Trim Color</label>
+      <input type="text" id="inv_trimColor" placeholder="e.g. Black">
     </div>
 
     <div class="section-head">Photos</div>
@@ -2434,7 +2448,7 @@ input:focus, select:focus, textarea:focus {
       <input type="file" id="inv_serialPhotoInput" accept="image/*" capture="environment" onchange="invHandlePhoto(this,'plate')">
       <div class="upload-icon">📷</div>
       <div class="upload-label">Serial Plate Photo</div>
-      <div class="upload-sub">Used for auto-reading serial/style/date/size/colors</div>
+      <div class="upload-sub">Used for auto-reading full serial code, style, date, size, and colors</div>
       <div class="upload-preview" id="inv_serialPreview"></div>
     </div>
     <div class="inv-inline-actions">
@@ -2445,10 +2459,12 @@ input:focus, select:focus, textarea:focus {
       <div class="inv-ocr-review-head">OCR Review Required</div>
       <div class="inv-ocr-review-grid">
         <div><strong>Style</strong><span id="inv_ocrStyle">—</span></div>
-        <div><strong>Serial Number</strong><span id="inv_ocrSerial">—</span></div>
+        <div><strong>Full Serial Code</strong><span id="inv_ocrSerial">—</span></div>
         <div><strong>Size</strong><span id="inv_ocrSize">—</span></div>
         <div><strong>Build Date</strong><span id="inv_ocrDate">—</span></div>
-        <div style="grid-column:1/-1;"><strong>Colors</strong><span id="inv_ocrColors">—</span></div>
+        <div><strong>Roof Color</strong><span id="inv_ocrRoofColor">—</span></div>
+        <div><strong>Wall Color</strong><span id="inv_ocrWallColor">—</span></div>
+        <div style="grid-column:1/-1;"><strong>Trim Color</strong><span id="inv_ocrTrimColor">—</span></div>
       </div>
       <div class="inv-ocr-review-actions">
         <button class="btn-primary" style="margin-top:0;padding:10px 12px;font-size:1rem;" onclick="invConfirmOcrRead()">Confirm OCR Read</button>
@@ -2464,6 +2480,15 @@ input:focus, select:focus, textarea:focus {
       <div class="upload-preview" id="inv_frontPreview"></div>
     </div>
 
+    <div class="section-head">Price</div>
+    <div style="background:rgba(255,255,255,0.04);border:1.5px solid rgba(232,200,122,0.25);border-radius:10px;padding:10px 12px;">
+      <div id="inv_priceSummary" style="font-size:0.78rem;color:rgba(232,200,122,0.78);line-height:1.45;">Price not calculated yet.</div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px;">
+        <button class="btn-secondary" style="margin-top:0;padding:10px 12px;" onclick="invOpenPriceModal()">Calculate Price</button>
+        <div id="inv_priceStatus" class="inv-ocr-status">Required before saving.</div>
+      </div>
+    </div>
+
     <div class="inv-primary-actions">
       <button class="btn-primary" style="flex:2;" onclick="invSaveItem()">Save Item</button>
       <button class="btn-secondary" style="flex:1;" onclick="invClearForm()">Clear</button>
@@ -2472,6 +2497,59 @@ input:focus, select:focus, textarea:focus {
     <div class="section-head">Saved Inventory</div>
     <div id="inv_listWrap" style="display:flex;flex-direction:column;gap:10px;"></div>
     <div class="pb40"></div>
+  </div>
+
+  <div class="photo-modal-overlay" id="invPriceModalOverlay">
+    <div class="photo-modal">
+      <h3>Inventory Price Calculator</h3>
+      <div class="inv-grid2">
+        <div class="modal-field">
+          <label>Style Code</label>
+          <select id="inv_price_style"></select>
+        </div>
+        <div class="modal-field">
+          <label>Sale %</label>
+          <input type="number" id="inv_price_salePct" min="0" max="100" step="0.5" placeholder="0">
+        </div>
+      </div>
+      <div class="inv-grid2">
+        <div class="modal-field">
+          <label>Width</label>
+          <select id="inv_price_width"></select>
+        </div>
+        <div class="modal-field">
+          <label>Length</label>
+          <select id="inv_price_length"></select>
+        </div>
+      </div>
+      <div class="inv-grid2">
+        <div class="modal-field">
+          <label>Tax Mode</label>
+          <select id="inv_price_taxMode">
+            <option value="standard">Standard (Settings)</option>
+            <option value="custom">Custom Tax %</option>
+            <option value="none">No Tax</option>
+          </select>
+        </div>
+        <div class="modal-field">
+          <label>Tax %</label>
+          <input type="number" id="inv_price_taxRate" min="0" step="0.01" placeholder="6.00">
+        </div>
+      </div>
+      <div class="modal-field">
+        <label>Manual Adjustment (+/-)</label>
+        <input type="number" id="inv_price_adjust" step="1" placeholder="0">
+      </div>
+      <div style="background:rgba(255,255,255,0.04);border:1.5px solid rgba(232,200,122,0.2);border-radius:8px;padding:10px 12px;">
+        <div style="font-size:0.7rem;color:rgba(232,200,122,0.78);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">Quote-Style Price</div>
+        <div id="inv_priceBreakdown" style="font-size:0.82rem;line-height:1.6;color:var(--cream);">Select style and size, then calculate.</div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px;">
+        <button class="btn-secondary" style="margin-top:0;" onclick="invCalculatePrice()">Calculate</button>
+        <button class="btn-primary" style="margin-top:0;font-size:1rem;" onclick="invUseCalculatedPrice()">Use This Price</button>
+      </div>
+      <button class="modal-cancel" onclick="invClosePriceModal()">Close</button>
+    </div>
   </div>
 </div><!-- end screenInventory -->
 
@@ -6398,11 +6476,26 @@ var invState={
   ocrHasResult:false,
   ocrConfirmed:false,
   ocrRejected:false,
-  ocrSuggestedFields:null
+  ocrSuggestedFields:null,
+  priceCalcConfirmed:false,
+  priceData:null,
+  lastPriceCalc:null
 };
 
 function invInit(){
   invLoad();
+  invPopulatePriceModalOptions();
+  invUpdatePriceSummary();
+  var modal=document.getElementById('invPriceModalOverlay');
+  if(modal&&!modal.dataset.bound){
+    modal.addEventListener('click',function(e){if(e.target===modal) invClosePriceModal();});
+    modal.dataset.bound='1';
+  }
+  var modeSel=document.getElementById('inv_price_taxMode');
+  if(modeSel&&!modeSel.dataset.bound){
+    modeSel.addEventListener('change',invHandleTaxModeChange);
+    modeSel.dataset.bound='1';
+  }
   invRenderList();
 }
 
@@ -6479,6 +6572,43 @@ function invUpdateOcrStatus(msg){
   if(el) el.textContent=msg;
 }
 
+function invSetPriceStatus(msg){
+  var el=document.getElementById('inv_priceStatus');
+  if(el) el.textContent=msg;
+}
+
+function invFmt(n){
+  var v=isNaN(parseFloat(n))?0:parseFloat(n);
+  return '$'+v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+
+function invResetPriceState(){
+  invState.priceCalcConfirmed=false;
+  invState.priceData=null;
+  invState.lastPriceCalc=null;
+  invUpdatePriceSummary();
+  invSetPriceStatus('Required before saving.');
+}
+
+function invUpdatePriceSummary(){
+  var el=document.getElementById('inv_priceSummary');
+  if(!el) return;
+  if(!invState.priceData){
+    el.textContent='Price not calculated yet.';
+    return;
+  }
+  var p=invState.priceData;
+  var taxInfo=p.taxRate>0?('Tax '+p.taxRate+'%'):('Tax 0%');
+  el.innerHTML=
+    '<div><strong style="color:var(--wheat);">Final Price:</strong> '+invFmt(p.finalTotal)+'</div>'+
+    '<div style="font-size:0.72rem;opacity:0.88;margin-top:3px;">'+
+      (p.styleName||p.styleCode)+' · '+p.width+"' x "+p.length+"' · Base "+invFmt(p.baseRaw)+
+      (p.salePct>0?' · Sale '+p.salePct+'%':'')+
+      (p.adjust?(' · Adjust '+invFmt(p.adjust)):'')+
+      ' · '+taxInfo+
+    '</div>';
+}
+
 function invResetOcrState(){
   invState.ocrHasResult=false;
   invState.ocrConfirmed=false;
@@ -6504,7 +6634,9 @@ function invRenderOcrReview(){
   set('inv_ocrSerial',s.serial);
   set('inv_ocrSize',s.size);
   set('inv_ocrDate',s.buildDate);
-  set('inv_ocrColors',s.colors);
+  set('inv_ocrRoofColor',s.roofColor);
+  set('inv_ocrWallColor',s.wallColor);
+  set('inv_ocrTrimColor',s.trimColor);
   var note=document.getElementById('inv_ocrConfirmState');
   if(note){
     if(invState.ocrConfirmed){
@@ -6613,6 +6745,7 @@ function invExtractPackedPlateCode(txt){
   return {
     styleCode:styleCode,
     style:style,
+    fullCode:[styleCode,serial,sizeRaw,dateRaw].join('-'),
     serial:serial,
     size:invFormatPackedSize(sizeRaw),
     buildDate:invFormatPackedDate(dateRaw)
@@ -6650,13 +6783,16 @@ function invExtractStyleFromText(txt){
   return '';
 }
 
-function invExtractColorsFromText(txt){
-  var lines=(txt||'').split('\n').map(function(s){return s.trim();}).filter(Boolean);
-  var picks=[];
-  lines.forEach(function(line){
-    if(/color|roof|siding|trim/i.test(line)&&picks.length<3) picks.push(line);
-  });
-  return picks.join(' | ');
+function invExtractColorFieldsFromText(txt){
+  var text=txt||'';
+  var pick=function(re){
+    var m=text.match(re);
+    return m&&m[1]?m[1].replace(/\s+/g,' ').trim():'';
+  };
+  var roof=pick(/ROOF\s*COLOR\s*:\s*([A-Z ]{2,})/i);
+  var wall=pick(/(?:WALL|SIDING)\s*COLOR\s*:\s*([A-Z ]{2,})/i);
+  var trim=pick(/TRIM\s*COLOR\s*:\s*([A-Z ]{2,})/i);
+  return {roofColor:roof,wallColor:wall,trimColor:trim};
 }
 
 async function invRunOcrFromPhoto(){
@@ -6677,17 +6813,19 @@ async function invRunOcrFromPhoto(){
     var result=await window.Tesseract.recognize(invState.images.plate,'eng');
     var txt=(result&&result.data&&result.data.text)||'';
     var packed=invExtractPackedPlateCode(txt);
-    var serial=(packed&&packed.serial)||invExtractSerialFromText(txt);
+    var serial=(packed&&packed.fullCode)||invExtractSerialFromText(txt);
     var buildDate=(packed&&packed.buildDate)||invExtractDateFromText(txt);
     var size=(packed&&packed.size)||invExtractSizeFromText(txt);
     var style=(packed&&packed.style)||invExtractStyleFromText(txt);
-    var colors=invExtractColorsFromText(txt);
+    var colorFields=invExtractColorFieldsFromText(txt);
     if(serial&&!invGetValue('inv_serialNumber')) document.getElementById('inv_serialNumber').value=serial;
     if(buildDate&&!invGetValue('inv_buildDate')) document.getElementById('inv_buildDate').value=buildDate;
     if(size&&!invGetValue('inv_size')) document.getElementById('inv_size').value=size;
     if(style&&!invGetValue('inv_style')) document.getElementById('inv_style').value=style;
-    if(colors&&!invGetValue('inv_colors')) document.getElementById('inv_colors').value=colors;
-    var found=[serial,buildDate,size,style,colors].filter(Boolean).length;
+    if(colorFields.roofColor&&!invGetValue('inv_roofColor')) document.getElementById('inv_roofColor').value=colorFields.roofColor;
+    if(colorFields.wallColor&&!invGetValue('inv_wallColor')) document.getElementById('inv_wallColor').value=colorFields.wallColor;
+    if(colorFields.trimColor&&!invGetValue('inv_trimColor')) document.getElementById('inv_trimColor').value=colorFields.trimColor;
+    var found=[serial,buildDate,size,style,colorFields.roofColor,colorFields.wallColor,colorFields.trimColor].filter(Boolean).length;
     if(found>0){
       invState.ocrHasResult=true;
       invState.ocrConfirmed=false;
@@ -6698,7 +6836,9 @@ async function invRunOcrFromPhoto(){
         serial:serial,
         size:size,
         buildDate:buildDate,
-        colors:colors
+        roofColor:colorFields.roofColor,
+        wallColor:colorFields.wallColor,
+        trimColor:colorFields.trimColor
       };
       invRenderOcrReview();
     }else{
@@ -6715,6 +6855,198 @@ async function invRunOcrFromPhoto(){
   }
 }
 
+function invGetStyleCodeFromInput(styleVal){
+  var v=(styleVal||'').trim();
+  if(!v) return '';
+  var upper=v.toUpperCase();
+  if(typeof NAMES!=='undefined'&&NAMES[upper]) return upper;
+  if(typeof NAMES!=='undefined'){
+    var keys=Object.keys(NAMES);
+    for(var i=0;i<keys.length;i++){
+      if((NAMES[keys[i]]||'').toUpperCase()===upper) return keys[i];
+    }
+  }
+  return upper;
+}
+
+function invParseSizeToParts(sizeVal){
+  var s=(sizeVal||'').toLowerCase().replace(/\s+/g,'');
+  var x=s.match(/^(\d{1,2})x(\d{1,2})$/);
+  if(x) return {width:parseInt(x[1],10),length:parseInt(x[2],10)};
+  var d=s.match(/^(\d{3,4})$/);
+  if(d){
+    var raw=d[1];
+    if(raw.length===4) return {width:parseInt(raw.slice(0,2),10),length:parseInt(raw.slice(2,4),10)};
+    if(raw.length===3) return {width:parseInt(raw.slice(0,1),10),length:parseInt(raw.slice(1,3),10)};
+  }
+  return null;
+}
+
+function invPopulatePriceModalOptions(){
+  var styleSel=document.getElementById('inv_price_style');
+  var widthSel=document.getElementById('inv_price_width');
+  var lengthSel=document.getElementById('inv_price_length');
+  if(!styleSel||!widthSel||!lengthSel) return;
+  if(!styleSel.options.length){
+    styleSel.innerHTML='<option value="">Select style code</option>';
+    Object.keys(NAMES||{}).forEach(function(code){
+      var o=document.createElement('option');
+      o.value=code;
+      o.textContent=code+' — '+NAMES[code];
+      styleSel.appendChild(o);
+    });
+  }
+  if(!widthSel.options.length){
+    widthSel.innerHTML='<option value="">Width</option>';
+    var widths=Object.keys(PRICING||{}).map(function(w){return parseInt(w,10);}).filter(Boolean).sort(function(a,b){return a-b;});
+    widths.forEach(function(w){
+      var o=document.createElement('option');
+      o.value=w;
+      o.textContent=w+"'";
+      widthSel.appendChild(o);
+    });
+    widthSel.onchange=function(){invPopulatePriceLengths(parseInt(widthSel.value,10)||0);};
+  }
+  invPopulatePriceLengths(parseInt(widthSel.value,10)||0);
+}
+
+function invPopulatePriceLengths(width){
+  var lengthSel=document.getElementById('inv_price_length');
+  if(!lengthSel) return;
+  var prev=parseInt(lengthSel.value,10)||0;
+  lengthSel.innerHTML='<option value="">Length</option>';
+  if(!width||!PRICING[width]) return;
+  Object.keys(PRICING[width]).map(function(l){return parseInt(l,10);}).filter(Boolean).sort(function(a,b){return a-b;}).forEach(function(l){
+    var o=document.createElement('option');
+    o.value=l;
+    o.textContent=l+"'";
+    lengthSel.appendChild(o);
+  });
+  if(prev&&PRICING[width]&&PRICING[width][prev]) lengthSel.value=String(prev);
+}
+
+function invHandleTaxModeChange(){
+  var mode=(document.getElementById('inv_price_taxMode')||{}).value||'standard';
+  var tax=document.getElementById('inv_price_taxRate');
+  if(!tax) return;
+  if(mode==='none'){
+    tax.value='0';
+    tax.disabled=true;
+  }else if(mode==='standard'){
+    tax.value=String(getSettingVal('taxRate',0)||0);
+    tax.disabled=true;
+  }else{
+    tax.disabled=false;
+  }
+}
+
+function invOpenPriceModal(){
+  invPopulatePriceModalOptions();
+  var styleCode=invGetStyleCodeFromInput(invGetValue('inv_style'));
+  var sz=invParseSizeToParts(invGetValue('inv_size'));
+  var styleSel=document.getElementById('inv_price_style');
+  var widthSel=document.getElementById('inv_price_width');
+  var lengthSel=document.getElementById('inv_price_length');
+  if(styleCode&&styleSel&&NAMES[styleCode]) styleSel.value=styleCode;
+  if(sz&&widthSel){
+    widthSel.value=String(sz.width);
+    invPopulatePriceLengths(sz.width);
+    if(lengthSel&&PRICING[sz.width]&&PRICING[sz.width][sz.length]) lengthSel.value=String(sz.length);
+  }
+  var modeSel=document.getElementById('inv_price_taxMode');
+  if(modeSel&&!modeSel.value) modeSel.value='standard';
+  invHandleTaxModeChange();
+  var b=document.getElementById('inv_priceBreakdown');
+  if(b) b.textContent='Select style and size, then calculate.';
+  document.getElementById('invPriceModalOverlay').classList.add('open');
+}
+
+function invClosePriceModal(){
+  var m=document.getElementById('invPriceModalOverlay');
+  if(m) m.classList.remove('open');
+}
+
+function invComputePriceData(){
+  var styleCode=(document.getElementById('inv_price_style')||{}).value||'';
+  var width=parseInt((document.getElementById('inv_price_width')||{}).value,10)||0;
+  var length=parseInt((document.getElementById('inv_price_length')||{}).value,10)||0;
+  var salePct=parseFloat((document.getElementById('inv_price_salePct')||{}).value)||0;
+  var taxMode=(document.getElementById('inv_price_taxMode')||{}).value||'standard';
+  var customTax=parseFloat((document.getElementById('inv_price_taxRate')||{}).value)||0;
+  var adjust=parseFloat((document.getElementById('inv_price_adjust')||{}).value)||0;
+  if(!styleCode||!width||!length) return {error:'Select style, width, and length'};
+  if(!PRICING[width]||!PRICING[width][length]||!PRICING[width][length][styleCode]) return {error:'No price found for selected style/size'};
+  var baseRaw=PRICING[width][length][styleCode];
+  var sp=Math.max(0,Math.min(100,salePct));
+  var saleAmt=sp>0?Math.ceil(baseRaw*(sp/100)):0;
+  var subtotal=Math.round((baseRaw-saleAmt+adjust)*100)/100;
+  if(subtotal<0) subtotal=0;
+  var taxRate=taxMode==='none'?0:(taxMode==='standard'?parseFloat(getSettingVal('taxRate',0)||0):customTax);
+  taxRate=isNaN(taxRate)?0:taxRate;
+  var taxAmt=taxRate>0?Math.ceil(subtotal*(taxRate/100)):0;
+  var finalTotal=subtotal+taxAmt;
+  return {
+    styleCode:styleCode,
+    styleName:(NAMES&&NAMES[styleCode])?NAMES[styleCode]:styleCode,
+    width:width,
+    length:length,
+    baseRaw:baseRaw,
+    salePct:sp,
+    saleAmt:saleAmt,
+    adjust:adjust,
+    subtotal:subtotal,
+    taxMode:taxMode,
+    taxRate:taxRate,
+    taxAmt:taxAmt,
+    finalTotal:finalTotal,
+    calculatedAt:new Date().toISOString()
+  };
+}
+
+function invRenderPriceBreakdown(data){
+  var b=document.getElementById('inv_priceBreakdown');
+  if(!b) return;
+  if(!data||data.error){
+    b.textContent=(data&&data.error)?data.error:'Unable to calculate.';
+    return;
+  }
+  b.innerHTML=
+    '<div>Base Price: <strong>'+invFmt(data.baseRaw)+'</strong></div>'+
+    (data.salePct>0?'<div>Sale Discount ('+data.salePct+'%): <strong>-'+invFmt(data.saleAmt)+'</strong></div>':'')+
+    (data.adjust?'<div>Manual Adjustment: <strong>'+(data.adjust>=0?'+':'')+invFmt(data.adjust)+'</strong></div>':'')+
+    '<div>Subtotal: <strong>'+invFmt(data.subtotal)+'</strong></div>'+
+    '<div>Tax ('+data.taxRate+'%): <strong>'+invFmt(data.taxAmt)+'</strong></div>'+
+    '<div style="margin-top:6px;">Final Total: <strong style="color:var(--wheat);">'+invFmt(data.finalTotal)+'</strong></div>';
+}
+
+function invCalculatePrice(){
+  var data=invComputePriceData();
+  invState.lastPriceCalc=data.error?null:data;
+  invRenderPriceBreakdown(data);
+  if(data.error){
+    showToast(data.error);
+    return;
+  }
+  showToast('Price calculated');
+}
+
+function invUseCalculatedPrice(){
+  if(!invState.lastPriceCalc){
+    invCalculatePrice();
+    if(!invState.lastPriceCalc) return;
+  }
+  invState.priceData=Object.assign({},invState.lastPriceCalc);
+  invState.priceCalcConfirmed=true;
+  invUpdatePriceSummary();
+  invSetPriceStatus('Price calculated and confirmed.');
+  var styleEl=document.getElementById('inv_style');
+  var sizeEl=document.getElementById('inv_size');
+  if(styleEl&&!styleEl.value) styleEl.value=invState.priceData.styleName;
+  if(sizeEl&&!sizeEl.value) sizeEl.value=invState.priceData.width+'x'+invState.priceData.length;
+  invClosePriceModal();
+  showToast('Inventory price confirmed');
+}
+
 function invRenderList(){
   var wrap=document.getElementById('inv_listWrap');
   if(!wrap) return;
@@ -6724,8 +7056,13 @@ function invRenderList(){
   }
   wrap.innerHTML=invState.items.map(function(item){
     var subtitle=[item.size,item.style].filter(Boolean).join(' · ');
-    var colorLine=item.colors?'<div style="font-size:0.72rem;color:rgba(245,240,232,0.65);margin-top:4px;">'+item.colors+'</div>':'';
+    var colorParts=[];
+    if(item.roofColor) colorParts.push('Roof: '+item.roofColor);
+    if(item.wallColor) colorParts.push('Wall: '+item.wallColor);
+    if(item.trimColor) colorParts.push('Trim: '+item.trimColor);
+    var colorLine=colorParts.length?'<div style="font-size:0.72rem;color:rgba(245,240,232,0.65);margin-top:4px;">'+colorParts.join(' · ')+'</div>':'';
     var dateLine=item.buildDate?'<div style="font-size:0.7rem;color:rgba(232,200,122,0.62);margin-top:3px;">Build: '+item.buildDate+'</div>':'';
+    var priceLine=item.priceData&&item.priceData.finalTotal?'<div style="font-size:0.78rem;color:var(--wheat);margin-top:4px;">Price: '+invFmt(item.priceData.finalTotal)+'</div>':'';
     var thumbs='<div style="display:flex;gap:6px;margin-top:8px;">'+
       (item.plateImage?'<img src="'+item.plateImage+'" alt="" style="width:54px;height:54px;object-fit:cover;border-radius:6px;border:1px solid rgba(232,200,122,0.25);">':'')+
       (item.frontImage?'<img src="'+item.frontImage+'" alt="" style="width:54px;height:54px;object-fit:cover;border-radius:6px;border:1px solid rgba(232,200,122,0.25);">':'')+
@@ -6736,7 +7073,7 @@ function invRenderList(){
       '<div style="font-size:0.86rem;font-weight:700;color:var(--wheat);">'+(item.serialNumber||'No Serial')+'</div>'+
       '<div style="font-size:0.74rem;color:rgba(200,221,232,0.75);">'+(item.lotLocation||'No lot location')+'</div>'+
       '<div style="font-size:0.72rem;color:rgba(245,240,232,0.75);margin-top:4px;">'+(subtitle||'No size/style')+'</div>'+
-      colorLine+dateLine+thumbs+
+      priceLine+colorLine+dateLine+thumbs+
       '</div>'+
       '<div style="display:flex;flex-direction:column;gap:6px;">'+
       '<button type="button" onclick="invEditItem(\''+item.id+'\')" style="-webkit-appearance:none;appearance:none;border:none;border-radius:6px;padding:7px 10px;background:rgba(122,158,135,0.25);color:var(--wheat);font-size:0.72rem;cursor:pointer;">Edit</button>'+
@@ -6746,7 +7083,7 @@ function invRenderList(){
 }
 
 function invClearForm(){
-  ['inv_lotLocation','inv_serialNumber','inv_size','inv_style','inv_colors','inv_buildDate'].forEach(function(id){
+  ['inv_lotLocation','inv_serialNumber','inv_size','inv_style','inv_buildDate','inv_roofColor','inv_wallColor','inv_trimColor'].forEach(function(id){
     var el=document.getElementById(id);
     if(el) el.value='';
   });
@@ -6758,6 +7095,7 @@ function invClearForm(){
   invState.images.plate='';
   invState.images.front='';
   invResetOcrState();
+  invResetPriceState();
   invSetPreview('inv_serialPreview','');
   invSetPreview('inv_frontPreview','');
   invUpdateOcrStatus('Waiting for serial plate photo');
@@ -6768,11 +7106,18 @@ function invSaveItem(){
   var serialNumber=invGetValue('inv_serialNumber');
   var size=invGetValue('inv_size');
   var style=invGetValue('inv_style');
-  var colors=invGetValue('inv_colors');
   var buildDate=invGetValue('inv_buildDate');
+  var roofColor=invGetValue('inv_roofColor');
+  var wallColor=invGetValue('inv_wallColor');
+  var trimColor=invGetValue('inv_trimColor');
   if(invState.ocrHasResult&&!invState.ocrConfirmed&&!invState.ocrRejected){
     invUpdateOcrStatus('Confirm or reject OCR read before saving.');
     showToast('Confirm or reject OCR read before saving');
+    return;
+  }
+  if(!invState.priceCalcConfirmed||!invState.priceData){
+    invSetPriceStatus('Calculate and confirm price before saving.');
+    showToast('Calculate and confirm price before saving');
     return;
   }
   if(!lotLocation||!serialNumber||!size||!style){
@@ -6791,8 +7136,11 @@ function invSaveItem(){
         serialNumber:serialNumber,
         size:size,
         style:style,
-        colors:colors,
         buildDate:buildDate,
+        roofColor:roofColor,
+        wallColor:wallColor,
+        trimColor:trimColor,
+        priceData:invState.priceData?Object.assign({},invState.priceData):null,
         plateImage:invState.images.plate||'',
         frontImage:invState.images.front||''
       };
@@ -6806,8 +7154,11 @@ function invSaveItem(){
       serialNumber:serialNumber,
       size:size,
       style:style,
-      colors:colors,
       buildDate:buildDate,
+      roofColor:roofColor,
+      wallColor:wallColor,
+      trimColor:trimColor,
+      priceData:invState.priceData?Object.assign({},invState.priceData):null,
       plateImage:invState.images.plate||'',
       frontImage:invState.images.front||''
     });
@@ -6836,10 +7187,17 @@ function invEditItem(id){
   document.getElementById('inv_serialNumber').value=item.serialNumber||'';
   document.getElementById('inv_size').value=item.size||'';
   document.getElementById('inv_style').value=item.style||'';
-  document.getElementById('inv_colors').value=item.colors||'';
   document.getElementById('inv_buildDate').value=item.buildDate||'';
+  document.getElementById('inv_roofColor').value=item.roofColor||'';
+  document.getElementById('inv_wallColor').value=item.wallColor||'';
+  document.getElementById('inv_trimColor').value=item.trimColor||'';
   invState.images.plate=item.plateImage||'';
   invState.images.front=item.frontImage||'';
+  invState.priceData=item.priceData?Object.assign({},item.priceData):null;
+  invState.priceCalcConfirmed=!!invState.priceData;
+  invState.lastPriceCalc=null;
+  invUpdatePriceSummary();
+  invSetPriceStatus(invState.priceCalcConfirmed?'Price loaded from saved item.':'Required before saving.');
   invResetOcrState();
   invSetPreview('inv_serialPreview',invState.images.plate);
   invSetPreview('inv_frontPreview',invState.images.front);
