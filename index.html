@@ -3901,16 +3901,12 @@ var SETTINGS_CLOUD_DOC='shared';
 var SETTINGS_CLOUD_MAX_BYTES=850000;
 var settingsCloudSyncInFlight=null;
 var FIREBASE_BOOTSTRAP_CONFIG={
-  apiKey:'',
-  authDomain:'',
-  projectId:'',
-  storageBucket:'',
-  messagingSenderId:'',
-  appId:''
-};
-var FIREBASE_BOOTSTRAP_AUTH={
-  email:'',
-  password:''
+  apiKey:'AIzaSyDEWIBZw_W1rldk52YbxAoZe3cFbtEtUPM',
+  authDomain:'gemstatesheds-86f7f.firebaseapp.com',
+  projectId:'gemstatesheds-86f7f',
+  storageBucket:'gemstatesheds-86f7f.firebasestorage.app',
+  messagingSenderId:'420230904592',
+  appId:'1:420230904592:web:6c6045cdb1083ecf308395'
 };
 
 function firebaseConfigFromSettings(){
@@ -3956,19 +3952,8 @@ function firebaseAuthFromSettings(){
     password:(s.firebasePassword||'').trim()
   };
 }
-function firebaseAuthFromBootstrap(){
-  return {
-    email:(FIREBASE_BOOTSTRAP_AUTH.email||'').trim(),
-    password:(FIREBASE_BOOTSTRAP_AUTH.password||'').trim()
-  };
-}
 function firebaseAuthResolved(){
-  var fromSettings=firebaseAuthFromSettings();
-  var fromBootstrap=firebaseAuthFromBootstrap();
-  return {
-    email:fromSettings.email||fromBootstrap.email||'',
-    password:fromSettings.password||fromBootstrap.password||''
-  };
+  return firebaseAuthFromSettings();
 }
 function firebaseTsToIso(v){
   if(!v) return new Date().toISOString();
@@ -4033,21 +4018,6 @@ async function settingsSyncFromCloud(){
     if(!firebaseTryInit()) return {ok:false,reason:'config'};
     var ref=settingsCloudDocRef();
     if(!ref) return {ok:false,reason:'db'};
-    var canAuth=await firebaseEnsureAuthed();
-    if(!canAuth){
-      try{
-        // Allow first-run sync on devices without local credentials if read rules permit.
-        var publicSnap=await ref.get();
-        if(!publicSnap.exists) return {ok:false,reason:'missing'};
-        var publicCloudSettings=publicSnap.data()||{};
-        var publicLocalSettings=loadSettings();
-        var publicMerged=Object.assign({},publicLocalSettings,publicCloudSettings);
-        saveSettings(publicMerged);
-        return {ok:true,settings:publicMerged,mode:'public-read'};
-      }catch(_readErr){
-        return {ok:false,reason:'auth'};
-      }
-    }
     var snap=await ref.get();
     if(!snap.exists) return {ok:false,reason:'missing'};
     var cloudSettings=snap.data()||{};
@@ -4056,6 +4026,7 @@ async function settingsSyncFromCloud(){
     saveSettings(merged);
     return {ok:true,settings:merged};
   })().catch(function(err){
+    if(err&&err.code==='permission-denied') return {ok:false,reason:'permission-denied'};
     console.log('Cloud settings load failed:',err);
     return {ok:false,reason:'error'};
   }).finally(function(){
@@ -4069,7 +4040,7 @@ function settingsEstimateSizeBytes(obj){
   return unescape(encodeURIComponent(json)).length;
 }
 async function settingsSaveToCloud(settingsObj){
-  if(!(await firebaseEnsureAuthed())) return {ok:false,reason:'auth'};
+  if(!firebaseTryInit()) return {ok:false,reason:'config'};
   var ref=settingsCloudDocRef();
   if(!ref) return {ok:false,reason:'db'};
   var payloadSize=settingsEstimateSizeBytes(settingsObj);
@@ -4079,16 +4050,26 @@ async function settingsSaveToCloud(settingsObj){
   var payload=Object.assign({},settingsObj,{
     updatedAt:firebase.firestore.FieldValue.serverTimestamp()
   });
-  await ref.set(payload,{merge:true});
-  return {ok:true};
+  try{
+    await ref.set(payload,{merge:true});
+    return {ok:true};
+  }catch(err){
+    if(err&&err.code==='permission-denied') return {ok:false,reason:'permission-denied'};
+    console.log('Cloud settings write failed:',err);
+    return {ok:false,reason:'error'};
+  }
 }
 function showSettingsCloudFailure(reason){
   if(reason==='payload_too_large'){
     showToast('Saved locally. Logo image is too large to sync.');
     return;
   }
-  if(reason==='auth'||reason==='config'){
-    showToast('Saved locally. Cloud sync needs Firebase setup/login.');
+  if(reason==='config'){
+    showToast('Saved locally. Firebase config is not initialized.');
+    return;
+  }
+  if(reason==='permission-denied'){
+    showToast('Saved locally. Firestore rules blocked cloud sync.');
     return;
   }
   if(reason==='db'){
@@ -7166,7 +7147,7 @@ try{calcState.taxRate=getSettingVal('taxRate',0);}catch(e){}
 try{applyBizInfoToHome();}catch(e){}
 try{updateShareLinks();}catch(e){}
 try{invInit();}catch(e){}
-try{firebaseTryInit();firebaseEnsureAuthed();}catch(e){}
+try{firebaseTryInit();}catch(e){}
 try{
   settingsSyncFromCloud().then(function(result){
     if(result&&result.ok&&result.settings){
