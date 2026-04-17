@@ -822,21 +822,22 @@ select option { background:var(--earth); color:var(--cream); }
 }
 
 @media (max-width: 430px), (max-height: 915px) {
-  .cc-header { padding: 5px 10px 5px; }
-  .cc-biz-name { font-size: 1.08rem; letter-spacing: 1.8px; }
-  .cc-tagline { font-size: 0.48rem; letter-spacing: 1.5px; }
-  .cc-date-block { font-size: 0.48rem; line-height: 1.2; }
-  .cc-settings-btn { width: 28px; height: 28px; font-size: 0.84rem; }
+  .cc-header { padding: 7px 11px 7px; }
+  .cc-header-left { gap: 11px; }
+  .cc-biz-name { font-size: 1.16rem; letter-spacing: 2px; }
+  .cc-tagline { font-size: 0.52rem; letter-spacing: 1.6px; }
+  .cc-date-block { font-size: 0.52rem; line-height: 1.25; }
+  .cc-settings-btn { width: 30px; height: 30px; font-size: 0.9rem; }
 
-  .cc-grid { gap: 3px; padding: 5px 7px 0; }
-  .cc-section-label { font-size: 0.5rem; letter-spacing: 1.8px; padding: 2px 2px 1px; }
+  .cc-grid { gap: 4px; padding: 7px 8px 0; }
+  .cc-section-label { font-size: 0.54rem; letter-spacing: 2px; padding: 3px 2px 2px; }
 
   .cc-tile-primary,
-  .cc-tile-secondary { min-height: 68px; padding: 6px 8px 5px; }
-  .cc-tile-link { min-height: 40px; padding: 6px 9px; }
-  .cc-tile-icon { font-size: 1rem; margin-bottom: 1px; }
-  .cc-tile-label { font-size: 0.68rem; letter-spacing: 1.35px; }
-  .cc-tile-sub { font-size: 0.5rem; margin-top: 0; }
+  .cc-tile-secondary { min-height: 72px; padding: 7px 9px 6px; }
+  .cc-tile-link { min-height: 44px; padding: 7px 10px; }
+  .cc-tile-icon { font-size: 1.06rem; margin-bottom: 1px; }
+  .cc-tile-label { font-size: 0.72rem; letter-spacing: 1.45px; }
+  .cc-tile-sub { font-size: 0.53rem; margin-top: 0; }
   .cc-websites-toggle { padding: 6px 9px; font-size: 0.7rem; letter-spacing: 1.5px; }
   #homeWebsitesLabel { font-size: 0.88rem !important; letter-spacing: 1.5px !important; }
   #homeWebsitesList { max-height: 108px; }
@@ -1363,6 +1364,17 @@ input:focus, select:focus, textarea:focus {
       <div class="cc-tile-accent"></div>
     </button>
 
+    <button class="cc-tile cc-tile-secondary" onclick="goTo('screenMileage')">
+      <div class="cc-tile-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;display:block;"><path d="M12 21s-6-5.2-6-10a6 6 0 1 1 12 0c0 4.8-6 10-6 10z" fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6"/><circle cx="12" cy="11" r="2.3" fill="rgba(232,200,122,0.88)"/></svg></div>
+      <div class="cc-tile-label" style="font-size:0.74rem;letter-spacing:1.4px;">MILEAGE CALCULATOR</div>
+      <div class="cc-tile-accent"></div>
+    </button>
+    <button class="cc-tile cc-tile-secondary" id="homeResumeLastQuoteBtn" onclick="openResumeQuoteList()">
+      <div class="cc-tile-icon">↺</div>
+      <div class="cc-tile-label" style="font-size:0.74rem;letter-spacing:1.4px;">RESUME LAST QUOTE</div>
+      <div class="cc-tile-accent"></div>
+    </button>
+
     <div class="cc-section-label cc-span2"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;display:block;"><rect x="5" y="2" width="14" height="20" rx="2" fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6"/><line x1="12" y1="18" x2="12.01" y2="18" stroke="rgba(232,200,122,0.88)" stroke-width="2.5" stroke-linecap="round"/></svg> MARKETING</div>
     <button class="cc-tile cc-tile-secondary" onclick="goTo('screenPhotos')">
       <div class="cc-tile-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;display:block;"><path fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linejoin="round" d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4" fill="rgba(232,200,122,0.04)" stroke="rgba(232,200,122,0.88)" stroke-width="1.3"/></svg></div>
@@ -1454,6 +1466,16 @@ input:focus, select:focus, textarea:focus {
   </div>
 
 </div><!-- end screenHome -->
+
+<div id="resumeQuoteModal" style="position:fixed;inset:0;background:rgba(20,10,8,0.78);backdrop-filter:blur(6px);z-index:1200;display:none;align-items:flex-end;">
+  <div style="width:100%;max-width:480px;margin:0 auto;background:linear-gradient(160deg,#3A2A20 0%,#4B3426 100%);border:1px solid rgba(196,81,31,0.45);border-bottom:none;border-radius:14px 14px 0 0;padding:14px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <div style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:1.05rem;letter-spacing:2px;color:var(--wheat);">Resume Last Quote</div>
+      <button type="button" onclick="closeResumeQuoteList()" style="-webkit-appearance:none;appearance:none;border:none;background:transparent;color:var(--wheat);font-size:1.1rem;cursor:pointer;">✕</button>
+    </div>
+    <div id="resumeQuoteList" style="display:grid;gap:8px;max-height:55vh;overflow:auto;"></div>
+  </div>
+</div>
 
   <!-- COMMAND DOCK -->
   <div class="cc-dock">
@@ -1646,33 +1668,35 @@ input:focus, select:focus, textarea:focus {
       </div>
 
       <div style="background:rgba(255,255,255,0.05);border:1.5px solid rgba(232,200,122,0.22);border-radius:10px;padding:12px 14px;margin:12px 0;">
-        <div style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:0.95rem;letter-spacing:2px;color:var(--wheat);margin-bottom:8px;">Reverse Price Calculator</div>
-        <div class="inv-grid2">
-          <div class="field-group"><label class="field-label">Budget</label><input type="number" id="rev_budget" min="0" step="1" placeholder="Enter budget"></div>
-          <div class="field-group"><label class="field-label">Mode</label>
-            <select id="rev_mode"><option value="cash">Cash</option><option value="rto">RTO</option></select>
+        <button onclick="toggleReverseCalcPanel()" style="-webkit-appearance:none;appearance:none;width:100%;background:none;border:none;color:var(--wheat);cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:0;">
+          <span style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:0.95rem;letter-spacing:2px;">Reverse Price Calculator</span>
+          <span id="rev_toggleArrow" style="font-size:0.8rem;color:rgba(232,200,122,0.75);">▼</span>
+        </button>
+        <div id="rev_panelBody" style="display:none;margin-top:8px;">
+          <div class="inv-grid2">
+            <div class="field-group"><label class="field-label">Budget</label><input type="number" id="rev_budget" min="0" step="1" placeholder="Enter budget"></div>
+            <div class="field-group"><label class="field-label">Mode</label>
+              <select id="rev_mode"><option value="cash">Cash</option><option value="rto">RTO</option></select>
+            </div>
           </div>
-        </div>
-        <div class="inv-grid2">
-          <div class="field-group"><label class="field-label">RTO Term</label>
-            <select id="rev_term"><option value="36">36 Mo</option><option value="48">48 Mo</option><option value="60">60 Mo</option></select>
+          <div class="inv-grid2">
+            <div class="field-group"><label class="field-label">RTO Term</label>
+              <select id="rev_term"><option value="36">36 Mo</option><option value="48">48 Mo</option><option value="60">60 Mo</option></select>
+            </div>
+            <div class="field-group"><label class="field-label">Tax %</label><input type="number" id="rev_taxRate" min="0" step="0.01" placeholder="Auto from settings"></div>
           </div>
-          <div class="field-group"><label class="field-label">Tax %</label><input type="number" id="rev_taxRate" min="0" step="0.01" placeholder="Auto from settings"></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin:-2px 0 10px;">
+            <div style="font-size:0.7rem;color:rgba(232,200,122,0.65);">Defaults to Settings tax; you can override.</div>
+            <button type="button" onclick="setReverseTaxFromSettings(true)" style="-webkit-appearance:none;appearance:none;border:1px solid rgba(232,200,122,0.25);background:rgba(255,255,255,0.06);color:var(--wheat);border-radius:6px;padding:6px 8px;font-size:0.68rem;cursor:pointer;">Use Settings Tax</button>
+          </div>
+          <button class="btn-secondary" style="margin-top:0;padding:10px 12px;" onclick="runReversePriceCalculator()">Find Matching Options</button>
+          <div id="rev_results" style="margin-top:8px;font-size:0.78rem;line-height:1.5;color:rgba(232,200,122,0.82);">Enter budget and run search.</div>
         </div>
-        <button class="btn-secondary" style="margin-top:0;padding:10px 12px;" onclick="runReversePriceCalculator()">Find Matching Options</button>
-        <div id="rev_results" style="margin-top:8px;font-size:0.78rem;line-height:1.5;color:rgba(232,200,122,0.82);">Enter budget and run search.</div>
       </div>
 
-      <div style="background:rgba(255,255,255,0.05);border:1.5px solid rgba(232,200,122,0.22);border-radius:10px;padding:12px 14px;margin:12px 0;">
-        <div style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:0.95rem;letter-spacing:2px;color:var(--wheat);margin-bottom:8px;">Mileage Calculator</div>
-        <div class="inv-grid2">
-          <div class="field-group"><label class="field-label">From</label><select id="mile_from"></select></div>
-          <div class="field-group"><label class="field-label">To</label><select id="mile_to"></select></div>
-        </div>
-        <button class="btn-secondary" style="margin-top:0;padding:10px 12px;" onclick="runMileageCalculator()">Calculate Driving Miles</button>
-        <div id="mile_results" style="margin-top:8px;font-size:0.78rem;line-height:1.5;color:rgba(232,200,122,0.82);">Select two addresses from Settings.</div>
-      </div>
-
+      <div style="border-top:1px solid rgba(232,200,122,0.15);margin:14px 0 10px;"></div>
+      <div class="page-title" style="font-size:1.1rem;margin-bottom:4px;">Options &amp; Upgrades</div>
+      <div class="page-sub" style="margin-bottom:10px;">Tap a category to expand</div>
       <!-- Remove Standard Options -->
       <div id="removeStdWrap" style="display:none;margin-bottom:12px;">
         <button onclick="toggleRemoveStd()" id="removeStdBtn" style="-webkit-appearance:none;appearance:none;width:100%;background:rgba(196,81,31,0.15);border:1.5px solid rgba(196,81,31,0.5);border-radius:10px;padding:12px 16px;font-size:0.88rem;font-weight:700;color:var(--wheat);cursor:pointer;text-align:left;display:flex;align-items:center;justify-content:space-between;">
@@ -1684,10 +1708,6 @@ input:focus, select:focus, textarea:focus {
           <div id="removeStdList" style="display:flex;flex-direction:column;gap:10px;"></div>
         </div>
       </div>
-
-      <div style="border-top:1px solid rgba(232,200,122,0.15);margin:14px 0 10px;"></div>
-      <div class="page-title" style="font-size:1.1rem;margin-bottom:4px;">Options &amp; Upgrades</div>
-      <div class="page-sub" style="margin-bottom:10px;">Tap a category to expand</div>
 
       <!-- SIDING & EXTERIOR -->
       <div class="opt-category">
@@ -2324,6 +2344,26 @@ input:focus, select:focus, textarea:focus {
     <div style="font-size:0.62rem;color:var(--wheat);opacity:0.45;letter-spacing:0.5px;">&copy; 2026 SellSheds &nbsp;&middot;&nbsp; All rights reserved</div>
   </div>
 </div><!-- end screenCalc -->
+
+<div class="screen" id="screenMileage">
+  <div class="header">
+    <button class="back-btn" onclick="goTo('screenHome')">←</button>
+    <div class="header-title">Mileage Calculator</div>
+  </div>
+  <div style="padding:16px;">
+    <div class="page-title">Mileage Calculator</div>
+    <div class="page-sub">Calculate driving miles between saved addresses</div>
+    <div style="background:rgba(255,255,255,0.05);border:1.5px solid rgba(232,200,122,0.22);border-radius:10px;padding:12px 14px;margin:12px 0;">
+      <div class="inv-grid2">
+        <div class="field-group"><label class="field-label">From</label><select id="mile_from"></select></div>
+        <div class="field-group"><label class="field-label">To</label><select id="mile_to"></select></div>
+      </div>
+      <button class="btn-secondary" style="margin-top:0;padding:10px 12px;" onclick="runMileageCalculator()">Calculate Driving Miles</button>
+      <div id="mile_results" style="margin-top:8px;font-size:0.78rem;line-height:1.5;color:rgba(232,200,122,0.82);">Select two addresses from Settings.</div>
+    </div>
+    <div class="pb40"></div>
+  </div>
+</div><!-- end screenMileage -->
 
 <!-- ============================================================
      SCREEN: MARKETPLACE AD
@@ -5045,14 +5085,23 @@ function showIntakeForm(type){
 // NAVIGATION
 // ============================================================
 function goTo(screenId){
+  var current=document.querySelector('.screen.active');
+  var currentId=current?current.id:'';
+  if(currentId==='screenCalc'&&screenId==='screenHome'){
+    var snapshot=captureCalcSession();
+    if(snapshot) pushCalcHistoryEntry(snapshot);
+    clearCalcForNewQuote();
+  }
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(screenId).classList.add('active');
   window.scrollTo(0,0);
   if(screenId==='screenSettings') loadSettingsForm();
   if(screenId==='screenAd') adPopulateLocation();
   if(screenId==='screenCalc') initCalcAdvancedTools();
+  if(screenId==='screenMileage') initMileageScreen();
   if(screenId==='screenInventory') invInit();
   if(screenId==='screenCRM') crmInit();
+  if(screenId==='screenHome') renderHomeQuoteHistory();
   // Show dock only on home screen
   var dock=document.querySelector('.cc-dock');
   if(dock) dock.style.display = (screenId==='screenHome') ? 'flex' : 'none';
@@ -5470,6 +5519,221 @@ function getSettingVal(key,def){
 // ============================================================
 let calcState={type:null,width:null,length:null,payType:'cash',rtoMonths:36,addons:{},saleActive:false,salePercent:0,dealerDiscount:0,taxMode:'standard',taxRate:0,bosActive:false,assurancePlan:2,costReduction:0,multiDoors:[],multiWindows:[],multiGarage:[],multiCutouts:[]};
 let calcCurrentPage=0;
+const CALC_HISTORY_KEY='gss_calc_quote_history_v1';
+const CALC_HISTORY_MAX=4;
+
+function getDefaultCalcState(){
+  return {
+    type:null,width:null,length:null,payType:'cash',rtoMonths:36,addons:{},
+    saleActive:false,salePercent:0,dealerDiscount:0,taxMode:'standard',taxRate:0,
+    bosActive:false,assurancePlan:2,costReduction:0,multiDoors:[],multiWindows:[],
+    multiGarage:[],multiCutouts:[],stdRemoved:{},_stdType:null
+  };
+}
+
+function cloneCalcState(src){
+  return JSON.parse(JSON.stringify(src||calcState||{}));
+}
+
+function loadCalcHistory(){
+  try{
+    var raw=JSON.parse(localStorage.getItem(CALC_HISTORY_KEY)||'[]');
+    return Array.isArray(raw)?raw.filter(function(it){return it&&it.state;}):[];
+  }catch(e){ return []; }
+}
+
+function saveCalcHistory(items){
+  try{
+    var out=Array.isArray(items)?items.slice(0,CALC_HISTORY_MAX):[];
+    localStorage.setItem(CALC_HISTORY_KEY,JSON.stringify(out));
+  }catch(e){}
+}
+
+function captureCalcSession(){
+  var q=getCalcQuoteSnapshot();
+  if(!q) return null;
+  var controls={};
+  document.querySelectorAll('#screenCalc [id^="c_"]').forEach(function(el){
+    if(!el||!el.id) return;
+    if(el.type==='checkbox'||el.type==='radio') controls[el.id]=!!el.checked;
+    else controls[el.id]=el.value;
+  });
+  return {
+    ts:Date.now(),
+    typeCode:calcState.type||'',
+    typeLabel:(calcState.type&&NAMES[calcState.type])?NAMES[calcState.type]:'',
+    width:calcState.width||0,
+    length:calcState.length||0,
+    total:q.grandTotal||0,
+    state:cloneCalcState(calcState),
+    controls:controls
+  };
+}
+
+function pushCalcHistoryEntry(entry){
+  if(!entry||!entry.state) return;
+  var history=loadCalcHistory();
+  history.unshift(entry);
+  saveCalcHistory(history.slice(0,CALC_HISTORY_MAX));
+}
+
+function syncCalcTypeTrigger(typeCode){
+  var trigger=document.getElementById('calcTypeSelect_trigger');
+  if(!trigger) return;
+  var item=(Array.isArray(STYLE_DATA)?STYLE_DATA:[]).find(function(s){return s.code===typeCode;});
+  if(!item){
+    trigger.innerHTML=
+      '<span class="spt-placeholder"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:28px;height:28px;display:block;"><path fill="rgba(80,50,30,0.12)" stroke="#8B5E3C" stroke-width="1.6" stroke-linejoin="round" d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/><rect x="9" y="13" width="6" height="9" rx="0.5" fill="rgba(80,50,30,0.07)" stroke="#8B5E3C" stroke-width="1.3"/></svg></span>'+
+      '<span class="spt-text"><span class="spt-placeholder-text">Select type...</span></span>'+
+      '<span class="spt-arrow">▼</span>';
+    return;
+  }
+  trigger.innerHTML=
+    '<img class="spt-thumb" src="'+item.img+'" alt="'+item.name+'">'+
+    '<span class="spt-text"><span class="spt-name">'+item.name+'</span><span class="spt-code">'+item.code+'</span></span>'+
+    '<span class="spt-arrow">▼</span>';
+}
+
+function renderHomeQuoteHistory(){
+  var list=document.getElementById('resumeQuoteList');
+  var resumeBtn=document.getElementById('homeResumeLastQuoteBtn');
+  if(!list||!resumeBtn) return;
+  var history=loadCalcHistory();
+  resumeBtn.style.display='inline-flex';
+  if(!history.length){ list.innerHTML=''; return; }
+  list.innerHTML=history.map(function(item,idx){
+    var typeLabel=item.typeLabel||item.typeCode||'Quote';
+    var size=(item.width&&item.length)?(item.width+'\' × '+item.length+'\''):'Size not set';
+    var total=isFinite(item.total)?fmt(Math.ceil(item.total)):fmt(0);
+    var ts=item.ts?new Date(item.ts):null;
+    var when=ts&&!isNaN(ts.getTime())?ts.toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}):'Saved';
+    return '<button type="button" class="cc-tile cc-tile-link cc-span2" onclick="resumeCalcHistory('+idx+')" style="padding:11px 12px;min-height:unset;">'+
+      '<div style="flex:1;text-align:left;"><div class="cc-tile-label" style="font-size:0.8rem;letter-spacing:1.6px;">'+typeLabel+' · '+size+'</div>'+
+      '<div class="cc-tile-sub" style="opacity:0.9;">'+total+' · '+when+'</div></div><div class="cc-tile-arrow">↺</div></button>';
+  }).join('');
+}
+
+function openResumeQuoteList(){
+  var modal=document.getElementById('resumeQuoteModal');
+  var list=document.getElementById('resumeQuoteList');
+  if(!modal||!list) return;
+  renderHomeQuoteHistory();
+  if(!list.innerHTML.trim()){
+    showToast('No saved quotes yet');
+    return;
+  }
+  modal.style.display='flex';
+}
+
+function closeResumeQuoteList(){
+  var modal=document.getElementById('resumeQuoteModal');
+  if(!modal) return;
+  modal.style.display='none';
+}
+
+function clearCalcForNewQuote(){
+  calcState=getDefaultCalcState();
+  calcCurrentPage=0;
+  var typeSel=document.getElementById('calcTypeSelect');
+  if(typeSel) typeSel.value='';
+  syncCalcTypeTrigger(null);
+  var wSel=document.getElementById('calcWidth');
+  if(wSel) wSel.value='';
+  var lSel=document.getElementById('calcLength');
+  if(lSel) lSel.innerHTML='<option value="">Length</option>';
+  document.querySelectorAll('#screenCalc [id^="c_"]').forEach(function(el){
+    if(!el||!el.id) return;
+    if(el.type==='checkbox'||el.type==='radio') el.checked=false;
+    else el.value='';
+  });
+  document.querySelectorAll('[id^="chk_"]').forEach(function(chk){chk.classList.remove('on');});
+  document.querySelectorAll('[id^="detail_"]').forEach(function(detail){detail.style.display='none';});
+  calcRenderRows('doors');
+  calcRenderRows('windows');
+  calcRenderRows('garage');
+  calcRenderRows('cutouts');
+  saveSaleState();
+  syncSaleUIFromState();
+  calcGoTo(0);
+  updateCatCounts();
+  updateAutoWidthPrices();
+  updateTrussVisibility();
+  updateQuickPrice();
+  renderCalcQuote();
+}
+
+function restoreCalcSession(entry){
+  if(!entry||!entry.state) return;
+  var savedState=cloneCalcState(entry.state);
+  calcState=getDefaultCalcState();
+  calcCurrentPage=0;
+
+  var typeSel=document.getElementById('calcTypeSelect');
+  if(typeSel) typeSel.value=savedState.type||'';
+  setCalcType(savedState.type||'');
+  syncCalcTypeTrigger(savedState.type||null);
+
+  var wSel=document.getElementById('calcWidth');
+  if(wSel) wSel.value=savedState.width?String(savedState.width):'';
+  onCalcWidthChange(savedState.width?String(savedState.width):'');
+  var lSel=document.getElementById('calcLength');
+  if(lSel) lSel.value=savedState.length?String(savedState.length):'';
+  onCalcLengthChange(savedState.length?String(savedState.length):'');
+
+  calcState=Object.assign(calcState,savedState);
+  calcState.addons=Object.assign({},savedState.addons||{});
+  calcState.stdRemoved=Object.assign({},savedState.stdRemoved||{});
+  calcState.multiDoors=Array.isArray(savedState.multiDoors)?savedState.multiDoors:[];
+  calcState.multiWindows=Array.isArray(savedState.multiWindows)?savedState.multiWindows:[];
+  calcState.multiGarage=Array.isArray(savedState.multiGarage)?savedState.multiGarage:[];
+  calcState.multiCutouts=Array.isArray(savedState.multiCutouts)?savedState.multiCutouts:[];
+
+  var controls=entry.controls||{};
+  Object.keys(controls).forEach(function(id){
+    var el=document.getElementById(id);
+    if(!el) return;
+    if(el.type==='checkbox'||el.type==='radio') el.checked=!!controls[id];
+    else el.value=controls[id];
+  });
+
+  Object.keys(calcState.addons||{}).forEach(function(key){
+    var isOn=!!calcState.addons[key];
+    var chk=document.getElementById('chk_'+key);
+    var detail=document.getElementById('detail_'+key);
+    if(chk) chk.classList.toggle('on',isOn);
+    if(detail) detail.style.display=isOn?'block':'none';
+  });
+  calcRenderRows('doors');
+  calcRenderRows('windows');
+  calcRenderRows('garage');
+  calcRenderRows('cutouts');
+  syncSaleUIFromState();
+  saveSaleState();
+  if(calcState.payType==='rto') setCalcPay('rto'); else setCalcPay('cash');
+  setCalcRTO(calcState.rtoMonths||36);
+  setTaxMode(calcState.taxMode||'standard');
+  setAssurancePlan(calcState.assurancePlan||2);
+  updateTallWallAvailability();
+  updatePorchAvailability();
+  updateCatCounts();
+  updateAutoWidthPrices();
+  updateTrussVisibility();
+  updateQuickPrice();
+  calcGoTo(0);
+}
+
+function resumeCalcHistory(idx){
+  var history=loadCalcHistory();
+  var entry=history[idx];
+  if(!entry) return;
+  closeResumeQuoteList();
+  restoreCalcSession(entry);
+  goTo('screenCalc');
+}
+
+function resumeLastCalcQuote(){
+  openResumeQuoteList();
+}
 
 function setCalcType(code){
   calcState.type=code||null;
@@ -5482,11 +5746,17 @@ function setCalcType(code){
 }
 
 function onCalcWidthChange(val){
+  var prevLength=calcState.length;
   calcState.width=val?parseInt(val):null;
   const ls=document.getElementById('calcLength');
   ls.innerHTML='<option value="">Length</option>';
   if(calcState.width){for(let l=8;l<=60;l+=2){const o=document.createElement('option');o.value=l;o.textContent=l+"'"+(PRICING[calcState.width]&&PRICING[calcState.width][l]&&calcState.type&&PRICING[calcState.width][l][calcState.type]?'':' —');ls.appendChild(o);}}
-  calcState.length=null;
+  if(prevLength&&calcState.width&&calcState.type&&PRICING[calcState.width]&&PRICING[calcState.width][prevLength]&&PRICING[calcState.width][prevLength][calcState.type]){
+    calcState.length=prevLength;
+    ls.value=String(prevLength);
+  }else{
+    calcState.length=null;
+  }
   updateAutoWidthPrices();
   updateTrussVisibility();
   updateQuickPrice();
@@ -5629,11 +5899,31 @@ function populateSelectWithAddressOptions(selectId,blankLabel){
 }
 
 function initCalcAdvancedTools(){
+  setReverseTaxFromSettings(false);
+  renderCalcRTOStreamlineFromState();
+}
+
+function setReverseTaxFromSettings(force){
+  var taxInput=document.getElementById('rev_taxRate');
+  if(!taxInput) return;
+  if(!force&&taxInput.value!=='') return;
+  taxInput.value=String(getSettingVal('taxRate',0)||0);
+}
+
+function initMileageScreen(){
   populateSelectWithAddressOptions('mile_from','Select from address');
   populateSelectWithAddressOptions('mile_to','Select to address');
-  var taxInput=document.getElementById('rev_taxRate');
-  if(taxInput&&taxInput.value==='') taxInput.value=String(getSettingVal('taxRate',0)||0);
-  renderCalcRTOStreamlineFromState();
+  var result=document.getElementById('mile_results');
+  if(result) result.textContent='Select two addresses from Settings.';
+}
+
+function toggleReverseCalcPanel(){
+  var body=document.getElementById('rev_panelBody');
+  var arrow=document.getElementById('rev_toggleArrow');
+  if(!body) return;
+  var open=body.style.display==='block';
+  body.style.display=open?'none':'block';
+  if(arrow) arrow.textContent=open?'▼':'▲';
 }
 
 function renderCalcRTOStreamline(basePrice,saleDiscount,salePrice){
@@ -5661,6 +5951,22 @@ function renderCalcRTOStreamlineFromState(){
   renderCalcRTOStreamline(base,saleAmt,salePrice);
 }
 
+function getReverseCandidateSnapshot(width,length,code,taxRate,mode,term){
+  var savedState=JSON.parse(JSON.stringify(calcState));
+  try{
+    calcState.width=width;
+    calcState.length=length;
+    calcState.type=code;
+    calcState.taxMode='custom';
+    calcState.taxRate=taxRate;
+    calcState.payType=mode==='rto'?'rto':'cash';
+    calcState.rtoMonths=term;
+    return getCalcQuoteSnapshot();
+  }finally{
+    calcState=Object.assign(calcState,savedState);
+  }
+}
+
 function runReversePriceCalculator(){
   var budget=parseFloat((document.getElementById('rev_budget')||{}).value)||0;
   var mode=((document.getElementById('rev_mode')||{}).value||'cash').toLowerCase();
@@ -5678,20 +5984,18 @@ function runReversePriceCalculator(){
       var length=parseInt(lKey,10)||0;
       var styles=PRICING[width][length]||{};
       Object.keys(styles).forEach(function(code){
-        var base=styles[code];
-        if(!base) return;
+        var snap=getReverseCandidateSnapshot(width,length,code,taxRate,mode,term);
+        if(!snap) return;
+        var base=snap.base||0;
         if(mode==='cash'){
-          var cashTotal=base+Math.ceil(base*(taxRate/100));
+          var cashTotal=snap.grandTotal||0;
           var diff=Math.abs(cashTotal-budget);
-          if(diff<=500) matches.push({diff:diff,code:code,width:width,length:length,label:NAMES[code]||code,value:cashTotal,base:base});
+          if(diff<=500) matches.push({diff:diff,code:code,width:width,length:length,label:NAMES[code]||code,value:cashTotal,base:base,optionsTotal:(snap.addonTotal||0),salePrice:(snap.saleBase||base)});
         }else{
-          var savedMonths=calcState.rtoMonths;
-          calcState.rtoMonths=term;
-          var rtoData=calcRTOData(base,width,taxRate,2,0);
-          calcState.rtoMonths=savedMonths;
+          var rtoData=snap.rtoData||null;
           var monthly=rtoData&&rtoData.totalMonthly?rtoData.totalMonthly:0;
           var mdiff=Math.abs(monthly-budget);
-          if(mdiff<=20) matches.push({diff:mdiff,code:code,width:width,length:length,label:NAMES[code]||code,value:monthly,base:base});
+          if(mdiff<=20) matches.push({diff:mdiff,code:code,width:width,length:length,label:NAMES[code]||code,value:monthly,base:base,optionsTotal:(snap.addonTotal||0),salePrice:(snap.saleBase||base)});
         }
       });
     });
@@ -5704,7 +6008,8 @@ function runReversePriceCalculator(){
   var top=matches.slice(0,8);
   targetWrap.innerHTML=top.map(function(m){
     var val=mode==='cash'?(fmt(m.value)+' total'):('$'+m.value.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+'/mo');
-    return '<div style="padding:7px 0;border-bottom:1px solid rgba(232,200,122,0.12);"><strong>'+m.width+'x'+m.length+' '+m.label+'</strong><br><span style="color:rgba(232,200,122,0.78);">'+val+' · List '+fmt(m.base)+'</span></div>';
+    var optionsLine=m.optionsTotal>0?(' · Options '+fmt(m.optionsTotal)):' · No options selected';
+    return '<div style="padding:7px 0;border-bottom:1px solid rgba(232,200,122,0.12);"><strong>'+m.width+'x'+m.length+' '+m.label+'</strong><br><span style="color:rgba(232,200,122,0.78);">'+val+' · List '+fmt(m.base)+' · Sale '+fmt(m.salePrice)+optionsLine+'</span></div>';
   }).join('');
 }
 
@@ -7366,6 +7671,7 @@ try{renderPhotoFolders();}catch(e){}
 try{loadSaleState();}catch(e){}
 try{calcState.taxRate=getSettingVal('taxRate',0);}catch(e){}
 try{applyBizInfoToHome();}catch(e){}
+try{renderHomeQuoteHistory();}catch(e){}
 try{updateShareLinks();}catch(e){}
 try{invInit();}catch(e){}
 try{firebaseTryInit();}catch(e){}
@@ -9414,6 +9720,12 @@ document.addEventListener('DOMContentLoaded', function() {
   colorModal.addEventListener('click', function(e) {
     if (e.target === colorModal) closeColorPicker();
   });
+  var resumeModal=document.getElementById('resumeQuoteModal');
+  if(resumeModal){
+    resumeModal.addEventListener('click',function(e){
+      if(e.target===resumeModal) closeResumeQuoteList();
+    });
+  }
 
   // Build settings style reference table
   buildStyleRefTable();
