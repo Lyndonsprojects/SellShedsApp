@@ -24,6 +24,9 @@
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <style>
 /* Force light mode — prevent Safari dark mode override */
 :root {
@@ -84,6 +87,15 @@ select option { background:var(--earth); color:var(--cream); }
 #screenInventory .inv-ocr-review-actions { display:flex; gap:8px; margin-top:10px; }
 #screenInventory .inv-ocr-review-note { margin-top:8px; font-size:0.72rem; color:rgba(232,200,122,0.75); }
 #screenInventory .inv-primary-actions { display:flex; gap:10px; margin-top:14px; }
+#screenCRM .crm-grid { display:grid; grid-template-columns:1fr; gap:12px; }
+#screenCRM .crm-list { border:1.5px solid rgba(232,200,122,0.2); border-radius:10px; background:rgba(255,255,255,0.04); max-height:280px; overflow:auto; }
+#screenCRM .crm-lead-item { padding:10px 12px; border-bottom:1px solid rgba(232,200,122,0.12); cursor:pointer; }
+#screenCRM .crm-lead-item:last-child { border-bottom:none; }
+#screenCRM .crm-lead-item.active { background:rgba(122,158,135,0.2); }
+#screenCRM .crm-activity-wrap { border:1.5px solid rgba(232,200,122,0.2); border-radius:10px; background:rgba(255,255,255,0.04); padding:10px 12px; max-height:220px; overflow:auto; }
+#screenCRM .crm-activity-item { border-bottom:1px solid rgba(232,200,122,0.12); padding:8px 0; }
+#screenCRM .crm-activity-item:last-child { border-bottom:none; }
+#screenCRM .crm-muted { font-size:0.72rem; color:rgba(232,200,122,0.65); }
 @media (max-width:430px){
   #screenInventory .inv-grid2 { grid-template-columns:1fr; gap:0; }
   #screenInventory .inv-inline-actions { gap:6px; }
@@ -1366,7 +1378,7 @@ input:focus, select:focus, textarea:focus {
 
     <!-- CRM — full width, always visible, URL from settings -->
     <a id="homeCRMLink" href="javascript:void(0)"
-       onclick="var s=loadSettings();var u=s.crmUrl||'';if(u){window.open(u,'_blank');}else{showToast('Set CRM URL in Settings');}return false;"
+       onclick="openCRM();return false;"
        class="cc-tile cc-tile-link cc-span2">
       <div class="cc-tile-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;display:block;"><rect x="2" y="3" width="20" height="18" rx="2" fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6"/><rect x="5" y="12" width="3" height="7" fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.3"/><rect x="10.5" y="8" width="3" height="11" fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.3"/><rect x="16" y="5" width="3" height="14" fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.3"/></svg></div>
       <div style="flex:1">
@@ -2554,6 +2566,96 @@ input:focus, select:focus, textarea:focus {
 </div><!-- end screenInventory -->
 
 <!-- ============================================================
+     SCREEN: CRM
+     ============================================================ -->
+<div class="screen" id="screenCRM">
+  <div class="header"><button class="back-btn" onclick="goTo('screenHome')">←</button><div class="header-title">CRM</div></div>
+  <div style="padding:16px;">
+    <div class="page-title">Leads &amp; Conversations</div>
+    <div class="page-sub">Lite pipeline for contacts, building interest, notes, and conversation channel.</div>
+
+    <div class="field-group">
+      <label class="field-label">Search Leads</label>
+      <input type="text" id="crm_search" placeholder="Name, phone, email, serial..." oninput="crmRenderLeadList()">
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:10px;">
+      <button class="btn-secondary" style="margin-top:0;" onclick="crmStartNewLead()">+ New Lead</button>
+      <button class="btn-secondary" style="margin-top:0;" onclick="crmRefreshLeads()">Refresh</button>
+    </div>
+
+    <div class="crm-grid">
+      <div class="crm-list" id="crm_leadList"></div>
+
+      <div style="border:1.5px solid rgba(232,200,122,0.2);border-radius:10px;background:rgba(255,255,255,0.04);padding:10px 12px;">
+        <div class="crm-muted" id="crm_selectedLeadLabel">No lead selected</div>
+        <div class="inv-grid2">
+          <div class="field-group"><label class="field-label">Name</label><input type="text" id="crm_name" placeholder="Customer name"></div>
+          <div class="field-group"><label class="field-label">Phone</label><input type="text" id="crm_phone" placeholder="(208) 555-0100"></div>
+        </div>
+        <div class="inv-grid2">
+          <div class="field-group"><label class="field-label">Email</label><input type="email" id="crm_email" placeholder="name@email.com"></div>
+          <div class="field-group"><label class="field-label">Status</label>
+            <select id="crm_status">
+              <option value="new">New</option>
+              <option value="contacted">Contacted</option>
+              <option value="quoted">Quoted</option>
+              <option value="won">Won</option>
+              <option value="lost">Lost</option>
+            </select>
+          </div>
+        </div>
+        <div class="inv-grid2">
+          <div class="field-group"><label class="field-label">Building Interest</label><input type="text" id="crm_building" placeholder="10x16 Lofted Barn"></div>
+          <div class="field-group"><label class="field-label">Conversation Channel</label>
+            <select id="crm_channel">
+              <option value="sms">SMS/Text</option>
+              <option value="phone">Phone Call</option>
+              <option value="email">Email</option>
+              <option value="facebook">Facebook</option>
+              <option value="instagram">Instagram</option>
+              <option value="inPerson">In Person</option>
+              <option value="form">Web Form</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-group"><label class="field-label">Notes</label><textarea id="crm_notes" rows="3" placeholder="General lead notes"></textarea></div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn-primary" style="margin-top:0;flex:2;" onclick="crmSaveLeadFromForm()">Save Lead</button>
+          <button class="btn-secondary" style="margin-top:0;flex:1;" onclick="crmClearLeadForm()">Clear</button>
+        </div>
+      </div>
+
+      <div style="border:1.5px solid rgba(232,200,122,0.2);border-radius:10px;background:rgba(255,255,255,0.04);padding:10px 12px;">
+        <div class="field-group"><label class="field-label">Add Activity</label>
+          <div class="inv-grid2">
+            <select id="crm_activity_channel">
+              <option value="sms">SMS/Text</option>
+              <option value="phone">Phone Call</option>
+              <option value="email">Email</option>
+              <option value="facebook">Facebook</option>
+              <option value="instagram">Instagram</option>
+              <option value="inPerson">In Person</option>
+              <option value="other">Other</option>
+            </select>
+            <select id="crm_activity_direction">
+              <option value="outbound">Outbound</option>
+              <option value="inbound">Inbound</option>
+              <option value="note">Note</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-group"><textarea id="crm_activity_body" rows="2" placeholder="What happened in the conversation?"></textarea></div>
+        <button class="btn-secondary" style="margin-top:0;" onclick="crmAddActivityFromForm()">Add Activity</button>
+        <div class="section-head" style="margin-top:12px;">Timeline</div>
+        <div class="crm-activity-wrap" id="crm_activityList"></div>
+      </div>
+    </div>
+    <div class="pb40"></div>
+  </div>
+</div><!-- end screenCRM -->
+
+<!-- ============================================================
      SCREEN: INTAKE SELECTOR
      ============================================================ -->
 <div class="screen" id="screenIntakeSelector">
@@ -3653,6 +3755,21 @@ input:focus, select:focus, textarea:focus {
     <div id="set_crmUrlWrap" style="display:none;">
       <div class="field-group"><label class="field-label">CRM URL</label><input type="url" id="set_crmUrl" placeholder="https://..."></div>
     </div>
+    <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 10px;">Firebase (Firestore only)</div>
+    <div class="field-group"><label class="field-label">Project API Key</label><input type="text" id="set_firebaseApiKey" placeholder="AIza..."></div>
+    <div class="field-group"><label class="field-label">Auth Domain</label><input type="text" id="set_firebaseAuthDomain" placeholder="your-project.firebaseapp.com"></div>
+    <div class="field-group"><label class="field-label">Project ID</label><input type="text" id="set_firebaseProjectId" placeholder="your-project-id"></div>
+    <div class="field-group"><label class="field-label">Storage Bucket (optional for later)</label><input type="text" id="set_firebaseStorageBucket" placeholder="Optional — Firebase Storage not required"></div>
+    <div class="setup-note" style="margin-top:-4px;margin-bottom:12px;">Firestore sync is active. Firebase Storage is optional and not required.</div>
+    <div class="field-group"><label class="field-label">Messaging Sender ID</label><input type="text" id="set_firebaseMessagingSenderId" placeholder="1234567890"></div>
+    <div class="field-group"><label class="field-label">App ID</label><input type="text" id="set_firebaseAppId" placeholder="1:123456:web:abc..."></div>
+    <div class="field-group"><label class="field-label">Staff Email (for auth)</label><input type="email" id="set_firebaseEmail" placeholder="staff@yourcompany.com"></div>
+    <div class="field-group"><label class="field-label">Staff Password (for auth)</label><input type="password" id="set_firebasePassword" placeholder="Required for Firestore writes"></div>
+    <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 10px;">Google Drive Photo Upload</div>
+    <div class="field-group"><label class="field-label">Apps Script Upload URL</label><input type="url" id="set_driveUploadUrl" placeholder="https://script.google.com/macros/s/.../exec"></div>
+    <div class="field-group"><label class="field-label">Upload Token (shared secret)</label><input type="password" id="set_driveUploadToken" placeholder="Used to protect upload endpoint"></div>
+    <div class="field-group"><label class="field-label">Drive Folder ID</label><input type="text" id="set_driveFolderId" placeholder="Folder ID where photos are saved"></div>
+    <div class="setup-note" style="margin-top:-4px;margin-bottom:12px;">If configured, inventory photos upload to Google Drive and links are stored in Firestore.</div>
 
     <!-- EmailJS -->
     <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 10px;">EmailJS</div>
@@ -3766,6 +3883,431 @@ input:focus, select:focus, textarea:focus {
      JAVASCRIPT
      ============================================================ -->
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ============================================================
+// FIREBASE / FIRESTORE / STORAGE
+// ============================================================
+var fbApp=null;
+var fbDb=null;
+var fbAuth=null;
+var fbReady=false;
+var fbInitTried=false;
+var fbInventoryUnsub=null;
+var fbLeadsUnsub=null;
+var crmActivitiesUnsub=null;
+var crmState={leads:[],selectedLeadId:'',activities:[],watchStarted:false};
+
+function firebaseConfigFromSettings(){
+  var s=loadSettings();
+  return {
+    apiKey:(s.firebaseApiKey||'').trim(),
+    authDomain:(s.firebaseAuthDomain||'').trim(),
+    projectId:(s.firebaseProjectId||'').trim(),
+    storageBucket:(s.firebaseStorageBucket||'').trim(),
+    messagingSenderId:(s.firebaseMessagingSenderId||'').trim(),
+    appId:(s.firebaseAppId||'').trim()
+  };
+}
+function firebaseHasConfig(cfg){
+  return !!(cfg.apiKey&&cfg.authDomain&&cfg.projectId&&cfg.messagingSenderId&&cfg.appId);
+}
+function firebaseTsToIso(v){
+  if(!v) return new Date().toISOString();
+  if(typeof v==='string') return v;
+  if(v&&typeof v.toDate==='function') return v.toDate().toISOString();
+  return new Date().toISOString();
+}
+function firebaseTryInit(){
+  if(fbApp) return true;
+  var cfg=firebaseConfigFromSettings();
+  if(!firebaseHasConfig(cfg)) return false;
+  try{
+    fbApp=firebase.apps&&firebase.apps.length?firebase.app():firebase.initializeApp(cfg);
+    fbDb=firebase.firestore();
+    fbAuth=firebase.auth();
+    fbReady=true;
+    fbInitTried=true;
+    return true;
+  }catch(e){
+    console.log('Firebase init failed:',e);
+    fbReady=false;
+    fbInitTried=true;
+    return false;
+  }
+}
+async function firebaseEnsureAuthed(){
+  if(!firebaseTryInit()) return false;
+  if(fbAuth.currentUser) return true;
+  var s=loadSettings();
+  var email=(s.firebaseEmail||'').trim();
+  var password=(s.firebasePassword||'').trim();
+  if(!email||!password) return false;
+  try{
+    await fbAuth.signInWithEmailAndPassword(email,password);
+    return true;
+  }catch(err){
+    try{
+      if(err&&err.code==='auth/user-not-found'){
+        await fbAuth.createUserWithEmailAndPassword(email,password);
+        return true;
+      }
+    }catch(_createErr){
+      console.log('Firebase create user failed:',_createErr);
+    }
+    console.log('Firebase auth failed:',err);
+    return false;
+  }
+}
+function cloudReady(){ return !!(fbReady&&fbDb); }
+function driveConfigFromSettings(){
+  var s=loadSettings();
+  return {
+    uploadUrl:(s.driveUploadUrl||'').trim(),
+    uploadToken:(s.driveUploadToken||'').trim(),
+    folderId:(s.driveFolderId||'').trim()
+  };
+}
+function driveConfigReady(cfg){
+  return !!(cfg&&cfg.uploadUrl&&cfg.uploadToken&&cfg.folderId);
+}
+function invIsDataUrl(value){
+  return /^data:image\//i.test((value||'').trim());
+}
+function invToCloudPhotoUrl(value){
+  var v=(value||'').trim();
+  if(/^https?:\/\//i.test(v)) return v;
+  return '';
+}
+async function invUploadPhotoToDrive(dataUrl,kind,serialNumber){
+  var cfg=driveConfigFromSettings();
+  if(!driveConfigReady(cfg)) throw new Error('Google Drive upload settings are incomplete');
+  var safeSerial=(serialNumber||'unit').replace(/[^a-z0-9_-]+/gi,'_').slice(0,48)||'unit';
+  var payload={
+    token:cfg.uploadToken,
+    folderId:cfg.folderId,
+    serialNumber:serialNumber||'',
+    kind:kind||'photo',
+    fileName:safeSerial+'_'+(kind||'photo')+'_'+Date.now()+'.jpg',
+    imageDataUrl:dataUrl
+  };
+  var resp=await fetch(cfg.uploadUrl,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(payload)
+  });
+  if(!resp.ok) throw new Error('Drive upload failed ('+resp.status+')');
+  var out=await resp.json().catch(function(){return {};});
+  var url=(out&&typeof out.url==='string'?out.url:'')||(out&&typeof out.webViewLink==='string'?out.webViewLink:'');
+  if(!url) throw new Error('Drive upload returned no URL');
+  return {
+    url:url,
+    fileId:out&&out.fileId?out.fileId:'',
+    webViewLink:out&&out.webViewLink?out.webViewLink:url
+  };
+}
+function openCRM(){
+  var s=loadSettings();
+  firebaseTryInit();
+  if(cloudReady()){
+    goTo('screenCRM');
+    return;
+  }
+  var u=s.crmUrl||'';
+  if(u){ window.open(u,'_blank'); return; }
+  showToast('Set Firebase config or CRM URL in Settings');
+}
+
+function crmClearLeadForm(){
+  ['crm_name','crm_phone','crm_email','crm_building','crm_notes'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el) el.value='';
+  });
+  var status=document.getElementById('crm_status');
+  if(status) status.value='new';
+  var ch=document.getElementById('crm_channel');
+  if(ch) ch.value='sms';
+  var lbl=document.getElementById('crm_selectedLeadLabel');
+  if(lbl) lbl.textContent='No lead selected';
+  crmState.selectedLeadId='';
+  crmRenderLeadList();
+  crmRenderActivities();
+}
+function crmStartNewLead(){ crmClearLeadForm(); }
+function crmLeadDocToUi(lead){
+  var setVal=function(id,v){
+    var el=document.getElementById(id);
+    if(el) el.value=v||'';
+  };
+  setVal('crm_name',lead.contact&&lead.contact.name||'');
+  setVal('crm_phone',lead.contact&&lead.contact.phone||'');
+  setVal('crm_email',lead.contact&&lead.contact.email||'');
+  setVal('crm_building',lead.buildingInterest&&lead.buildingInterest.summary||'');
+  setVal('crm_notes',lead.notes||'');
+  setVal('crm_status',lead.status||'new');
+  setVal('crm_channel',lead.conversation&&lead.conversation.channel||'sms');
+  var lbl=document.getElementById('crm_selectedLeadLabel');
+  if(lbl) lbl.textContent='Lead ID: '+lead.id;
+}
+function crmRenderLeadList(){
+  var wrap=document.getElementById('crm_leadList');
+  if(!wrap) return;
+  var q=(document.getElementById('crm_search')&&document.getElementById('crm_search').value||'').toLowerCase().trim();
+  var leads=crmState.leads.filter(function(lead){
+    if(!q) return true;
+    var hay=[lead.contact&&lead.contact.name,lead.contact&&lead.contact.phone,lead.contact&&lead.contact.email,lead.buildingInterest&&lead.buildingInterest.summary,lead.notes].join(' ').toLowerCase();
+    return hay.indexOf(q)>=0;
+  });
+  if(!leads.length){
+    wrap.innerHTML='<div style="padding:12px;color:rgba(232,200,122,0.7);font-size:0.8rem;">No leads yet. Intake submissions and manual leads appear here.</div>';
+    return;
+  }
+  wrap.innerHTML=leads.map(function(lead){
+    var active=lead.id===crmState.selectedLeadId?'active':'';
+    var when=lead.updatedAt?new Date(lead.updatedAt).toLocaleString():'';
+    return '<div class="crm-lead-item '+active+'" onclick="crmSelectLead(\''+lead.id+'\')">'+
+      '<div style="font-size:0.84rem;font-weight:700;color:var(--wheat);">'+((lead.contact&&lead.contact.name)||'Unnamed Lead')+'</div>'+
+      '<div style="font-size:0.72rem;color:rgba(245,240,232,0.75);margin-top:2px;">'+((lead.contact&&lead.contact.phone)||'No phone')+' · '+(lead.status||'new')+'</div>'+
+      '<div class="crm-muted" style="margin-top:2px;">'+((lead.buildingInterest&&lead.buildingInterest.summary)||'No building selected')+(when?' · '+when:'')+'</div>'+
+    '</div>';
+  }).join('');
+}
+function crmRenderActivities(){
+  var wrap=document.getElementById('crm_activityList');
+  if(!wrap) return;
+  if(!crmState.selectedLeadId){
+    wrap.innerHTML='<div class="crm-muted">Select a lead to see conversation timeline.</div>';
+    return;
+  }
+  if(!crmState.activities.length){
+    wrap.innerHTML='<div class="crm-muted">No activities yet.</div>';
+    return;
+  }
+  wrap.innerHTML=crmState.activities.map(function(a){
+    var when=a.timestamp?new Date(a.timestamp).toLocaleString():'';
+    return '<div class="crm-activity-item">'+
+      '<div style="font-size:0.72rem;color:rgba(232,200,122,0.8);text-transform:uppercase;letter-spacing:0.6px;">'+(a.channel||'other')+' · '+(a.direction||'note')+(when?' · '+when:'')+'</div>'+
+      '<div style="font-size:0.78rem;color:var(--cream);margin-top:3px;">'+(a.body||'')+'</div>'+
+    '</div>';
+  }).join('');
+}
+async function crmWatchLeads(){
+  if(!(await firebaseEnsureAuthed())) return false;
+  if(fbLeadsUnsub) return true;
+  fbLeadsUnsub=fbDb.collection('leads').orderBy('updatedAt','desc').onSnapshot(function(snap){
+    crmState.leads=snap.docs.map(function(doc){
+      var d=doc.data()||{};
+      d.id=doc.id;
+      d.createdAt=firebaseTsToIso(d.createdAt);
+      d.updatedAt=firebaseTsToIso(d.updatedAt);
+      return d;
+    });
+    crmRenderLeadList();
+    if(crmState.selectedLeadId){
+      var active=crmState.leads.find(function(l){return l.id===crmState.selectedLeadId;});
+      if(active) crmLeadDocToUi(active);
+    }
+  },function(err){
+    console.log('Lead watch failed:',err);
+  });
+  return true;
+}
+async function crmWatchActivities(leadId){
+  if(crmActivitiesUnsub){crmActivitiesUnsub();crmActivitiesUnsub=null;}
+  crmState.activities=[];
+  crmRenderActivities();
+  if(!leadId) return;
+  if(!(await firebaseEnsureAuthed())) return;
+  crmActivitiesUnsub=fbDb.collection('leads').doc(leadId).collection('activities').orderBy('timestamp','desc').onSnapshot(function(snap){
+    crmState.activities=snap.docs.map(function(doc){
+      var d=doc.data()||{};
+      d.id=doc.id;
+      d.timestamp=firebaseTsToIso(d.timestamp);
+      return d;
+    });
+    crmRenderActivities();
+  },function(err){
+    console.log('Activity watch failed:',err);
+  });
+}
+async function crmSelectLead(id){
+  crmState.selectedLeadId=id;
+  var lead=crmState.leads.find(function(l){return l.id===id;});
+  if(lead) crmLeadDocToUi(lead);
+  crmRenderLeadList();
+  await crmWatchActivities(id);
+}
+function crmBuildLeadPayloadFromForm(){
+  var cv=function(id){var el=document.getElementById(id);return el?el.value.trim():'';};
+  var now=new Date().toISOString();
+  return {
+    contact:{name:cv('crm_name'),phone:cv('crm_phone'),email:cv('crm_email')},
+    buildingInterest:{summary:cv('crm_building')},
+    notes:cv('crm_notes'),
+    conversation:{channel:cv('crm_channel'),lastMessageAt:now,lastDirection:'note',summary:'Lead profile saved in CRM screen'},
+    source:'manual',
+    status:cv('crm_status')||'new',
+    updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+  };
+}
+async function crmCreateLead(payload){
+  if(!(await firebaseEnsureAuthed())) throw new Error('Firebase not ready');
+  payload.createdAt=firebase.firestore.FieldValue.serverTimestamp();
+  payload.updatedAt=firebase.firestore.FieldValue.serverTimestamp();
+  var ref=await fbDb.collection('leads').add(payload);
+  return ref.id;
+}
+async function crmUpdateLead(leadId,patch){
+  if(!(await firebaseEnsureAuthed())) throw new Error('Firebase not ready');
+  patch.updatedAt=firebase.firestore.FieldValue.serverTimestamp();
+  await fbDb.collection('leads').doc(leadId).set(patch,{merge:true});
+}
+async function crmAddActivity(leadId,activity){
+  if(!(await firebaseEnsureAuthed())) throw new Error('Firebase not ready');
+  activity.timestamp=firebase.firestore.FieldValue.serverTimestamp();
+  await fbDb.collection('leads').doc(leadId).collection('activities').add(activity);
+}
+async function crmSaveLeadFromForm(){
+  try{
+    if(!(await firebaseEnsureAuthed())){showToast('Add Firebase settings and staff login first');return;}
+    var payload=crmBuildLeadPayloadFromForm();
+    if(!payload.contact.name&&!payload.contact.phone){
+      showToast('Name or phone required');
+      return;
+    }
+    if(crmState.selectedLeadId){
+      await crmUpdateLead(crmState.selectedLeadId,payload);
+      showToast('Lead updated');
+    }else{
+      var id=await crmCreateLead(payload);
+      crmState.selectedLeadId=id;
+      await crmAddActivity(id,{channel:payload.conversation.channel||'other',direction:'note',body:'Lead created manually'});
+      showToast('Lead saved');
+    }
+  }catch(e){
+    console.log('Save lead failed:',e);
+    showToast('Could not save lead');
+  }
+}
+async function crmAddActivityFromForm(){
+  if(!crmState.selectedLeadId){showToast('Select a lead first');return;}
+  var body=document.getElementById('crm_activity_body');
+  var channel=document.getElementById('crm_activity_channel');
+  var direction=document.getElementById('crm_activity_direction');
+  var txt=body?body.value.trim():'';
+  if(!txt){showToast('Enter activity note');return;}
+  try{
+    await crmAddActivity(crmState.selectedLeadId,{
+      channel:channel?channel.value:'other',
+      direction:direction?direction.value:'note',
+      body:txt,
+      createdBy:loadSettings().contactName||'sales'
+    });
+    await crmUpdateLead(crmState.selectedLeadId,{
+      conversation:{
+        channel:channel?channel.value:'other',
+        lastMessageAt:new Date().toISOString(),
+        lastDirection:direction?direction.value:'note',
+        summary:txt.slice(0,180)
+      }
+    });
+    if(body) body.value='';
+    showToast('Activity added');
+  }catch(e){
+    console.log('Add activity failed:',e);
+    showToast('Could not add activity');
+  }
+}
+async function crmRefreshLeads(){
+  await crmWatchLeads();
+  crmRenderLeadList();
+}
+async function crmInit(){
+  if(crmState.watchStarted) return;
+  crmState.watchStarted=true;
+  if(!(await firebaseEnsureAuthed())){
+    crmState.watchStarted=false;
+    return;
+  }
+  await crmWatchLeads();
+}
+
+async function maybeMigrateLegacyInventory(){
+  var migrated=localStorage.getItem('gss_inventory_migrated')==='true';
+  if(migrated) return;
+  if(!(await firebaseEnsureAuthed())) return;
+  var raw=localStorage.getItem('gss_inventory');
+  if(!raw){ localStorage.setItem('gss_inventory_migrated','true'); return; }
+  try{
+    var parsed=JSON.parse(raw)||[];
+    if(!Array.isArray(parsed)||!parsed.length){ localStorage.setItem('gss_inventory_migrated','true'); return; }
+    for(var i=0;i<parsed.length;i++){
+      var item=parsed[i];
+      await fbDb.collection('inventory').doc(item.id||('inv_mig_'+Date.now()+'_'+i)).set({
+        lotLocation:item.lotLocation||'',
+        serialNumber:item.serialNumber||'',
+        size:item.size||'',
+        style:item.style||'',
+        buildDate:item.buildDate||'',
+        roofColor:item.roofColor||'',
+        wallColor:item.wallColor||'',
+        trimColor:item.trimColor||'',
+        priceData:item.priceData||null,
+        photoUrls:{plate:'',front:''},
+        createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+      },{merge:true});
+    }
+    localStorage.setItem('gss_inventory_migrated','true');
+  }catch(e){
+    console.log('Inventory migration failed:',e);
+  }
+}
+
+async function invCreateItemCloud(docId,payload){
+  if(!(await firebaseEnsureAuthed())) throw new Error('Firebase not ready');
+  payload.createdAt=firebase.firestore.FieldValue.serverTimestamp();
+  payload.updatedAt=firebase.firestore.FieldValue.serverTimestamp();
+  await fbDb.collection('inventory').doc(docId).set(payload,{merge:true});
+}
+async function invUpdateItemCloud(docId,payload){
+  if(!(await firebaseEnsureAuthed())) throw new Error('Firebase not ready');
+  payload.updatedAt=firebase.firestore.FieldValue.serverTimestamp();
+  await fbDb.collection('inventory').doc(docId).set(payload,{merge:true});
+}
+async function invDeleteItemCloud(docId){
+  if(!(await firebaseEnsureAuthed())) throw new Error('Firebase not ready');
+  await fbDb.collection('inventory').doc(docId).delete();
+}
+
+async function watchInventoryCloud(){
+  if(!(await firebaseEnsureAuthed())) return false;
+  if(fbInventoryUnsub) return true;
+  fbInventoryUnsub=fbDb.collection('inventory').orderBy('updatedAt','desc').onSnapshot(function(snap){
+    invState.items=snap.docs.map(function(doc){
+      var d=doc.data()||{};
+      return {
+        id:doc.id,
+        createdAt:firebaseTsToIso(d.createdAt),
+        updatedAt:firebaseTsToIso(d.updatedAt),
+        lotLocation:d.lotLocation||'',
+        serialNumber:d.serialNumber||'',
+        size:d.size||'',
+        style:d.style||'',
+        buildDate:d.buildDate||'',
+        roofColor:d.roofColor||'',
+        wallColor:d.wallColor||'',
+        trimColor:d.trimColor||'',
+        priceData:d.priceData||null,
+        plateImage:d.photoUrls&&d.photoUrls.plate||'',
+        frontImage:d.photoUrls&&d.photoUrls.front||''
+      };
+    });
+    invRenderList();
+  },function(err){
+    console.log('Inventory watch failed:',err);
+  });
+  return true;
+}
+
 // ============================================================
 // EmailJS config — loaded from Settings
 // ============================================================
@@ -3918,10 +4460,12 @@ function applyBizInfoToHome(){
   // CRM tile — always visible, update sub-label with domain or placeholder
   var crmUrlEl=document.getElementById('homeCRMUrl');
   if(crmUrlEl){
-    if(s.crmUrl){
+    if(firebaseHasConfig(firebaseConfigFromSettings())){
+      crmUrlEl.textContent='Cloud CRM ready';
+    }else if(s.crmUrl){
       crmUrlEl.textContent=s.crmUrl.replace(/https?:\/\//,'').split('/')[0];
     } else {
-      crmUrlEl.textContent='Set URL in Settings';
+      crmUrlEl.textContent='Set Firebase in Settings';
     }
   }
 
@@ -3973,7 +4517,7 @@ function loadSettingsForm(){
     if(el) el.value=s[k]||'';
   });
   // Text fields
-  var txtFields=['bizName','bizPhone','bizEmail','bizAddr1','bizAddr2','contactName','designerUrl','formspreeEndpoint','purchaseUrl','rtoUrl','interestUrl','crmUrl','ejsPublicKey','ejsServiceId','ejsTemplateId','quoteDisclaimer'];
+  var txtFields=['bizName','bizPhone','bizEmail','bizAddr1','bizAddr2','contactName','designerUrl','formspreeEndpoint','purchaseUrl','rtoUrl','interestUrl','crmUrl','ejsPublicKey','ejsServiceId','ejsTemplateId','quoteDisclaimer','firebaseApiKey','firebaseAuthDomain','firebaseProjectId','firebaseStorageBucket','firebaseMessagingSenderId','firebaseAppId','firebaseEmail','firebasePassword','driveUploadUrl','driveUploadToken','driveFolderId'];
   txtFields.forEach(function(k){
     var el=document.getElementById('set_'+k);
     if(el) el.value=s[k]||'';
@@ -4026,7 +4570,7 @@ function saveSettingsForm(){
     if(el) s[k]=el.value.trim()===''?'':parseFloat(el.value);
   });
   // Text
-  var txtFields=['bizName','bizPhone','bizEmail','bizAddr1','bizAddr2','contactName','designerUrl','formspreeEndpoint','purchaseUrl','rtoUrl','interestUrl','crmUrl','ejsPublicKey','ejsServiceId','ejsTemplateId','quoteDisclaimer'];
+  var txtFields=['bizName','bizPhone','bizEmail','bizAddr1','bizAddr2','contactName','designerUrl','formspreeEndpoint','purchaseUrl','rtoUrl','interestUrl','crmUrl','ejsPublicKey','ejsServiceId','ejsTemplateId','quoteDisclaimer','firebaseApiKey','firebaseAuthDomain','firebaseProjectId','firebaseStorageBucket','firebaseMessagingSenderId','firebaseAppId','firebaseEmail','firebasePassword','driveUploadUrl','driveUploadToken','driveFolderId'];
   txtFields.forEach(function(k){
     var el=document.getElementById('set_'+k);
     if(el) s[k]=el.value.trim();
@@ -4063,6 +4607,9 @@ function saveSettingsForm(){
   if(msg){msg.style.display='block';setTimeout(function(){msg.style.display='none';},2500);}
   updateAutoWidthPrices();
   initEmailJS();
+  fbApp=null; fbDb=null; fbAuth=null; fbReady=false;
+  firebaseTryInit();
+  firebaseEnsureAuthed();
 }
 
 function formatPhoneInput(el){
@@ -4255,7 +4802,8 @@ function goTo(screenId){
   window.scrollTo(0,0);
   if(screenId==='screenSettings') loadSettingsForm();
   if(screenId==='screenAd') adPopulateLocation();
-  if(screenId==='screenInventory') invRenderList();
+  if(screenId==='screenInventory') invInit();
+  if(screenId==='screenCRM') crmInit();
   // Show dock only on home screen
   var dock=document.querySelector('.cc-dock');
   if(dock) dock.style.display = (screenId==='screenHome') ? 'flex' : 'none';
@@ -6420,6 +6968,7 @@ try{calcState.taxRate=getSettingVal('taxRate',0);}catch(e){}
 try{applyBizInfoToHome();}catch(e){}
 try{updateShareLinks();}catch(e){}
 try{invInit();}catch(e){}
+try{firebaseTryInit();firebaseEnsureAuthed();}catch(e){}
 
 // ============================================================
 // INTAKE FORMS
@@ -6482,8 +7031,8 @@ var invState={
   lastPriceCalc:null
 };
 
-function invInit(){
-  invLoad();
+async function invInit(){
+  await invLoad();
   invPopulatePriceModalOptions();
   invUpdatePriceSummary();
   var modal=document.getElementById('invPriceModalOverlay');
@@ -6499,7 +7048,7 @@ function invInit(){
   invRenderList();
 }
 
-function invLoad(){
+async function invLoad(){
   try{
     var raw=localStorage.getItem(INV_STORAGE_KEY);
     var parsed=raw?JSON.parse(raw):[];
@@ -6507,9 +7056,16 @@ function invLoad(){
   }catch(e){
     invState.items=[];
   }
+  try{
+    await maybeMigrateLegacyInventory();
+    await watchInventoryCloud();
+  }catch(_cloudErr){
+    // Keep local fallback if Firebase is not configured/authenticated yet.
+  }
 }
 
 function invPersist(){
+  if(cloudReady()) return true;
   try{
     localStorage.setItem(INV_STORAGE_KEY,JSON.stringify(invState.items));
     return true;
@@ -7101,7 +7657,7 @@ function invClearForm(){
   invUpdateOcrStatus('Waiting for serial plate photo');
 }
 
-function invSaveItem(){
+async function invSaveItem(){
   var lotLocation=invGetValue('inv_lotLocation');
   var serialNumber=invGetValue('inv_serialNumber');
   var size=invGetValue('inv_size');
@@ -7125,6 +7681,51 @@ function invSaveItem(){
     return;
   }
   var now=new Date().toISOString();
+  var cloudOk=await firebaseEnsureAuthed();
+  if(cloudOk){
+    try{
+      var docId=invState.editId||('inv_'+Date.now()+'_'+Math.random().toString(36).slice(2,8));
+      var driveCfg=driveConfigFromSettings();
+      var plateImageValue=invState.images.plate||'';
+      var frontImageValue=invState.images.front||'';
+      if(driveConfigReady(driveCfg)){
+        if(invIsDataUrl(plateImageValue)){
+          showToast('Uploading serial plate photo...');
+          plateImageValue=(await invUploadPhotoToDrive(plateImageValue,'plate',serialNumber)).url||'';
+        }
+        if(invIsDataUrl(frontImageValue)){
+          showToast('Uploading front photo...');
+          frontImageValue=(await invUploadPhotoToDrive(frontImageValue,'front',serialNumber)).url||'';
+        }
+      }else if(invIsDataUrl(plateImageValue)||invIsDataUrl(frontImageValue)){
+        console.log('Drive upload skipped: configure upload URL, token, and folder ID in Settings.');
+      }
+      var payload={
+        lotLocation:lotLocation,
+        serialNumber:serialNumber,
+        size:size,
+        style:style,
+        buildDate:buildDate,
+        roofColor:roofColor,
+        wallColor:wallColor,
+        trimColor:trimColor,
+        priceData:invState.priceData?Object.assign({},invState.priceData):null,
+        photoUrls:{
+          plate:invToCloudPhotoUrl(plateImageValue),
+          front:invToCloudPhotoUrl(frontImageValue)
+        },
+        updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+      };
+      if(invState.editId) await invUpdateItemCloud(docId,payload);
+      else await invCreateItemCloud(docId,payload);
+      showToast(invState.editId?'Inventory item updated':'Inventory item saved');
+      invClearForm();
+      return;
+    }catch(err){
+      console.log('Cloud save failed, keeping local fallback:',err);
+      showToast('Cloud save failed, saved locally');
+    }
+  }
   if(invState.editId){
     invState.items=invState.items.map(function(item){
       if(item.id!==invState.editId) return item;
@@ -7209,6 +7810,16 @@ function invEditItem(id){
 function invDeleteItem(id){
   var ok=window.confirm('Delete this inventory item?');
   if(!ok) return;
+  if(cloudReady()){
+    invDeleteItemCloud(id).then(function(){
+      if(invState.editId===id) invClearForm();
+      showToast('Inventory item deleted');
+    }).catch(function(err){
+      console.log('Cloud delete failed:',err);
+      showToast('Cloud delete failed');
+    });
+    return;
+  }
   invState.items=invState.items.filter(function(it){return it.id!==id;});
   if(invState.editId===id) invClearForm();
   if(!invPersist()) return;
@@ -7255,6 +7866,54 @@ function buildInterestText(){
   return`GENERAL INTEREST — ${loadSettings().bizName||'YOUR BUSINESS'}\n${'='.repeat(36)}\nDate: ${new Date().toLocaleString()}\n\nCONTACT\nName: ${cv('i_name')}\nPhone: ${cv('i_phone')}\nEmail: ${cv('i_email')||'Not provided'}\n\nDELIVERY LOCATION\n${cv('i_del_street')?cv('i_del_street')+'\\n':''}${[cv('i_del_city'),cv('i_del_state'),cv('i_del_zip')].filter(Boolean).join(', ')||'Not specified'}\n\nBUILDING INTEREST\nType: ${cv('i_btype')||'Not specified'}\nSize: ${cv('i_width')||'?'} x ${cv('i_length')||'?'}\nBudget: ${cv('i_budget')||'Not specified'}\nTimeline: ${cv('i_timeline')||'Not specified'}\nAdd-ons: ${getChecked('i_addons')||'None'}\nCustom: ${cv('i_addons_custom')||'None'}\n\nPAYMENT\nCash/RTO: ${getRadioVal('ipay')||'Not specified'}\n\nSITE\nAccess: ${cv('i_access')||'Not specified'}\n\nNOTES\n${cv('i_interest')||'None'}`;
 }
 
+function buildLeadPayloadFromIntake(type){
+  var map={
+    purchase:{
+      name:cv('p_name'),
+      phone:cv('p_phone'),
+      email:cv('p_email'),
+      building:[cv('p_btype'),cv('p_width')&&cv('p_length')?(cv('p_width')+'x'+cv('p_length')):''].filter(Boolean).join(' · '),
+      notes:[cv('p_sitenotes'),cv('p_notes')].filter(Boolean).join(' | ')
+    },
+    rto:{
+      name:cv('r_name'),
+      phone:cv('r_phone'),
+      email:cv('r_email'),
+      building:[cv('r_btype'),cv('r_width')&&cv('r_length')?(cv('r_width')+'x'+cv('r_length')):'',getRadioVal('rtoterm')].filter(Boolean).join(' · '),
+      notes:[cv('r_sitenotes'),cv('r_notes')].filter(Boolean).join(' | ')
+    },
+    interest:{
+      name:cv('i_name'),
+      phone:cv('i_phone'),
+      email:cv('i_email'),
+      building:[cv('i_btype'),cv('i_width')&&cv('i_length')?(cv('i_width')+'x'+cv('i_length')):''].filter(Boolean).join(' · '),
+      notes:[cv('i_interest')].filter(Boolean).join(' | ')
+    }
+  }[type]||{name:'',phone:'',email:'',building:'',notes:''};
+  var now=new Date().toISOString();
+  return {
+    contact:{name:map.name,phone:map.phone,email:map.email},
+    buildingInterest:{summary:map.building},
+    notes:map.notes||'Submitted via intake form',
+    conversation:{channel:'form',lastMessageAt:now,lastDirection:'inbound',summary:'Submitted '+type+' intake form'},
+    source:type,
+    status:'new'
+  };
+}
+
+async function saveIntakeLead(type,messageText){
+  if(!(await firebaseEnsureAuthed())) return null;
+  var payload=buildLeadPayloadFromIntake(type);
+  var leadId=await crmCreateLead(payload);
+  await crmAddActivity(leadId,{
+    channel:'form',
+    direction:'inbound',
+    body:'Form submitted ('+type+'). '+(messageText||'').slice(0,220),
+    createdBy:'system'
+  });
+  return leadId;
+}
+
 async function submitIntake(type){
   const reqMap={purchase:['p_name','p_phone','p_del_street','p_del_city'],rto:['r_name','r_dob','r_phone','r_cur_street','r_cur_city','r_ref1_name','r_ref1_phone','r_ref2_name','r_ref2_phone'],interest:['i_name','i_phone']};
   for(const id of reqMap[type]){if(!cv(id)){showToast('Fill in all required fields');document.getElementById(id).focus();return;}}
@@ -7274,6 +7933,12 @@ async function submitIntake(type){
     return;
   }
   try{
+    var syncedLeadId=null;
+    try{
+      syncedLeadId=await saveIntakeLead(type,bodies[type]);
+    }catch(syncErr){
+      console.log('Lead sync warning:',syncErr);
+    }
     var biz=loadSettings();
     var response=await fetch(endpoint,{
       method:'POST',
@@ -7299,8 +7964,10 @@ async function submitIntake(type){
     const icons={purchase:'💰',rto:'📅',interest:'👋'};
     document.getElementById('successIcon').textContent=icons[type]||'✅';
     var _bPhone=loadSettings().bizPhone||'';
-    document.getElementById('successMsg').innerHTML=`Thank you, <strong>${names[type]||'there'}</strong>! We've received your info and will be in touch shortly.`+(_bPhone?`<br><br>Call or text us: <strong><a href="tel:${_bPhone.replace(/\D/g,'')}" style="color:var(--barn);">${_bPhone}</a></strong>`:'');
+    var syncNote=syncedLeadId?`<br><br>CRM Lead ID: <strong>${syncedLeadId}</strong>`:'';
+    document.getElementById('successMsg').innerHTML=`Thank you, <strong>${names[type]||'there'}</strong>! We've received your info and will be in touch shortly.`+(_bPhone?`<br><br>Call or text us: <strong><a href="tel:${_bPhone.replace(/\D/g,'')}" style="color:var(--barn);">${_bPhone}</a></strong>`:'')+syncNote;
     goTo('screenIntakeSuccess');
+    if(!syncedLeadId) showToast('Submitted, but CRM sync is not connected');
   }catch(err){
     console.log('Formspree submit error:',err);
     showToast('❌ Submission failed. Check endpoint and try again.');
