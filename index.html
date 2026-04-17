@@ -3898,7 +3898,20 @@ var crmState={leads:[],selectedLeadId:'',activities:[],watchStarted:false};
 var SETTINGS_LOCAL_KEY='gss_settings';
 var SETTINGS_CLOUD_COLLECTION='appSettings';
 var SETTINGS_CLOUD_DOC='shared';
+var SETTINGS_CLOUD_MAX_BYTES=850000;
 var settingsCloudSyncInFlight=null;
+var FIREBASE_BOOTSTRAP_CONFIG={
+  apiKey:'',
+  authDomain:'',
+  projectId:'',
+  storageBucket:'',
+  messagingSenderId:'',
+  appId:''
+};
+var FIREBASE_BOOTSTRAP_AUTH={
+  email:'',
+  password:''
+};
 
 function firebaseConfigFromSettings(){
   var s=loadSettings();
@@ -3911,8 +3924,51 @@ function firebaseConfigFromSettings(){
     appId:(s.firebaseAppId||'').trim()
   };
 }
+function firebaseConfigFromBootstrap(){
+  return {
+    apiKey:(FIREBASE_BOOTSTRAP_CONFIG.apiKey||'').trim(),
+    authDomain:(FIREBASE_BOOTSTRAP_CONFIG.authDomain||'').trim(),
+    projectId:(FIREBASE_BOOTSTRAP_CONFIG.projectId||'').trim(),
+    storageBucket:(FIREBASE_BOOTSTRAP_CONFIG.storageBucket||'').trim(),
+    messagingSenderId:(FIREBASE_BOOTSTRAP_CONFIG.messagingSenderId||'').trim(),
+    appId:(FIREBASE_BOOTSTRAP_CONFIG.appId||'').trim()
+  };
+}
+function firebaseConfigResolved(){
+  var fromSettings=firebaseConfigFromSettings();
+  var fromBootstrap=firebaseConfigFromBootstrap();
+  return {
+    apiKey:fromSettings.apiKey||fromBootstrap.apiKey||'',
+    authDomain:fromSettings.authDomain||fromBootstrap.authDomain||'',
+    projectId:fromSettings.projectId||fromBootstrap.projectId||'',
+    storageBucket:fromSettings.storageBucket||fromBootstrap.storageBucket||'',
+    messagingSenderId:fromSettings.messagingSenderId||fromBootstrap.messagingSenderId||'',
+    appId:fromSettings.appId||fromBootstrap.appId||''
+  };
+}
 function firebaseHasConfig(cfg){
   return !!(cfg.apiKey&&cfg.authDomain&&cfg.projectId&&cfg.messagingSenderId&&cfg.appId);
+}
+function firebaseAuthFromSettings(){
+  var s=loadSettings();
+  return {
+    email:(s.firebaseEmail||'').trim(),
+    password:(s.firebasePassword||'').trim()
+  };
+}
+function firebaseAuthFromBootstrap(){
+  return {
+    email:(FIREBASE_BOOTSTRAP_AUTH.email||'').trim(),
+    password:(FIREBASE_BOOTSTRAP_AUTH.password||'').trim()
+  };
+}
+function firebaseAuthResolved(){
+  var fromSettings=firebaseAuthFromSettings();
+  var fromBootstrap=firebaseAuthFromBootstrap();
+  return {
+    email:fromSettings.email||fromBootstrap.email||'',
+    password:fromSettings.password||fromBootstrap.password||''
+  };
 }
 function firebaseTsToIso(v){
   if(!v) return new Date().toISOString();
@@ -3922,7 +3978,7 @@ function firebaseTsToIso(v){
 }
 function firebaseTryInit(){
   if(fbApp) return true;
-  var cfg=firebaseConfigFromSettings();
+  var cfg=firebaseConfigResolved();
   if(!firebaseHasConfig(cfg)) return false;
   try{
     fbApp=firebase.apps&&firebase.apps.length?firebase.app():firebase.initializeApp(cfg);
@@ -3941,9 +3997,9 @@ function firebaseTryInit(){
 async function firebaseEnsureAuthed(){
   if(!firebaseTryInit()) return false;
   if(fbAuth.currentUser) return true;
-  var s=loadSettings();
-  var email=(s.firebaseEmail||'').trim();
-  var password=(s.firebasePassword||'').trim();
+  var creds=firebaseAuthResolved();
+  var email=creds.email;
+  var password=creds.password;
   if(!email||!password) return false;
   try{
     await fbAuth.signInWithEmailAndPassword(email,password);
@@ -3974,9 +4030,24 @@ function settingsCloudDocRef(){
 async function settingsSyncFromCloud(){
   if(settingsCloudSyncInFlight) return settingsCloudSyncInFlight;
   settingsCloudSyncInFlight=(async function(){
-    if(!(await firebaseEnsureAuthed())) return {ok:false,reason:'auth'};
+    if(!firebaseTryInit()) return {ok:false,reason:'config'};
     var ref=settingsCloudDocRef();
     if(!ref) return {ok:false,reason:'db'};
+    var canAuth=await firebaseEnsureAuthed();
+    if(!canAuth){
+      try{
+        // Allow first-run sync on devices without local credentials if read rules permit.
+        var publicSnap=await ref.get();
+        if(!publicSnap.exists) return {ok:false,reason:'missing'};
+        var publicCloudSettings=publicSnap.data()||{};
+        var publicLocalSettings=loadSettings();
+        var publicMerged=Object.assign({},publicLocalSettings,publicCloudSettings);
+        saveSettings(publicMerged);
+        return {ok:true,settings:publicMerged,mode:'public-read'};
+      }catch(_readErr){
+        return {ok:false,reason:'auth'};
+      }
+    }
     var snap=await ref.get();
     if(!snap.exists) return {ok:false,reason:'missing'};
     var cloudSettings=snap.data()||{};
@@ -3992,15 +4063,39 @@ async function settingsSyncFromCloud(){
   });
   return settingsCloudSyncInFlight;
 }
+function settingsEstimateSizeBytes(obj){
+  var json=JSON.stringify(obj||{});
+  if(typeof TextEncoder!=='undefined') return new TextEncoder().encode(json).length;
+  return unescape(encodeURIComponent(json)).length;
+}
 async function settingsSaveToCloud(settingsObj){
   if(!(await firebaseEnsureAuthed())) return {ok:false,reason:'auth'};
   var ref=settingsCloudDocRef();
   if(!ref) return {ok:false,reason:'db'};
+  var payloadSize=settingsEstimateSizeBytes(settingsObj);
+  if(payloadSize>SETTINGS_CLOUD_MAX_BYTES){
+    return {ok:false,reason:'payload_too_large',size:payloadSize,max:SETTINGS_CLOUD_MAX_BYTES};
+  }
   var payload=Object.assign({},settingsObj,{
     updatedAt:firebase.firestore.FieldValue.serverTimestamp()
   });
   await ref.set(payload,{merge:true});
   return {ok:true};
+}
+function showSettingsCloudFailure(reason){
+  if(reason==='payload_too_large'){
+    showToast('Saved locally. Logo image is too large to sync.');
+    return;
+  }
+  if(reason==='auth'||reason==='config'){
+    showToast('Saved locally. Cloud sync needs Firebase setup/login.');
+    return;
+  }
+  if(reason==='db'){
+    showToast('Saved locally. Cloud database is unavailable.');
+    return;
+  }
+  showToast('Saved locally. Cloud sync unavailable.');
 }
 function driveConfigFromSettings(){
   var s=loadSettings();
@@ -4385,23 +4480,66 @@ function openSettings(){goTo('screenSettings');loadSettingsForm();}
 // ============================================================
 // LOGO HANDLING
 // ============================================================
-function handleLogoUpload(input){
+async function logoFileToOptimizedDataUrl(file){
+  var img=await new Promise(function(resolve,reject){
+    var fr=new FileReader();
+    fr.onload=function(){
+      var im=new Image();
+      im.onload=function(){resolve(im);};
+      im.onerror=reject;
+      im.src=fr.result;
+    };
+    fr.onerror=reject;
+    fr.readAsDataURL(file);
+  });
+  var maxSide=640;
+  var scale=Math.min(1,maxSide/Math.max(img.width||1,img.height||1));
+  var w=Math.max(1,Math.round((img.width||1)*scale));
+  var h=Math.max(1,Math.round((img.height||1)*scale));
+  var canvas=document.createElement('canvas');
+  canvas.width=w;
+  canvas.height=h;
+  var ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,w,h);
+  ctx.drawImage(img,0,0,w,h);
+  var quality=0.84;
+  return canvas.toDataURL('image/jpeg',quality);
+}
+async function handleLogoUpload(input){
   var file=input.files[0];
   if(!file) return;
-  var reader=new FileReader();
-  reader.onload=function(e){
+  try{
+    var optimized=await logoFileToOptimizedDataUrl(file);
     var s=loadSettings();
-    s.logoData=e.target.result;
+    s.logoData=optimized;
     saveSettings(s);
-    applyLogoToUI(e.target.result);
-  };
-  reader.readAsDataURL(file);
+    applyLogoToUI(optimized);
+    var cloudSaveResult=await settingsSaveToCloud(s).catch(function(err){
+      console.log('Cloud logo sync failed:',err);
+      return {ok:false,reason:'error'};
+    });
+    if(!cloudSaveResult||!cloudSaveResult.ok){
+      showSettingsCloudFailure(cloudSaveResult&&cloudSaveResult.reason||'error');
+      return;
+    }
+    showToast('Logo synced');
+  }catch(err){
+    console.log('Logo processing failed:',err);
+    showToast('Could not process logo image');
+  }
 }
-function removeLogo(){
+async function removeLogo(){
   var s=loadSettings();
   delete s.logoData;
   saveSettings(s);
   applyLogoToUI(null);
+  var cloudSaveResult=await settingsSaveToCloud(s).catch(function(err){
+    console.log('Cloud logo remove sync failed:',err);
+    return {ok:false,reason:'error'};
+  });
+  if(!cloudSaveResult||!cloudSaveResult.ok){
+    showSettingsCloudFailure(cloudSaveResult&&cloudSaveResult.reason||'error');
+  }
 }
 function applyLogoToUI(data){
   var prev=document.getElementById('set_logoPreview');
@@ -4668,7 +4806,7 @@ async function saveSettingsForm(){
     return {ok:false,reason:'error'};
   });
   if(!cloudSaveResult||!cloudSaveResult.ok){
-    showToast('Saved locally. Cloud sync unavailable.');
+    showSettingsCloudFailure(cloudSaveResult&&cloudSaveResult.reason||'error');
   }
 }
 
