@@ -3895,6 +3895,10 @@ var fbInventoryUnsub=null;
 var fbLeadsUnsub=null;
 var crmActivitiesUnsub=null;
 var crmState={leads:[],selectedLeadId:'',activities:[],watchStarted:false};
+var SETTINGS_LOCAL_KEY='gss_settings';
+var SETTINGS_CLOUD_COLLECTION='appSettings';
+var SETTINGS_CLOUD_DOC='shared';
+var settingsCloudSyncInFlight=null;
 
 function firebaseConfigFromSettings(){
   var s=loadSettings();
@@ -3958,6 +3962,46 @@ async function firebaseEnsureAuthed(){
   }
 }
 function cloudReady(){ return !!(fbReady&&fbDb); }
+function settingsCloudDocPath(){
+  // Shared company settings for now; this helper makes future per-user switch easy.
+  return {collection:SETTINGS_CLOUD_COLLECTION,doc:SETTINGS_CLOUD_DOC};
+}
+function settingsCloudDocRef(){
+  if(!cloudReady()) return null;
+  var path=settingsCloudDocPath();
+  return fbDb.collection(path.collection).doc(path.doc);
+}
+async function settingsSyncFromCloud(){
+  if(settingsCloudSyncInFlight) return settingsCloudSyncInFlight;
+  settingsCloudSyncInFlight=(async function(){
+    if(!(await firebaseEnsureAuthed())) return {ok:false,reason:'auth'};
+    var ref=settingsCloudDocRef();
+    if(!ref) return {ok:false,reason:'db'};
+    var snap=await ref.get();
+    if(!snap.exists) return {ok:false,reason:'missing'};
+    var cloudSettings=snap.data()||{};
+    var localSettings=loadSettings();
+    var merged=Object.assign({},localSettings,cloudSettings);
+    saveSettings(merged);
+    return {ok:true,settings:merged};
+  })().catch(function(err){
+    console.log('Cloud settings load failed:',err);
+    return {ok:false,reason:'error'};
+  }).finally(function(){
+    settingsCloudSyncInFlight=null;
+  });
+  return settingsCloudSyncInFlight;
+}
+async function settingsSaveToCloud(settingsObj){
+  if(!(await firebaseEnsureAuthed())) return {ok:false,reason:'auth'};
+  var ref=settingsCloudDocRef();
+  if(!ref) return {ok:false,reason:'db'};
+  var payload=Object.assign({},settingsObj,{
+    updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+  });
+  await ref.set(payload,{merge:true});
+  return {ok:true};
+}
 function driveConfigFromSettings(){
   var s=loadSettings();
   return {
@@ -4508,8 +4552,8 @@ function applyBizInfoToHome(){
 // ============================================================
 // SETTINGS FORM — LOAD / SAVE
 // ============================================================
-function loadSettingsForm(){
-  var s=loadSettings();
+function renderSettingsFormFromSettings(s){
+  s=s||{};
   // Simple numeric fields
   var numFields=['metalRate','cabinFlat','metalMinCabin','metalMinUtility','taxRate'];
   numFields.forEach(function(k){
@@ -4561,7 +4605,18 @@ function loadSettingsForm(){
   });
 }
 
-function saveSettingsForm(){
+async function loadSettingsForm(){
+  var localSettings=loadSettings();
+  renderSettingsFormFromSettings(localSettings);
+  var cloudResult=await settingsSyncFromCloud();
+  if(cloudResult&&cloudResult.ok&&cloudResult.settings){
+    renderSettingsFormFromSettings(cloudResult.settings);
+    applyBizInfoToHome();
+    updateShareLinks();
+  }
+}
+
+async function saveSettingsForm(){
   var s=loadSettings();
   // Numeric
   var numFields=['metalRate','cabinFlat','metalMinCabin','metalMinUtility','taxRate'];
@@ -4608,8 +4663,13 @@ function saveSettingsForm(){
   updateAutoWidthPrices();
   initEmailJS();
   fbApp=null; fbDb=null; fbAuth=null; fbReady=false;
-  firebaseTryInit();
-  firebaseEnsureAuthed();
+  var cloudSaveResult=await settingsSaveToCloud(s).catch(function(err){
+    console.log('Cloud settings save failed:',err);
+    return {ok:false,reason:'error'};
+  });
+  if(!cloudSaveResult||!cloudSaveResult.ok){
+    showToast('Saved locally. Cloud sync unavailable.');
+  }
 }
 
 function formatPhoneInput(el){
@@ -5203,10 +5263,10 @@ const INSULATION_PRICE_TABLES={
 };
 
 function loadSettings(){
-  try{return JSON.parse(localStorage.getItem('gss_settings')||'{}');}catch(e){return{};}
+  try{return JSON.parse(localStorage.getItem(SETTINGS_LOCAL_KEY)||'{}');}catch(e){return{};}
 }
 function saveSettings(s){
-  try{localStorage.setItem('gss_settings',JSON.stringify(s));}catch(e){}
+  try{localStorage.setItem(SETTINGS_LOCAL_KEY,JSON.stringify(s));}catch(e){}
 }
 function getSettingVal(key,def){
   var s=loadSettings();
@@ -6969,6 +7029,14 @@ try{applyBizInfoToHome();}catch(e){}
 try{updateShareLinks();}catch(e){}
 try{invInit();}catch(e){}
 try{firebaseTryInit();firebaseEnsureAuthed();}catch(e){}
+try{
+  settingsSyncFromCloud().then(function(result){
+    if(result&&result.ok&&result.settings){
+      applyBizInfoToHome();
+      updateShareLinks();
+    }
+  });
+}catch(e){}
 
 // ============================================================
 // INTAKE FORMS
