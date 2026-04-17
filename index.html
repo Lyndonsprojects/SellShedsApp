@@ -1640,6 +1640,39 @@ input:focus, select:focus, textarea:focus {
         </div>
       </div>
 
+      <div id="rtoStreamlineCalcCard" style="display:none;background:rgba(255,255,255,0.05);border:1.5px solid rgba(232,200,122,0.25);border-radius:10px;padding:12px 14px;margin:10px 0;">
+        <div style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:0.95rem;letter-spacing:2px;color:var(--wheat);margin-bottom:8px;">RTOStreamline Quick View</div>
+        <div id="rtoStreamlineCalcBody" style="font-size:0.8rem;line-height:1.55;color:var(--cream);"></div>
+      </div>
+
+      <div style="background:rgba(255,255,255,0.05);border:1.5px solid rgba(232,200,122,0.22);border-radius:10px;padding:12px 14px;margin:12px 0;">
+        <div style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:0.95rem;letter-spacing:2px;color:var(--wheat);margin-bottom:8px;">Reverse Price Calculator</div>
+        <div class="inv-grid2">
+          <div class="field-group"><label class="field-label">Budget</label><input type="number" id="rev_budget" min="0" step="1" placeholder="Enter budget"></div>
+          <div class="field-group"><label class="field-label">Mode</label>
+            <select id="rev_mode"><option value="cash">Cash</option><option value="rto">RTO</option></select>
+          </div>
+        </div>
+        <div class="inv-grid2">
+          <div class="field-group"><label class="field-label">RTO Term</label>
+            <select id="rev_term"><option value="36">36 Mo</option><option value="48">48 Mo</option><option value="60">60 Mo</option></select>
+          </div>
+          <div class="field-group"><label class="field-label">Tax %</label><input type="number" id="rev_taxRate" min="0" step="0.01" placeholder="Auto from settings"></div>
+        </div>
+        <button class="btn-secondary" style="margin-top:0;padding:10px 12px;" onclick="runReversePriceCalculator()">Find Matching Options</button>
+        <div id="rev_results" style="margin-top:8px;font-size:0.78rem;line-height:1.5;color:rgba(232,200,122,0.82);">Enter budget and run search.</div>
+      </div>
+
+      <div style="background:rgba(255,255,255,0.05);border:1.5px solid rgba(232,200,122,0.22);border-radius:10px;padding:12px 14px;margin:12px 0;">
+        <div style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:0.95rem;letter-spacing:2px;color:var(--wheat);margin-bottom:8px;">Mileage Calculator</div>
+        <div class="inv-grid2">
+          <div class="field-group"><label class="field-label">From</label><select id="mile_from"></select></div>
+          <div class="field-group"><label class="field-label">To</label><select id="mile_to"></select></div>
+        </div>
+        <button class="btn-secondary" style="margin-top:0;padding:10px 12px;" onclick="runMileageCalculator()">Calculate Driving Miles</button>
+        <div id="mile_results" style="margin-top:8px;font-size:0.78rem;line-height:1.5;color:rgba(232,200,122,0.82);">Select two addresses from Settings.</div>
+      </div>
+
       <!-- Remove Standard Options -->
       <div id="removeStdWrap" style="display:none;margin-bottom:12px;">
         <button onclick="toggleRemoveStd()" id="removeStdBtn" style="-webkit-appearance:none;appearance:none;width:100%;background:rgba(196,81,31,0.15);border:1.5px solid rgba(196,81,31,0.5);border-radius:10px;padding:12px 16px;font-size:0.88rem;font-weight:700;color:var(--wheat);cursor:pointer;text-align:left;display:flex;align-items:center;justify-content:space-between;">
@@ -3704,6 +3737,8 @@ input:focus, select:focus, textarea:focus {
     <div class="field-group"><label class="field-label">Email</label><input type="email" id="set_bizEmail" placeholder="sales@example.com"></div>
     <div class="field-group"><label class="field-label">Address Line 1</label><input type="text" id="set_bizAddr1" placeholder="123 Main St"></div>
     <div class="field-group"><label class="field-label">Address Line 2</label><input type="text" id="set_bizAddr2" placeholder="City, ST 00000"></div>
+    <div class="field-group"><label class="field-label">Main Address Override</label><input type="text" id="set_mainAddress" placeholder="Optional full main address"></div>
+    <div class="field-group"><label class="field-label">Shop Address Override</label><input type="text" id="set_shopAddress" placeholder="Optional full shop address"></div>
 
     <!-- Logo -->
     <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 10px;">Logo</div>
@@ -3746,6 +3781,7 @@ input:focus, select:focus, textarea:focus {
     <div class="field-group"><label class="field-label">Purchase URL</label><input type="url" id="set_purchaseUrl" placeholder="https://..."></div>
     <div class="field-group"><label class="field-label">RTO URL</label><input type="url" id="set_rtoUrl" placeholder="https://..."></div>
     <div class="field-group"><label class="field-label">Interest URL</label><input type="url" id="set_interestUrl" placeholder="https://..."></div>
+    <div class="field-group"><label class="field-label">Google Maps API Key</label><input type="text" id="set_mapsApiKey" placeholder="Used for mileage calculator"></div>
 
     <!-- CRM -->
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
@@ -3793,6 +3829,11 @@ input:focus, select:focus, textarea:focus {
     <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 6px;">Websites</div>
     <div id="set_websitesList" style="margin-bottom:6px;"></div>
     <button onclick="addWebsiteField()" class="btn-secondary" style="font-size:0.8rem;padding:7px 14px;">+ Add Website</button>
+
+    <!-- Lot Addresses -->
+    <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 6px;">Lot Addresses</div>
+    <div id="set_lotAddressesList" style="margin-bottom:6px;"></div>
+    <button onclick="addLotAddressField()" class="btn-secondary" style="font-size:0.8rem;padding:7px 14px;">+ Add Lot Address</button>
 
     <!-- RTO Links -->
     <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 6px;">RTO Links</div>
@@ -4680,7 +4721,7 @@ function renderSettingsFormFromSettings(s){
     if(el) el.value=s[k]||'';
   });
   // Text fields
-  var txtFields=['bizName','bizPhone','bizEmail','bizAddr1','bizAddr2','contactName','designerUrl','formspreeEndpoint','purchaseUrl','rtoUrl','interestUrl','crmUrl','ejsPublicKey','ejsServiceId','ejsTemplateId','quoteDisclaimer','firebaseApiKey','firebaseAuthDomain','firebaseProjectId','firebaseStorageBucket','firebaseMessagingSenderId','firebaseAppId','firebaseEmail','firebasePassword','driveUploadUrl','driveUploadToken','driveFolderId'];
+  var txtFields=['bizName','bizPhone','bizEmail','bizAddr1','bizAddr2','mainAddress','shopAddress','contactName','designerUrl','formspreeEndpoint','purchaseUrl','rtoUrl','interestUrl','crmUrl','mapsApiKey','ejsPublicKey','ejsServiceId','ejsTemplateId','quoteDisclaimer','firebaseApiKey','firebaseAuthDomain','firebaseProjectId','firebaseStorageBucket','firebaseMessagingSenderId','firebaseAppId','firebaseEmail','firebasePassword','driveUploadUrl','driveUploadToken','driveFolderId'];
   txtFields.forEach(function(k){
     var el=document.getElementById('set_'+k);
     if(el) el.value=s[k]||'';
@@ -4716,6 +4757,7 @@ function renderSettingsFormFromSettings(s){
   // Dynamic lists
   renderSettingsExtraInfo(s.extraInfo||[]);
   renderSettingsWebsites(s.websites||[]);
+  renderSettingsLotAddresses(s.lotAddresses||[]);
   renderSettingsRTOLinks(s.rtoLinks||[]);
   // Non-RTO options
   var nrto=s.nonRtoOptions||{};
@@ -4744,7 +4786,7 @@ async function saveSettingsForm(){
     if(el) s[k]=el.value.trim()===''?'':parseFloat(el.value);
   });
   // Text
-  var txtFields=['bizName','bizPhone','bizEmail','bizAddr1','bizAddr2','contactName','designerUrl','formspreeEndpoint','purchaseUrl','rtoUrl','interestUrl','crmUrl','ejsPublicKey','ejsServiceId','ejsTemplateId','quoteDisclaimer','firebaseApiKey','firebaseAuthDomain','firebaseProjectId','firebaseStorageBucket','firebaseMessagingSenderId','firebaseAppId','firebaseEmail','firebasePassword','driveUploadUrl','driveUploadToken','driveFolderId'];
+  var txtFields=['bizName','bizPhone','bizEmail','bizAddr1','bizAddr2','mainAddress','shopAddress','contactName','designerUrl','formspreeEndpoint','purchaseUrl','rtoUrl','interestUrl','crmUrl','mapsApiKey','ejsPublicKey','ejsServiceId','ejsTemplateId','quoteDisclaimer','firebaseApiKey','firebaseAuthDomain','firebaseProjectId','firebaseStorageBucket','firebaseMessagingSenderId','firebaseAppId','firebaseEmail','firebasePassword','driveUploadUrl','driveUploadToken','driveFolderId'];
   txtFields.forEach(function(k){
     var el=document.getElementById('set_'+k);
     if(el) s[k]=el.value.trim();
@@ -4762,6 +4804,7 @@ async function saveSettingsForm(){
   // Dynamic lists — collect from DOM
   s.extraInfo=collectDynamicList('set_extraInfoList','ei');
   s.websites=collectDynamicList('set_websitesList','ws');
+  s.lotAddresses=collectDynamicList('set_lotAddressesList','lot');
   s.rtoLinks=collectDynamicList('set_rtoLinksList','rto');
   // Non-RTO options
   var nrto={};
@@ -4777,6 +4820,7 @@ async function saveSettingsForm(){
   if(stdBtn) stdBtn.textContent=tr>0?tr+'% Standard':'0% Standard';
   applyBizInfoToHome();
   updateShareLinks();
+  initCalcAdvancedTools();
   var msg=document.getElementById('settingsSavedMsg');
   if(msg){msg.style.display='block';setTimeout(function(){msg.style.display='none';},2500);}
   updateAutoWidthPrices();
@@ -4859,6 +4903,20 @@ function renderSettingsWebsites(items){
   });
 }
 
+function renderSettingsLotAddresses(items){
+  var container=document.getElementById('set_lotAddressesList');
+  if(!container) return;
+  container.innerHTML='';
+  items.forEach(function(item,i){
+    var div=document.createElement('div');
+    div.style.cssText='display:flex;gap:6px;align-items:center;';
+    div.innerHTML='<input data-lot-label="'+i+'" type="text" placeholder="Lot Name (optional)" style="flex:1;min-height:42px;font-size:0.9rem;box-sizing:border-box;" value="'+escHtml(item.label||'')+'">'+
+      '<input data-lot-address="'+i+'" type="text" placeholder="Lot Address" style="flex:2;min-height:42px;font-size:0.9rem;box-sizing:border-box;" value="'+escHtml(item.address||'')+'">'+
+      '<button onclick="removeListItem(this)" style="-webkit-appearance:none;appearance:none;background:none;border:none;color:var(--barn);font-size:1.1rem;cursor:pointer;padding:4px;">✕</button>';
+    container.appendChild(div);
+  });
+}
+
 function renderSettingsRTOLinks(items){
   var container=document.getElementById('set_rtoLinksList');
   if(!container) return;
@@ -4887,6 +4945,13 @@ function addWebsiteField(){
   existing.push({name:'',url:''});
   renderSettingsWebsites(existing);
 }
+function addLotAddressField(){
+  var container=document.getElementById('set_lotAddressesList');
+  if(!container) return;
+  var existing=collectDynamicList('set_lotAddressesList','lot');
+  existing.push({label:'',address:''});
+  renderSettingsLotAddresses(existing);
+}
 function addRTOLink(){
   var container=document.getElementById('set_rtoLinksList');
   if(!container) return;
@@ -4914,6 +4979,10 @@ function collectDynamicList(containerId,prefix){
       var n=row.querySelector('[data-ws-name]');
       var u=row.querySelector('[data-ws-url]');
       if(n&&u&&u.value.trim()) items.push({name:n.value.trim(),url:u.value.trim()});
+    } else if(prefix==='lot'){
+      var ll=row.querySelector('[data-lot-label]');
+      var la=row.querySelector('[data-lot-address]');
+      if(la&&la.value.trim()) items.push({label:ll?ll.value.trim():'',address:la.value.trim()});
     } else if(prefix==='rto'){
       var n=row.querySelector('[data-rto-name]');
       var u=row.querySelector('[data-rto-url]');
@@ -4981,6 +5050,7 @@ function goTo(screenId){
   window.scrollTo(0,0);
   if(screenId==='screenSettings') loadSettingsForm();
   if(screenId==='screenAd') adPopulateLocation();
+  if(screenId==='screenCalc') initCalcAdvancedTools();
   if(screenId==='screenInventory') invInit();
   if(screenId==='screenCRM') crmInit();
   // Show dock only on home screen
@@ -5506,7 +5576,164 @@ function updateQuickPrice(){
   priceEl.textContent='$'+displayPrice.toLocaleString();
   var _qd=calcRTOData(displayPrice,calcState.width||0,0,calcState.assurancePlan||2,calcState.costReduction||0,calcState.rtoMonths||36);
   rtoEl.textContent='$'+_qd.monthly.toLocaleString()+'/mo';
+  renderCalcRTOStreamline(base,saleAmt,displayPrice);
   updateRTOPreviews();
+}
+
+function combineBizAddressFromSettings(s){
+  if(!s) return '';
+  return [s.bizAddr1||'',s.bizAddr2||''].filter(Boolean).join(', ').trim();
+}
+
+function getSettingsAddressOptions(s){
+  s=s||loadSettings()||{};
+  var seen={};
+  var out=[];
+  function add(label,address){
+    var a=(address||'').trim();
+    if(!a||seen[a]) return;
+    seen[a]=true;
+    out.push({label:label?label+' — '+a:a,address:a});
+  }
+  add('Main',s.mainAddress||combineBizAddressFromSettings(s));
+  add('Shop',s.shopAddress||combineBizAddressFromSettings(s));
+  if(Array.isArray(s.lotAddresses)){
+    s.lotAddresses.forEach(function(it,idx){
+      if(!it) return;
+      add(it.label||('Lot '+(idx+1)),it.address||'');
+    });
+  }
+  if(s.lotAddress) add('Lot',s.lotAddress);
+  return out;
+}
+
+function populateSelectWithAddressOptions(selectId,blankLabel){
+  var sel=document.getElementById(selectId);
+  if(!sel) return;
+  var opts=getSettingsAddressOptions(loadSettings());
+  var prev=sel.value||'';
+  sel.innerHTML='';
+  if(blankLabel){
+    var d=document.createElement('option');
+    d.value='';
+    d.textContent=blankLabel;
+    sel.appendChild(d);
+  }
+  opts.forEach(function(opt){
+    var o=document.createElement('option');
+    o.value=opt.address;
+    o.textContent=opt.label;
+    sel.appendChild(o);
+  });
+  if(prev) sel.value=prev;
+}
+
+function initCalcAdvancedTools(){
+  populateSelectWithAddressOptions('mile_from','Select from address');
+  populateSelectWithAddressOptions('mile_to','Select to address');
+  var taxInput=document.getElementById('rev_taxRate');
+  if(taxInput&&taxInput.value==='') taxInput.value=String(getSettingVal('taxRate',0)||0);
+  renderCalcRTOStreamlineFromState();
+}
+
+function renderCalcRTOStreamline(basePrice,saleDiscount,salePrice){
+  var card=document.getElementById('rtoStreamlineCalcCard');
+  var body=document.getElementById('rtoStreamlineCalcBody');
+  if(!card||!body) return;
+  if(!basePrice){ card.style.display='none'; return; }
+  card.style.display='block';
+  body.innerHTML=
+    '<div>List Price: <strong>'+fmt(basePrice)+'</strong></div>'+
+    '<div>Sale Discount: <strong>'+fmt(saleDiscount||0)+'</strong></div>'+
+    '<div>Sale Price: <strong>'+fmt(salePrice||basePrice)+'</strong></div>';
+}
+
+function renderCalcRTOStreamlineFromState(){
+  if(!calcState.type||!calcState.width||!calcState.length){ renderCalcRTOStreamline(0,0,0); return; }
+  var row=PRICING[calcState.width]&&PRICING[calcState.width][calcState.length];
+  var base=row&&row[calcState.type]?row[calcState.type]:0;
+  var salePct=calcState.saleActive?calcState.salePercent:0;
+  var saleAmt=salePct>0?Math.ceil(base*(salePct/100)):0;
+  var bosAmt=calcState.bosActive?Math.ceil(base*0.30):0;
+  var stdCredit=getStdRemovedTotal();
+  var addonTotal=calcAddons().total;
+  var salePrice=(base-saleAmt+bosAmt)-stdCredit+addonTotal;
+  renderCalcRTOStreamline(base,saleAmt,salePrice);
+}
+
+function runReversePriceCalculator(){
+  var budget=parseFloat((document.getElementById('rev_budget')||{}).value)||0;
+  var mode=((document.getElementById('rev_mode')||{}).value||'cash').toLowerCase();
+  var term=parseInt((document.getElementById('rev_term')||{}).value,10)||36;
+  var taxRate=parseFloat((document.getElementById('rev_taxRate')||{}).value);
+  if(isNaN(taxRate)) taxRate=parseFloat(getSettingVal('taxRate',0)||0);
+  var targetWrap=document.getElementById('rev_results');
+  if(!targetWrap) return;
+  if(budget<=0){ targetWrap.textContent='Enter a valid budget.'; return; }
+  var matches=[];
+  Object.keys(PRICING||{}).forEach(function(wKey){
+    var width=parseInt(wKey,10)||0;
+    if(!width) return;
+    Object.keys(PRICING[width]||{}).forEach(function(lKey){
+      var length=parseInt(lKey,10)||0;
+      var styles=PRICING[width][length]||{};
+      Object.keys(styles).forEach(function(code){
+        var base=styles[code];
+        if(!base) return;
+        if(mode==='cash'){
+          var cashTotal=base+Math.ceil(base*(taxRate/100));
+          var diff=Math.abs(cashTotal-budget);
+          if(diff<=500) matches.push({diff:diff,code:code,width:width,length:length,label:NAMES[code]||code,value:cashTotal,base:base});
+        }else{
+          var savedMonths=calcState.rtoMonths;
+          calcState.rtoMonths=term;
+          var rtoData=calcRTOData(base,width,taxRate,2,0);
+          calcState.rtoMonths=savedMonths;
+          var monthly=rtoData&&rtoData.totalMonthly?rtoData.totalMonthly:0;
+          var mdiff=Math.abs(monthly-budget);
+          if(mdiff<=20) matches.push({diff:mdiff,code:code,width:width,length:length,label:NAMES[code]||code,value:monthly,base:base});
+        }
+      });
+    });
+  });
+  matches.sort(function(a,b){return a.diff-b.diff;});
+  if(!matches.length){
+    targetWrap.innerHTML='No options found within '+(mode==='cash'?'$500 cash':'$20/mo RTO')+' for this budget.';
+    return;
+  }
+  var top=matches.slice(0,8);
+  targetWrap.innerHTML=top.map(function(m){
+    var val=mode==='cash'?(fmt(m.value)+' total'):('$'+m.value.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+'/mo');
+    return '<div style="padding:7px 0;border-bottom:1px solid rgba(232,200,122,0.12);"><strong>'+m.width+'x'+m.length+' '+m.label+'</strong><br><span style="color:rgba(232,200,122,0.78);">'+val+' · List '+fmt(m.base)+'</span></div>';
+  }).join('');
+}
+
+async function runMileageCalculator(){
+  var from=(document.getElementById('mile_from')||{}).value||'';
+  var to=(document.getElementById('mile_to')||{}).value||'';
+  var result=document.getElementById('mile_results');
+  if(!result) return;
+  if(!from||!to){ result.textContent='Select both From and To addresses.'; return; }
+  if(from===to){ result.textContent='From and To are the same address.'; return; }
+  var s=loadSettings();
+  var key=(s.mapsApiKey||'').trim();
+  if(!key){ result.textContent='Add Google Maps API Key in Settings to calculate miles.'; return; }
+  result.textContent='Calculating...';
+  try{
+    var url='https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins='+encodeURIComponent(from)+'&destinations='+encodeURIComponent(to)+'&key='+encodeURIComponent(key);
+    var res=await fetch(url);
+    var data=await res.json();
+    var elem=data&&data.rows&&data.rows[0]&&data.rows[0].elements&&data.rows[0].elements[0];
+    if(!elem||elem.status!=='OK'){
+      result.textContent='Mileage lookup failed. Check address format and API key permissions.';
+      return;
+    }
+    var miles=(elem.distance&&elem.distance.value)?(elem.distance.value/1609.344):0;
+    result.innerHTML='Driving Distance: <strong>'+miles.toFixed(1)+' miles</strong><br><span style="color:rgba(232,200,122,0.65);">'+elem.distance.text+' · '+(elem.duration?elem.duration.text:'')+'</span>';
+  }catch(err){
+    console.log('Mileage lookup failed:',err);
+    result.textContent='Mileage lookup failed. Please try again.';
+  }
 }
 
 function updateTrussVisibility(){
@@ -7016,18 +7243,12 @@ function adPopulateLocation(){
     var s=loadSettings();
     // Remove all options except first two fixed ones
     while(sel.options.length>2) sel.remove(2);
-    // Add addresses from settings
-    if(s.bizAddr1){
-      var addr=s.bizAddr1+(s.bizAddr2?', '+s.bizAddr2:'');
+    getSettingsAddressOptions(s).forEach(function(entry){
       var opt=document.createElement('option');
-      opt.value=addr; opt.textContent=addr;
+      opt.value=entry.address;
+      opt.textContent=entry.label;
       sel.appendChild(opt);
-    }
-    if(s.lotAddress){
-      var opt2=document.createElement('option');
-      opt2.value=s.lotAddress; opt2.textContent=s.lotAddress;
-      sel.appendChild(opt2);
-    }
+    });
   }
 }
 
@@ -7806,6 +8027,24 @@ function invRenderList(){
     var colorLine=colorParts.length?'<div style="font-size:0.72rem;color:rgba(245,240,232,0.65);margin-top:4px;">'+colorParts.join(' · ')+'</div>':'';
     var dateLine=item.buildDate?'<div style="font-size:0.7rem;color:rgba(232,200,122,0.62);margin-top:3px;">Build: '+item.buildDate+'</div>':'';
     var priceLine=item.priceData&&item.priceData.finalTotal?'<div style="font-size:0.78rem;color:var(--wheat);margin-top:4px;">Price: '+invFmt(item.priceData.finalTotal)+'</div>':'';
+    var rtosQuick='';
+    if(item.priceData&&item.priceData.baseRaw){
+      var saleDiscount=item.priceData.saleAmt||0;
+      var salePrice=item.priceData.baseRaw-saleDiscount;
+      var imgLinks=[];
+      if(item.plateImage) imgLinks.push('<a href="'+item.plateImage+'" target="_blank" style="color:var(--sky);text-decoration:none;">Plate Photo</a>');
+      if(item.frontImage) imgLinks.push('<a href="'+item.frontImage+'" target="_blank" style="color:var(--sky);text-decoration:none;">Front Photo</a>');
+      rtosQuick='<div style="margin-top:8px;padding:8px;border:1px solid rgba(232,200,122,0.2);border-radius:8px;background:rgba(255,255,255,0.03);">'+
+        '<div style="font-size:0.66rem;letter-spacing:1px;color:rgba(232,200,122,0.7);text-transform:uppercase;margin-bottom:4px;">RTOStreamline Quick View</div>'+
+        '<div style="font-size:0.74rem;color:rgba(245,240,232,0.88);line-height:1.45;">'+
+        'Full Serial: <strong>'+(item.serialNumber||'—')+'</strong><br>'+
+        'List Price: <strong>'+invFmt(item.priceData.baseRaw||0)+'</strong><br>'+
+        'Sale Discount: <strong>'+invFmt(saleDiscount)+'</strong><br>'+
+        'Sale Price: <strong>'+invFmt(salePrice)+'</strong><br>'+
+        'Colors: <strong>'+([item.roofColor,item.wallColor,item.trimColor].filter(Boolean).join(' / ')||'—')+'</strong><br>'+
+        'Pictures: '+(imgLinks.length?imgLinks.join(' · '):'—')+
+        '</div></div>';
+    }
     var thumbs='<div style="display:flex;gap:6px;margin-top:8px;">'+
       (item.plateImage?'<img src="'+item.plateImage+'" alt="" style="width:54px;height:54px;object-fit:cover;border-radius:6px;border:1px solid rgba(232,200,122,0.25);">':'')+
       (item.frontImage?'<img src="'+item.frontImage+'" alt="" style="width:54px;height:54px;object-fit:cover;border-radius:6px;border:1px solid rgba(232,200,122,0.25);">':'')+
@@ -7816,7 +8055,7 @@ function invRenderList(){
       '<div style="font-size:0.86rem;font-weight:700;color:var(--wheat);">'+(item.serialNumber||'No Serial')+'</div>'+
       '<div style="font-size:0.74rem;color:rgba(200,221,232,0.75);">'+(item.lotLocation||'No lot location')+'</div>'+
       '<div style="font-size:0.72rem;color:rgba(245,240,232,0.75);margin-top:4px;">'+(subtitle||'No size/style')+'</div>'+
-      priceLine+colorLine+dateLine+thumbs+
+      priceLine+colorLine+dateLine+thumbs+rtosQuick+
       '</div>'+
       '<div style="display:flex;flex-direction:column;gap:6px;">'+
       '<button type="button" onclick="invEditItem(\''+item.id+'\')" style="-webkit-appearance:none;appearance:none;border:none;border-radius:6px;padding:7px 10px;background:rgba(122,158,135,0.25);color:var(--wheat);font-size:0.72rem;cursor:pointer;">Edit</button>'+
@@ -9178,6 +9417,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Build settings style reference table
   buildStyleRefTable();
+  initCalcAdvancedTools();
 });
 
 function buildStyleRefTable() {
