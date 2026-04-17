@@ -2352,14 +2352,18 @@ input:focus, select:focus, textarea:focus {
   </div>
   <div style="padding:16px;">
     <div class="page-title">Mileage Calculator</div>
-    <div class="page-sub">Calculate driving miles between saved addresses</div>
+    <div class="page-sub">From a Shop or Lot in Settings to the customer delivery address</div>
     <div style="background:rgba(255,255,255,0.05);border:1.5px solid rgba(232,200,122,0.22);border-radius:10px;padding:12px 14px;margin:12px 0;">
-      <div class="inv-grid2">
-        <div class="field-group"><label class="field-label">From</label><select id="mile_from"></select></div>
-        <div class="field-group"><label class="field-label">To</label><select id="mile_to"></select></div>
+      <div class="field-group"><label class="field-label">From (Shop or Lot)</label><select id="mile_from"></select></div>
+      <div style="font-size:0.72rem;color:rgba(232,200,122,0.55);margin:10px 0 4px;">Customer delivery address</div>
+      <div class="field-group"><label class="field-label">Street</label><input type="text" id="mile_cust_street" placeholder="Street address" autocomplete="street-address"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <div class="field-group" style="flex:1;min-width:120px;"><label class="field-label">City</label><input type="text" id="mile_cust_city" placeholder="City" autocomplete="address-level2"></div>
+        <div class="field-group" style="flex:0 0 72px;"><label class="field-label">ST</label><input type="text" id="mile_cust_state" maxlength="2" placeholder="ID" style="text-transform:uppercase;" autocomplete="address-level1"></div>
+        <div class="field-group" style="flex:1;min-width:100px;"><label class="field-label">ZIP</label><input type="text" id="mile_cust_zip" placeholder="ZIP" autocomplete="postal-code"></div>
       </div>
-      <button class="btn-secondary" style="margin-top:0;padding:10px 12px;" onclick="runMileageCalculator()">Calculate Driving Miles</button>
-      <div id="mile_results" style="margin-top:8px;font-size:0.78rem;line-height:1.5;color:rgba(232,200,122,0.82);">Select two addresses from Settings.</div>
+      <button class="btn-secondary" style="margin-top:8px;padding:10px 12px;" onclick="runMileageCalculator()">Calculate Driving Miles</button>
+      <div id="mile_results" style="margin-top:8px;font-size:0.78rem;line-height:1.5;color:rgba(232,200,122,0.82);">Select origin and enter customer address.</div>
     </div>
     <div class="pb40"></div>
   </div>
@@ -3775,10 +3779,27 @@ input:focus, select:focus, textarea:focus {
     <div class="field-group"><label class="field-label">Contact Name</label><input type="text" id="set_contactName" placeholder="Sales rep name"></div>
     <div class="field-group"><label class="field-label">Phone</label><input type="tel" id="set_bizPhone" placeholder="(208) 555-0100"></div>
     <div class="field-group"><label class="field-label">Email</label><input type="email" id="set_bizEmail" placeholder="sales@example.com"></div>
-    <div class="field-group"><label class="field-label">Address Line 1</label><input type="text" id="set_bizAddr1" placeholder="123 Main St"></div>
-    <div class="field-group"><label class="field-label">Address Line 2</label><input type="text" id="set_bizAddr2" placeholder="City, ST 00000"></div>
-    <div class="field-group"><label class="field-label">Main Address Override</label><input type="text" id="set_mainAddress" placeholder="Optional full main address"></div>
-    <div class="field-group"><label class="field-label">Shop Address Override</label><input type="text" id="set_shopAddress" placeholder="Optional full shop address"></div>
+    <div style="font-size:0.72rem;color:rgba(232,200,122,0.55);margin:-4px 0 6px;">Business address</div>
+    <div class="field-group"><label class="field-label">Street</label><input type="text" id="set_bizStreet" placeholder="123 Main St"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <div class="field-group" style="flex:1;min-width:120px;"><label class="field-label">City</label><input type="text" id="set_bizCity" placeholder="City"></div>
+      <div class="field-group" style="flex:0 0 72px;"><label class="field-label">ST</label><input type="text" id="set_bizState" maxlength="2" placeholder="ID" style="text-transform:uppercase;"></div>
+      <div class="field-group" style="flex:1;min-width:100px;"><label class="field-label">ZIP</label><input type="text" id="set_bizZip" placeholder="00000"></div>
+    </div>
+    <div style="font-size:0.72rem;color:rgba(232,200,122,0.55);margin:12px 0 6px;">Main address override (optional)</div>
+    <div class="field-group"><label class="field-label">Street</label><input type="text" id="set_mainStreet" placeholder="Street"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <div class="field-group" style="flex:1;min-width:120px;"><label class="field-label">City</label><input type="text" id="set_mainCity" placeholder="City"></div>
+      <div class="field-group" style="flex:0 0 72px;"><label class="field-label">ST</label><input type="text" id="set_mainState" maxlength="2" placeholder="ID" style="text-transform:uppercase;"></div>
+      <div class="field-group" style="flex:1;min-width:100px;"><label class="field-label">ZIP</label><input type="text" id="set_mainZip" placeholder="ZIP"></div>
+    </div>
+    <div style="font-size:0.72rem;color:rgba(232,200,122,0.55);margin:12px 0 6px;">Shop address</div>
+    <div class="field-group"><label class="field-label">Street</label><input type="text" id="set_shopStreet" placeholder="Street"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <div class="field-group" style="flex:1;min-width:120px;"><label class="field-label">City</label><input type="text" id="set_shopCity" placeholder="City"></div>
+      <div class="field-group" style="flex:0 0 72px;"><label class="field-label">ST</label><input type="text" id="set_shopState" maxlength="2" placeholder="ID" style="text-transform:uppercase;"></div>
+      <div class="field-group" style="flex:1;min-width:100px;"><label class="field-label">ZIP</label><input type="text" id="set_shopZip" placeholder="ZIP"></div>
+    </div>
 
     <!-- Logo -->
     <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 10px;">Logo</div>
@@ -4103,7 +4124,7 @@ async function settingsSyncFromCloud(){
     if(!snap.exists) return {ok:false,reason:'missing'};
     var cloudSettings=snap.data()||{};
     var localSettings=loadSettings();
-    var merged=Object.assign({},localSettings,cloudSettings);
+    var merged=migrateSettingsAddresses(Object.assign({},localSettings,cloudSettings));
     saveSettings(merged);
     return {ok:true,settings:merged};
   })().catch(function(err){
@@ -4632,8 +4653,7 @@ function applyBizInfoToHome(){
   var name=s.bizName||'';
   var phone=s.bizPhone||'';
   var email=s.bizEmail||'';
-  var addr1=s.bizAddr1||'';
-  var addr2=s.bizAddr2||'';
+  var addrFull=combineBizAddressFromSettings(s);
 
   // Banner name
   var bn=document.getElementById('homeBizName');
@@ -4646,8 +4666,8 @@ function applyBizInfoToHome(){
   var ca2=document.getElementById('homeContactAddr2');
   if(cp){cp.innerHTML=phone?'📞 <a href="tel:'+phone.replace(/[^0-9]/g,'')+'">'+phone+'</a>':'📞 Your Business Phone';}
   if(ce){ce.innerHTML=email?'✉️ <a href="mailto:'+email+'">'+email+'</a>':'✉️ Your Business Email';}
-  if(ca1) ca1.textContent=addr1?'📍 '+addr1:'📍 Your Primary Address';
-  if(ca2){ca2.textContent=addr2?'📍 '+addr2:'';ca2.style.display=addr2?'':'none';}
+  if(ca1) ca1.textContent=addrFull?'📍 '+addrFull:'📍 Your Primary Address';
+  if(ca2){ca2.textContent='';ca2.style.display='none';}
 
   // Text / SMS quick link
   var tl=document.getElementById('homeTextLink');
@@ -4687,11 +4707,10 @@ function applyBizInfoToHome(){
     var parts=[];
     if(phone) parts.push('📞 '+phone);
     if(email) parts.push('✉️ '+email);
-    if(addr1) parts.push('📍 '+addr1);
-    if(addr2) parts.push('📍 '+addr2);
+    if(addrFull) parts.push('📍 '+addrFull);
     pc.innerHTML=parts.join(' &nbsp;·&nbsp; ');
   }
-  if(pf) pf.textContent=(name||'Your Business')+(addr1?' · '+addr1:'')+(addr2?' & '+addr2:'');
+  if(pf) pf.textContent=(name||'Your Business')+(addrFull?' · '+addrFull:'');
 
   // Designer link
   var dl=document.getElementById('homeDesignerLink');
@@ -4761,7 +4780,7 @@ function renderSettingsFormFromSettings(s){
     if(el) el.value=s[k]||'';
   });
   // Text fields
-  var txtFields=['bizName','bizPhone','bizEmail','bizAddr1','bizAddr2','mainAddress','shopAddress','contactName','designerUrl','formspreeEndpoint','purchaseUrl','rtoUrl','interestUrl','crmUrl','mapsApiKey','ejsPublicKey','ejsServiceId','ejsTemplateId','quoteDisclaimer','firebaseApiKey','firebaseAuthDomain','firebaseProjectId','firebaseStorageBucket','firebaseMessagingSenderId','firebaseAppId','firebaseEmail','firebasePassword','driveUploadUrl','driveUploadToken','driveFolderId'];
+  var txtFields=['bizName','bizPhone','bizEmail','bizStreet','bizCity','bizState','bizZip','mainStreet','mainCity','mainState','mainZip','shopStreet','shopCity','shopState','shopZip','contactName','designerUrl','formspreeEndpoint','purchaseUrl','rtoUrl','interestUrl','crmUrl','mapsApiKey','ejsPublicKey','ejsServiceId','ejsTemplateId','quoteDisclaimer','firebaseApiKey','firebaseAuthDomain','firebaseProjectId','firebaseStorageBucket','firebaseMessagingSenderId','firebaseAppId','firebaseEmail','firebasePassword','driveUploadUrl','driveUploadToken','driveFolderId'];
   txtFields.forEach(function(k){
     var el=document.getElementById('set_'+k);
     if(el) el.value=s[k]||'';
@@ -4826,7 +4845,7 @@ async function saveSettingsForm(){
     if(el) s[k]=el.value.trim()===''?'':parseFloat(el.value);
   });
   // Text
-  var txtFields=['bizName','bizPhone','bizEmail','bizAddr1','bizAddr2','mainAddress','shopAddress','contactName','designerUrl','formspreeEndpoint','purchaseUrl','rtoUrl','interestUrl','crmUrl','mapsApiKey','ejsPublicKey','ejsServiceId','ejsTemplateId','quoteDisclaimer','firebaseApiKey','firebaseAuthDomain','firebaseProjectId','firebaseStorageBucket','firebaseMessagingSenderId','firebaseAppId','firebaseEmail','firebasePassword','driveUploadUrl','driveUploadToken','driveFolderId'];
+  var txtFields=['bizName','bizPhone','bizEmail','bizStreet','bizCity','bizState','bizZip','mainStreet','mainCity','mainState','mainZip','shopStreet','shopCity','shopState','shopZip','contactName','designerUrl','formspreeEndpoint','purchaseUrl','rtoUrl','interestUrl','crmUrl','mapsApiKey','ejsPublicKey','ejsServiceId','ejsTemplateId','quoteDisclaimer','firebaseApiKey','firebaseAuthDomain','firebaseProjectId','firebaseStorageBucket','firebaseMessagingSenderId','firebaseAppId','firebaseEmail','firebasePassword','driveUploadUrl','driveUploadToken','driveFolderId'];
   txtFields.forEach(function(k){
     var el=document.getElementById('set_'+k);
     if(el) s[k]=el.value.trim();
@@ -4949,10 +4968,17 @@ function renderSettingsLotAddresses(items){
   container.innerHTML='';
   items.forEach(function(item,i){
     var div=document.createElement('div');
-    div.style.cssText='display:flex;gap:6px;align-items:center;';
-    div.innerHTML='<input data-lot-label="'+i+'" type="text" placeholder="Lot Name (optional)" style="flex:1;min-height:42px;font-size:0.9rem;box-sizing:border-box;" value="'+escHtml(item.label||'')+'">'+
-      '<input data-lot-address="'+i+'" type="text" placeholder="Lot Address" style="flex:2;min-height:42px;font-size:0.9rem;box-sizing:border-box;" value="'+escHtml(item.address||'')+'">'+
-      '<button onclick="removeListItem(this)" style="-webkit-appearance:none;appearance:none;background:none;border:none;color:var(--barn);font-size:1.1rem;cursor:pointer;padding:4px;">✕</button>';
+    div.setAttribute('data-lot-row',String(i));
+    div.style.cssText='margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid rgba(232,200,122,0.12);';
+    div.innerHTML='<div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;">'+
+      '<input data-lot-label="'+i+'" type="text" placeholder="Lot name (optional)" style="flex:1;min-height:42px;font-size:0.9rem;box-sizing:border-box;" value="'+escHtml(item.label||'')+'">'+
+      '<button onclick="removeListItem(this)" style="-webkit-appearance:none;appearance:none;background:none;border:none;color:var(--barn);font-size:1.1rem;cursor:pointer;padding:4px;">✕</button></div>'+
+      '<div class="field-group" style="margin-bottom:6px;"><input data-lot-street="'+i+'" type="text" placeholder="Street" style="width:100%;min-height:42px;font-size:0.9rem;box-sizing:border-box;" value="'+escHtml(item.street||item.address||'')+'"></div>'+
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;">'+
+      '<input data-lot-city="'+i+'" type="text" placeholder="City" style="flex:1;min-width:100px;min-height:42px;font-size:0.9rem;box-sizing:border-box;" value="'+escHtml(item.city||'')+'">'+
+      '<input data-lot-state="'+i+'" type="text" placeholder="ST" maxlength="2" style="width:56px;min-height:42px;font-size:0.9rem;box-sizing:border-box;text-transform:uppercase;" value="'+escHtml(item.state||'')+'">'+
+      '<input data-lot-zip="'+i+'" type="text" placeholder="ZIP" style="flex:1;min-width:90px;min-height:42px;font-size:0.9rem;box-sizing:border-box;" value="'+escHtml(item.zip||'')+'">'+
+      '</div>';
     container.appendChild(div);
   });
 }
@@ -4989,7 +5015,7 @@ function addLotAddressField(){
   var container=document.getElementById('set_lotAddressesList');
   if(!container) return;
   var existing=collectDynamicList('set_lotAddressesList','lot');
-  existing.push({label:'',address:''});
+  existing.push({label:'',street:'',city:'',state:'',zip:''});
   renderSettingsLotAddresses(existing);
 }
 function addRTOLink(){
@@ -5000,7 +5026,9 @@ function addRTOLink(){
   renderSettingsRTOLinks(existing);
 }
 function removeListItem(btn){
-  btn.parentElement.remove();
+  var row=btn.closest&&btn.closest('[data-lot-row]');
+  if(row) row.remove();
+  else btn.parentElement.remove();
 }
 function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;');}
 
@@ -5008,7 +5036,7 @@ function collectDynamicList(containerId,prefix){
   var container=document.getElementById(containerId);
   if(!container) return[];
   var items=[];
-  var rows=container.querySelectorAll('div');
+  var rows=prefix==='lot'?container.querySelectorAll('[data-lot-row]'):container.querySelectorAll('div');
   rows.forEach(function(row){
     if(prefix==='ei'){
       var t=row.querySelector('[data-ei-type]');
@@ -5021,8 +5049,17 @@ function collectDynamicList(containerId,prefix){
       if(n&&u&&u.value.trim()) items.push({name:n.value.trim(),url:u.value.trim()});
     } else if(prefix==='lot'){
       var ll=row.querySelector('[data-lot-label]');
-      var la=row.querySelector('[data-lot-address]');
-      if(la&&la.value.trim()) items.push({label:ll?ll.value.trim():'',address:la.value.trim()});
+      var st=row.querySelector('[data-lot-street]');
+      var ci=row.querySelector('[data-lot-city]');
+      var stt=row.querySelector('[data-lot-state]');
+      var zp=row.querySelector('[data-lot-zip]');
+      var street=st?st.value.trim():'';
+      var city=ci?ci.value.trim():'';
+      var state=stt?stt.value.trim():'';
+      var zip=zp?zp.value.trim():'';
+      if(street||city||state||zip){
+        items.push({label:ll?ll.value.trim():'',street:street,city:city,state:state,zip:zip});
+      }
     } else if(prefix==='rto'){
       var n=row.querySelector('[data-rto-name]');
       var u=row.querySelector('[data-rto-url]');
@@ -5500,11 +5537,76 @@ const INSULATION_PRICE_TABLES={
   floorSprayFoam:parseInsulationPriceTable(INS_FLOOR_SPRAYFOAM_RAW)
 };
 
+function formatAddressFromParts(street,city,state,zip){
+  street=(street||'').trim();
+  city=(city||'').trim();
+  state=(state||'').trim();
+  zip=(zip||'').trim();
+  if(!street&&!city&&!state&&!zip) return '';
+  var lineA=[street,city].filter(Boolean).join(', ');
+  var lineB=[state,zip].filter(Boolean).join(' ').trim();
+  if(lineA&&lineB) return lineA+', '+lineB;
+  return lineA||lineB;
+}
+function getFormattedAddressLine(s,prefix){
+  if(!s) return '';
+  var st=(s[prefix+'Street']||'').trim();
+  var ci=(s[prefix+'City']||'').trim();
+  var stt=(s[prefix+'State']||'').trim();
+  var z=(s[prefix+'Zip']||'').trim();
+  if(st||ci||stt||z) return formatAddressFromParts(st,ci,stt,z);
+  if(prefix==='biz'&&(s.bizAddr1||s.bizAddr2)){
+    return [s.bizAddr1||'',s.bizAddr2||''].filter(Boolean).join(', ').trim();
+  }
+  if(prefix==='main'&&s.mainAddress) return String(s.mainAddress).trim();
+  if(prefix==='shop'&&s.shopAddress) return String(s.shopAddress).trim();
+  return '';
+}
+function migrateSettingsAddresses(s){
+  if(!s||typeof s!=='object') return s;
+  var hasBizNew=s.bizStreet||s.bizCity||s.bizState||s.bizZip;
+  if(!hasBizNew&&(s.bizAddr1||s.bizAddr2)){
+    s.bizStreet=(s.bizAddr1||'').trim();
+    var rest=(s.bizAddr2||'').trim();
+    if(rest){
+      var m=rest.match(/^(.+?),\s*([A-Za-z]{2})\s+(\d{5}(-\d{4})?)$/);
+      if(m){
+        s.bizCity=m[1].trim();
+        s.bizState=m[2].toUpperCase();
+        s.bizZip=m[3];
+      }else{
+        s.bizCity=rest;
+      }
+    }
+  }
+  if(!s.mainStreet&&!s.mainCity&&!s.mainState&&!s.mainZip&&s.mainAddress){
+    s.mainStreet=String(s.mainAddress).trim();
+  }
+  if(!s.shopStreet&&!s.shopCity&&!s.shopState&&!s.shopZip&&s.shopAddress){
+    s.shopStreet=String(s.shopAddress).trim();
+  }
+  if(Array.isArray(s.lotAddresses)){
+    s.lotAddresses=s.lotAddresses.map(function(it){
+      if(!it) return {label:'',street:'',city:'',state:'',zip:''};
+      if(it.street||it.city||it.state||it.zip){
+        return {label:it.label||'',street:(it.street||'').trim(),city:(it.city||'').trim(),state:(it.state||'').trim(),zip:(it.zip||'').trim()};
+      }
+      if(it.address&&String(it.address).trim()){
+        return {label:it.label||'',street:String(it.address).trim(),city:'',state:'',zip:''};
+      }
+      return {label:it.label||'',street:'',city:'',state:'',zip:''};
+    });
+  }
+  return s;
+}
 function loadSettings(){
-  try{return JSON.parse(localStorage.getItem(SETTINGS_LOCAL_KEY)||'{}');}catch(e){return{};}
+  try{
+    var s=JSON.parse(localStorage.getItem(SETTINGS_LOCAL_KEY)||'{}');
+    return migrateSettingsAddresses(s);
+  }catch(e){return{};}
 }
 function saveSettings(s){
-  try{localStorage.setItem(SETTINGS_LOCAL_KEY,JSON.stringify(s));}catch(e){}
+  try{localStorage.setItem(SETTINGS_LOCAL_KEY,JSON.stringify(migrateSettingsAddresses(s||{})));}catch(e){}
 }
 function getSettingVal(key,def){
   var s=loadSettings();
@@ -5852,6 +5954,8 @@ function updateQuickPrice(){
 
 function combineBizAddressFromSettings(s){
   if(!s) return '';
+  var line=getFormattedAddressLine(s,'biz');
+  if(line) return line;
   return [s.bizAddr1||'',s.bizAddr2||''].filter(Boolean).join(', ').trim();
 }
 
@@ -5865,37 +5969,41 @@ function getSettingsAddressOptions(s){
     seen[a]=true;
     out.push({label:label?label+' — '+a:a,address:a});
   }
-  add('Main',s.mainAddress||combineBizAddressFromSettings(s));
-  add('Shop',s.shopAddress||combineBizAddressFromSettings(s));
+  var mainLine=getFormattedAddressLine(s,'main');
+  add('Main',mainLine||combineBizAddressFromSettings(s));
+  var shopLine=getFormattedAddressLine(s,'shop');
+  add('Shop',shopLine||combineBizAddressFromSettings(s));
   if(Array.isArray(s.lotAddresses)){
     s.lotAddresses.forEach(function(it,idx){
       if(!it) return;
-      add(it.label||('Lot '+(idx+1)),it.address||'');
+      var line=formatAddressFromParts(it.street||it.address||'',it.city||'',it.state||'',it.zip||'');
+      add(it.label||('Lot '+(idx+1)),line);
     });
   }
   if(s.lotAddress) add('Lot',s.lotAddress);
   return out;
 }
 
-function populateSelectWithAddressOptions(selectId,blankLabel){
-  var sel=document.getElementById(selectId);
-  if(!sel) return;
-  var opts=getSettingsAddressOptions(loadSettings());
-  var prev=sel.value||'';
-  sel.innerHTML='';
-  if(blankLabel){
-    var d=document.createElement('option');
-    d.value='';
-    d.textContent=blankLabel;
-    sel.appendChild(d);
+function getMileageOriginOptions(s){
+  s=s||loadSettings()||{};
+  var out=[];
+  var seen={};
+  function push(label,addr){
+    var a=(addr||'').trim();
+    if(!a||seen[a]) return;
+    seen[a]=true;
+    out.push({label:label,address:a});
   }
-  opts.forEach(function(opt){
-    var o=document.createElement('option');
-    o.value=opt.address;
-    o.textContent=opt.label;
-    sel.appendChild(o);
-  });
-  if(prev) sel.value=prev;
+  var shopLine=getFormattedAddressLine(s,'shop');
+  if(shopLine) push('Shop',shopLine);
+  if(Array.isArray(s.lotAddresses)){
+    s.lotAddresses.forEach(function(it,idx){
+      if(!it) return;
+      var line=formatAddressFromParts(it.street||it.address||'',it.city||'',it.state||'',it.zip||'');
+      if(line) push(it.label||('Lot '+(idx+1)),line);
+    });
+  }
+  return out;
 }
 
 function initCalcAdvancedTools(){
@@ -5911,10 +6019,25 @@ function setReverseTaxFromSettings(force){
 }
 
 function initMileageScreen(){
-  populateSelectWithAddressOptions('mile_from','Select from address');
-  populateSelectWithAddressOptions('mile_to','Select to address');
+  var sel=document.getElementById('mile_from');
+  if(sel){
+    var opts=getMileageOriginOptions(loadSettings());
+    var prev=sel.value||'';
+    sel.innerHTML='';
+    var d=document.createElement('option');
+    d.value='';
+    d.textContent='Select Shop or Lot';
+    sel.appendChild(d);
+    opts.forEach(function(o){
+      var opt=document.createElement('option');
+      opt.value=o.address;
+      opt.textContent=o.label+' — '+o.address;
+      sel.appendChild(opt);
+    });
+    if(prev) sel.value=prev;
+  }
   var result=document.getElementById('mile_results');
-  if(result) result.textContent='Select two addresses from Settings.';
+  if(result) result.textContent='Select origin and enter customer address.';
 }
 
 function toggleReverseCalcPanel(){
@@ -6014,12 +6137,14 @@ function runReversePriceCalculator(){
 }
 
 async function runMileageCalculator(){
+  function gv(id){var el=document.getElementById(id);return el?el.value.trim():'';}
   var from=(document.getElementById('mile_from')||{}).value||'';
-  var to=(document.getElementById('mile_to')||{}).value||'';
+  var to=formatAddressFromParts(gv('mile_cust_street'),gv('mile_cust_city'),gv('mile_cust_state'),gv('mile_cust_zip'));
   var result=document.getElementById('mile_results');
   if(!result) return;
-  if(!from||!to){ result.textContent='Select both From and To addresses.'; return; }
-  if(from===to){ result.textContent='From and To are the same address.'; return; }
+  if(!from){ result.textContent='Select a Shop or Lot origin.'; return; }
+  if(!to){ result.textContent='Enter customer street, city, state, and ZIP.'; return; }
+  if(from===to){ result.textContent='Origin and destination look the same — check the customer address.'; return; }
   var s=loadSettings();
   var key=(s.mapsApiKey||'').trim();
   if(!key){ result.textContent='Add Google Maps API Key in Settings to calculate miles.'; return; }
@@ -7579,7 +7704,7 @@ function generateAd(){
   if(roof) colorParts.push(roof+' roof');
   var color=colorParts.join(', ');
   var locVal=document.getElementById('adLocation').value;
-  var location=locVal||(_adS.bizAddr1?(_adS.bizAddr1+(_adS.bizAddr2?', '+_adS.bizAddr2:'')):'on the lot');
+  var location=locVal||(combineBizAddressFromSettings(_adS)||'on the lot');
   var tone=document.getElementById('adTone').value;
   var features=[...document.querySelectorAll('#adFeatureChips .toggle-chip.active')].map(function(c){return c.dataset.val;});
   // Add detail card features (doors / windows / garage) if toggled on
@@ -8718,8 +8843,7 @@ function printQuote(){
   var bizName=s.bizName||'Your Business';
   var bizPhone=s.bizPhone||'';
   var bizEmail=s.bizEmail||'';
-  var addr1=s.bizAddr1||'';
-  var addr2=s.bizAddr2||'';
+  var addrFull=combineBizAddressFromSettings(s);
   var logoData=s.logoData||'';
   var custName=document.getElementById('c_custName')?document.getElementById('c_custName').value.trim():'';
   var custPhone=document.getElementById('c_custPhone')?document.getElementById('c_custPhone').value.trim():'';
@@ -8741,11 +8865,10 @@ function printQuote(){
     var parts=[];
     if(bizPhone) parts.push(bizPhone);
     if(bizEmail) parts.push(bizEmail);
-    if(addr1) parts.push(addr1);
-    if(addr2) parts.push(addr2);
+    if(addrFull) parts.push(addrFull);
     pc.textContent=parts.join('  \u00b7  ');
   }
-  if(pf) pf.textContent=bizName+(addr1?' \u00b7 '+addr1:'')+(addr2?' & '+addr2:'');
+  if(pf) pf.textContent=bizName+(addrFull?' \u00b7 '+addrFull:'');
   if(pl){
     if(logoData){pl.src=logoData;pl.style.display='block';}
     else{pl.src='';pl.style.display='none';}
@@ -9347,7 +9470,7 @@ function ssGenerate(){
   var s=loadSettings();
   var bizName=s.bizName||'Your Business';
   var bizPhone=s.bizPhone||'';
-  var bizAddr=s.bizAddr1||'';
+  var bizAddr=combineBizAddressFromSettings(s)||'';
   var bizUrl=s.designerUrl||'';
   var contactName=s.contactName||'';
 
