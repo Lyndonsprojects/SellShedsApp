@@ -735,13 +735,326 @@ select option { background:var(--earth); color:var(--cream); }
 .cc-websites-list a:active { background: rgba(180,180,180,0.08); }
 #homeWebsitesList { max-height: 140px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 
+/* ── Home dashboard: hero, CRM/Inventory pair, quick tools ── */
+#screenHome .cc-grid {
+  padding-bottom: calc(112px + env(safe-area-inset-bottom, 0px));
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  min-height: 0;
+}
+.cc-hero-card {
+  grid-column: 1 / -1;
+  background: linear-gradient(160deg, rgba(52, 40, 32, 0.98) 0%, rgba(40, 30, 24, 0.98) 100%);
+  border: 1px solid rgba(196, 81, 31, 0.5);
+  border-radius: 12px;
+  padding: 0 0 10px;
+  margin-bottom: 2px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  position: relative;
+  overflow: hidden;
+  text-align: left;
+}
+.cc-hero-accent {
+  height: 3px;
+  background: linear-gradient(90deg, var(--barn), var(--rust), var(--wheat));
+  opacity: 0.95;
+}
+.cc-hero-inner {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 10px 12px 8px;
+}
+.cc-hero-thumb-wrap {
+  flex: none;
+  width: 88px;
+  height: 72px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(232, 200, 122, 0.35);
+  background: rgba(0, 0, 0, 0.25);
+}
+.cc-hero-thumb-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.cc-hero-thumb-ph {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(232, 200, 122, 0.35);
+  font-size: 1.6rem;
+}
+.cc-hero-copy { flex: 1; min-width: 0; }
+.cc-hero-kicker {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  font-size: 0.58rem;
+  letter-spacing: 2.2px;
+  color: rgba(232, 200, 122, 0.55);
+  margin-bottom: 4px;
+}
+.cc-hero-title {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 1.2px;
+  color: var(--wheat);
+  line-height: 1.15;
+}
+.cc-hero-price {
+  margin-top: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--wheat);
+}
+.cc-hero-when {
+  margin-top: 4px;
+  font-size: 0.62rem;
+  color: #7a9e97;
+  letter-spacing: 0.3px;
+}
+.cc-hero-actions {
+  display: flex;
+  gap: 8px;
+  padding: 0 12px;
+  margin-top: 4px;
+}
+.cc-hero-btn {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 1.4px;
+  cursor: pointer;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.cc-hero-btn-secondary {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(232, 200, 122, 0.88);
+  border: 1px solid rgba(232, 200, 122, 0.28);
+}
+.cc-hero-btn-secondary:active { background: rgba(255, 255, 255, 0.12); }
+.cc-hero-btn-primary {
+  background: linear-gradient(160deg, rgba(139, 46, 13, 0.95) 0%, rgba(90, 40, 18, 0.98) 100%);
+  color: var(--wheat);
+  border: 1px solid rgba(232, 200, 122, 0.35);
+  box-shadow: 0 2px 10px rgba(139, 46, 13, 0.35);
+}
+.cc-hero-btn-primary:active { opacity: 0.92; }
+
+.cc-home-pair {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.cc-dash-card {
+  border: 1px solid rgba(196, 81, 31, 0.45);
+  border-radius: 10px;
+  background: linear-gradient(150deg, rgba(68, 50, 40, 0.97) 0%, rgba(56, 40, 30, 0.95) 100%);
+  padding: 8px 8px 7px;
+  text-align: left;
+  color: var(--wheat);
+  box-shadow: 0 2px 8px rgba(139, 46, 13, 0.15), 0 1px 3px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  min-height: 132px;
+  position: relative;
+  overflow: hidden;
+}
+.cc-dash-card:active { border-color: var(--barn); }
+.cc-dash-card-hit {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-height: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.cc-dash-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.cc-dash-card-title {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 1.6px;
+}
+.cc-dash-pill {
+  font-size: 0.48rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 3px 6px;
+  border-radius: 8px;
+  max-width: 58%;
+  text-align: right;
+  line-height: 1.2;
+}
+.cc-dash-pill-sage {
+  background: rgba(122, 158, 135, 0.28);
+  color: #c8e6d0;
+  border: 1px solid rgba(122, 158, 135, 0.45);
+}
+.cc-dash-pill-sky {
+  background: rgba(200, 221, 232, 0.12);
+  color: var(--sky);
+  border: 1px solid rgba(200, 221, 232, 0.28);
+}
+.cc-dash-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 0;
+}
+.cc-dash-inv-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.cc-dash-inv-thumb {
+  width: 40px;
+  height: 36px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid rgba(232, 200, 122, 0.25);
+  flex-shrink: 0;
+  background: rgba(0, 0, 0, 0.2);
+}
+.cc-dash-name {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--cream);
+  line-height: 1.2;
+}
+.cc-dash-sub {
+  font-size: 0.58rem;
+  color: rgba(245, 240, 232, 0.72);
+  line-height: 1.25;
+}
+.cc-dash-phone {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid rgba(122, 158, 135, 0.4);
+  background: rgba(122, 158, 135, 0.15);
+  color: var(--wheat);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 0.85rem;
+  margin: 6px 0 0;
+  align-self: flex-start;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.cc-dash-phone:active { opacity: 0.9; }
+.cc-dash-footer {
+  margin-top: 6px;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: rgba(232, 200, 122, 0.55);
+  text-transform: uppercase;
+}
+
+.cc-tools-wrap {
+  grid-column: 1 / -1;
+  margin: 4px 0 8px;
+}
+.cc-tools-scroll {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 4px 2px 8px;
+  scroll-snap-type: x proximity;
+}
+.cc-tools-scroll::-webkit-scrollbar { height: 4px; }
+.cc-tools-scroll::-webkit-scrollbar-thumb {
+  background: rgba(196, 81, 31, 0.45);
+  border-radius: 4px;
+}
+.cc-tool-chip {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  width: 76px;
+  min-height: 78px;
+  border-radius: 10px;
+  border: 1px solid rgba(196, 81, 31, 0.4);
+  background: linear-gradient(150deg, rgba(56, 48, 42, 0.96) 0%, rgba(44, 36, 30, 0.96) 100%);
+  color: var(--wheat);
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 4px;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-align: center;
+  line-height: 1.15;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+.cc-tool-chip:active { border-color: var(--barn); }
+.cc-tool-chip svg { width: 22px; height: 22px; display: block; opacity: 0.92; }
+
+.cc-create-desc {
+  font-size: 0.58rem;
+  color: #7a9e97;
+  margin-top: 4px;
+  line-height: 1.25;
+  letter-spacing: 0.2px;
+}
+
+#homeDesignerHiddenSlot {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ══════════════════════════════════════════
    HOME BOTTOM NAV + QUICK ACTIONS
    ══════════════════════════════════════════ */
-
-#screenHome .cc-grid {
-  padding-bottom: calc(112px + env(safe-area-inset-bottom, 0px));
-}
 
 .cc-dock {
   position: fixed;
@@ -980,6 +1293,9 @@ select option { background:var(--earth); color:var(--cream); }
   .cc-grid { gap: 4px; padding: 7px 8px 0; }
   #screenHome .cc-grid {
     padding-bottom: calc(108px + env(safe-area-inset-bottom, 0px));
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    min-height: 0;
   }
   .cc-section-label { font-size: 0.54rem; letter-spacing: 2px; padding: 3px 2px 2px; }
 
@@ -1497,58 +1813,115 @@ input:focus, select:focus, textarea:focus {
   <div id="homeContactAddr2" style="display:none;"></div>
   <div class="cc-grid" style="position:relative;z-index:1;">
 
-    <button type="button" class="cc-tile cc-tile-link cc-span2" id="homeResumeLastQuoteBtn" onclick="openResumeQuoteList()" style="display:inline-flex;">
-      <div class="cc-tile-icon" style="font-size:1.1rem;">↺</div>
-      <div style="flex:1;">
-        <div class="cc-tile-label" style="font-size:0.88rem;letter-spacing:2px;">RESUME LAST QUOTE</div>
-        <div class="cc-tile-sub">Open saved calculator sessions</div>
+    <div class="cc-hero-card cc-span2" id="homeHeroCard">
+      <div class="cc-hero-accent" aria-hidden="true"></div>
+      <div class="cc-hero-inner">
+        <div class="cc-hero-thumb-wrap">
+          <img id="homeHeroThumb" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;">
+          <div id="homeHeroThumbPh" class="cc-hero-thumb-ph" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:36px;height:36px;display:block;"><path fill="rgba(232,200,122,0.07)" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/><rect x="9" y="13" width="6" height="9" rx="0.5" fill="rgba(232,200,122,0.04)" stroke="currentColor" stroke-width="1.2"/></svg>
+          </div>
+        </div>
+        <div class="cc-hero-copy">
+          <div class="cc-hero-kicker">LAST SHED QUOTED</div>
+          <div class="cc-hero-title" id="homeHeroTitle">No saved quotes yet</div>
+          <div class="cc-hero-price" id="homeHeroPriceRow" style="display:none;">Est. <span id="homeHeroPrice"></span></div>
+          <div class="cc-hero-when" id="homeHeroWhen" style="display:none;"></div>
+        </div>
       </div>
-      <div class="cc-tile-arrow">▾</div>
-    </button>
+      <div class="cc-hero-actions" id="homeHeroActions">
+        <button type="button" class="cc-hero-btn cc-hero-btn-secondary" id="homeHeroResumeBtn" onclick="homeHeroResumeClick()">Resume <span aria-hidden="true">›</span></button>
+        <button type="button" class="cc-hero-btn cc-hero-btn-primary" onclick="homeHeroNewQuoteClick()">New quote +</button>
+      </div>
+    </div>
 
-    <button type="button" class="cc-tile cc-tile-primary cc-span2" onclick="goTo('screenCalc')">
-      <div class="cc-tile-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;display:block;"><path fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linejoin="round" d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/><rect x="9" y="13" width="6" height="9" rx="0.5" fill="rgba(232,200,122,0.04)" stroke="rgba(232,200,122,0.88)" stroke-width="1.3"/></svg></div>
-      <div class="cc-tile-label" style="font-size:1.05rem;letter-spacing:2.4px;">PRICE CALCULATOR</div>
-      <div class="cc-tile-sub">Build &amp; save quotes</div>
-      <div class="cc-tile-accent"></div>
-    </button>
+    <div class="cc-home-pair cc-span2">
+      <div class="cc-dash-card">
+        <button type="button" class="cc-dash-card-hit" onclick="openCRM()">
+          <div class="cc-dash-card-head">
+            <span class="cc-dash-card-title">CRM</span>
+            <span class="cc-dash-pill cc-dash-pill-sage" id="homeDashCrmPill">—</span>
+          </div>
+          <div class="cc-dash-body">
+            <div class="cc-dash-name" id="homeDashCrmName">Set up Firebase in Settings</div>
+            <div class="cc-dash-sub" id="homeDashCrmSub"></div>
+          </div>
+          <div class="cc-dash-footer">View CRM ›</div>
+        </button>
+        <button type="button" class="cc-dash-phone" id="homeDashCrmCall" style="display:none;" onclick="event.stopPropagation();homeDialDashCrm();" aria-label="Call lead">📞</button>
+      </div>
+      <div class="cc-dash-card">
+        <button type="button" class="cc-dash-card-hit" onclick="goTo('screenInventory')">
+          <div class="cc-dash-card-head">
+            <span class="cc-dash-card-title">INVENTORY</span>
+            <span class="cc-dash-pill cc-dash-pill-sky" id="homeDashInvPill">NEWEST</span>
+          </div>
+          <div class="cc-dash-body" id="homeDashInvBody">
+            <div class="cc-dash-inv-row" id="homeDashInvRow" style="display:none;">
+              <img id="homeDashInvThumb" class="cc-dash-inv-thumb" src="" alt="">
+              <div style="flex:1;min-width:0;">
+                <div class="cc-dash-name" id="homeDashInvTitle">—</div>
+                <div class="cc-dash-sub" id="homeDashInvMeta"></div>
+              </div>
+            </div>
+            <div class="cc-dash-name" id="homeDashInvEmpty">No inventory yet</div>
+          </div>
+          <div class="cc-dash-footer">View inventory ›</div>
+        </button>
+      </div>
+    </div>
 
-    <div class="cc-section-label cc-span2"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;display:block;"><path fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> GENERATOR TOOLS</div>
+    <div class="cc-section-label cc-span2"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;display:block;"><path fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> CREATE</div>
     <button class="cc-tile cc-tile-primary" onclick="goTo('screenSalesSheet')">
       <div class="cc-tile-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;display:block;"><path fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linejoin="round" d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1.5" fill="rgba(232,200,122,0.88)"/></svg></div>
-      <div style="display:flex;flex-direction:column;width:100%;gap:2px;margin-top:-4px;">
+      <div style="display:flex;flex-direction:column;width:100%;align-items:flex-start;gap:2px;margin-top:-2px;">
         <div class="cc-tile-label" style="font-size:0.82rem;letter-spacing:1.5px;">SALES SHEET</div>
-        <div style="text-align:center;width:82%;margin:0 auto;">
-          <span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:1.35rem;letter-spacing:3px;color:var(--wheat);line-height:1;">GENERATOR</span>
-        </div>
+        <div class="cc-create-desc">Generate a professional sales sheet in seconds.</div>
       </div>
       <div class="cc-tile-accent"></div>
     </button>
     <button class="cc-tile cc-tile-primary" onclick="goTo('screenAd')">
       <div class="cc-tile-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;display:block;"><path fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linejoin="round" d="M3 11v2a1 1 0 0 0 1 1h1l1 4h2l-1-4h9l1 2h1V7h-1l-1 2H5a1 1 0 0 0-1 1z"/><line x1="19" y1="7" x2="19" y2="17" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linecap="round"/></svg></div>
-      <div style="display:flex;flex-direction:column;width:100%;gap:2px;margin-top:-4px;">
+      <div style="display:flex;flex-direction:column;width:100%;align-items:flex-start;gap:2px;margin-top:-2px;">
         <div class="cc-tile-label" style="font-size:0.82rem;letter-spacing:1.5px;">MARKETPLACE AD</div>
-        <div style="text-align:center;width:82%;margin:0 auto;">
-          <span style="font-family:'Bebas Neue',Impact,sans-serif;font-size:1.35rem;letter-spacing:3px;color:var(--wheat);line-height:1;">GENERATOR</span>
-        </div>
+        <div class="cc-create-desc">Create an ad ready for online listings.</div>
       </div>
       <div class="cc-tile-accent"></div>
     </button>
 
+    <div class="cc-tools-wrap cc-span2">
+      <div class="cc-section-label" style="border-top:none;padding-top:2px;margin-bottom:2px;">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;display:block;"><path stroke="rgba(232,200,122,0.88)" stroke-width="1.5" stroke-linecap="round" fill="none" d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/><circle cx="12" cy="12" r="3" fill="rgba(232,200,122,0.08)" stroke="rgba(232,200,122,0.88)" stroke-width="1.3"/></svg>
+        QUICK TOOLS
+      </div>
+      <div class="cc-tools-scroll">
+        <button type="button" class="cc-tool-chip" onclick="goTo('screenWebsites')">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.5"/><line x1="2" y1="12" x2="22" y2="12" stroke="rgba(232,200,122,0.88)" stroke-width="1.2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" fill="rgba(232,200,122,0.04)" stroke="rgba(232,200,122,0.88)" stroke-width="1.2"/></svg>
+          Websites
+        </button>
+        <button type="button" class="cc-tool-chip" onclick="homeOpenDesignerQuick()">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linejoin="round" d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/><rect x="9" y="13" width="6" height="9" rx="0.5" fill="rgba(232,200,122,0.04)" stroke="rgba(232,200,122,0.88)" stroke-width="1.3"/></svg>
+          Designer
+        </button>
+        <button type="button" class="cc-tool-chip" onclick="goTo('screenPhotos')">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linejoin="round" d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4" fill="rgba(232,200,122,0.04)" stroke="rgba(232,200,122,0.88)" stroke-width="1.3"/></svg>
+          Photo library
+        </button>
+        <button type="button" class="cc-tool-chip" onclick="goTo('screenSettings')">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" fill="rgba(232,200,122,0.08)" stroke="rgba(232,200,122,0.88)" stroke-width="1.5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="rgba(232,200,122,0.88)" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Settings
+        </button>
+        <button type="button" class="cc-tool-chip" onclick="goTo('screenCalc')" title="Price calculator">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="3" width="16" height="18" rx="2" fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.5"/><path d="M8 7h8M8 11h5" stroke="rgba(232,200,122,0.75)" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Price calc
+        </button>
+      </div>
+    </div>
+
     <div class="cc-section-label cc-span2"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;display:block;"><rect x="5" y="2" width="14" height="20" rx="2" fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6"/><line x1="12" y1="18" x2="12.01" y2="18" stroke="rgba(232,200,122,0.88)" stroke-width="2.5" stroke-linecap="round"/></svg> LIBRARY &amp; FORMS</div>
-    <button class="cc-tile cc-tile-secondary" onclick="goTo('screenPhotos')">
-      <div class="cc-tile-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;display:block;"><path fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linejoin="round" d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4" fill="rgba(232,200,122,0.04)" stroke="rgba(232,200,122,0.88)" stroke-width="1.3"/></svg></div>
-      <div class="cc-tile-label" style="font-size:1.0rem;letter-spacing:2px;">PHOTO LIBRARY</div>
-      <div class="cc-tile-accent"></div>
-    </button>
     <button class="cc-tile cc-tile-secondary" onclick="goTo('screenIntakeSelector')">
       <div class="cc-tile-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;display:block;"><path fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linejoin="round" d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.3"/><line x1="8" y1="10" x2="16" y2="10" stroke="rgba(232,200,122,0.88)" stroke-width="1.3" stroke-linecap="round"/><line x1="8" y1="14" x2="16" y2="14" stroke="rgba(232,200,122,0.88)" stroke-width="1.3" stroke-linecap="round"/><line x1="8" y1="18" x2="12" y2="18" stroke="rgba(232,200,122,0.88)" stroke-width="1.3" stroke-linecap="round"/></svg></div>
       <div class="cc-tile-label" style="font-size:1.0rem;letter-spacing:2px;">INTAKE FORM</div>
-      <div class="cc-tile-accent"></div>
-    </button>
-    <button class="cc-tile cc-tile-secondary" onclick="goTo('screenInventory')">
-      <div class="cc-tile-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;display:block;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linecap="round"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6"/></svg></div>
-      <div class="cc-tile-label" style="font-size:0.95rem;letter-spacing:1.8px;">INVENTORY</div>
       <div class="cc-tile-accent"></div>
     </button>
     <button class="cc-tile cc-tile-secondary" onclick="goTo('screenMileage')">
@@ -1576,26 +1949,15 @@ input:focus, select:focus, textarea:focus {
       </button>
     </div>
 
-    <div class="cc-section-label cc-span2"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;display:block;"><path stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linecap="round" fill="none" d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linecap="round" fill="none" d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> EXTERNAL LINKS</div>
-    <div class="cc-tile cc-tile-link cc-designer-row cc-span2">
-      <a id="homeDesignerLink" class="cc-designer-link-main" href="#" target="_blank" rel="noopener noreferrer">
-        <div class="cc-tile-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;display:block;"><path fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linejoin="round" d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/><rect x="9" y="13" width="6" height="9" rx="0.5" fill="rgba(232,200,122,0.04)" stroke="rgba(232,200,122,0.88)" stroke-width="1.3"/></svg></div>
-        <div style="flex:1">
-          <div class="cc-tile-label" style="font-size:1.0rem;letter-spacing:2px;">BUILDING DESIGNER</div>
-          <div class="cc-tile-sub" id="homeDesignerUrl">Set URL in Settings</div>
-        </div>
-        <div class="cc-tile-arrow">→</div>
-      </a>
+    <div id="homeDesignerHiddenSlot">
+      <a id="homeDesignerLink" href="#" target="_blank" rel="noopener noreferrer">Designer</a>
+      <span id="homeDesignerUrl"></span>
       <button type="button" id="homeDesignerCopyBtn" title="Copy designer link">⎘</button>
     </div>
-
-    <div class="cc-websites-wrap cc-span2">
-      <button class="cc-websites-toggle" id="homeWebsitesToggle" onclick="(function(){var t=document.getElementById('homeWebsitesToggle'),l=document.getElementById('homeWebsitesList');var open=l.style.display==='block';l.style.display=open?'none':'block';t.classList.toggle('open',!open);})();">
-        <span style="display:flex;align-items:center;"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;display:block;"><circle cx="12" cy="12" r="10" fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6"/><line x1="2" y1="12" x2="22" y2="12" stroke="rgba(232,200,122,0.88)" stroke-width="1.3"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" fill="rgba(232,200,122,0.04)" stroke="rgba(232,200,122,0.88)" stroke-width="1.3"/></svg></span>
-        <span id="homeWebsitesLabel" style="font-size:1.0rem;letter-spacing:2px;">WEBSITES</span>
-        <span class="cc-websites-chevron">▼</span>
-      </button>
-      <div id="homeWebsitesList" style="display:none;position:absolute;left:0;right:0;top:100%;z-index:200;background:linear-gradient(150deg,rgba(58,42,32,0.99) 0%,rgba(48,34,24,0.99) 100%);border:1px solid rgba(196,81,31,0.45);border-top:none;border-radius:0 0 8px 8px;box-shadow:0 10px 24px rgba(0,0,0,0.5);"></div>
+    <div style="display:none;" aria-hidden="true">
+      <button type="button" id="homeWebsitesToggle"></button>
+      <div id="homeWebsitesList"></div>
+      <span id="homeWebsitesLabel"></span>
     </div>
 
     <!-- homeRTOSlot: populated by applyBizInfoToHome when RTO links exist -->
@@ -1623,9 +1985,10 @@ input:focus, select:focus, textarea:focus {
   <div class="cc-dock" id="homeBottomDock">
     <div id="homeQuickSheetBackdrop" class="home-quick-backdrop" onclick="homeToggleQuickSheet(false)" aria-hidden="true"></div>
     <div id="homeQuickSheet" class="home-quick-sheet" role="menu" aria-hidden="true">
-      <button type="button" class="home-quick-row" onclick="homeQuickAddContact()">Add contact</button>
-      <button type="button" class="home-quick-row" onclick="homeQuickMileage()">Mileage calculator</button>
-      <button type="button" class="home-quick-row" onclick="homeQuickInventory()">Inventory list</button>
+      <button type="button" class="home-quick-row" onclick="homeQuickNewQuote()">New quote</button>
+      <button type="button" class="home-quick-row" onclick="homeQuickAddContact()">Add customer</button>
+      <button type="button" class="home-quick-row" onclick="homeQuickAddPhoto()">Add photo</button>
+      <button type="button" class="home-quick-row" onclick="homeQuickInventory()">Add inventory item</button>
     </div>
     <button type="button" id="homeFabBtn" class="home-fab" onclick="homeToggleQuickSheet()" aria-label="Quick actions">+</button>
 
@@ -4673,6 +5036,7 @@ async function crmWatchLeads(){
       if(active) crmLeadDocToUi(active);
     }
     leadsSidePanelsRefresh();
+    try{ renderHomeDashboard(); }catch(_e){}
   },function(err){
     console.log('Lead watch failed:',err);
   });
@@ -4868,6 +5232,7 @@ async function watchInventoryCloud(){
       };
     });
     invRenderList();
+    try{ renderHomeDashboard(); }catch(_e){}
   },function(err){
     console.log('Inventory watch failed:',err);
   });
@@ -5124,6 +5489,7 @@ function applyBizInfoToHome(){
     }).join('');
     wl.innerHTML=extraHtml||'<div style="padding:10px 16px;font-size:0.8rem;color:rgba(232,200,122,0.4);">Add websites in Settings</div>';
   }
+  try{ renderHomeDashboard(); }catch(_e){}
 }
 
 // ============================================================
@@ -5518,6 +5884,10 @@ function goTo(screenId){
   if(screenId==='screenHome'){
     renderHomeQuoteHistory();
     try{ applyBizInfoToHome(); }catch(_e){}
+    try{ renderHomeDashboard(); }catch(_e2){}
+  }
+  if(screenId==='screenWebsites'){
+    try{ populateWebsitesScreen(); }catch(_e3){}
   }
   // Show dock + quick FAB only on home screen
   var dock=document.querySelector('.cc-dock');
@@ -5582,6 +5952,205 @@ function homeQuickMileage(){
 function homeQuickInventory(){
   homeToggleQuickSheet(false);
   goTo('screenInventory');
+}
+function homeQuickNewQuote(){
+  homeToggleQuickSheet(false);
+  try{ clearCalcForNewQuote(); }catch(_e){}
+  goTo('screenCalc');
+}
+function homeQuickAddPhoto(){
+  homeToggleQuickSheet(false);
+  goTo('screenPhotos');
+}
+
+function homeOpenDesignerQuick(){
+  var a=document.getElementById('homeDesignerLink');
+  if(!a) return;
+  var u=(a.getAttribute('href')||'').trim();
+  if(u&&u!=='#'&&u.indexOf('javascript:')!==0){
+    window.open(u,'_blank','noopener,noreferrer');
+  }else{
+    showToast('Set designer URL in Settings');
+  }
+}
+
+var _homeDashCrmPhone='';
+function homeDialDashCrm(){
+  var d=String(_homeDashCrmPhone||'').replace(/[^0-9+]/g,'');
+  if(!d){ showToast('No phone on file'); return; }
+  window.location.href='tel:'+d;
+}
+
+function homeStyleThumbForCode(code){
+  try{
+    var list=(typeof STYLE_DATA!=='undefined'&&Array.isArray(STYLE_DATA))?STYLE_DATA:[];
+    var row=list.find(function(s){return s&&s.code===code;});
+    return row&&row.img?row.img:'';
+  }catch(_e){ return ''; }
+}
+
+function homeInvNewestItem(){
+  try{
+    var items=(typeof invState!=='undefined'&&invState.items)?invState.items:[];
+    if(!items.length) return null;
+    return items.slice().sort(function(a,b){
+      var ta=a&&a.updatedAt?new Date(a.updatedAt).getTime():0;
+      var tb=b&&b.updatedAt?new Date(b.updatedAt).getTime():0;
+      if(tb!==ta) return tb-ta;
+      return 0;
+    })[0];
+  }catch(_e2){ return null; }
+}
+
+function homeHeroResumeClick(){
+  var history=loadCalcHistory();
+  if(!history.length){
+    showToast('No saved quotes yet');
+    return;
+  }
+  if(history.length===1){
+    try{ resumeCalcHistory(0); }catch(_e){}
+    return;
+  }
+  openResumeQuoteList();
+}
+
+function homeHeroNewQuoteClick(){
+  try{ clearCalcForNewQuote(); }catch(_e){}
+  goTo('screenCalc');
+}
+
+function renderHomeDashboard(){
+  try{
+    var history=loadCalcHistory();
+    var titleEl=document.getElementById('homeHeroTitle');
+    var priceRow=document.getElementById('homeHeroPriceRow');
+    var priceEl=document.getElementById('homeHeroPrice');
+    var whenEl=document.getElementById('homeHeroWhen');
+    var thumb=document.getElementById('homeHeroThumb');
+    var ph=document.getElementById('homeHeroThumbPh');
+    var resumeBtn=document.getElementById('homeHeroResumeBtn');
+    if(titleEl){
+      if(!history.length){
+        titleEl.textContent='No saved quotes yet';
+        if(priceRow) priceRow.style.display='none';
+        if(whenEl) whenEl.style.display='none';
+        if(thumb){ thumb.src=''; thumb.style.display='none'; }
+        if(ph) ph.style.display='flex';
+        if(resumeBtn) resumeBtn.style.opacity='0.45';
+      }else{
+        var h0=history[0];
+        var typeLabel=h0.typeLabel||h0.typeCode||'Quote';
+        var size=(h0.width&&h0.length)?(h0.width+'\' × '+h0.length+'\''):'Size not set';
+        titleEl.textContent=typeLabel+' · '+size;
+        if(priceRow&&priceEl){
+          var total=isFinite(h0.total)?fmt(Math.ceil(h0.total)):fmt(0);
+          priceEl.textContent=total;
+          priceRow.style.display='block';
+        }
+        if(whenEl){
+          var ts=h0.ts?new Date(h0.ts):null;
+          var when=ts&&!isNaN(ts.getTime())?ts.toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'}):'Saved';
+          whenEl.textContent='Last edited '+when;
+          whenEl.style.display='block';
+        }
+        var imgUrl=homeStyleThumbForCode(h0.typeCode||'');
+        if(thumb&&ph){
+          if(imgUrl){ thumb.src=imgUrl; thumb.style.display='block'; ph.style.display='none'; }
+          else { thumb.src=''; thumb.style.display='none'; ph.style.display='flex'; }
+        }
+        if(resumeBtn) resumeBtn.style.opacity='1';
+      }
+    }
+
+    var pill=document.getElementById('homeDashCrmPill');
+    var nm=document.getElementById('homeDashCrmName');
+    var sub=document.getElementById('homeDashCrmSub');
+    var callBtn=document.getElementById('homeDashCrmCall');
+    _homeDashCrmPhone='';
+    if(callBtn) callBtn.style.display='none';
+    var s=loadSettings();
+    var fbReady=typeof firebaseHasConfig==='function'&&firebaseHasConfig(firebaseConfigFromSettings());
+    if(pill){
+      if(!fbReady){
+        pill.textContent='SETUP';
+        pill.className='cc-dash-pill cc-dash-pill-sky';
+      }else{
+        var n=(typeof crmState!=='undefined'&&crmState.leads)?crmState.leads.length:0;
+        pill.textContent=n?(n+' LEAD'+(n===1?'':'S')):'0 LEADS';
+        pill.className='cc-dash-pill cc-dash-pill-sage';
+      }
+    }
+    if(nm&&sub){
+      if(!fbReady){
+        nm.textContent='Cloud CRM';
+        sub.textContent='Add Firebase keys in Settings to sync leads.';
+      }else{
+        var leads=(crmState&&crmState.leads)?crmState.leads:[];
+        if(!leads.length){
+          nm.textContent='No leads yet';
+          sub.textContent='Tap to add your first customer';
+        }else{
+          var top=leads.slice().sort(function(a,b){return leadTouchMs(b)-leadTouchMs(a);})[0];
+          var name=(top.contact&&top.contact.name)||'Unnamed';
+          var line=(top.buildingInterest&&top.buildingInterest.summary)||'';
+          var phone=(top.contact&&top.contact.phone)||'';
+          nm.textContent=name;
+          sub.textContent=line||(phone||'—');
+          if(phone){
+            _homeDashCrmPhone=phone;
+            if(callBtn) callBtn.style.display='flex';
+          }else if(callBtn) callBtn.style.display='none';
+        }
+      }
+    }
+
+    var invPill=document.getElementById('homeDashInvPill');
+    var invRow=document.getElementById('homeDashInvRow');
+    var invEmpty=document.getElementById('homeDashInvEmpty');
+    var invThumb=document.getElementById('homeDashInvThumb');
+    var invTitle=document.getElementById('homeDashInvTitle');
+    var invMeta=document.getElementById('homeDashInvMeta');
+    var invItem=homeInvNewestItem();
+    var invCount=(typeof invState!=='undefined'&&invState.items)?invState.items.length:0;
+    if(invPill) invPill.textContent=invCount?('QTY '+invCount):'EMPTY';
+    if(invItem&&invTitle&&invMeta&&invRow&&invEmpty){
+      invEmpty.style.display='none';
+      invRow.style.display='flex';
+      var subj=[invItem.size,invItem.style].filter(Boolean).join(' · ')||'Inventory item';
+      invTitle.textContent=subj;
+      var added=invItem.updatedAt?new Date(invItem.updatedAt):null;
+      var addedStr=added&&!isNaN(added.getTime())?'Added '+added.toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'numeric'}):'';
+      invMeta.textContent=addedStr;
+      var iu=invItem.frontImage||invItem.plateImage||'';
+      if(invThumb&&iu){ invThumb.src=iu; invThumb.style.display='block'; }
+      else if(invThumb){ invThumb.src=''; invThumb.style.display='none'; }
+    }else{
+      if(invRow) invRow.style.display='none';
+      if(invEmpty) invEmpty.style.display='block';
+      if(invThumb){ invThumb.src=''; invThumb.style.display='none'; }
+    }
+  }catch(err){
+    console.log('renderHomeDashboard',err);
+  }
+}
+
+function populateWebsitesScreen(){
+  var wrap=document.getElementById('websitesScreenList');
+  if(!wrap) return;
+  var s=loadSettings();
+  var extra=s.websites||[];
+  if(!extra.length){
+    wrap.innerHTML='<div style="padding:20px;text-align:center;font-size:0.82rem;color:rgba(232,200,122,0.4);">Add websites in Settings</div>';
+    return;
+  }
+  wrap.innerHTML=extra.map(function(w){
+    var navUrl=normalizeExternalUrl(w.url);
+    var hrefAttr=escAttr(navUrl);
+    var safeName=String(w.name||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
+    return '<a href="'+hrefAttr+'" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;justify-content:space-between;text-decoration:none;background:rgba(255,255,255,0.06);border:1px solid rgba(232,200,122,0.25);border-radius:10px;padding:12px 14px;color:var(--wheat);font-size:0.88rem;font-weight:600;">'+
+      '<span>🌐 '+safeName+'</span><span style="color:var(--sage);font-size:0.75rem;">↗</span></a>';
+  }).join('');
 }
 
 // Home date
@@ -6133,11 +6702,9 @@ function syncCalcTypeTrigger(typeCode){
 
 function renderHomeQuoteHistory(){
   var list=document.getElementById('resumeQuoteList');
-  var resumeBtn=document.getElementById('homeResumeLastQuoteBtn');
-  if(!list||!resumeBtn) return;
+  if(!list) return;
   var history=loadCalcHistory();
-  resumeBtn.style.display='inline-flex';
-  if(!history.length){ list.innerHTML=''; return; }
+  if(!history.length){ list.innerHTML=''; try{ renderHomeDashboard(); }catch(_e){} return; }
   list.innerHTML=history.map(function(item,idx){
     var typeLabel=item.typeLabel||item.typeCode||'Quote';
     var size=(item.width&&item.length)?(item.width+'\' × '+item.length+'\''):'Size not set';
@@ -6148,6 +6715,7 @@ function renderHomeQuoteHistory(){
       '<div style="flex:1;text-align:left;"><div class="cc-tile-label" style="font-size:0.8rem;letter-spacing:1.6px;">'+typeLabel+' · '+size+'</div>'+
       '<div class="cc-tile-sub" style="opacity:0.9;">'+total+' · '+when+'</div></div><div class="cc-tile-arrow">↺</div></button>';
   }).join('');
+  try{ renderHomeDashboard(); }catch(_e2){}
 }
 
 function openResumeQuoteList(){
@@ -8431,6 +8999,7 @@ try{loadSaleState();}catch(e){}
 try{calcState.taxRate=getSettingVal('taxRate',0);}catch(e){}
 try{applyBizInfoToHome();}catch(e){}
 try{renderHomeQuoteHistory();}catch(e){}
+try{renderHomeDashboard();}catch(e){}
 try{updateShareLinks();}catch(e){}
 try{invInit();}catch(e){}
 try{firebaseTryInit();}catch(e){}
@@ -9081,6 +9650,7 @@ function invRenderList(){
   if(!wrap) return;
   if(!invState.items.length){
     wrap.innerHTML='<div style="padding:12px;border:1px solid rgba(232,200,122,0.2);border-radius:10px;background:rgba(255,255,255,0.03);font-size:0.8rem;color:rgba(232,200,122,0.7);">No inventory saved yet.</div>';
+    try{ renderHomeDashboard(); }catch(_e){}
     return;
   }
   wrap.innerHTML=invState.items.map(function(item){
@@ -9127,6 +9697,7 @@ function invRenderList(){
       '<button type="button" onclick="invDeleteItem(\''+item.id+'\')" style="-webkit-appearance:none;appearance:none;border:none;border-radius:6px;padding:7px 10px;background:rgba(196,81,31,0.25);color:var(--wheat);font-size:0.72rem;cursor:pointer;">Delete</button>'+
       '</div></div></div>';
   }).join('');
+  try{ renderHomeDashboard(); }catch(_e2){}
 }
 
 function invClearForm(){
