@@ -77,6 +77,31 @@ input:focus,select:focus,textarea:focus { outline:none; border-color:var(--wheat
 select option { background:var(--earth); color:var(--cream); }
 .row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
 #screenInventory .inv-grid2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+/* Mileage — full-width results summary */
+#mileageResultsView.mileage-results-view {
+  background:rgba(255,255,255,0.06); border:1.5px solid rgba(232,200,122,0.28); border-radius:14px;
+  padding:22px 18px 26px; margin:12px 0; text-align:center;
+}
+.mileage-results-back {
+  width:100%; margin-bottom:22px; padding:14px 16px; font-size:1rem; font-weight:700;
+  border-radius:10px; cursor:pointer;
+}
+.mileage-results-summary { color:rgba(245,240,232,0.92); line-height:1.35; }
+.mileage-res-hero {
+  font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:2.35rem; letter-spacing:2px;
+  color:var(--wheat); line-height:1.05; margin-bottom:10px;
+}
+.mileage-res-sub { font-size:1.2rem; font-weight:600; color:rgba(232,200,122,0.88); margin-bottom:6px; }
+.mileage-res-duration { font-size:1rem; color:rgba(232,200,122,0.62); margin-bottom:22px; }
+.mileage-res-costcard {
+  margin-top:4px; padding:20px 16px 18px; border-radius:14px;
+  background:rgba(0,0,0,0.22); border:1.5px solid rgba(232,200,122,0.22);
+}
+.mileage-res-cost { font-size:1.85rem; font-weight:800; color:var(--wheat); letter-spacing:0.5px; }
+.mileage-res-costlabel { font-size:1.05rem; font-weight:600; color:rgba(232,200,122,0.82); margin-top:8px; }
+.mileage-res-meta { font-size:0.88rem; color:rgba(232,200,122,0.55); margin-top:14px; line-height:1.45; }
+#mileageFormStatus { margin-top:10px; font-size:0.85rem; line-height:1.45; color:rgba(232,200,122,0.82); min-height:1.2em; }
 #screenInventory .inv-inline-actions { display:flex; gap:8px; align-items:center; margin-bottom:10px; flex-wrap:wrap; }
 #screenInventory .inv-ocr-status { font-size:0.72rem; color:rgba(232,200,122,0.75); line-height:1.35; flex:1; min-width:180px; }
 #screenInventory .inv-ocr-review { display:none; margin-bottom:10px; border:1.5px solid rgba(232,200,122,0.25); border-radius:10px; background:rgba(255,255,255,0.04); padding:10px 12px; }
@@ -2352,11 +2377,11 @@ input:focus, select:focus, textarea:focus {
   </div>
   <div style="padding:16px;">
     <div class="page-title">Mileage Calculator</div>
-    <div class="page-sub">From Shop or Lot (optional From city/state for routing). To customer: full address, or city &amp; state, or ZIP only.</div>
-    <div style="background:rgba(255,255,255,0.05);border:1.5px solid rgba(232,200,122,0.22);border-radius:10px;padding:12px 14px;margin:12px 0;">
-      <div class="field-group"><label class="field-label">From (Shop or Lot)</label><select id="mile_from" onchange="mileageToggleFromOverrides()"></select></div>
+    <div class="page-sub">From: saved Shop/Lot, or <strong>Custom</strong> city &amp; state. To customer: full address, city &amp; state, or ZIP only.</div>
+    <div id="mileageSearchCard" style="background:rgba(255,255,255,0.05);border:1.5px solid rgba(232,200,122,0.22);border-radius:10px;padding:12px 14px;margin:12px 0;">
+      <div class="field-group"><label class="field-label">From</label><select id="mile_from" onchange="mileageOnFromSelectionChange()"></select></div>
       <div id="mile_from_override_wrap" style="display:none;margin-top:8px;">
-        <div style="font-size:0.72rem;color:rgba(232,200,122,0.55);margin-bottom:4px;">Optional — override From city &amp; state for routing (uses saved street/ZIP from the selected origin when present)</div>
+        <div style="font-size:0.72rem;color:rgba(232,200,122,0.55);margin-bottom:4px;">Starting point — enter city and state</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
           <div class="field-group" style="flex:1;min-width:120px;"><label class="field-label">From city</label><input type="text" id="mile_from_city" placeholder="City" autocomplete="off"></div>
           <div class="field-group" style="flex:0 0 72px;"><label class="field-label">From ST</label><input type="text" id="mile_from_state" maxlength="2" placeholder="ID" style="text-transform:uppercase;" autocomplete="off"></div>
@@ -2370,7 +2395,11 @@ input:focus, select:focus, textarea:focus {
         <div class="field-group" style="flex:1;min-width:100px;"><label class="field-label">ZIP</label><input type="text" id="mile_cust_zip" placeholder="ZIP" autocomplete="postal-code"></div>
       </div>
       <button class="btn-secondary" style="margin-top:8px;padding:10px 12px;" onclick="runMileageCalculator()">Calculate Driving Miles</button>
-      <div id="mile_results" style="margin-top:8px;font-size:0.78rem;line-height:1.5;color:rgba(232,200,122,0.82);">Select origin and enter customer address.</div>
+      <div id="mileageFormStatus"></div>
+    </div>
+    <div id="mileageResultsView" class="mileage-results-view" style="display:none;">
+      <button type="button" class="btn-secondary mileage-results-back" onclick="mileageReturnToSearchForm()">← Calculate another</button>
+      <div id="mile_results_summary" class="mileage-results-summary"></div>
     </div>
     <div class="pb40"></div>
   </div>
@@ -5991,6 +6020,8 @@ function getSettingsAddressOptions(s){
   return out;
 }
 
+var GSS_MILE_FROM_CUSTOM='__gss_custom_origin__';
+
 function getMileageOriginOptions(s){
   s=s||loadSettings()||{};
   var out=[];
@@ -6089,28 +6120,54 @@ function buildMileageDestinationString(){
   return '';
 }
 
-/** Origin: dropdown saved line; if From city+state overrides set, rebuild with saved street/ZIP from option data attrs. */
+/** Origin: saved Shop/Lot address from dropdown, or Custom (city+ST only) when sentinel option selected. */
 function buildMileageOriginString(){
   var sel=document.getElementById('mile_from');
   if(!sel||!sel.value) return {origin:'',kind:'lot'};
+  if(sel.value===GSS_MILE_FROM_CUSTOM){
+    var oCity=mileageFieldVal('mile_from_city');
+    var oState=(mileageFieldVal('mile_from_state')||'').toUpperCase().replace(/[^A-Z]/g,'').slice(0,2);
+    if(!oCity||!oState) return {origin:'',kind:'custom'};
+    return {origin:formatAddressFromParts('',oCity,oState,''),kind:'custom'};
+  }
   var opt=sel.options[sel.selectedIndex];
   var kind=(opt.getAttribute('data-origin-kind')||'lot').toLowerCase()==='shop'?'shop':'lot';
-  var dataStreet=opt.getAttribute('data-street')||'';
-  var dataZip=opt.getAttribute('data-zip')||'';
-  var oCity=mileageFieldVal('mile_from_city');
-  var oState=(mileageFieldVal('mile_from_state')||'').toUpperCase().replace(/[^A-Z]/g,'').slice(0,2);
-  if(oCity&&oState){
-    return {origin:formatAddressFromParts(dataStreet||'',oCity,oState,dataZip||''),kind:kind};
-  }
   return {origin:sel.value,kind:kind};
 }
 
 function mileageDeliverySurchargeUSD(miles,originKind){
-  var kind=(originKind||'').toLowerCase()==='shop'?'shop':'lot';
+  var raw=(originKind||'').toLowerCase();
+  var kind=(raw==='shop'||raw==='custom')?'shop':'lot';
   var freeMiles=kind==='shop'?250:50;
   var billable=Math.max(0,(miles||0)-freeMiles);
   var cost=Math.round(billable*5*100)/100;
   return {kind:kind,freeMiles:freeMiles,billableMiles:billable,cost:cost};
+}
+
+function mileageEscapeHtml(s){
+  return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+}
+
+function mileageResetPanelsToSearch(){
+  var c=document.getElementById('mileageSearchCard');
+  var v=document.getElementById('mileageResultsView');
+  if(c) c.style.display='block';
+  if(v) v.style.display='none';
+}
+
+function mileageShowResultsPanel(html){
+  var c=document.getElementById('mileageSearchCard');
+  var v=document.getElementById('mileageResultsView');
+  var sum=document.getElementById('mile_results_summary');
+  if(sum) sum.innerHTML=html;
+  if(c) c.style.display='none';
+  if(v) v.style.display='block';
+}
+
+function mileageReturnToSearchForm(){
+  mileageResetPanelsToSearch();
+  var fs=document.getElementById('mileageFormStatus');
+  if(fs) fs.textContent='';
 }
 
 function mileageMatrixUserMessage(matrixStatus,elementStatus){
@@ -6121,10 +6178,11 @@ function mileageMatrixUserMessage(matrixStatus,elementStatus){
   return 'Mileage lookup failed.';
 }
 
-function mileageToggleFromOverrides(){
+function mileageOnFromSelectionChange(){
   var sel=document.getElementById('mile_from');
   var w=document.getElementById('mile_from_override_wrap');
-  if(w) w.style.display=sel&&sel.value?'block':'none';
+  if(!w) return;
+  w.style.display=sel&&sel.value===GSS_MILE_FROM_CUSTOM?'block':'none';
 }
 
 function initCalcAdvancedTools(){
@@ -6140,6 +6198,7 @@ function setReverseTaxFromSettings(force){
 }
 
 function initMileageScreen(){
+  mileageResetPanelsToSearch();
   var sel=document.getElementById('mile_from');
   if(sel){
     var opts=getMileageOriginOptions(loadSettings());
@@ -6147,7 +6206,7 @@ function initMileageScreen(){
     sel.innerHTML='';
     var d=document.createElement('option');
     d.value='';
-    d.textContent='Select Shop or Lot';
+    d.textContent='Select origin';
     sel.appendChild(d);
     opts.forEach(function(o){
       var opt=document.createElement('option');
@@ -6160,11 +6219,16 @@ function initMileageScreen(){
       opt.setAttribute('data-zip',o.zip||'');
       sel.appendChild(opt);
     });
+    var cust=document.createElement('option');
+    cust.value=GSS_MILE_FROM_CUSTOM;
+    cust.textContent='Custom — city & state';
+    cust.setAttribute('data-origin-kind','custom');
+    sel.appendChild(cust);
     if(prev) sel.value=prev;
   }
-  mileageToggleFromOverrides();
-  var result=document.getElementById('mile_results');
-  if(result) result.textContent='Select origin and enter at least a customer city/state, ZIP, or full address.';
+  mileageOnFromSelectionChange();
+  var fs=document.getElementById('mileageFormStatus');
+  if(fs) fs.textContent='Choose origin and customer destination, then tap Calculate.';
 }
 
 function toggleReverseCalcPanel(){
@@ -6264,18 +6328,23 @@ function runReversePriceCalculator(){
 }
 
 async function runMileageCalculator(){
+  mileageResetPanelsToSearch();
+  var statusEl=document.getElementById('mileageFormStatus');
+  var sel=document.getElementById('mile_from');
+  if(!statusEl) return;
   var originInfo=buildMileageOriginString();
   var from=originInfo.origin;
   var to=buildMileageDestinationString();
-  var result=document.getElementById('mile_results');
-  if(!result) return;
-  if(!from){ result.textContent='Select a Shop or Lot origin.'; return; }
-  if(!to){ result.textContent='Enter customer destination: full address, or city & state, or ZIP.'; return; }
-  if(from===to){ result.textContent='Origin and destination look the same — adjust the customer address.'; return; }
+  if(!from){
+    statusEl.textContent=sel&&sel.value===GSS_MILE_FROM_CUSTOM?'For Custom origin, enter starting city and state.':'Select an origin (Shop, Lot, or Custom).';
+    return;
+  }
+  if(!to){ statusEl.textContent='Enter customer destination: full address, or city & state, or ZIP.'; return; }
+  if(from===to){ statusEl.textContent='Origin and destination look the same — adjust the customer address.'; return; }
   var s=loadSettings();
   var key=(s.mapsApiKey||'').trim();
-  if(!key){ result.textContent='Add Google Maps API Key in Settings to calculate miles.'; return; }
-  result.textContent='Calculating...';
+  if(!key){ statusEl.textContent='Add Google Maps API Key in Settings to calculate miles.'; return; }
+  statusEl.textContent='Calculating…';
   try{
     await ensureGoogleMapsLoaded(key);
     var dmResult=await new Promise(function(resolve,reject){
@@ -6306,22 +6375,29 @@ async function runMileageCalculator(){
     var miles=(dmResult.distance&&dmResult.distance.value)?(dmResult.distance.value/1609.344):0;
     var sur=mileageDeliverySurchargeUSD(miles,originInfo.kind);
     var costStr=sur.cost%1===0?('$'+sur.cost.toFixed(0)):('$'+sur.cost.toFixed(2));
-    var tierLabel=sur.kind==='shop'?'Shop (first 250 mi free, then $5/mi)':'Lot (first 50 mi free, then $5/mi)';
-    result.innerHTML=
-      '<div>Driving distance: <strong>'+miles.toFixed(1)+' miles</strong></div>'+
-      '<div style="color:rgba(232,200,122,0.65);margin-top:4px;">'+dmResult.distance.text+(dmResult.duration?' · '+dmResult.duration.text:'')+'</div>'+
-      '<div style="margin-top:10px;padding-top:8px;border-top:1px solid rgba(232,200,122,0.15);">'+
-      '<strong>'+tierLabel+'</strong><br>'+
-      'Billable miles: <strong>'+sur.billableMiles.toFixed(1)+'</strong> · Estimated delivery surcharge: <strong>'+costStr+'</strong>'+
+    var tierLabel=originInfo.kind==='custom'
+      ?'Custom start — first 250 mi free, then $5 / mi'
+      :(sur.kind==='shop'?'Shop — first 250 mi free, then $5 / mi':'Lot — first 50 mi free, then $5 / mi');
+    var distTxt=mileageEscapeHtml(dmResult.distance.text);
+    var durTxt=dmResult.duration?mileageEscapeHtml(dmResult.duration.text):'';
+    var html='<div class="mileage-res-hero">'+miles.toFixed(1)+' miles</div>'+
+      '<div class="mileage-res-sub">'+distTxt+'</div>'+
+      (durTxt?'<div class="mileage-res-duration">Drive time · '+durTxt+'</div>':'')+
+      '<div class="mileage-res-costcard">'+
+      '<div class="mileage-res-cost">'+costStr+'</div>'+
+      '<div class="mileage-res-costlabel">Estimated delivery surcharge</div>'+
+      '<div class="mileage-res-meta">'+tierLabel+'<br>Billable miles: '+sur.billableMiles.toFixed(1)+'</div>'+
       '</div>';
+    statusEl.textContent='';
+    mileageShowResultsPanel(html);
   }catch(err){
     console.log('Mileage lookup failed:',err);
     var msg=(err&&err.message)?String(err.message):'';
-    if(msg.indexOf('MATRIX:')===0) result.textContent=mileageMatrixUserMessage(msg.slice(7),'');
-    else if(msg.indexOf('ELEM:')===0) result.textContent=mileageMatrixUserMessage('OK',msg.slice(5));
-    else if(msg==='nokey') result.textContent='Add Google Maps API Key in Settings.';
-    else if(msg==='network') result.textContent='Could not load Google Maps script. Check network and ad blockers.';
-    else result.textContent='Mileage lookup failed. Open the browser console for details, confirm the API key, and try again.';
+    if(msg.indexOf('MATRIX:')===0) statusEl.textContent=mileageMatrixUserMessage(msg.slice(7),'');
+    else if(msg.indexOf('ELEM:')===0) statusEl.textContent=mileageMatrixUserMessage('OK',msg.slice(5));
+    else if(msg==='nokey') statusEl.textContent='Add Google Maps API Key in Settings.';
+    else if(msg==='network') statusEl.textContent='Could not load Google Maps script. Check network and ad blockers.';
+    else statusEl.textContent='Mileage lookup failed. Open the browser console for details, confirm the API key, and try again.';
   }
 }
 
