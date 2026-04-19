@@ -45,6 +45,10 @@
   --sky:#C8DDE8; --white:#FDFCFA; --mid:#5C3D2E;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-top-offset: max(var(--safe-top), 12px);
+  /* Home dock: Price Calc circle diameter (~half app column), shared by dock + scroll padding */
+  --dock-calc-d: min(calc((min(100vw, 480px) - 28px) * 0.5), 140px);
+  /* Raise pill + FAB slightly when circle is tall so bar aligns with centered button */
+  --dock-lift: min(28px, max(0px, calc((var(--dock-calc-d) - 52px) * 0.4)));
 }
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 button { -webkit-appearance:none; -moz-appearance:none; appearance:none; }
@@ -443,10 +447,38 @@ select option { background:var(--earth); color:var(--cream); }
 .success-msg { font-size:0.9rem; color:rgba(232,200,122,0.65); line-height:1.7; margin-bottom:24px; }
 
 /* ── Print overlay ── */
-#printOverlay{display:none;position:fixed;inset:0;background:white;z-index:9999;overflow-y:auto;padding:24px 28px 40px;font-family:Georgia,serif;font-size:10pt;color:#111;}
+#printOverlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#fff;
+  z-index:9999;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  padding:0;
+  font-family:Georgia,serif;
+  font-size:10pt;
+  color:#111;
+}
+#printOverlay .po-actions{
+  display:flex;
+  gap:10px;
+  position:sticky;
+  top:0;
+  z-index:5;
+  margin:0;
+  padding:max(12px, env(safe-area-inset-top, 0px)) max(14px, env(safe-area-inset-right, 0px)) 14px max(14px, env(safe-area-inset-left, 0px));
+  background:#fff;
+  border-bottom:1px solid #ddd;
+  box-shadow:0 1px 0 rgba(0,0,0,0.04);
+}
+#printOverlay .po-print-scroll{
+  padding:16px max(18px, env(safe-area-inset-right, 0px)) max(32px, env(safe-area-inset-bottom, 0px)) max(18px, env(safe-area-inset-left, 0px));
+}
 #printOverlay h1{font-size:1.6rem;color:#8B2500;margin:0 0 2px;font-weight:bold;letter-spacing:1px;}
 #printOverlay .po-sub{color:#555;font-size:8.5pt;margin-bottom:16px;letter-spacing:0.5px;}
 #printOverlay .po-customer{margin-bottom:16px;padding:10px 14px;border:1px solid #ccc;border-radius:6px;font-size:9.5pt;color:#222;line-height:1.8;}
+#printOverlay .po-cust-notes{margin-top:6px;}
 #printOverlay .price-card{border:1px solid #ccc;border-radius:8px;padding:16px 18px;margin-bottom:12px;}
 #printOverlay .price-card-building{font-size:1.15rem;color:#8B2500;font-weight:bold;margin-bottom:3px;}
 #printOverlay .price-card-size{font-size:8.5pt;color:#555;margin-bottom:10px;letter-spacing:0.3px;}
@@ -464,7 +496,6 @@ select option { background:var(--earth); color:var(--cream); }
 #printOverlay .pl-l{flex:1;}
 #printOverlay .pl-r{font-weight:600;}
 #printOverlay .po-footer{margin-top:20px;font-size:8pt;color:#555;text-align:center;border-top:1px solid #ccc;padding-top:10px;line-height:1.8;}
-#printOverlay .po-actions{display:flex;gap:10px;margin-bottom:20px;}
 #printOverlay .po-print-btn{background:#8B2500;color:white;border:none;border-radius:10px;padding:13px 0;font-size:1rem;font-weight:bold;cursor:pointer;flex:1;letter-spacing:1px;}
 #printOverlay .po-close-btn{background:#e8e8e8;color:#222;border:none;border-radius:10px;padding:13px 18px;font-size:1rem;font-weight:bold;cursor:pointer;}
 @media print{
@@ -473,20 +504,49 @@ select option { background:var(--earth); color:var(--cream); }
   #ssOverlay{display:block !important;position:static !important;overflow:visible !important;}
   #ssOverlayActions{display:none !important;}
   #ssSheetContent{padding:0 !important;max-width:100% !important;}
-  #printOverlay{display:block !important;position:static !important;padding:0 !important;font-size:8.5pt !important;}
+  #printOverlay{display:block !important;position:static !important;padding:0 !important;font-size:8.5pt !important;-webkit-print-color-adjust:economy;print-color-adjust:economy;}
+  #printOverlay #printLogo{
+    -webkit-print-color-adjust:exact !important;
+    print-color-adjust:exact !important;
+    color-adjust:exact !important;
+  }
   #printOverlay .po-actions{display:none !important;}
+  #printOverlay .po-print-scroll{padding:0 !important;}
+  #printOverlay h1,
+  #printOverlay .po-sub,
+  #printOverlay .po-customer,
+  #printOverlay .po-customer *,
+  #printOverlay #printQuoteContent,
+  #printOverlay #printQuoteContent *{
+    color:#000 !important;
+    background:#fff !important;
+    background-image:none !important;
+    border-color:#000 !important;
+    box-shadow:none !important;
+    text-shadow:none !important;
+  }
+  #printOverlay .price-card,
+  #printOverlay .rto-card,
+  #printOverlay .down-card{
+    border:1px solid #000 !important;
+    background:#fff !important;
+  }
+  #printOverlay .price-line,
+  #printOverlay .total-line{border-color:#ccc !important;}
+  #printOverlay .total-line{border-top-color:#000 !important;}
+  #printOverlay .down-chip{border:1px solid #000 !important;background:#fff !important;}
   #printOverlay h1{font-size:1.1rem !important;}
   #printOverlay .po-sub{margin-bottom:8px !important;font-size:7.5pt !important;}
   #printOverlay .po-customer{margin-bottom:8px !important;padding:6px 10px !important;font-size:8pt !important;}
   #printOverlay .price-card{padding:10px 12px !important;margin-bottom:6px !important;page-break-inside:avoid;}
   #printOverlay .price-card-building{font-size:1rem !important;}
-  #printOverlay .price-line{padding:3px 0 !important;font-size:8.5pt !important;border-bottom:1px solid #f0f0f0 !important;}
+  #printOverlay .price-line{padding:3px 0 !important;font-size:8.5pt !important;border-bottom:1px solid #ccc !important;}
   #printOverlay .price-line.addon{padding:2px 0 2px 8px !important;font-size:8pt !important;}
   #printOverlay .total-line{padding:6px 0 2px !important;font-size:1rem !important;}
   #printOverlay .rto-card{padding:8px 10px !important;margin-top:6px !important;}
   #printOverlay .rto-monthly-val{font-size:1.1rem !important;}
   #printOverlay .down-card{padding:6px 10px !important;margin-top:5px !important;}
-  #printOverlay .po-footer{margin-top:10px !important;padding-top:6px !important;font-size:7.5pt !important;}
+  #printOverlay .po-footer{margin-top:10px !important;padding-top:6px !important;font-size:7.5pt !important;color:#000 !important;}
 }
 .sellsheds-footer {
   display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 8px;
@@ -737,7 +797,7 @@ select option { background:var(--earth); color:var(--cream); }
 
 /* ── Home dashboard: hero, CRM/Inventory pair, quick tools ── */
 #screenHome .cc-grid {
-  padding-bottom: calc(112px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: calc(96px + max(0px, calc(var(--dock-calc-d) - 52px)) + var(--dock-lift, 0px) + env(safe-area-inset-bottom, 0px));
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   min-height: 0;
@@ -747,11 +807,11 @@ select option { background:var(--earth); color:var(--cream); }
   background: linear-gradient(160deg, rgba(52, 40, 32, 0.98) 0%, rgba(40, 30, 24, 0.98) 100%);
   border: 1px solid rgba(196, 81, 31, 0.5);
   border-radius: 12px;
-  padding: 0 0 10px;
+  padding: 0 0 14px;
   margin-bottom: 2px;
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   text-align: left;
 }
 .cc-hero-accent {
@@ -819,8 +879,8 @@ select option { background:var(--earth); color:var(--cream); }
 .cc-hero-actions {
   display: flex;
   gap: 8px;
-  padding: 0 12px;
-  margin-top: 4px;
+  padding: 0 12px 4px;
+  margin-top: 6px;
 }
 .cc-hero-btn {
   flex: 1;
@@ -837,18 +897,21 @@ select option { background:var(--earth); color:var(--cream); }
   align-items: center;
   justify-content: center;
   gap: 6px;
+  box-sizing: border-box;
+  min-height: 44px;
 }
 .cc-hero-btn-secondary {
   background: rgba(255, 255, 255, 0.08);
   color: rgba(232, 200, 122, 0.88);
   border: 1px solid rgba(232, 200, 122, 0.28);
+  box-shadow: none;
 }
 .cc-hero-btn-secondary:active { background: rgba(255, 255, 255, 0.12); }
 .cc-hero-btn-primary {
   background: linear-gradient(160deg, rgba(139, 46, 13, 0.95) 0%, rgba(90, 40, 18, 0.98) 100%);
   color: var(--wheat);
   border: 1px solid rgba(232, 200, 122, 0.35);
-  box-shadow: 0 2px 10px rgba(139, 46, 13, 0.35);
+  box-shadow: 0 2px 8px rgba(139, 46, 13, 0.28);
 }
 .cc-hero-btn-primary:active { opacity: 0.92; }
 
@@ -992,11 +1055,13 @@ select option { background:var(--earth); color:var(--cream); }
 }
 .cc-tools-scroll {
   display: flex;
+  flex-wrap: nowrap;
   gap: 10px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   padding: 4px 2px 8px;
   scroll-snap-type: x proximity;
+  overscroll-behavior-x: contain;
 }
 .cc-tools-scroll::-webkit-scrollbar { height: 4px; }
 .cc-tools-scroll::-webkit-scrollbar-thumb {
@@ -1065,8 +1130,9 @@ select option { background:var(--earth); color:var(--cream); }
   max-width: 480px;
   z-index: 100;
   pointer-events: none;
-  padding: 0 10px calc(10px + env(safe-area-inset-bottom, 0px));
+  padding: 0 10px max(12px, calc(10px + env(safe-area-inset-bottom, 0px)));
   box-sizing: border-box;
+  overflow: visible;
 }
 
 .home-quick-backdrop {
@@ -1086,7 +1152,7 @@ select option { background:var(--earth); color:var(--cream); }
 .home-quick-sheet {
   position: absolute;
   right: 72px;
-  bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  bottom: calc(76px + var(--dock-lift, 0px) + env(safe-area-inset-bottom, 0px));
   min-width: 200px;
   max-width: min(92vw, 280px);
   border-radius: 14px;
@@ -1127,7 +1193,7 @@ select option { background:var(--earth); color:var(--cream); }
 .home-fab {
   position: absolute;
   right: 18px;
-  bottom: calc(68px + env(safe-area-inset-bottom, 0px));
+  bottom: calc(68px + var(--dock-lift, 0px) + env(safe-area-inset-bottom, 0px));
   width: 48px;
   height: 48px;
   border-radius: 50%;
@@ -1159,20 +1225,23 @@ select option { background:var(--earth); color:var(--cream); }
   -webkit-backdrop-filter: blur(14px);
   border: 1px solid rgba(232, 200, 122, 0.22);
   box-shadow: 0 -4px 28px rgba(0, 0, 0, 0.35);
+  overflow: visible;
+  transform: translateY(calc(-1 * var(--dock-lift, 0px)));
 }
 
 .cc-dock-buttons {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
-  gap: 4px;
-  min-height: 56px;
+  gap: 6px;
+  min-height: 52px;
 }
 
 .cc-dock-side {
   flex: 1;
   max-width: 30%;
   min-height: 52px;
+  height: 52px;
   background: rgba(255, 255, 255, 0.04);
   border-radius: 14px;
   text-decoration: none;
@@ -1203,67 +1272,65 @@ select option { background:var(--earth); color:var(--cream); }
   flex: 0 0 auto;
   width: 38%;
   max-width: 150px;
+  height: 52px;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
   position: relative;
   pointer-events: none;
 }
 
-.cc-dock-barn {
+.cc-dock-calc-btn {
   pointer-events: auto;
-  position: relative;
-  transform: translateY(-14px);
-  width: 100%;
-  max-width: 118px;
-  border: none;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  bottom: auto;
+  transform: translate(-50%, -50%);
+  width: var(--dock-calc-d, 72px);
+  height: var(--dock-calc-d, 72px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 2px solid rgba(245, 240, 232, 0.4);
   padding: 0;
   margin: 0;
   cursor: pointer;
-  background: transparent;
+  background: linear-gradient(168deg, #a34422 0%, #7a2c0f 48%, #4a1508 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.2),
+    0 3px 10px rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   -webkit-appearance: none;
   appearance: none;
-  filter: drop-shadow(0 14px 12px rgba(0, 0, 0, 0.45));
+  flex-shrink: 0;
 }
-.cc-dock-barn:active { transform: translateY(-12px) scale(0.98); }
-
-.cc-dock-barn-vis {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 4px;
-  padding: 12px 10px 14px;
-  background: linear-gradient(168deg, #a34422 0%, #7a2c0f 42%, #4a1508 100%);
-  border-radius: 16px;
-  border: 2px solid rgba(245, 240, 232, 0.35);
-  box-shadow:
-    inset 0 2px 0 rgba(255, 255, 255, 0.18),
-    0 4px 0 rgba(26, 10, 6, 0.95),
-    0 10px 22px rgba(0, 0, 0, 0.38);
-  clip-path: polygon(5% 36%, 50% 3%, 95% 36%, 100% 38%, 100% 100%, 0 100%, 0 38%);
+.cc-dock-calc-btn:active {
+  transform: translate(-50%, -50%) scale(0.96);
+  opacity: 0.95;
 }
-
-.cc-dock-barn-icon {
-  width: 40px;
-  height: 40px;
+.cc-dock-calc-btn svg {
+  width: clamp(26px, calc(var(--dock-calc-d, 72px) * 0.38), 40px);
+  height: clamp(26px, calc(var(--dock-calc-d, 72px) * 0.38), 40px);
+  display: block;
+}
+.cc-dock-calc-btn .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
-.cc-dock-barn-label {
-  font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
-  font-size: 0.72rem;
-  letter-spacing: 2.4px;
-  color: var(--wheat);
-  font-weight: 700;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.75);
-}
-
-/* Shed silhouette inside dock center (readable at small size) */
-.cc-dock-barn-shed {
-  width: 48px;
-  height: 52px;
-  margin-top: 2px;
-  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.55));
+@media (max-height: 700px) {
+  :root {
+    --dock-calc-d: min(calc((min(100vw, 480px) - 28px) * 0.45), 112px);
+  }
 }
 
 .home-crm-trio {
@@ -1292,7 +1359,7 @@ select option { background:var(--earth); color:var(--cream); }
 
   .cc-grid { gap: 4px; padding: 7px 8px 0; }
   #screenHome .cc-grid {
-    padding-bottom: calc(108px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(88px + max(0px, calc(var(--dock-calc-d) - 52px)) + var(--dock-lift, 0px) + env(safe-area-inset-bottom, 0px));
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
     min-height: 0;
@@ -1309,20 +1376,18 @@ select option { background:var(--earth); color:var(--cream); }
   #homeWebsitesLabel { font-size: 0.88rem !important; letter-spacing: 1.5px !important; }
   #homeWebsitesList { max-height: 108px; }
 
-  .cc-dock { padding: 0 8px calc(8px + env(safe-area-inset-bottom, 0px)); }
+  .cc-dock { padding: 0 8px max(10px, calc(8px + env(safe-area-inset-bottom, 0px))); }
   .home-fab {
     width: 44px;
     height: 44px;
     right: 14px;
-    bottom: calc(62px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(62px + var(--dock-lift, 0px) + env(safe-area-inset-bottom, 0px));
     font-size: 1.5rem;
   }
   .home-quick-sheet {
     right: 64px;
-    bottom: calc(70px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(70px + var(--dock-lift, 0px) + env(safe-area-inset-bottom, 0px));
   }
-  .cc-dock-barn { transform: translateY(-12px); }
-  .cc-dock-barn-label { font-size: 0.64rem; letter-spacing: 2px; }
 }
 </style>
 <style>
@@ -1802,7 +1867,7 @@ input:focus, select:focus, textarea:focus {
     </div>
     <div class="cc-header-right">
       <div class="cc-date-block" id="homeDateBadge"></div>
-      <button class="cc-settings-btn" onclick="goTo('screenSettings')">⚙</button>
+      <button type="button" class="cc-settings-btn" onclick="goTo('screenSettings')">⚙</button>
     </div>
   </div>
 
@@ -1894,28 +1959,7 @@ input:focus, select:focus, textarea:focus {
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;display:block;"><path stroke="rgba(232,200,122,0.88)" stroke-width="1.5" stroke-linecap="round" fill="none" d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/><circle cx="12" cy="12" r="3" fill="rgba(232,200,122,0.08)" stroke="rgba(232,200,122,0.88)" stroke-width="1.3"/></svg>
         QUICK TOOLS
       </div>
-      <div class="cc-tools-scroll">
-        <button type="button" class="cc-tool-chip" onclick="goTo('screenWebsites')">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.5"/><line x1="2" y1="12" x2="22" y2="12" stroke="rgba(232,200,122,0.88)" stroke-width="1.2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" fill="rgba(232,200,122,0.04)" stroke="rgba(232,200,122,0.88)" stroke-width="1.2"/></svg>
-          Websites
-        </button>
-        <button type="button" class="cc-tool-chip" onclick="homeOpenDesignerQuick()">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linejoin="round" d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/><rect x="9" y="13" width="6" height="9" rx="0.5" fill="rgba(232,200,122,0.04)" stroke="rgba(232,200,122,0.88)" stroke-width="1.3"/></svg>
-          Designer
-        </button>
-        <button type="button" class="cc-tool-chip" onclick="goTo('screenPhotos')">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linejoin="round" d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4" fill="rgba(232,200,122,0.04)" stroke="rgba(232,200,122,0.88)" stroke-width="1.3"/></svg>
-          Photo library
-        </button>
-        <button type="button" class="cc-tool-chip" onclick="goTo('screenSettings')">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" fill="rgba(232,200,122,0.08)" stroke="rgba(232,200,122,0.88)" stroke-width="1.5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="rgba(232,200,122,0.88)" stroke-width="1.3" stroke-linecap="round"/></svg>
-          Settings
-        </button>
-        <button type="button" class="cc-tool-chip" onclick="goTo('screenCalc')" title="Price calculator">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="3" width="16" height="18" rx="2" fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.5"/><path d="M8 7h8M8 11h5" stroke="rgba(232,200,122,0.75)" stroke-width="1.2" stroke-linecap="round"/></svg>
-          Price calc
-        </button>
-      </div>
+      <div class="cc-tools-scroll" id="homeQuickToolsMount"></div>
     </div>
 
     <div class="cc-section-label cc-span2"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;display:block;"><rect x="5" y="2" width="14" height="20" rx="2" fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6"/><line x1="12" y1="18" x2="12.01" y2="18" stroke="rgba(232,200,122,0.88)" stroke-width="2.5" stroke-linecap="round"/></svg> LIBRARY &amp; FORMS</div>
@@ -2002,19 +2046,12 @@ input:focus, select:focus, textarea:focus {
         </a>
 
         <div class="cc-dock-center-slot">
-          <button type="button" class="cc-dock-barn" onclick="goTo('screenCalc')" aria-label="Open price calculator">
-            <span class="cc-dock-barn-vis">
-              <svg class="cc-dock-barn-shed" viewBox="0 0 48 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <path d="M24 5 L43 24 H5 L24 5Z" fill="rgba(30,14,8,0.55)" stroke="rgba(245,240,232,0.92)" stroke-width="1.35" stroke-linejoin="round"/>
-                <path d="M7 24 H41 V51 H7 V24Z" fill="rgba(55,30,16,0.65)" stroke="rgba(245,240,232,0.88)" stroke-width="1.25"/>
-                <path d="M22 34 H26 V50 H22 V34Z" fill="rgba(10,5,4,0.45)" stroke="rgba(245,240,232,0.55)" stroke-width="0.9"/>
-                <path d="M27 34 H31 V50 H27 V34Z" fill="rgba(10,5,4,0.45)" stroke="rgba(245,240,232,0.55)" stroke-width="0.9"/>
-                <rect x="10" y="28" width="6" height="5" rx="0.8" fill="rgba(232,200,122,0.12)" stroke="rgba(245,240,232,0.5)" stroke-width="0.85"/>
-                <rect x="32" y="28" width="6" height="5" rx="0.8" fill="rgba(232,200,122,0.12)" stroke="rgba(245,240,232,0.5)" stroke-width="0.85"/>
-                <rect x="14" y="40" width="20" height="2.2" rx="0.5" fill="rgba(245,240,232,0.12)"/>
-              </svg>
-              <span class="cc-dock-barn-label">PRICE CALC</span>
-            </span>
+          <button type="button" class="cc-dock-calc-btn" onclick="goTo('screenCalc')" aria-label="Open price calculator" title="Price calculator">
+            <span class="sr-only">Price calculator</span>
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="4" y="3" width="16" height="18" rx="2" fill="rgba(245,240,232,0.12)" stroke="rgba(245,240,232,0.95)" stroke-width="1.5"/>
+              <path d="M8 7h8M8 11h5M8 15h6" stroke="rgba(245,240,232,0.9)" stroke-width="1.2" stroke-linecap="round"/>
+            </svg>
           </button>
         </div>
 
@@ -4390,8 +4427,9 @@ input:focus, select:focus, textarea:focus {
     <div class="setup-note" style="margin-top:-4px;margin-bottom:12px;">Firestore sync is active. Firebase Storage is optional and not required.</div>
     <div class="field-group"><label class="field-label">Messaging Sender ID</label><input type="text" id="set_firebaseMessagingSenderId" placeholder="1234567890"></div>
     <div class="field-group"><label class="field-label">App ID</label><input type="text" id="set_firebaseAppId" placeholder="1:123456:web:abc..."></div>
-    <div class="field-group"><label class="field-label">Staff Email (for auth)</label><input type="email" id="set_firebaseEmail" placeholder="staff@yourcompany.com"></div>
-    <div class="field-group"><label class="field-label">Staff Password (for auth)</label><input type="password" id="set_firebasePassword" placeholder="Required for Firestore writes"></div>
+    <div class="field-group"><label class="field-label">Staff email (Firebase Auth)</label><input type="email" id="set_firebaseEmail" placeholder="staff@yourcompany.com"></div>
+    <div class="field-group"><label class="field-label">Staff password (this device only)</label><input type="password" id="set_firebasePassword" placeholder="Saved locally — not synced to cloud"></div>
+    <div class="setup-note" style="margin-top:-4px;margin-bottom:12px;">The app signs in when it opens and keeps this browser signed in. Leave both blank to use <strong>Anonymous</strong> auth (enable it in Firebase Console → Authentication) if you prefer not to store a password here.</div>
     <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 10px;">Google Drive Photo Upload</div>
     <div class="field-group"><label class="field-label">Apps Script Upload URL</label><input type="url" id="set_driveUploadUrl" placeholder="https://script.google.com/macros/s/.../exec"></div>
     <div class="field-group"><label class="field-label">Upload Token (shared secret)</label><input type="password" id="set_driveUploadToken" placeholder="Used to protect upload endpoint"></div>
@@ -4415,6 +4453,12 @@ input:focus, select:focus, textarea:focus {
     <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 6px;">Extra Info Lines</div>
     <div id="set_extraInfoList" style="margin-bottom:6px;"></div>
     <button onclick="addExtraInfoField()" class="btn-secondary" style="font-size:0.8rem;padding:7px 14px;">+ Add Line</button>
+
+    <!-- Home quick tools (command center) -->
+    <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 6px;">Home quick tools</div>
+    <div style="font-size:0.72rem;color:rgba(232,200,122,0.5);margin-bottom:8px;">Shown on the dashboard; scrolls horizontally if you add many. Use <strong>Open screen</strong> for in-app pages, <strong>External URL</strong> for web links, or <strong>Designer</strong> for your designer URL from Settings.</div>
+    <div id="set_homeQuickToolsList" style="margin-bottom:6px;"></div>
+    <button type="button" onclick="addHomeQuickToolField()" class="btn-secondary" style="font-size:0.8rem;padding:7px 14px;">+ Add quick tool</button>
 
     <!-- Websites -->
     <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 6px;">Websites</div>
@@ -4496,16 +4540,18 @@ input:focus, select:focus, textarea:focus {
 <!-- Print Overlay (Quote) -->
 <div id="printOverlay">
   <div class="po-actions">
-    <button class="po-print-btn" onclick="window.print()">🖨️ Print / Save PDF</button>
-    <button class="po-close-btn" onclick="closePrintOverlay()">✕ Close</button>
+    <button type="button" class="po-print-btn" onclick="window.print()">🖨️ Print / Save PDF</button>
+    <button type="button" class="po-close-btn" onclick="closePrintOverlay()">✕ Close</button>
   </div>
-  <img id="printLogo" src="" style="display:none;max-height:60px;max-width:180px;object-fit:contain;margin-bottom:8px;">
-  <h1 id="printBizName"></h1>
-  <div class="po-sub" id="printBizContact"></div>
-  <div id="printDate" class="po-sub"></div>
-  <div id="printCustomerInfo"></div>
-  <div id="printQuoteContent"></div>
-  <div class="po-footer" id="printFooter"></div>
+  <div class="po-print-scroll">
+    <img id="printLogo" src="" alt="" style="display:none;max-height:60px;max-width:180px;object-fit:contain;margin-bottom:8px;">
+    <h1 id="printBizName"></h1>
+    <div class="po-sub" id="printBizContact"></div>
+    <div id="printDate" class="po-sub"></div>
+    <div id="printCustomerInfo"></div>
+    <div id="printQuoteContent"></div>
+    <div class="po-footer" id="printFooter"></div>
+  </div>
 </div>
 
 
@@ -4523,6 +4569,7 @@ var fbDb=null;
 var fbAuth=null;
 var fbReady=false;
 var fbInitTried=false;
+var firebaseLastAuthFailureReason='';
 var fbInventoryUnsub=null;
 var fbLeadsUnsub=null;
 var crmActivitiesUnsub=null;
@@ -4585,8 +4632,42 @@ function firebaseAuthFromSettings(){
     password:(s.firebasePassword||'').trim()
   };
 }
+function firebaseSignedInWithPasswordProvider(){
+  try{
+    var u=fbAuth&&fbAuth.currentUser;
+    if(!u||!u.providerData) return false;
+    for(var i=0;i<u.providerData.length;i++){
+      if(u.providerData[i]&&u.providerData[i].providerId==='password') return true;
+    }
+  }catch(_e){}
+  return false;
+}
 function firebaseAuthResolved(){
   return firebaseAuthFromSettings();
+}
+function firebaseStaffCredentialsPresent(){
+  if(firebaseSignedInWithPasswordProvider()) return true;
+  var c=firebaseAuthFromSettings();
+  return !!(c.email&&c.password);
+}
+function firebaseWebConfigReady(){
+  return firebaseHasConfig(firebaseConfigResolved());
+}
+function showToastForFirebaseCRMBlock(){
+  var r=firebaseLastAuthFailureReason||'';
+  if(r==='no_config'){
+    showToast('Complete Firebase web app fields in Settings (API key, project ID, etc.).');
+    return;
+  }
+  if(r==='auth_failed'){
+    showToast('Firebase sign-in failed. Check Staff email and password in Settings.');
+    return;
+  }
+  if(r==='anonymous_disabled'||r==='anonymous_failed'){
+    showToast('Enable Anonymous sign-in in Firebase Console, or add Staff email and password in Settings.');
+    return;
+  }
+  showToast('Could not connect to Firebase. Check Settings and the Firebase Console.');
 }
 function firebaseTsToIso(v){
   if(!v) return new Date().toISOString();
@@ -4613,27 +4694,54 @@ function firebaseTryInit(){
   }
 }
 async function firebaseEnsureAuthed(){
-  if(!firebaseTryInit()) return false;
+  firebaseLastAuthFailureReason='';
+  if(!firebaseTryInit()){
+    firebaseLastAuthFailureReason='no_config';
+    return false;
+  }
   if(fbAuth.currentUser) return true;
+  await firebaseAuthApplyLocalPersistence();
   var creds=firebaseAuthResolved();
   var email=creds.email;
   var password=creds.password;
-  if(!email||!password) return false;
-  try{
-    await fbAuth.signInWithEmailAndPassword(email,password);
-    return true;
-  }catch(err){
+  if(email&&password){
     try{
-      if(err&&err.code==='auth/user-not-found'){
-        await fbAuth.createUserWithEmailAndPassword(email,password);
-        return true;
+      await fbAuth.signInWithEmailAndPassword(email,password);
+      return true;
+    }catch(err){
+      try{
+        if(err&&err.code==='auth/user-not-found'){
+          await fbAuth.createUserWithEmailAndPassword(email,password);
+          return true;
+        }
+      }catch(_createErr){
+        console.log('Firebase create user failed:',_createErr);
       }
-    }catch(_createErr){
-      console.log('Firebase create user failed:',_createErr);
+      console.log('Firebase auth failed:',err);
+      firebaseLastAuthFailureReason='auth_failed';
+      return false;
     }
-    console.log('Firebase auth failed:',err);
+  }
+  try{
+    await fbAuth.signInAnonymously();
+    return true;
+  }catch(anonErr){
+    console.log('Firebase anonymous auth failed:',anonErr);
+    var acode=anonErr&&anonErr.code;
+    if(acode==='auth/admin-restricted-operation'||acode==='auth/operation-not-allowed'){
+      firebaseLastAuthFailureReason='anonymous_disabled';
+    }else{
+      firebaseLastAuthFailureReason='anonymous_failed';
+    }
     return false;
   }
+}
+async function firebaseAuthApplyLocalPersistence(){
+  try{
+    if(fbAuth&&fbAuth.setPersistence){
+      await fbAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+    }
+  }catch(pe){ console.log('setPersistence',pe); }
 }
 function cloudReady(){ return !!(fbReady&&fbDb); }
 function settingsCloudDocPath(){
@@ -4654,6 +4762,7 @@ async function settingsSyncFromCloud(){
     var snap=await ref.get();
     if(!snap.exists) return {ok:false,reason:'missing'};
     var cloudSettings=snap.data()||{};
+    if(cloudSettings.firebasePassword) delete cloudSettings.firebasePassword;
     var localSettings=loadSettings();
     var merged=migrateSettingsAddresses(Object.assign({},localSettings,cloudSettings));
     saveSettings(merged);
@@ -4676,11 +4785,13 @@ async function settingsSaveToCloud(settingsObj){
   if(!firebaseTryInit()) return {ok:false,reason:'config'};
   var ref=settingsCloudDocRef();
   if(!ref) return {ok:false,reason:'db'};
-  var payloadSize=settingsEstimateSizeBytes(settingsObj);
+  var cleaned=Object.assign({},settingsObj||{});
+  delete cleaned.firebasePassword;
+  var payloadSize=settingsEstimateSizeBytes(cleaned);
   if(payloadSize>SETTINGS_CLOUD_MAX_BYTES){
     return {ok:false,reason:'payload_too_large',size:payloadSize,max:SETTINGS_CLOUD_MAX_BYTES};
   }
-  var payload=Object.assign({},settingsObj,{
+  var payload=Object.assign({},cleaned,{
     updatedAt:firebase.firestore.FieldValue.serverTimestamp()
   });
   try{
@@ -4931,7 +5042,7 @@ function navigateToLeadInCrm(leadId){
 }
 async function contactsInit(){
   if(!(await crmLeadsBootstrap())){
-    showToast('Add Firebase settings and staff login first');
+    showToastForFirebaseCRMBlock();
     goTo('screenHome');
     return;
   }
@@ -4939,7 +5050,7 @@ async function contactsInit(){
 }
 async function followupsInit(){
   if(!(await crmLeadsBootstrap())){
-    showToast('Add Firebase settings and staff login first');
+    showToastForFirebaseCRMBlock();
     goTo('screenHome');
     return;
   }
@@ -5099,7 +5210,7 @@ async function crmAddActivity(leadId,activity){
 }
 async function crmSaveLeadFromForm(){
   try{
-    if(!(await firebaseEnsureAuthed())){showToast('Add Firebase settings and staff login first');return;}
+    if(!(await firebaseEnsureAuthed())){showToastForFirebaseCRMBlock();return;}
     var payload=crmBuildLeadPayloadFromForm();
     if(!payload.contact.name&&!payload.contact.phone){
       showToast('Name or phone required');
@@ -5155,7 +5266,7 @@ async function crmRefreshLeads(){
 }
 async function crmInit(){
   if(!(await crmLeadsBootstrap())){
-    showToast('Add Firebase settings and staff login first');
+    showToastForFirebaseCRMBlock();
     return;
   }
 }
@@ -5415,13 +5526,15 @@ function applyBizInfoToHome(){
     dcb.onclick=function(ev){copyUrlToClipboard(dNav,ev);};
   }
 
-  // CRM trio subtitles
+  // CRM trio subtitles (web config uses resolved = Settings or bootstrap; staff vs Anonymous affects subtitle)
   var crmSub=document.getElementById('homeCRMSub');
   var contactsSub=document.getElementById('homeContactsSub');
   var followSub=document.getElementById('homeFollowupsSub');
+  var fbCfgHome=(typeof firebaseWebConfigReady==='function')&&firebaseWebConfigReady();
+  var staffHome=(typeof firebaseStaffCredentialsPresent==='function')&&firebaseStaffCredentialsPresent();
   if(crmSub){
-    if(firebaseHasConfig(firebaseConfigFromSettings())){
-      crmSub.textContent='Cloud CRM ready';
+    if(fbCfgHome){
+      crmSub.textContent=staffHome?'Cloud CRM ready':'CRM: add Staff email/password in Settings or enable Anonymous';
     }else if(s.crmUrl){
       crmSub.textContent=s.crmUrl.replace(/https?:\/\//,'').split('/')[0];
     } else {
@@ -5429,7 +5542,7 @@ function applyBizInfoToHome(){
     }
   }
   if(contactsSub){
-    if(firebaseHasConfig(firebaseConfigFromSettings())){
+    if(fbCfgHome){
       var n=(typeof crmState!=='undefined'&&crmState.leads)?crmState.leads.length:0;
       contactsSub.textContent=n?(n+' lead'+(n===1?'':'s')):'No leads yet';
     }else{
@@ -5437,7 +5550,7 @@ function applyBizInfoToHome(){
     }
   }
   if(followSub){
-    if(firebaseHasConfig(firebaseConfigFromSettings())){
+    if(fbCfgHome){
       var leads=crmState&&crmState.leads?crmState.leads:[];
       if(!leads.length) followSub.textContent='No activity yet';
       else {
@@ -5539,6 +5652,9 @@ function renderSettingsFormFromSettings(s){
   });
   // Dynamic lists
   renderSettingsExtraInfo(s.extraInfo||[]);
+  var _qt=s.homeQuickTools;
+  if(!Array.isArray(_qt)||!_qt.length) _qt=getDefaultHomeQuickTools();
+  renderSettingsHomeQuickTools(_qt);
   renderSettingsWebsites(s.websites||[]);
   renderSettingsLotAddresses(s.lotAddresses||[]);
   renderSettingsRTOLinks(s.rtoLinks||[]);
@@ -5556,6 +5672,7 @@ async function loadSettingsForm(){
   if(cloudResult&&cloudResult.ok&&cloudResult.settings){
     renderSettingsFormFromSettings(cloudResult.settings);
     applyBizInfoToHome();
+    try{ renderHomeQuickTools(); }catch(_q){}
     updateShareLinks();
   }
 }
@@ -5586,6 +5703,7 @@ async function saveSettingsForm(){
   });
   // Dynamic lists — collect from DOM
   s.extraInfo=collectDynamicList('set_extraInfoList','ei');
+  s.homeQuickTools=collectHomeQuickToolsFromForm();
   s.websites=collectDynamicList('set_websitesList','ws');
   s.lotAddresses=collectDynamicList('set_lotAddressesList','lot');
   s.rtoLinks=collectDynamicList('set_rtoLinksList','rto');
@@ -5602,6 +5720,7 @@ async function saveSettingsForm(){
   var tr=getSettingVal('taxRate',0);
   if(stdBtn) stdBtn.textContent=tr>0?tr+'% Standard':'0% Standard';
   applyBizInfoToHome();
+  try{ renderHomeQuickTools(); }catch(_qt){}
   updateShareLinks();
   initCalcAdvancedTools();
   var msg=document.getElementById('settingsSavedMsg');
@@ -5885,6 +6004,7 @@ function goTo(screenId){
     renderHomeQuoteHistory();
     try{ applyBizInfoToHome(); }catch(_e){}
     try{ renderHomeDashboard(); }catch(_e2){}
+    try{ renderHomeQuickTools(); }catch(_e3){}
   }
   if(screenId==='screenWebsites'){
     try{ populateWebsitesScreen(); }catch(_e3){}
@@ -6020,6 +6140,174 @@ function homeHeroNewQuoteClick(){
   goTo('screenCalc');
 }
 
+var HOME_QUICK_TOOL_SCREEN_IDS=[
+  'screenWebsites','screenCalc','screenPhotos','screenSettings','screenMileage','screenAd','screenInventory','screenCRM','screenContacts','screenFollowups','screenIntakeSelector','screenSalesSheet','screenLandlordForm','screenPurchase','screenRTO','screenInterest'
+];
+var HOME_QT_SVG={
+  globe:'<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.5"/><line x1="2" y1="12" x2="22" y2="12" stroke="rgba(232,200,122,0.88)" stroke-width="1.2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" fill="rgba(232,200,122,0.04)" stroke="rgba(232,200,122,0.88)" stroke-width="1.2"/></svg>',
+  designer:'<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linejoin="round" d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/><rect x="9" y="13" width="6" height="9" rx="0.5" fill="rgba(232,200,122,0.04)" stroke="rgba(232,200,122,0.88)" stroke-width="1.3"/></svg>',
+  photo:'<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linejoin="round" d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4" fill="rgba(232,200,122,0.04)" stroke="rgba(232,200,122,0.88)" stroke-width="1.3"/></svg>',
+  settings:'<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" fill="rgba(232,200,122,0.08)" stroke="rgba(232,200,122,0.88)" stroke-width="1.5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="rgba(232,200,122,0.88)" stroke-width="1.3" stroke-linecap="round"/></svg>',
+  calc:'<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="3" width="16" height="18" rx="2" fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.5"/><path d="M8 7h8M8 11h5" stroke="rgba(232,200,122,0.75)" stroke-width="1.2" stroke-linecap="round"/></svg>',
+  link:'<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 13a5 5 0 0 1 0-7l1-1a5 5 0 0 1 7 7l-1 1" stroke="rgba(232,200,122,0.88)" stroke-width="1.5" stroke-linecap="round"/><path d="M14 11a5 5 0 0 1 0 7l-1 1a5 5 0 0 1-7-7l1-1" stroke="rgba(232,200,122,0.88)" stroke-width="1.5" stroke-linecap="round"/></svg>',
+  default:'<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" fill="rgba(232,200,122,0.08)" stroke="rgba(232,200,122,0.88)" stroke-width="1.5"/><path stroke="rgba(232,200,122,0.88)" stroke-width="1.5" stroke-linecap="round" d="M12 2v2M12 20v2M4.5 4.5l1.5 1.5M18 18l1.5 1.5M2 12h2M20 12h2"/></svg>'
+};
+function getDefaultHomeQuickTools(){
+  return[
+    {label:'Websites',action:'screen',target:'screenWebsites'},
+    {label:'Designer',action:'designer',target:''},
+    {label:'Photo library',action:'screen',target:'screenPhotos'},
+    {label:'Settings',action:'screen',target:'screenSettings'},
+    {label:'Price calc',action:'screen',target:'screenCalc'}
+  ];
+}
+function getHomeQuickTools(){
+  var s=loadSettings();
+  var raw=s.homeQuickTools;
+  if(!Array.isArray(raw)||!raw.length) return getDefaultHomeQuickTools();
+  var out=[];
+  raw.forEach(function(it){
+    if(!it) return;
+    var label=String(it.label||'').trim();
+    if(!label) return;
+    var action=String(it.action||'screen').toLowerCase();
+    if(action!=='screen'&&action!=='url'&&action!=='designer') action='screen';
+    var target=String(it.target||'').trim();
+    out.push({label:label,action:action,target:target});
+  });
+  return out.length?out:getDefaultHomeQuickTools();
+}
+function homeQuickToolSvgForItem(tool){
+  if(!tool) return HOME_QT_SVG.default;
+  if(tool.action==='designer') return HOME_QT_SVG.designer;
+  if(tool.action==='url') return HOME_QT_SVG.link;
+  var t=(tool.target||'').toLowerCase();
+  if(t==='screenwebsites') return HOME_QT_SVG.globe;
+  if(t==='screenphotos') return HOME_QT_SVG.photo;
+  if(t==='screensettings') return HOME_QT_SVG.settings;
+  if(t==='screencalc') return HOME_QT_SVG.calc;
+  return HOME_QT_SVG.default;
+}
+function homeQuickToolScreenSelectHtml(selected){
+  var sel=selected||'screenWebsites';
+  if(HOME_QUICK_TOOL_SCREEN_IDS.indexOf(sel)<0) sel='screenWebsites';
+  return HOME_QUICK_TOOL_SCREEN_IDS.map(function(id){
+    return '<option value="'+id+'"'+(id===sel?' selected':'')+'>'+id+'</option>';
+  }).join('');
+}
+function onHomeQuickToolActionChange(sel){
+  var container=document.getElementById('set_homeQuickToolsList');
+  if(!container) return;
+  var items=[].map.call(container.querySelectorAll('[data-qt-row]'),function(r){
+    var lab=r.querySelector('[data-qt-label]');
+    var actEl=r.querySelector('[data-qt-action]');
+    var tgtEl=r.querySelector('[data-qt-target]');
+    var label=lab?lab.value:'';
+    var action=actEl?actEl.value:'screen';
+    var target='';
+    if(action==='designer') target='';
+    else if(tgtEl){
+      if(tgtEl.tagName==='SELECT') target=tgtEl.value.trim();
+      else target=tgtEl.value.trim();
+    }
+    if(action==='url'&&target&&!/^https?:/i.test(target)) target='';
+    if(action==='screen'){
+      if(!target||HOME_QUICK_TOOL_SCREEN_IDS.indexOf(target)<0) target='screenWebsites';
+    }
+    return {label:label,action:action,target:target};
+  });
+  renderSettingsHomeQuickTools(items);
+}
+function renderSettingsHomeQuickTools(items){
+  var container=document.getElementById('set_homeQuickToolsList');
+  if(!container) return;
+  container.innerHTML='';
+  (items||[]).forEach(function(item){
+    var act=item.action||'screen';
+    var tgt=act==='designer'?'':String(item.target||'');
+    if(act==='screen'&&!tgt) tgt='screenWebsites';
+    var div=document.createElement('div');
+    div.setAttribute('data-qt-row','1');
+    div.style.cssText='display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:8px;padding:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(232,200,122,0.15);border-radius:8px;';
+    var tgtField;
+    if(act==='screen'){
+      tgtField='<select data-qt-target style="flex:1;min-width:160px;font-size:0.75rem;padding:6px;box-sizing:border-box;">'+homeQuickToolScreenSelectHtml(tgt)+'</select>';
+    }else if(act==='url'){
+      tgtField='<input data-qt-target type="url" placeholder="https://..." style="flex:1;min-width:140px;font-size:0.85rem;padding:8px;box-sizing:border-box;" value="'+escAttr(tgt)+'">';
+    }else{
+      tgtField='<input data-qt-target type="text" disabled placeholder="Uses Designer URL in Settings" style="flex:1;min-width:140px;font-size:0.85rem;padding:8px;box-sizing:border-box;opacity:0.65;" value="">';
+    }
+    div.innerHTML='<input data-qt-label type="text" placeholder="Button label" style="flex:1;min-width:120px;font-size:0.85rem;padding:8px;box-sizing:border-box;" value="'+escAttr(item.label||'')+'">'+
+      '<select data-qt-action style="width:138px;font-size:0.75rem;padding:6px;box-sizing:border-box;" onchange="onHomeQuickToolActionChange(this)">'+
+      '<option value="screen"'+(act==='screen'?' selected':'')+'>Open screen</option>'+
+      '<option value="url"'+(act==='url'?' selected':'')+'>External URL</option>'+
+      '<option value="designer"'+(act==='designer'?' selected':'')+'>Designer</option></select>'+tgtField+
+      '<button type="button" onclick="removeListItem(this)" style="-webkit-appearance:none;appearance:none;background:none;border:none;color:var(--barn);font-size:1.1rem;cursor:pointer;padding:4px;">✕</button>';
+    container.appendChild(div);
+  });
+}
+function addHomeQuickToolField(){
+  var container=document.getElementById('set_homeQuickToolsList');
+  if(!container) return;
+  var existing=collectHomeQuickToolsFromForm();
+  existing.push({label:'',action:'screen',target:'screenWebsites'});
+  renderSettingsHomeQuickTools(existing);
+}
+function collectHomeQuickToolsFromForm(){
+  var container=document.getElementById('set_homeQuickToolsList');
+  if(!container) return[];
+  var items=[];
+  container.querySelectorAll('[data-qt-row]').forEach(function(row){
+    var lab=row.querySelector('[data-qt-label]');
+    var act=row.querySelector('[data-qt-action]');
+    var tgtEl=row.querySelector('[data-qt-target]');
+    var label=lab?lab.value.trim():'';
+    if(!label) return;
+    var action=act?act.value:'screen';
+    var target='';
+    if(action==='designer') target='';
+    else if(tgtEl){
+      if(tgtEl.tagName==='SELECT') target=tgtEl.value.trim();
+      else target=tgtEl.value.trim();
+    }
+    if(action==='url'){
+      var u=normalizeExternalUrl(target);
+      if(!u) return;
+      items.push({label:label,action:'url',target:u});
+    }else if(action==='designer'){
+      items.push({label:label,action:'designer',target:''});
+    }else{
+      if(!target||!document.getElementById(target)) return;
+      items.push({label:label,action:'screen',target:target});
+    }
+  });
+  return items;
+}
+function renderHomeQuickTools(){
+  var mount=document.getElementById('homeQuickToolsMount');
+  if(!mount) return;
+  var tools=getHomeQuickTools();
+  mount.innerHTML='';
+  tools.forEach(function(tool){
+    var btn=document.createElement('button');
+    btn.type='button';
+    btn.className='cc-tool-chip';
+    btn.setAttribute('aria-label',tool.label);
+    btn.innerHTML=homeQuickToolSvgForItem(tool)+'<span></span>';
+    var span=btn.querySelector('span');
+    if(span) span.textContent=tool.label;
+    btn.addEventListener('click',function(){
+      if(tool.action==='designer'){ homeOpenDesignerQuick(); return; }
+      if(tool.action==='url'&&tool.target){ window.open(tool.target,'_blank','noopener,noreferrer'); return; }
+      if(tool.action==='screen'&&tool.target){
+        if(document.getElementById(tool.target)) goTo(tool.target);
+        else showToast('Unknown screen: '+tool.target);
+      }
+    });
+    mount.appendChild(btn);
+  });
+}
+
 function renderHomeDashboard(){
   try{
     var history=loadCalcHistory();
@@ -6070,7 +6358,8 @@ function renderHomeDashboard(){
     _homeDashCrmPhone='';
     if(callBtn) callBtn.style.display='none';
     var s=loadSettings();
-    var fbReady=typeof firebaseHasConfig==='function'&&firebaseHasConfig(firebaseConfigFromSettings());
+    var fbReady=typeof firebaseWebConfigReady==='function'&&firebaseWebConfigReady();
+    var staffDash=(typeof firebaseStaffCredentialsPresent==='function')&&firebaseStaffCredentialsPresent();
     if(pill){
       if(!fbReady){
         pill.textContent='SETUP';
@@ -6084,12 +6373,12 @@ function renderHomeDashboard(){
     if(nm&&sub){
       if(!fbReady){
         nm.textContent='Cloud CRM';
-        sub.textContent='Add Firebase keys in Settings to sync leads.';
+        sub.textContent='Add Firebase web app fields in Settings to sync leads.';
       }else{
         var leads=(crmState&&crmState.leads)?crmState.leads:[];
         if(!leads.length){
           nm.textContent='No leads yet';
-          sub.textContent='Tap to add your first customer';
+          sub.textContent=staffDash?'Tap to add your first customer':'Add Staff email/password in Settings, or enable Anonymous';
         }else{
           var top=leads.slice().sort(function(a,b){return leadTouchMs(b)-leadTouchMs(a);})[0];
           var name=(top.contact&&top.contact.name)||'Unnamed';
@@ -9000,6 +9289,7 @@ try{calcState.taxRate=getSettingVal('taxRate',0);}catch(e){}
 try{applyBizInfoToHome();}catch(e){}
 try{renderHomeQuoteHistory();}catch(e){}
 try{renderHomeDashboard();}catch(e){}
+try{renderHomeQuickTools();}catch(e){}
 try{updateShareLinks();}catch(e){}
 try{invInit();}catch(e){}
 try{firebaseTryInit();}catch(e){}
@@ -9007,6 +9297,7 @@ try{
   settingsSyncFromCloud().then(function(result){
     if(result&&result.ok&&result.settings){
       applyBizInfoToHome();
+      try{ renderHomeQuickTools(); }catch(_q){}
       updateShareLinks();
     }
   });
@@ -10041,6 +10332,13 @@ async function submitIntake(type){
 // ============================================================
 // LANDLORD FORM PRINT
 // ============================================================
+function stripInlineStylesForPrint(root){
+  if(!root||root.nodeType!==1) return;
+  try{
+    if(root.hasAttribute&&root.hasAttribute('style')) root.removeAttribute('style');
+    root.querySelectorAll('*').forEach(function(el){ el.removeAttribute('style'); });
+  }catch(_e){}
+}
 function printQuote(){
   var content=document.getElementById('calcQuoteContent');
   if(!content||!content.innerHTML.trim()){showToast('Generate a quote first');return;}
@@ -10086,11 +10384,13 @@ function printQuote(){
     if(custName) custHtml+='<div><strong>Customer:</strong> '+custName+'</div>';
     if(custPhone) custHtml+='<div><strong>Phone:</strong> '+custPhone+'</div>';
     if(custAddr) custHtml+='<div><strong>Delivery Address:</strong> '+custAddr+'</div>';
-    if(custNotes) custHtml+='<div style="margin-top:6px;"><strong>Notes:</strong> '+custNotes+'</div>';
+    if(custNotes) custHtml+='<div class="po-cust-notes"><strong>Notes:</strong> '+custNotes+'</div>';
     custHtml+='</div>';
   }
   if(pi) pi.innerHTML=custHtml;
   if(pq) pq.innerHTML=content.innerHTML;
+  stripInlineStylesForPrint(pq);
+  stripInlineStylesForPrint(pi);
 
   // Show overlay then print — direct window.print() required for iOS Safari
   document.getElementById('printOverlay').style.display='block';
@@ -11058,6 +11358,12 @@ document.addEventListener('DOMContentLoaded', function() {
   // Build settings style reference table
   buildStyleRefTable();
   initCalcAdvancedTools();
+  (async function firebaseBootstrapAuth(){
+    try{
+      await firebaseEnsureAuthed();
+      try{ applyBizInfoToHome(); }catch(_e){}
+    }catch(e){ console.log('firebaseBootstrapAuth',e); }
+  })();
 });
 
 function buildStyleRefTable() {
