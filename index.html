@@ -46,7 +46,7 @@
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-top-offset: max(var(--safe-top), 12px);
   /* Home dock: Price Calc circle diameter (~half app column), shared by dock + scroll padding */
-  --dock-calc-d: min(calc((min(100vw, 480px) - 28px) * 0.5), 140px);
+  --dock-calc-d: min(calc((min(100vw, 480px) - 28px) * 0.42), 100px);
   /* Raise pill + FAB slightly when circle is tall so bar aligns with centered button */
   --dock-lift: min(28px, max(0px, calc((var(--dock-calc-d) - 52px) * 0.4)));
 }
@@ -796,12 +796,134 @@ select option { background:var(--earth); color:var(--cream); }
 #homeWebsitesList { max-height: 140px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 
 /* ── Home dashboard: hero, CRM/Inventory pair, quick tools ── */
-#screenHome .cc-grid {
-  padding-bottom: calc(96px + max(0px, calc(var(--dock-calc-d) - 52px)) + var(--dock-lift, 0px) + env(safe-area-inset-bottom, 0px));
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  min-height: 0;
+#screenHome > .cc-header {
+  flex-shrink: 0;
 }
+#screenHome .cc-grid {
+  /* Space above fixed dock; keep last row tappable (not the tile height) */
+  padding-bottom: calc(58px + max(0px, calc(var(--dock-calc-d) - 52px)) + var(--dock-lift, 0px) + env(safe-area-inset-bottom, 0px));
+  flex: 1 1 0%;
+  min-height: 0;
+  overflow: hidden;
+  -webkit-overflow-scrolling: auto;
+}
+/* Home: no instructional / subtitle helper copy (JS can still target hidden nodes) */
+#screenHome .cc-tagline,
+#screenHome .cc-hero-kicker,
+#screenHome .cc-hero-when,
+#screenHome .cc-create-desc,
+#screenHome .cc-dash-footer,
+#screenHome .cc-dash-sub,
+#screenHome .home-crm-trio .cc-tile-sub,
+#screenHome #homeDashInvEmpty {
+  display: none !important;
+}
+/* Home: one tile height for CRM, Create, Library (grid stays aligned; no overlap) */
+#screenHome {
+  --home-tile-h: 76px;
+  --home-tool-h: 62px;
+}
+#screenHome .cc-tile-primary,
+#screenHome .cc-tile-secondary {
+  min-height: var(--home-tile-h);
+  height: var(--home-tile-h);
+  max-height: var(--home-tile-h);
+  box-sizing: border-box;
+  padding: 5px 8px 4px;
+  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+}
+#screenHome .home-crm-trio > .cc-tile {
+  min-height: var(--home-tile-h) !important;
+  height: var(--home-tile-h);
+  max-height: var(--home-tile-h);
+  padding: 5px 4px 4px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+#screenHome .cc-tile .cc-tile-icon {
+  margin-bottom: 2px !important;
+  flex-shrink: 0;
+}
+#screenHome .cc-tile .cc-tile-label {
+  font-size: 0.74rem !important;
+  letter-spacing: 1.35px !important;
+  line-height: 1.05;
+  text-align: center;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+#screenHome .cc-tool-chip {
+  min-height: var(--home-tool-h);
+  height: var(--home-tool-h);
+  max-height: var(--home-tool-h);
+  width: 70px;
+  padding: 4px 3px;
+  gap: 2px;
+  font-size: 0.55rem;
+  line-height: 1.1;
+  box-sizing: border-box;
+}
+#screenHome .cc-tool-chip svg {
+  width: 20px;
+  height: 20px;
+}
+#screenHome .cc-tools-wrap {
+  margin: 2px 0 3px;
+}
+#screenHome .cc-tools-scroll {
+  padding: 2px 2px 4px;
+}
+#screenHome .cc-tile-vert-center {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+#screenHome .cc-tile-vert-center .cc-tile-icon {
+  margin-bottom: 2px;
+  align-self: center;
+}
+#screenHome .cc-tile-vert-center .cc-tile-label {
+  width: 100%;
+  text-align: center;
+}
+
+/* Home: fit command center in one viewport (no vertical scroll); zoom reduces layout size in WebKit */
+@media (max-height: 860px) {
+  #screenHome .cc-hero-inner { padding: 8px 10px 6px; gap: 10px; }
+  #screenHome .cc-hero-thumb-wrap { width: 80px; height: 64px; }
+  #screenHome .cc-hero-actions { margin-top: 4px; padding: 0 10px 2px; }
+  #screenHome .cc-hero-card { padding-bottom: 10px; }
+}
+@media (max-height: 800px) {
+  #screenHome .cc-grid { zoom: 0.96; }
+  #screenHome .cc-section-label { padding: 2px 2px 0; }
+  #screenHome .cc-tools-wrap { margin: 2px 0 3px; }
+}
+@media (max-height: 760px) {
+  #screenHome { --home-tile-h: 66px; --home-tool-h: 56px; }
+  #screenHome .cc-grid { zoom: 0.92; }
+  #screenHome .cc-tile .cc-tile-label { font-size: 0.7rem !important; }
+}
+@media (max-height: 700px) {
+  #screenHome .cc-grid { zoom: 0.88; }
+  #screenHome .cc-dash-card { min-height: 92px; }
+  #screenHome .cc-hero-thumb-wrap { width: 72px; height: 58px; }
+}
+@media (max-height: 640px) {
+  #screenHome .cc-grid { zoom: 0.84; }
+  #screenHome .cc-hero-title { font-size: 0.88rem; }
+}
+@media (max-height: 600px) {
+  #screenHome .cc-grid { zoom: 0.8; }
+}
+
 .cc-hero-card {
   grid-column: 1 / -1;
   background: linear-gradient(160deg, rgba(52, 40, 32, 0.98) 0%, rgba(40, 30, 24, 0.98) 100%);
@@ -920,19 +1042,19 @@ select option { background:var(--earth); color:var(--cream); }
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 6px;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 .cc-dash-card {
   border: 1px solid rgba(196, 81, 31, 0.45);
   border-radius: 10px;
   background: linear-gradient(150deg, rgba(68, 50, 40, 0.97) 0%, rgba(56, 40, 30, 0.95) 100%);
-  padding: 8px 8px 7px;
+  padding: 5px 6px 4px;
   text-align: left;
   color: var(--wheat);
   box-shadow: 0 2px 8px rgba(139, 46, 13, 0.15), 0 1px 3px rgba(0, 0, 0, 0.25);
   display: flex;
   flex-direction: column;
-  min-height: 132px;
+  min-height: 100px;
   position: relative;
   overflow: hidden;
 }
@@ -960,7 +1082,7 @@ select option { background:var(--earth); color:var(--cream); }
   align-items: center;
   justify-content: space-between;
   gap: 6px;
-  margin-bottom: 6px;
+  margin-bottom: 3px;
 }
 .cc-dash-card-title {
   font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
@@ -992,7 +1114,7 @@ select option { background:var(--earth); color:var(--cream); }
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
   min-height: 0;
 }
 .cc-dash-inv-row {
@@ -1001,8 +1123,8 @@ select option { background:var(--earth); color:var(--cream); }
   align-items: center;
 }
 .cc-dash-inv-thumb {
-  width: 40px;
-  height: 36px;
+  width: 36px;
+  height: 32px;
   border-radius: 6px;
   object-fit: cover;
   border: 1px solid rgba(232, 200, 122, 0.25);
@@ -1010,13 +1132,13 @@ select option { background:var(--earth); color:var(--cream); }
   background: rgba(0, 0, 0, 0.2);
 }
 .cc-dash-name {
-  font-size: 0.74rem;
+  font-size: 0.7rem;
   font-weight: 700;
   color: var(--cream);
-  line-height: 1.2;
+  line-height: 1.15;
 }
 .cc-dash-sub {
-  font-size: 0.58rem;
+  font-size: 0.55rem;
   color: rgba(245, 240, 232, 0.72);
   line-height: 1.25;
 }
@@ -1033,7 +1155,7 @@ select option { background:var(--earth); color:var(--cream); }
   justify-content: center;
   text-decoration: none;
   font-size: 0.85rem;
-  margin: 6px 0 0;
+  margin: 4px 0 0;
   align-self: flex-start;
   cursor: pointer;
   -webkit-appearance: none;
@@ -1041,7 +1163,7 @@ select option { background:var(--earth); color:var(--cream); }
 }
 .cc-dash-phone:active { opacity: 0.9; }
 .cc-dash-footer {
-  margin-top: 6px;
+  margin-top: 3px;
   font-size: 0.58rem;
   font-weight: 700;
   letter-spacing: 1px;
@@ -1052,6 +1174,14 @@ select option { background:var(--earth); color:var(--cream); }
 .cc-tools-wrap {
   grid-column: 1 / -1;
   margin: 4px 0 8px;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+#screenHome .cc-tools-wrap {
+  min-width: 0;
+  overflow: hidden;
 }
 .cc-tools-scroll {
   display: flex;
@@ -1062,6 +1192,11 @@ select option { background:var(--earth); color:var(--cream); }
   padding: 4px 2px 8px;
   scroll-snap-type: x proximity;
   overscroll-behavior-x: contain;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  touch-action: pan-x;
 }
 .cc-tools-scroll::-webkit-scrollbar { height: 4px; }
 .cc-tools-scroll::-webkit-scrollbar-thumb {
@@ -1125,12 +1260,12 @@ select option { background:var(--earth); color:var(--cream); }
   position: fixed;
   bottom: 0;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, 6px);
   width: 100%;
   max-width: 480px;
   z-index: 100;
   pointer-events: none;
-  padding: 0 10px max(12px, calc(10px + env(safe-area-inset-bottom, 0px)));
+  padding: 0 10px max(8px, calc(6px + env(safe-area-inset-bottom, 0px)));
   box-sizing: border-box;
   overflow: visible;
 }
@@ -1152,7 +1287,7 @@ select option { background:var(--earth); color:var(--cream); }
 .home-quick-sheet {
   position: absolute;
   right: 72px;
-  bottom: calc(76px + var(--dock-lift, 0px) + env(safe-area-inset-bottom, 0px));
+  bottom: calc(82px + var(--dock-lift, 0px) + env(safe-area-inset-bottom, 0px));
   min-width: 200px;
   max-width: min(92vw, 280px);
   border-radius: 14px;
@@ -1193,7 +1328,7 @@ select option { background:var(--earth); color:var(--cream); }
 .home-fab {
   position: absolute;
   right: 18px;
-  bottom: calc(68px + var(--dock-lift, 0px) + env(safe-area-inset-bottom, 0px));
+  bottom: calc(74px + var(--dock-lift, 0px) + env(safe-area-inset-bottom, 0px));
   width: 48px;
   height: 48px;
   border-radius: 50%;
@@ -1311,9 +1446,10 @@ select option { background:var(--earth); color:var(--cream); }
   opacity: 0.95;
 }
 .cc-dock-calc-btn svg {
-  width: clamp(26px, calc(var(--dock-calc-d, 72px) * 0.38), 40px);
-  height: clamp(26px, calc(var(--dock-calc-d, 72px) * 0.38), 40px);
+  width: clamp(32px, calc(var(--dock-calc-d, 72px) * 0.5), 50px);
+  height: clamp(32px, calc(var(--dock-calc-d, 72px) * 0.5), 50px);
   display: block;
+  color: rgba(245, 240, 232, 0.95);
 }
 .cc-dock-calc-btn .sr-only {
   position: absolute;
@@ -1329,7 +1465,7 @@ select option { background:var(--earth); color:var(--cream); }
 
 @media (max-height: 700px) {
   :root {
-    --dock-calc-d: min(calc((min(100vw, 480px) - 28px) * 0.45), 112px);
+    --dock-calc-d: min(calc((min(100vw, 480px) - 28px) * 0.38), 92px);
   }
 }
 
@@ -1340,12 +1476,14 @@ select option { background:var(--earth); color:var(--cream); }
   gap: 5px;
 }
 .home-crm-trio > .cc-tile {
-  min-height: 78px;
-  padding: 8px 6px 7px;
+  min-height: 86px;
+  padding: 10px 6px 8px;
   align-items: center;
   text-align: center;
+  box-sizing: border-box;
+  justify-content: center;
 }
-.home-crm-trio .cc-tile-icon { margin-bottom: 3px; justify-content: center; }
+.home-crm-trio .cc-tile-icon { margin-bottom: 2px; justify-content: center; }
 .home-crm-trio .cc-tile-label { font-size: 0.68rem; letter-spacing: 1.15px; }
 .home-crm-trio .cc-tile-sub { font-size: 0.52rem; margin-top: 2px; text-align: center; max-width: 100%; }
 
@@ -1358,16 +1496,18 @@ select option { background:var(--earth); color:var(--cream); }
   .cc-settings-btn { width: 30px; height: 30px; font-size: 0.9rem; }
 
   .cc-grid { gap: 4px; padding: 7px 8px 0; }
+  #screenHome { --home-tile-h: 70px; --home-tool-h: 58px; }
   #screenHome .cc-grid {
-    padding-bottom: calc(88px + max(0px, calc(var(--dock-calc-d) - 52px)) + var(--dock-lift, 0px) + env(safe-area-inset-bottom, 0px));
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    padding-bottom: calc(56px + max(0px, calc(var(--dock-calc-d) - 52px)) + var(--dock-lift, 0px) + env(safe-area-inset-bottom, 0px));
+    overflow: hidden;
+    -webkit-overflow-scrolling: auto;
     min-height: 0;
   }
   .cc-section-label { font-size: 0.54rem; letter-spacing: 2px; padding: 3px 2px 2px; }
 
   .cc-tile-primary,
   .cc-tile-secondary { min-height: 72px; padding: 7px 9px 6px; }
+  .home-crm-trio > .cc-tile { min-height: 72px; padding: 7px 5px 6px; }
   .cc-tile-link { min-height: 44px; padding: 7px 10px; }
   .cc-tile-icon { font-size: 1.06rem; margin-bottom: 1px; }
   .cc-tile-label { font-size: 0.72rem; letter-spacing: 1.45px; }
@@ -1376,17 +1516,17 @@ select option { background:var(--earth); color:var(--cream); }
   #homeWebsitesLabel { font-size: 0.88rem !important; letter-spacing: 1.5px !important; }
   #homeWebsitesList { max-height: 108px; }
 
-  .cc-dock { padding: 0 8px max(10px, calc(8px + env(safe-area-inset-bottom, 0px))); }
+  .cc-dock { padding: 0 8px max(6px, calc(5px + env(safe-area-inset-bottom, 0px))); transform: translate(-50%, 5px); }
   .home-fab {
     width: 44px;
     height: 44px;
     right: 14px;
-    bottom: calc(62px + var(--dock-lift, 0px) + env(safe-area-inset-bottom, 0px));
+    bottom: calc(68px + var(--dock-lift, 0px) + env(safe-area-inset-bottom, 0px));
     font-size: 1.5rem;
   }
   .home-quick-sheet {
     right: 64px;
-    bottom: calc(70px + var(--dock-lift, 0px) + env(safe-area-inset-bottom, 0px));
+    bottom: calc(76px + var(--dock-lift, 0px) + env(safe-area-inset-bottom, 0px));
   }
 }
 </style>
@@ -1911,7 +2051,6 @@ input:focus, select:focus, textarea:focus {
             <div class="cc-dash-name" id="homeDashCrmName">Set up Firebase in Settings</div>
             <div class="cc-dash-sub" id="homeDashCrmSub"></div>
           </div>
-          <div class="cc-dash-footer">View CRM ›</div>
         </button>
         <button type="button" class="cc-dash-phone" id="homeDashCrmCall" style="display:none;" onclick="event.stopPropagation();homeDialDashCrm();" aria-label="Call lead">📞</button>
       </div>
@@ -1931,48 +2070,9 @@ input:focus, select:focus, textarea:focus {
             </div>
             <div class="cc-dash-name" id="homeDashInvEmpty">No inventory yet</div>
           </div>
-          <div class="cc-dash-footer">View inventory ›</div>
         </button>
       </div>
     </div>
-
-    <div class="cc-section-label cc-span2"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;display:block;"><path fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> CREATE</div>
-    <button class="cc-tile cc-tile-primary" onclick="goTo('screenSalesSheet')">
-      <div class="cc-tile-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;display:block;"><path fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linejoin="round" d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1.5" fill="rgba(232,200,122,0.88)"/></svg></div>
-      <div style="display:flex;flex-direction:column;width:100%;align-items:flex-start;gap:2px;margin-top:-2px;">
-        <div class="cc-tile-label" style="font-size:0.82rem;letter-spacing:1.5px;">SALES SHEET</div>
-        <div class="cc-create-desc">Generate a professional sales sheet in seconds.</div>
-      </div>
-      <div class="cc-tile-accent"></div>
-    </button>
-    <button class="cc-tile cc-tile-primary" onclick="goTo('screenAd')">
-      <div class="cc-tile-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;display:block;"><path fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linejoin="round" d="M3 11v2a1 1 0 0 0 1 1h1l1 4h2l-1-4h9l1 2h1V7h-1l-1 2H5a1 1 0 0 0-1 1z"/><line x1="19" y1="7" x2="19" y2="17" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linecap="round"/></svg></div>
-      <div style="display:flex;flex-direction:column;width:100%;align-items:flex-start;gap:2px;margin-top:-2px;">
-        <div class="cc-tile-label" style="font-size:0.82rem;letter-spacing:1.5px;">MARKETPLACE AD</div>
-        <div class="cc-create-desc">Create an ad ready for online listings.</div>
-      </div>
-      <div class="cc-tile-accent"></div>
-    </button>
-
-    <div class="cc-tools-wrap cc-span2">
-      <div class="cc-section-label" style="border-top:none;padding-top:2px;margin-bottom:2px;">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;display:block;"><path stroke="rgba(232,200,122,0.88)" stroke-width="1.5" stroke-linecap="round" fill="none" d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/><circle cx="12" cy="12" r="3" fill="rgba(232,200,122,0.08)" stroke="rgba(232,200,122,0.88)" stroke-width="1.3"/></svg>
-        QUICK TOOLS
-      </div>
-      <div class="cc-tools-scroll" id="homeQuickToolsMount"></div>
-    </div>
-
-    <div class="cc-section-label cc-span2"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;display:block;"><rect x="5" y="2" width="14" height="20" rx="2" fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6"/><line x1="12" y1="18" x2="12.01" y2="18" stroke="rgba(232,200,122,0.88)" stroke-width="2.5" stroke-linecap="round"/></svg> LIBRARY &amp; FORMS</div>
-    <button class="cc-tile cc-tile-secondary" onclick="goTo('screenIntakeSelector')">
-      <div class="cc-tile-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;display:block;"><path fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linejoin="round" d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.3"/><line x1="8" y1="10" x2="16" y2="10" stroke="rgba(232,200,122,0.88)" stroke-width="1.3" stroke-linecap="round"/><line x1="8" y1="14" x2="16" y2="14" stroke="rgba(232,200,122,0.88)" stroke-width="1.3" stroke-linecap="round"/><line x1="8" y1="18" x2="12" y2="18" stroke="rgba(232,200,122,0.88)" stroke-width="1.3" stroke-linecap="round"/></svg></div>
-      <div class="cc-tile-label" style="font-size:1.0rem;letter-spacing:2px;">INTAKE FORM</div>
-      <div class="cc-tile-accent"></div>
-    </button>
-    <button class="cc-tile cc-tile-secondary" onclick="goTo('screenMileage')">
-      <div class="cc-tile-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;display:block;"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="rgba(232,200,122,0.88)" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="12" r="3" fill="rgba(232,200,122,0.12)" stroke="rgba(232,200,122,0.88)" stroke-width="1.4"/></svg></div>
-      <div class="cc-tile-label" style="font-size:0.95rem;letter-spacing:1.8px;">MILEAGE</div>
-      <div class="cc-tile-accent"></div>
-    </button>
 
     <div class="cc-section-label cc-span2"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;display:block;"><rect x="2" y="3" width="20" height="18" rx="2" fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6"/><rect x="5" y="12" width="3" height="7" fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.3"/><rect x="10.5" y="8" width="3" height="11" fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.3"/><rect x="16" y="5" width="3" height="14" fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.3"/></svg> CRM</div>
     <div class="home-crm-trio">
@@ -1992,6 +2092,38 @@ input:focus, select:focus, textarea:focus {
         <div class="cc-tile-sub" id="homeFollowupsSub">No activity yet</div>
       </button>
     </div>
+
+    <div class="cc-section-label cc-span2"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;display:block;"><path fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> CREATE</div>
+    <button class="cc-tile cc-tile-primary" onclick="goTo('screenSalesSheet')">
+      <div class="cc-tile-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;display:block;"><path fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linejoin="round" d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1.5" fill="rgba(232,200,122,0.88)"/></svg></div>
+      <div class="cc-tile-label">SALES SHEET</div>
+      <div class="cc-tile-accent"></div>
+    </button>
+    <button class="cc-tile cc-tile-primary" onclick="goTo('screenAd')">
+      <div class="cc-tile-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;display:block;"><path fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linejoin="round" d="M3 11v2a1 1 0 0 0 1 1h1l1 4h2l-1-4h9l1 2h1V7h-1l-1 2H5a1 1 0 0 0-1 1z"/><line x1="19" y1="7" x2="19" y2="17" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linecap="round"/></svg></div>
+      <div class="cc-tile-label">MARKETPLACE AD</div>
+      <div class="cc-tile-accent"></div>
+    </button>
+
+    <div class="cc-tools-wrap cc-span2">
+      <div class="cc-section-label" style="border-top:none;padding-top:2px;margin-bottom:2px;">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;display:block;"><path stroke="rgba(232,200,122,0.88)" stroke-width="1.5" stroke-linecap="round" fill="none" d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/><circle cx="12" cy="12" r="3" fill="rgba(232,200,122,0.08)" stroke="rgba(232,200,122,0.88)" stroke-width="1.3"/></svg>
+        QUICK TOOLS
+      </div>
+      <div class="cc-tools-scroll" id="homeQuickToolsMount"></div>
+    </div>
+
+    <div class="cc-section-label cc-span2"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;display:block;"><rect x="5" y="2" width="14" height="20" rx="2" fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6"/><line x1="12" y1="18" x2="12.01" y2="18" stroke="rgba(232,200,122,0.88)" stroke-width="2.5" stroke-linecap="round"/></svg> LIBRARY &amp; FORMS</div>
+    <button class="cc-tile cc-tile-secondary cc-tile-vert-center" onclick="goTo('screenIntakeSelector')">
+      <div class="cc-tile-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;display:block;"><path fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linejoin="round" d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.3"/><line x1="8" y1="10" x2="16" y2="10" stroke="rgba(232,200,122,0.88)" stroke-width="1.3" stroke-linecap="round"/><line x1="8" y1="14" x2="16" y2="14" stroke="rgba(232,200,122,0.88)" stroke-width="1.3" stroke-linecap="round"/><line x1="8" y1="18" x2="12" y2="18" stroke="rgba(232,200,122,0.88)" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+      <div class="cc-tile-label">INTAKE FORM</div>
+      <div class="cc-tile-accent"></div>
+    </button>
+    <button class="cc-tile cc-tile-secondary cc-tile-vert-center" onclick="goTo('screenMileage')">
+      <div class="cc-tile-icon"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;display:block;"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="rgba(232,200,122,0.88)" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="12" r="3" fill="rgba(232,200,122,0.12)" stroke="rgba(232,200,122,0.88)" stroke-width="1.4"/></svg></div>
+      <div class="cc-tile-label">MILEAGE</div>
+      <div class="cc-tile-accent"></div>
+    </button>
 
     <div id="homeDesignerHiddenSlot">
       <a id="homeDesignerLink" href="#" target="_blank" rel="noopener noreferrer">Designer</a>
@@ -2028,12 +2160,7 @@ input:focus, select:focus, textarea:focus {
   <!-- COMMAND DOCK -->
   <div class="cc-dock" id="homeBottomDock">
     <div id="homeQuickSheetBackdrop" class="home-quick-backdrop" onclick="homeToggleQuickSheet(false)" aria-hidden="true"></div>
-    <div id="homeQuickSheet" class="home-quick-sheet" role="menu" aria-hidden="true">
-      <button type="button" class="home-quick-row" onclick="homeQuickNewQuote()">New quote</button>
-      <button type="button" class="home-quick-row" onclick="homeQuickAddContact()">Add customer</button>
-      <button type="button" class="home-quick-row" onclick="homeQuickAddPhoto()">Add photo</button>
-      <button type="button" class="home-quick-row" onclick="homeQuickInventory()">Add inventory item</button>
-    </div>
+    <div id="homeQuickSheet" class="home-quick-sheet" role="menu" aria-hidden="true"></div>
     <button type="button" id="homeFabBtn" class="home-fab" onclick="homeToggleQuickSheet()" aria-label="Quick actions">+</button>
 
     <div class="cc-dock-shell">
@@ -2048,9 +2175,26 @@ input:focus, select:focus, textarea:focus {
         <div class="cc-dock-center-slot">
           <button type="button" class="cc-dock-calc-btn" onclick="goTo('screenCalc')" aria-label="Open price calculator" title="Price calculator">
             <span class="sr-only">Price calculator</span>
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <rect x="4" y="3" width="16" height="18" rx="2" fill="rgba(245,240,232,0.12)" stroke="rgba(245,240,232,0.95)" stroke-width="1.5"/>
-              <path d="M8 7h8M8 11h5M8 15h6" stroke="rgba(245,240,232,0.9)" stroke-width="1.2" stroke-linecap="round"/>
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+              <rect x="3" y="2" width="18" height="20" rx="2.2" fill="currentColor" fill-opacity="0.12" stroke="currentColor" stroke-width="1.35" stroke-linejoin="round"/>
+              <rect x="4.8" y="3.5" width="14.4" height="4.4" rx="0.9" fill="currentColor" fill-opacity="0.2"/>
+              <g fill="currentColor" fill-opacity="0.85" stroke="none">
+                <rect x="4.6" y="9.1" width="3.1" height="2.4" rx="0.4"/>
+                <rect x="8.45" y="9.1" width="3.1" height="2.4" rx="0.4"/>
+                <rect x="12.3" y="9.1" width="3.1" height="2.4" rx="0.4"/>
+                <rect x="16.15" y="9.1" width="3.1" height="2.4" rx="0.4"/>
+                <rect x="4.6" y="12" width="3.1" height="2.4" rx="0.4"/>
+                <rect x="8.45" y="12" width="3.1" height="2.4" rx="0.4"/>
+                <rect x="12.3" y="12" width="3.1" height="2.4" rx="0.4"/>
+                <rect x="16.15" y="12" width="3.1" height="2.4" rx="0.4"/>
+                <rect x="4.6" y="14.9" width="3.1" height="2.4" rx="0.4"/>
+                <rect x="8.45" y="14.9" width="3.1" height="2.4" rx="0.4"/>
+                <rect x="12.3" y="14.9" width="3.1" height="2.4" rx="0.4"/>
+                <rect x="16.15" y="14.9" width="3.1" height="2.4" rx="0.4"/>
+                <rect x="4.6" y="17.8" width="7" height="2.4" rx="0.4" fill-opacity="0.95"/>
+                <rect x="12.3" y="17.8" width="3.1" height="2.4" rx="0.4"/>
+                <rect x="16.15" y="17.8" width="3.1" height="2.4" rx="0.4"/>
+              </g>
             </svg>
           </button>
         </div>
@@ -2602,6 +2746,17 @@ input:focus, select:focus, textarea:focus {
                 <input type="number" id="c_loftFt" placeholder="Enter feet" min="1" oninput="renderCalcQuote();updateQuickPrice()">
               </div>
               <div class="opt-calc-preview" id="prev_loft"></div>
+            </div>
+          </div>
+
+          <!-- Drop Loft -->
+          <div class="opt-row" id="row_droploft">
+            <div class="opt-row-toggle" onclick="toggleOpt('droploft')">
+              <div class="opt-check" id="chk_droploft"></div>
+              <div class="opt-info">
+                <div class="opt-name">Drop Loft</div>
+                <div class="opt-desc">$200</div>
+              </div>
             </div>
           </div>
 
@@ -3412,7 +3567,7 @@ input:focus, select:focus, textarea:focus {
     <div id="p_customTrimWrap" style="display:none;" class="field-group"><label class="field-label">Custom Trim Color</label><input type="text" id="p_customTrim" placeholder="e.g. Sherwin-Williams SW6119 Antique White" style="width:100%;box-sizing:border-box;"></div>
 
     <span class="section-head">Add-Ons Interest</span>
-    <div class="check-group" id="p_addons"><div class="check-chip" data-val="Windows">Windows</div><div class="check-chip" data-val="Loft">Loft</div><div class="check-chip" data-val="Workbench">Workbench</div><div class="check-chip" data-val="Shelving">Shelving</div><div class="check-chip" data-val="Insulation">Insulation</div><div class="check-chip" data-val="Garage Door">Garage Door</div><div class="check-chip" data-val="Porch">Porch</div><div class="check-chip" data-val="Metal Siding">Metal Siding</div><div class="check-chip" data-val="Interior Walls">Interior Walls</div><div class="check-chip" data-val="Flooring Upgrade">Flooring Upgrade</div></div>
+    <div class="check-group" id="p_addons"><div class="check-chip" data-val="Windows">Windows</div><div class="check-chip" data-val="Loft">Loft</div><div class="check-chip" data-val="Drop Loft">Drop Loft</div><div class="check-chip" data-val="Workbench">Workbench</div><div class="check-chip" data-val="Shelving">Shelving</div><div class="check-chip" data-val="Insulation">Insulation</div><div class="check-chip" data-val="Garage Door">Garage Door</div><div class="check-chip" data-val="Porch">Porch</div><div class="check-chip" data-val="Metal Siding">Metal Siding</div><div class="check-chip" data-val="Interior Walls">Interior Walls</div><div class="check-chip" data-val="Flooring Upgrade">Flooring Upgrade</div></div>
     <div class="field-group" style="margin-top:8px;"><label class="field-label" style="font-size:0.75rem;">Other / custom ideas</label><input type="text" id="p_addons_custom" placeholder="Describe any custom requests..."></div>
     <span class="section-head">Payment</span>
     <div class="field-group"><label class="field-label">Preferred Payment Method</label><select id="p_paymethod"><option value="">Select</option><option>Cash</option><option>Check</option><option>Credit/Debit Card — no card fees</option></select></div>
@@ -3537,7 +3692,7 @@ input:focus, select:focus, textarea:focus {
     <div id="r_customTrimWrap" style="display:none;" class="field-group"><label class="field-label">Custom Trim Color</label><input type="text" id="r_customTrim" placeholder="e.g. Sherwin-Williams SW6119 Antique White" style="width:100%;box-sizing:border-box;"></div>
 
     <span class="section-head">Add-Ons Interest</span>
-    <div class="check-group" id="r_addons"><div class="check-chip" data-val="Windows">Windows</div><div class="check-chip" data-val="Loft">Loft</div><div class="check-chip" data-val="Workbench">Workbench</div><div class="check-chip" data-val="Shelving">Shelving</div><div class="check-chip" data-val="Insulation">Insulation</div><div class="check-chip" data-val="Garage Door">Garage Door</div><div class="check-chip" data-val="Porch">Porch</div><div class="check-chip" data-val="Metal Siding">Metal Siding</div><div class="check-chip" data-val="Interior Walls">Interior Walls</div><div class="check-chip" data-val="Flooring Upgrade">Flooring Upgrade</div></div>
+    <div class="check-group" id="r_addons"><div class="check-chip" data-val="Windows">Windows</div><div class="check-chip" data-val="Loft">Loft</div><div class="check-chip" data-val="Drop Loft">Drop Loft</div><div class="check-chip" data-val="Workbench">Workbench</div><div class="check-chip" data-val="Shelving">Shelving</div><div class="check-chip" data-val="Insulation">Insulation</div><div class="check-chip" data-val="Garage Door">Garage Door</div><div class="check-chip" data-val="Porch">Porch</div><div class="check-chip" data-val="Metal Siding">Metal Siding</div><div class="check-chip" data-val="Interior Walls">Interior Walls</div><div class="check-chip" data-val="Flooring Upgrade">Flooring Upgrade</div></div>
     <div class="field-group" style="margin-top:8px;"><label class="field-label" style="font-size:0.75rem;">Other / custom ideas</label><input type="text" id="r_addons_custom" placeholder="Describe any custom requests..."></div>
     <span class="section-head">Site Conditions</span>
     <div class="field-group"><label class="field-label">Site Access</label><select id="r_access"><option value="">Select</option><option>Easy — plenty of room</option><option>Moderate — some obstacles</option><option>Difficult — narrow/slope/rough</option><option>Unknown</option></select></div>
@@ -3588,7 +3743,7 @@ input:focus, select:focus, textarea:focus {
     <div class="field-group"><label class="field-label">Budget</label><select id="i_budget"><option value="">Select</option><option>Under $5,000</option><option>$5,000–$8,000</option><option>$8,000–$12,000</option><option>$12,000–$18,000</option><option>$18,000–$25,000</option><option>$25,000+</option><option>Flexible</option></select></div>
     <div class="field-group"><label class="field-label">Timeline</label><select id="i_timeline"><option value="">Select</option><option>ASAP / This week</option><option>Within a month</option><option>1–3 months</option><option>3–6 months</option><option>Just researching</option></select></div>
     <span class="section-head">Add-Ons Interest</span>
-    <div class="check-group" id="i_addons"><div class="check-chip" data-val="Windows">Windows</div><div class="check-chip" data-val="Loft">Loft</div><div class="check-chip" data-val="Workbench">Workbench</div><div class="check-chip" data-val="Shelving">Shelving</div><div class="check-chip" data-val="Insulation">Insulation</div><div class="check-chip" data-val="Garage Door">Garage Door</div><div class="check-chip" data-val="Porch">Porch</div><div class="check-chip" data-val="Metal Siding">Metal Siding</div><div class="check-chip" data-val="Interior Walls">Interior Walls</div><div class="check-chip" data-val="Flooring Upgrade">Flooring Upgrade</div></div>
+    <div class="check-group" id="i_addons"><div class="check-chip" data-val="Windows">Windows</div><div class="check-chip" data-val="Loft">Loft</div><div class="check-chip" data-val="Drop Loft">Drop Loft</div><div class="check-chip" data-val="Workbench">Workbench</div><div class="check-chip" data-val="Shelving">Shelving</div><div class="check-chip" data-val="Insulation">Insulation</div><div class="check-chip" data-val="Garage Door">Garage Door</div><div class="check-chip" data-val="Porch">Porch</div><div class="check-chip" data-val="Metal Siding">Metal Siding</div><div class="check-chip" data-val="Interior Walls">Interior Walls</div><div class="check-chip" data-val="Flooring Upgrade">Flooring Upgrade</div></div>
     <div class="field-group" style="margin-top:8px;"><label class="field-label" style="font-size:0.75rem;">Other / custom ideas</label><input type="text" id="i_addons_custom" placeholder="Describe any custom requests..."></div>
     <span class="section-head">Payment &amp; Site</span>
     <div class="field-group"><label class="field-label">Cash or RTO?</label>
@@ -4191,6 +4346,16 @@ input:focus, select:focus, textarea:focus {
           </div>
         </div>
 
+        <div class="opt-row" id="ss_row_droploft">
+          <div class="opt-row-toggle" onclick="ssToggle('droploft')">
+            <div class="opt-check" id="ss_chk_droploft"></div>
+            <div class="opt-info">
+              <div class="opt-name">Drop Loft</div>
+              <div class="opt-desc" id="ss_price_droploft">$200</div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -4456,9 +4621,14 @@ input:focus, select:focus, textarea:focus {
 
     <!-- Home quick tools (command center) -->
     <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 6px;">Home quick tools</div>
-    <div style="font-size:0.72rem;color:rgba(232,200,122,0.5);margin-bottom:8px;">Shown on the dashboard; scrolls horizontally if you add many. Use <strong>Open screen</strong> for in-app pages, <strong>External URL</strong> for web links, or <strong>Designer</strong> for your designer URL from Settings.</div>
+    <div style="font-size:0.72rem;color:rgba(232,200,122,0.5);margin-bottom:8px;">Controls the <strong>Quick tools</strong> horizontal strip on the home screen. Add as many as you need; the row scrolls sideways. Same action types as below: <strong>Open screen</strong>, <strong>Quick action</strong> presets, <strong>External URL</strong>, or <strong>Designer</strong>.</div>
     <div id="set_homeQuickToolsList" style="margin-bottom:6px;"></div>
-    <button type="button" onclick="addHomeQuickToolField()" class="btn-secondary" style="font-size:0.8rem;padding:7px 14px;">+ Add quick tool</button>
+    <button type="button" onclick="addHomeQuickListItem('set_homeQuickToolsList')" class="btn-secondary" style="font-size:0.8rem;padding:7px 14px;">+ Add quick tool</button>
+
+    <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:20px 0 6px;">Quick action menu (+)</div>
+    <div style="font-size:0.72rem;color:rgba(232,200,122,0.5);margin-bottom:8px;">Controls the <strong>+</strong> button sheet only — separate from <strong>Quick tools</strong>, so you can show a short menu here and more chips in the row (or the reverse).</div>
+    <div id="set_homeQuickActionsList" style="margin-bottom:6px;"></div>
+    <button type="button" onclick="addHomeQuickListItem('set_homeQuickActionsList')" class="btn-secondary" style="font-size:0.8rem;padding:7px 14px;">+ Add quick action</button>
 
     <!-- Websites -->
     <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 6px;">Websites</div>
@@ -5654,7 +5824,17 @@ function renderSettingsFormFromSettings(s){
   renderSettingsExtraInfo(s.extraInfo||[]);
   var _qt=s.homeQuickTools;
   if(!Array.isArray(_qt)||!_qt.length) _qt=getDefaultHomeQuickTools();
-  renderSettingsHomeQuickTools(_qt);
+  renderSettingsHomeQuickList('set_homeQuickToolsList',_qt);
+  var _qa;
+  if(s.homeQuickActions===undefined){
+    _qa=parseHomeQuickItems(s.homeQuickTools);
+    if(!_qa.length) _qa=getDefaultHomeQuickTools();
+  }else if(!Array.isArray(s.homeQuickActions)||!s.homeQuickActions.length){
+    _qa=getDefaultHomeQuickActions();
+  }else{
+    _qa=s.homeQuickActions;
+  }
+  renderSettingsHomeQuickList('set_homeQuickActionsList',_qa);
   renderSettingsWebsites(s.websites||[]);
   renderSettingsLotAddresses(s.lotAddresses||[]);
   renderSettingsRTOLinks(s.rtoLinks||[]);
@@ -5673,6 +5853,7 @@ async function loadSettingsForm(){
     renderSettingsFormFromSettings(cloudResult.settings);
     applyBizInfoToHome();
     try{ renderHomeQuickTools(); }catch(_q){}
+    try{ renderHomeQuickSheet(); }catch(_q2){}
     updateShareLinks();
   }
 }
@@ -5703,7 +5884,8 @@ async function saveSettingsForm(){
   });
   // Dynamic lists — collect from DOM
   s.extraInfo=collectDynamicList('set_extraInfoList','ei');
-  s.homeQuickTools=collectHomeQuickToolsFromForm();
+  s.homeQuickTools=collectHomeQuickListFromForm('set_homeQuickToolsList');
+  s.homeQuickActions=collectHomeQuickListFromForm('set_homeQuickActionsList');
   s.websites=collectDynamicList('set_websitesList','ws');
   s.lotAddresses=collectDynamicList('set_lotAddressesList','lot');
   s.rtoLinks=collectDynamicList('set_rtoLinksList','rto');
@@ -5721,6 +5903,7 @@ async function saveSettingsForm(){
   if(stdBtn) stdBtn.textContent=tr>0?tr+'% Standard':'0% Standard';
   applyBizInfoToHome();
   try{ renderHomeQuickTools(); }catch(_qt){}
+  try{ renderHomeQuickSheet(); }catch(_qt2){}
   updateShareLinks();
   initCalcAdvancedTools();
   var msg=document.getElementById('settingsSavedMsg');
@@ -6005,6 +6188,7 @@ function goTo(screenId){
     try{ applyBizInfoToHome(); }catch(_e){}
     try{ renderHomeDashboard(); }catch(_e2){}
     try{ renderHomeQuickTools(); }catch(_e3){}
+    try{ renderHomeQuickSheet(); }catch(_e4){}
   }
   if(screenId==='screenWebsites'){
     try{ populateWebsitesScreen(); }catch(_e3){}
@@ -6143,6 +6327,20 @@ function homeHeroNewQuoteClick(){
 var HOME_QUICK_TOOL_SCREEN_IDS=[
   'screenWebsites','screenCalc','screenPhotos','screenSettings','screenMileage','screenAd','screenInventory','screenCRM','screenContacts','screenFollowups','screenIntakeSelector','screenSalesSheet','screenLandlordForm','screenPurchase','screenRTO','screenInterest'
 ];
+var HOME_QUICK_ACTION_PRESETS=[
+  {id:'__qa_newQuote', label:'New quote (fresh calc)'},
+  {id:'__qa_addContact', label:'Add customer (new lead)'},
+  {id:'__qa_addPhoto', label:'Add photo (library)'},
+  {id:'__qa_addInventory', label:'Add inventory item'}
+];
+function isHomeQuickActionTarget(t){
+  return /^__qa_/.test(String(t||''));
+}
+function isValidHomeQuickToolScreenTarget(t){
+  if(!t) return false;
+  if(isHomeQuickActionTarget(t)) return true;
+  return HOME_QUICK_TOOL_SCREEN_IDS.indexOf(t) >= 0;
+}
 var HOME_QT_SVG={
   globe:'<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.5"/><line x1="2" y1="12" x2="22" y2="12" stroke="rgba(232,200,122,0.88)" stroke-width="1.2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" fill="rgba(232,200,122,0.04)" stroke="rgba(232,200,122,0.88)" stroke-width="1.2"/></svg>',
   designer:'<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linejoin="round" d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/><rect x="9" y="13" width="6" height="9" rx="0.5" fill="rgba(232,200,122,0.04)" stroke="rgba(232,200,122,0.88)" stroke-width="1.3"/></svg>',
@@ -6154,6 +6352,10 @@ var HOME_QT_SVG={
 };
 function getDefaultHomeQuickTools(){
   return[
+    {label:'New quote',action:'screen',target:'__qa_newQuote'},
+    {label:'Add customer',action:'screen',target:'__qa_addContact'},
+    {label:'Add photo',action:'screen',target:'__qa_addPhoto'},
+    {label:'Add inventory',action:'screen',target:'__qa_addInventory'},
     {label:'Websites',action:'screen',target:'screenWebsites'},
     {label:'Designer',action:'designer',target:''},
     {label:'Photo library',action:'screen',target:'screenPhotos'},
@@ -6161,12 +6363,17 @@ function getDefaultHomeQuickTools(){
     {label:'Price calc',action:'screen',target:'screenCalc'}
   ];
 }
-function getHomeQuickTools(){
-  var s=loadSettings();
-  var raw=s.homeQuickTools;
-  if(!Array.isArray(raw)||!raw.length) return getDefaultHomeQuickTools();
+function getDefaultHomeQuickActions(){
+  return[
+    {label:'New quote',action:'screen',target:'__qa_newQuote'},
+    {label:'Add customer',action:'screen',target:'__qa_addContact'},
+    {label:'Add photo',action:'screen',target:'__qa_addPhoto'},
+    {label:'Add inventory',action:'screen',target:'__qa_addInventory'}
+  ];
+}
+function parseHomeQuickItems(raw){
   var out=[];
-  raw.forEach(function(it){
+  (raw||[]).forEach(function(it){
     if(!it) return;
     var label=String(it.label||'').trim();
     if(!label) return;
@@ -6175,7 +6382,24 @@ function getHomeQuickTools(){
     var target=String(it.target||'').trim();
     out.push({label:label,action:action,target:target});
   });
+  return out;
+}
+function getHomeQuickTools(){
+  var s=loadSettings();
+  var raw=s.homeQuickTools;
+  if(!Array.isArray(raw)||!raw.length) return getDefaultHomeQuickTools();
+  var out=parseHomeQuickItems(raw);
   return out.length?out:getDefaultHomeQuickTools();
+}
+function getHomeQuickActions(){
+  var s=loadSettings();
+  if(s.homeQuickActions===undefined){
+    return getHomeQuickTools();
+  }
+  var raw=s.homeQuickActions;
+  if(!Array.isArray(raw)||!raw.length) return getDefaultHomeQuickActions();
+  var out=parseHomeQuickItems(raw);
+  return out.length?out:getDefaultHomeQuickActions();
 }
 function homeQuickToolSvgForItem(tool){
   if(!tool) return HOME_QT_SVG.default;
@@ -6186,17 +6410,24 @@ function homeQuickToolSvgForItem(tool){
   if(t==='screenphotos') return HOME_QT_SVG.photo;
   if(t==='screensettings') return HOME_QT_SVG.settings;
   if(t==='screencalc') return HOME_QT_SVG.calc;
+  if(t==='__qa_newquote') return HOME_QT_SVG.calc;
+  if(t==='__qa_addphoto') return HOME_QT_SVG.photo;
   return HOME_QT_SVG.default;
 }
+
 function homeQuickToolScreenSelectHtml(selected){
   var sel=selected||'screenWebsites';
-  if(HOME_QUICK_TOOL_SCREEN_IDS.indexOf(sel)<0) sel='screenWebsites';
-  return HOME_QUICK_TOOL_SCREEN_IDS.map(function(id){
+  if(!isValidHomeQuickToolScreenTarget(sel)) sel='screenWebsites';
+  var head=HOME_QUICK_TOOL_SCREEN_IDS.map(function(id){
     return '<option value="'+id+'"'+(id===sel?' selected':'')+'>'+id+'</option>';
   }).join('');
+  var tail=HOME_QUICK_ACTION_PRESETS.map(function(p){
+    return '<option value="'+p.id+'"'+(p.id===sel?' selected':'')+'">'+p.label+'</option>';
+  }).join('');
+  return '<optgroup label="App screens">'+head+'</optgroup><optgroup label="Quick actions">'+tail+'</optgroup>';
 }
-function onHomeQuickToolActionChange(sel){
-  var container=document.getElementById('set_homeQuickToolsList');
+function onHomeQuickToolListActionChange(containerId, sel){
+  var container=document.getElementById(containerId);
   if(!container) return;
   var items=[].map.call(container.querySelectorAll('[data-qt-row]'),function(r){
     var lab=r.querySelector('[data-qt-label]');
@@ -6212,15 +6443,17 @@ function onHomeQuickToolActionChange(sel){
     }
     if(action==='url'&&target&&!/^https?:/i.test(target)) target='';
     if(action==='screen'){
-      if(!target||HOME_QUICK_TOOL_SCREEN_IDS.indexOf(target)<0) target='screenWebsites';
+      if(!target||!isValidHomeQuickToolScreenTarget(target)) target='screenWebsites';
     }
     return {label:label,action:action,target:target};
   });
-  renderSettingsHomeQuickTools(items);
+  renderSettingsHomeQuickList(containerId, items);
 }
-function renderSettingsHomeQuickTools(items){
-  var container=document.getElementById('set_homeQuickToolsList');
+function renderSettingsHomeQuickList(containerId, items){
+  var container=document.getElementById(containerId);
   if(!container) return;
+  var cid=String(containerId||'');
+  var oc='onchange="onHomeQuickToolListActionChange(\''+cid.replace(/'/g,"\\'")+'\',this)"';
   container.innerHTML='';
   (items||[]).forEach(function(item){
     var act=item.action||'screen';
@@ -6238,7 +6471,7 @@ function renderSettingsHomeQuickTools(items){
       tgtField='<input data-qt-target type="text" disabled placeholder="Uses Designer URL in Settings" style="flex:1;min-width:140px;font-size:0.85rem;padding:8px;box-sizing:border-box;opacity:0.65;" value="">';
     }
     div.innerHTML='<input data-qt-label type="text" placeholder="Button label" style="flex:1;min-width:120px;font-size:0.85rem;padding:8px;box-sizing:border-box;" value="'+escAttr(item.label||'')+'">'+
-      '<select data-qt-action style="width:138px;font-size:0.75rem;padding:6px;box-sizing:border-box;" onchange="onHomeQuickToolActionChange(this)">'+
+      '<select data-qt-action style="width:138px;font-size:0.75rem;padding:6px;box-sizing:border-box;" '+oc+'>'+
       '<option value="screen"'+(act==='screen'?' selected':'')+'>Open screen</option>'+
       '<option value="url"'+(act==='url'?' selected':'')+'>External URL</option>'+
       '<option value="designer"'+(act==='designer'?' selected':'')+'>Designer</option></select>'+tgtField+
@@ -6246,15 +6479,15 @@ function renderSettingsHomeQuickTools(items){
     container.appendChild(div);
   });
 }
-function addHomeQuickToolField(){
-  var container=document.getElementById('set_homeQuickToolsList');
+function addHomeQuickListItem(containerId){
+  var container=document.getElementById(containerId);
   if(!container) return;
-  var existing=collectHomeQuickToolsFromForm();
+  var existing=collectHomeQuickListFromForm(containerId);
   existing.push({label:'',action:'screen',target:'screenWebsites'});
-  renderSettingsHomeQuickTools(existing);
+  renderSettingsHomeQuickList(containerId, existing);
 }
-function collectHomeQuickToolsFromForm(){
-  var container=document.getElementById('set_homeQuickToolsList');
+function collectHomeQuickListFromForm(containerId){
+  var container=document.getElementById(containerId);
   if(!container) return[];
   var items=[];
   container.querySelectorAll('[data-qt-row]').forEach(function(row){
@@ -6277,11 +6510,35 @@ function collectHomeQuickToolsFromForm(){
     }else if(action==='designer'){
       items.push({label:label,action:'designer',target:''});
     }else{
-      if(!target||!document.getElementById(target)) return;
-      items.push({label:label,action:'screen',target:target});
+      if(!target) return;
+      if(isHomeQuickActionTarget(target))
+        items.push({label:label,action:'screen',target:target});
+      else if(!document.getElementById(target)) return;
+      else
+        items.push({label:label,action:'screen',target:target});
     }
   });
   return items;
+}
+function runHomeQuickToolItem(tool, fromSheet){
+  if(!tool) return;
+  if(fromSheet) homeToggleQuickSheet(false);
+  if(tool.action==='designer'){ homeOpenDesignerQuick(); return; }
+  if(tool.action==='url'&&tool.target){
+    window.open(tool.target,'_blank','noopener,noreferrer');
+    return;
+  }
+  if(tool.action!=='screen'||!tool.target) return;
+  var tgt=tool.target;
+  if(isHomeQuickActionTarget(tgt)){
+    if(tgt==='__qa_newQuote') homeQuickNewQuote();
+    else if(tgt==='__qa_addContact') homeQuickAddContact();
+    else if(tgt==='__qa_addPhoto') homeQuickAddPhoto();
+    else if(tgt==='__qa_addInventory') homeQuickInventory();
+    return;
+  }
+  if(document.getElementById(tgt)) goTo(tgt);
+  else showToast('Unknown screen: '+tgt);
 }
 function renderHomeQuickTools(){
   var mount=document.getElementById('homeQuickToolsMount');
@@ -6296,15 +6553,21 @@ function renderHomeQuickTools(){
     btn.innerHTML=homeQuickToolSvgForItem(tool)+'<span></span>';
     var span=btn.querySelector('span');
     if(span) span.textContent=tool.label;
-    btn.addEventListener('click',function(){
-      if(tool.action==='designer'){ homeOpenDesignerQuick(); return; }
-      if(tool.action==='url'&&tool.target){ window.open(tool.target,'_blank','noopener,noreferrer'); return; }
-      if(tool.action==='screen'&&tool.target){
-        if(document.getElementById(tool.target)) goTo(tool.target);
-        else showToast('Unknown screen: '+tool.target);
-      }
-    });
+    btn.addEventListener('click',function(){ runHomeQuickToolItem(tool, false); });
     mount.appendChild(btn);
+  });
+}
+function renderHomeQuickSheet(){
+  var sh=document.getElementById('homeQuickSheet');
+  if(!sh) return;
+  sh.innerHTML='';
+  getHomeQuickActions().forEach(function(tool){
+    var b=document.createElement('button');
+    b.type='button';
+    b.className='home-quick-row';
+    b.textContent=tool.label;
+    b.addEventListener('click',function(){ runHomeQuickToolItem(tool, true); });
+    sh.appendChild(b);
   });
 }
 
@@ -8445,7 +8708,7 @@ function updateCatCounts(){
   var cats={
     countExterior:['metal','rooffelt','housewrap','paintupgrade'],
     countDoors:['door36','window','garagedoor','cutouts'],
-    countInterior:['shelves','intwall','loft'],
+    countInterior:['shelves','intwall','loft','droploft'],
     countStructure:['tallwall','flooring','2x6','rooftrusses','floorjoists','porch','doubletopplate','4ineves'],
     countInsulation:['ins_roof','ins_wallsroof','ins_floor_foamboard','ins_floor_sprayfoam']
   };
@@ -8579,6 +8842,7 @@ function calcAddons(){
   if(calcState.addons['housewrap']){var ft=gn('c_housewrapFt',0)||l;add('House Wrap ('+ft+' ft)',ft*17,'housewrap');}
   if(calcState.addons['rooffelt']){var ft=gn('c_rooffeltFt',0)||l;add('Roof Felt ('+ft+' ft)',ft*17,'rooffelt');}
   if(calcState.addons['loft']){var ft=gn('c_loftFt',0);add('Extra Loft ('+ft+' ft)',ft*30,'loft');}
+  if(calcState.addons['droploft']){add('Drop Loft',200,'droploft');}
   if(calcState.addons['porch']){var ft=gn('c_porchFt',0);add('Extra Porch ('+ft+' ft)',ft*75,'porch');}
   ['ins_roof','ins_wallsroof','ins_floor_foamboard','ins_floor_sprayfoam'].forEach(function(k){
     if(!calcState.addons[k]) return;
@@ -9173,6 +9437,30 @@ function adPopulateLocation(){
   }
 }
 
+function adBuildOptionsSummarySentence(){
+  var snap=calcAddons();
+  if(!snap||!snap.total) return '';
+  var notable=[];
+  if(_adDetailState.garage&&_adDetailState.garage.on){
+    var g=(calcState.multiGarage||[]).find(function(r){return r&&r.type&&r.customSize;});
+    if(g) notable.push(g.type==='sectional'?'a sectional garage door':'a rollup garage door');
+  }
+  if(_adDetailState.doors&&_adDetailState.doors.on){
+    var d=(calcState.multiDoors||[]).find(function(r){return r&&r.type&&parseInt(r.qty,10)>=2;});
+    if(d) notable.push('a second man door');
+    else if((calcState.multiDoors||[]).some(function(r){return r&&r.type;})) notable.push('a man door');
+  }
+  if(_adDetailState.windows&&_adDetailState.windows.on){
+    var w=(calcState.multiWindows||[]).find(function(r){return r&&r.type;});
+    if(w) notable.push('upgraded windows');
+  }
+  var sentence='$'+snap.total.toLocaleString()+' in options added';
+  if(notable.length){
+    sentence+=' including '+notable.slice(0,2).join(' and ');
+  }
+  return sentence+'.';
+}
+
 function generateAd(){
   var _adS=loadSettings();
   var _adPhone=_adS.bizPhone||'(call for pricing)';
@@ -9210,15 +9498,16 @@ function generateAd(){
     var desc=st.override||_adSummaryFromCalc(def.key)||def.fallback;
     if(desc) features.push(desc);
   });
+  var optionsSummary=adBuildOptionsSummarySentence();
   if(!typeCode||!width||!length){showToast('Select building type and size');return;}
   var size=width+' x '+length;
   var sqft=parseInt(width)*parseInt(length)||'';
   var ad='';
-  if(tone==='friendly'){ad=''+size+' '+type+(color?' — '+color:'')+' | '+location+'\n\n';if(sqft)ad+=sqft+' sq ft of quality built outdoor storage!\n\n';if(features.length)ad+='Includes: '+features.join(', ')+'\n\n';if(price)ad+='Cash price: '+price+'\n';if(rto)ad+='Rent-to-own from '+rto+' (no credit check!)\n';ad+='\nAll buildings built with quality materials. Delivery available throughout Idaho!\n\nLocation: '+location+'\nCall or text: '+_adPhone+(_adUrl?'\n'+_adUrl:'')+'\n\nDM us anytime — we\'d love to help!';}
-  else if(tone==='professional'){ad=size+' '+type+(color?' — '+color:'')+'\n'+'─'.repeat(28)+'\n\n';if(sqft)ad+='Size: '+size+' ('+sqft+' sq ft)\n';if(color)ad+='Color: '+color+'\n';if(features.length)ad+='Features: '+features.join(', ')+'\n';ad+='\n';if(price)ad+='Cash price: '+price+'\n';if(rto)ad+='RTO from '+rto+'\n';ad+='\nProfessionally built and delivered throughout Idaho.\n\nLocation: '+location+'\nPhone: '+_adPhone+(_adUrl?'\nWebsite: '+_adUrl:'');}
-  else if(tone==='urgent'){ad='LIMITED — '+size+' '+type+'!\n\n';if(color)ad+='Color: '+color+'\n';if(sqft)ad+=sqft+' sq ft\n\n';if(features.length)ad+='Comes with: '+features.join(', ')+'\n\n';if(price)ad+='Cash: '+price+' — don\'t miss out!\n';if(rto)ad+='RTO from '+rto+'\n';ad+='\nCall or text NOW to hold this unit!\n\nLocation: '+location+'\nPhone: '+_adPhone+(_adUrl?'\n'+_adUrl:'');}
-  else if(tone==='value'){ad='BEST PRICE — '+size+' '+type+'\n\n';if(color)ad+=color+'\n';if(sqft)ad+=sqft+' sq ft of premium storage\n\n';if(features.length)ad+='What\'s included:\n'+features.map(function(f){return'• '+f;}).join('\n')+'\n\n';if(price)ad+='Cash: '+price+'\n';if(rto)ad+='RTO from '+rto+'\n';ad+='\nQuality buildings, unbeatable prices. No credit check for RTO. Delivery statewide.\n\nLocation: '+location+'\nPhone: '+_adPhone+(_adUrl?'\n'+_adUrl:'');}
-  else if(tone==='sale'){ad='SALE — '+size+' '+type+'!\n';if(color)ad+='Color: '+color+'\n';ad+='LIMITED TIME OFFER — This price won\'t last!\n\n';if(sqft)ad+=sqft+' sq ft of quality storage\n\n';if(features.length)ad+='Includes: '+features.join(', ')+'\n\n';if(price)ad+='SALE PRICE: '+price+'\n';if(rto)ad+='RTO from '+rto+' (no credit check!)\n';ad+='\nAct fast — sale prices are for a limited time only!\n\nLocation: '+location+'\nCall or text: '+_adPhone+(_adUrl?'\n'+_adUrl:'');}
+  if(tone==='friendly'){ad=''+size+' '+type+(color?' — '+color:'')+' | '+location+'\n\n';if(sqft)ad+=sqft+' sq ft of quality built outdoor storage!\n\n';if(features.length)ad+='Includes: '+features.join(', ')+'\n';if(optionsSummary) ad+=optionsSummary+'\n';ad+='\n';if(price)ad+='Cash price: '+price+'\n';if(rto)ad+='Rent-to-own from '+rto+' (no credit check!)\n';ad+='\nAll buildings built with quality materials. Delivery available throughout Idaho!\n\nLocation: '+location+'\nCall or text: '+_adPhone+(_adUrl?'\n'+_adUrl:'')+'\n\nDM us anytime — we\'d love to help!';}
+  else if(tone==='professional'){ad=size+' '+type+(color?' — '+color:'')+'\n'+'─'.repeat(28)+'\n\n';if(sqft)ad+='Size: '+size+' ('+sqft+' sq ft)\n';if(color)ad+='Color: '+color+'\n';if(features.length)ad+='Features: '+features.join(', ')+'\n';if(optionsSummary) ad+='Options: '+optionsSummary+'\n';ad+='\n';if(price)ad+='Cash price: '+price+'\n';if(rto)ad+='RTO from '+rto+'\n';ad+='\nProfessionally built and delivered throughout Idaho.\n\nLocation: '+location+'\nPhone: '+_adPhone+(_adUrl?'\nWebsite: '+_adUrl:'');}
+  else if(tone==='urgent'){ad='LIMITED — '+size+' '+type+'!\n\n';if(color)ad+='Color: '+color+'\n';if(sqft)ad+=sqft+' sq ft\n\n';if(features.length)ad+='Comes with: '+features.join(', ')+'\n';if(optionsSummary) ad+=optionsSummary+'\n';ad+='\n';if(price)ad+='Cash: '+price+' — don\'t miss out!\n';if(rto)ad+='RTO from '+rto+'\n';ad+='\nCall or text NOW to hold this unit!\n\nLocation: '+location+'\nPhone: '+_adPhone+(_adUrl?'\n'+_adUrl:'');}
+  else if(tone==='value'){ad='BEST PRICE — '+size+' '+type+'\n\n';if(color)ad+=color+'\n';if(sqft)ad+=sqft+' sq ft of premium storage\n\n';if(features.length)ad+='What\'s included:\n'+features.map(function(f){return'• '+f;}).join('\n')+'\n';if(optionsSummary) ad+='• '+optionsSummary+'\n';ad+='\n';if(price)ad+='Cash: '+price+'\n';if(rto)ad+='RTO from '+rto+'\n';ad+='\nQuality buildings, unbeatable prices. No credit check for RTO. Delivery statewide.\n\nLocation: '+location+'\nPhone: '+_adPhone+(_adUrl?'\n'+_adUrl:'');}
+  else if(tone==='sale'){ad='SALE — '+size+' '+type+'!\n';if(color)ad+='Color: '+color+'\n';ad+='LIMITED TIME OFFER — This price won\'t last!\n\n';if(sqft)ad+=sqft+' sq ft of quality storage\n\n';if(features.length)ad+='Includes: '+features.join(', ')+'\n';if(optionsSummary) ad+=optionsSummary+'\n';ad+='\n';if(price)ad+='SALE PRICE: '+price+'\n';if(rto)ad+='RTO from '+rto+' (no credit check!)\n';ad+='\nAct fast — sale prices are for a limited time only!\n\nLocation: '+location+'\nCall or text: '+_adPhone+(_adUrl?'\n'+_adUrl:'');}
   document.getElementById('adText').textContent=ad;
   document.getElementById('adResultBox').style.display='block';
   document.getElementById('adResultBox').scrollIntoView({behavior:'smooth'});
@@ -9290,6 +9579,7 @@ try{applyBizInfoToHome();}catch(e){}
 try{renderHomeQuoteHistory();}catch(e){}
 try{renderHomeDashboard();}catch(e){}
 try{renderHomeQuickTools();}catch(e){}
+try{renderHomeQuickSheet();}catch(e){}
 try{updateShareLinks();}catch(e){}
 try{invInit();}catch(e){}
 try{firebaseTryInit();}catch(e){}
@@ -9298,6 +9588,7 @@ try{
     if(result&&result.ok&&result.settings){
       applyBizInfoToHome();
       try{ renderHomeQuickTools(); }catch(_q){}
+      try{ renderHomeQuickSheet(); }catch(_q2){}
       updateShareLinks();
     }
   });
@@ -10596,7 +10887,7 @@ function ssSyncCatCounts(){
     Exterior:['metal','rooffelt','housewrap','paintupgrade'],
     Structure:['tallwall','2x6','rooftrusses','floorjoists','porch','doubletopplate','4ineves'],
     Doors:['door36','window','garagedoor','cutouts'],
-    Interior:['flooring','shelves','intwall','loft'],
+    Interior:['flooring','shelves','intwall','loft','droploft'],
     Insulation:['ins_roof','ins_wallsroof','ins_floor_foamboard','ins_floor_sprayfoam']
   };
   function _sumQty(arr){ return arr.reduce(function(acc,r){ return r.type?acc+Math.max(1,parseInt(r.qty)||1):acc; },0); }
@@ -10710,6 +11001,7 @@ function ssGetAddonLines(w,l,t){
     if(r&&ft) add('Interior Walls ('+ft+' ft)',r*ft,'intwall');
   }
   if(ssAddons['loft']){var ft=gi('ss_c_loftFt');if(ft)add('Extra Loft ('+ft+' ft)',ft*30,'loft');}
+  if(ssAddons['droploft']){add('Drop Loft',200,'droploft');}
   ['ins_roof','ins_wallsroof','ins_floor_foamboard','ins_floor_sprayfoam'].forEach(function(k){
     if(!ssAddons[k]) return;
     var manualEl=document.getElementById('ss_c_manual_'+k);
@@ -10804,12 +11096,12 @@ function ssCalcPrice(){
   // Update individual option price labels
   var keys=['metal','rooffelt','housewrap','paintupgrade','tallwall','flooring','2x6',
             'rooftrusses','floorjoists','porch','door36','window','garagedoor','cutouts',
-            'shelves','intwall','loft','ins_roof','ins_wallsroof','ins_floor_foamboard','ins_floor_sprayfoam'];
+            'shelves','intwall','loft','droploft','ins_roof','ins_wallsroof','ins_floor_foamboard','ins_floor_sprayfoam'];
   var labelMap={metal:'metal',rooffelt:'roof felt',housewrap:'house wrap',paintupgrade:'paint',
     tallwall:'tall wall',flooring:'flooring','2x6':'2x6',rooftrusses:'roof trusses',
     floorjoists:'floor joists',porch:'porch',door36:'door',window:'window',
     garagedoor:'garage door,rollup door',cutouts:'cutout',
-    shelves:'shelves',intwall:'interior walls',loft:'loft',
+    shelves:'shelves',intwall:'interior walls',loft:'loft',droploft:'drop loft',
     ins_roof:'roof insulation',ins_wallsroof:'walls and roof deck insulation',
     ins_floor_foamboard:'foam board insulation',ins_floor_sprayfoam:'spray foam insulation'};
   keys.forEach(function(k){
