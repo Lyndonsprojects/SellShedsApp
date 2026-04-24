@@ -884,6 +884,7 @@ select option { background:var(--earth); color:var(--cream); }
   justify-content: center;
   align-items: center;
   text-align: center;
+  margin-top: 8px;
 }
 #screenHome .cc-tile-vert-center .cc-tile-icon {
   margin-bottom: 2px;
@@ -1260,7 +1261,7 @@ select option { background:var(--earth); color:var(--cream); }
   position: fixed;
   bottom: 0;
   left: 50%;
-  transform: translate(-50%, 6px);
+  transform: translate(-50%, 14px);
   width: 100%;
   max-width: 480px;
   z-index: 100;
@@ -1287,7 +1288,7 @@ select option { background:var(--earth); color:var(--cream); }
 .home-quick-sheet {
   position: absolute;
   right: 72px;
-  bottom: calc(82px + var(--dock-lift, 0px) + env(safe-area-inset-bottom, 0px));
+  bottom: calc(90px + var(--dock-lift, 0px) + env(safe-area-inset-bottom, 0px));
   min-width: 200px;
   max-width: min(92vw, 280px);
   border-radius: 14px;
@@ -1328,7 +1329,7 @@ select option { background:var(--earth); color:var(--cream); }
 .home-fab {
   position: absolute;
   right: 18px;
-  bottom: calc(74px + var(--dock-lift, 0px) + env(safe-area-inset-bottom, 0px));
+  bottom: calc(82px + var(--dock-lift, 0px) + env(safe-area-inset-bottom, 0px));
   width: 48px;
   height: 48px;
   border-radius: 50%;
@@ -1516,17 +1517,17 @@ select option { background:var(--earth); color:var(--cream); }
   #homeWebsitesLabel { font-size: 0.88rem !important; letter-spacing: 1.5px !important; }
   #homeWebsitesList { max-height: 108px; }
 
-  .cc-dock { padding: 0 8px max(6px, calc(5px + env(safe-area-inset-bottom, 0px))); transform: translate(-50%, 5px); }
+  .cc-dock { padding: 0 8px max(6px, calc(5px + env(safe-area-inset-bottom, 0px))); transform: translate(-50%, 13px); }
   .home-fab {
     width: 44px;
     height: 44px;
     right: 14px;
-    bottom: calc(68px + var(--dock-lift, 0px) + env(safe-area-inset-bottom, 0px));
+    bottom: calc(76px + var(--dock-lift, 0px) + env(safe-area-inset-bottom, 0px));
     font-size: 1.5rem;
   }
   .home-quick-sheet {
     right: 64px;
-    bottom: calc(76px + var(--dock-lift, 0px) + env(safe-area-inset-bottom, 0px));
+    bottom: calc(84px + var(--dock-lift, 0px) + env(safe-area-inset-bottom, 0px));
   }
 }
 </style>
@@ -3045,6 +3046,11 @@ input:focus, select:focus, textarea:focus {
         <div class="field-group" style="flex:1;min-width:120px;"><label class="field-label">City</label><input type="text" id="mile_cust_city" placeholder="City" autocomplete="address-level2"></div>
         <div class="field-group" style="flex:0 0 72px;"><label class="field-label">ST</label><input type="text" id="mile_cust_state" maxlength="2" placeholder="ID" style="text-transform:uppercase;" autocomplete="address-level1"></div>
         <div class="field-group" style="flex:1;min-width:100px;"><label class="field-label">ZIP</label><input type="text" id="mile_cust_zip" placeholder="ZIP" autocomplete="postal-code"></div>
+      </div>
+      <div class="field-group" style="margin-top:10px;">
+        <label class="field-label" for="mile_extra">Extra miles (optional)</label>
+        <input type="number" id="mile_extra" min="0" step="0.1" placeholder="0" inputmode="decimal" autocomplete="off">
+        <div style="font-size:0.72rem;color:rgba(232,200,122,0.55);margin-top:6px;line-height:1.4;">Added to the route distance before the delivery surcharge (e.g. detours or access).</div>
       </div>
       <button class="btn-secondary" style="margin-top:8px;padding:10px 12px;" onclick="runMileageCalculator()">Calculate Driving Miles</button>
       <div id="mileageFormStatus"></div>
@@ -7892,20 +7898,27 @@ async function runMileageCalculator(){
       });
     });
     var miles=(dmResult.distance&&dmResult.distance.value)?(dmResult.distance.value/1609.344):0;
-    var sur=mileageDeliverySurchargeUSD(miles,originInfo.kind);
+    var extraRaw=parseFloat(mileageFieldVal('mile_extra').replace(/,/g,''));
+    var extra=(isNaN(extraRaw)||extraRaw<0)?0:extraRaw;
+    var totalMiles=miles+extra;
+    var sur=mileageDeliverySurchargeUSD(totalMiles,originInfo.kind);
     var costStr=sur.cost%1===0?('$'+sur.cost.toFixed(0)):('$'+sur.cost.toFixed(2));
     var tierLabel=originInfo.kind==='custom'
       ?'Custom start — first 250 mi free, then $5 / mi'
       :(sur.kind==='shop'?'Shop — first 250 mi free, then $5 / mi':'Lot — first 50 mi free, then $5 / mi');
     var distTxt=mileageEscapeHtml(dmResult.distance.text);
     var durTxt=dmResult.duration?mileageEscapeHtml(dmResult.duration.text):'';
-    var html='<div class="mileage-res-hero">'+miles.toFixed(1)+' miles</div>'+
+    var heroMiles=(extra>0?totalMiles:miles).toFixed(1);
+    var extraLine=extra>0?('<div class="mileage-res-duration">Route '+miles.toFixed(1)+' mi + extra '+extra.toFixed(1)+' mi</div>'):'';
+    var metaExtra=extra>0?('<br>Surcharge uses '+totalMiles.toFixed(1)+' total mi (route + extra).'):'';
+    var html='<div class="mileage-res-hero">'+heroMiles+' miles</div>'+
       '<div class="mileage-res-sub">'+distTxt+'</div>'+
+      extraLine+
       (durTxt?'<div class="mileage-res-duration">Drive time · '+durTxt+'</div>':'')+
       '<div class="mileage-res-costcard">'+
       '<div class="mileage-res-cost">'+costStr+'</div>'+
       '<div class="mileage-res-costlabel">Estimated delivery surcharge</div>'+
-      '<div class="mileage-res-meta">'+tierLabel+'<br>Billable miles: '+sur.billableMiles.toFixed(1)+'</div>'+
+      '<div class="mileage-res-meta">'+tierLabel+'<br>Billable miles: '+sur.billableMiles.toFixed(1)+metaExtra+'</div>'+
       '</div>';
     statusEl.textContent='';
     mileageShowResultsPanel(html);
