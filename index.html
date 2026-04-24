@@ -3395,6 +3395,7 @@ input:focus, select:focus, textarea:focus {
         <div class="field-group"><label class="field-label">Notes</label><textarea id="crm_notes" rows="3" placeholder="General lead notes"></textarea></div>
         <div style="display:flex;gap:8px;">
           <button class="btn-primary" style="margin-top:0;flex:2;" onclick="crmSaveLeadFromForm()">Save Lead</button>
+          <button class="btn-secondary" style="margin-top:0;flex:1;" onclick="crmDeleteLeadFromForm()">Delete</button>
           <button class="btn-secondary" style="margin-top:0;flex:1;" onclick="crmClearLeadForm()">Clear</button>
         </div>
       </div>
@@ -5051,6 +5052,12 @@ function crmNormalizeStatus(s){
   if(v==='new'||v==='contacted'||v==='quoted'||v==='lost'||v==='') return 'interested';
   return 'interested';
 }
+function crmStatusToFirestore(s){
+  var norm=crmNormalizeStatus(s);
+  if(norm==='ordered') return 'won';
+  if(norm==='delivered') return 'won';
+  return 'new';
+}
 function crmStatusDisplayLabel(norm){
   if(norm==='ordered') return 'Ordered';
   if(norm==='delivered') return 'Delivered';
@@ -5363,7 +5370,7 @@ function crmBuildLeadPayloadFromForm(){
     notes:cv('crm_notes'),
     conversation:{channel:cv('crm_channel'),lastMessageAt:now,lastDirection:'note',summary:'Lead profile saved in CRM screen'},
     source:'manual',
-    status:crmNormalizeStatus(cv('crm_status')),
+    status:crmStatusToFirestore(cv('crm_status')),
     updatedAt:firebase.firestore.FieldValue.serverTimestamp()
   };
 }
@@ -5384,6 +5391,10 @@ async function crmAddActivity(leadId,activity){
   activity.timestamp=firebase.firestore.FieldValue.serverTimestamp();
   await fbDb.collection('leads').doc(leadId).collection('activities').add(activity);
 }
+async function crmDeleteLead(leadId){
+  if(!(await firebaseEnsureAuthed())) throw new Error('Firebase not ready');
+  await fbDb.collection('leads').doc(leadId).delete();
+}
 async function crmSaveLeadFromForm(){
   try{
     if(!(await firebaseEnsureAuthed())){showToastForFirebaseCRMBlock();return;}
@@ -5403,7 +5414,30 @@ async function crmSaveLeadFromForm(){
     }
   }catch(e){
     console.log('Save lead failed:',e);
+    if(e&&e.code==='permission-denied'){
+      showToast('Lead save blocked by Firestore rules (status/channel/phone).');
+      return;
+    }
     showToast('Could not save lead');
+  }
+}
+async function crmDeleteLeadFromForm(){
+  if(!crmState.selectedLeadId){showToast('Select a lead first');return;}
+  if(!window.confirm('Delete this lead?')) return;
+  try{
+    var id=crmState.selectedLeadId;
+    await crmDeleteLead(id);
+    crmState.leads=crmState.leads.filter(function(lead){return lead.id!==id;});
+    crmClearLeadForm();
+    leadsSidePanelsRefresh();
+    showToast('Lead deleted');
+  }catch(e){
+    console.log('Delete lead failed:',e);
+    if(e&&e.code==='permission-denied'){
+      showToast('Lead delete blocked by Firestore rules.');
+      return;
+    }
+    showToast('Could not delete lead');
   }
 }
 async function crmAddActivityFromForm(){
@@ -7447,10 +7481,10 @@ function syncSaleUIFromState(){
   if(wrap) wrap.style.display=calcState.saleActive?'block':'none';
 
   if(quickInput){
-    quickInput.value=(calcState.saleActive&&pct>0)?String(pct):'';
+    quickInput.value=pct>0?String(pct):'';
   }
   if(step2Input){
-    step2Input.value=(calcState.saleActive&&pct>0)?String(pct):'';
+    step2Input.value=pct>0?String(pct):'';
   }
 }
 
@@ -7461,7 +7495,6 @@ function loadSaleState(){
     var pct=parseFloat(s.pct);
     calcState.salePercent=isNaN(pct)||pct<0?0:Math.min(pct,100);
     calcState.saleActive=!!s.active;
-    if(!calcState.saleActive) calcState.salePercent=0;
     syncSaleUIFromState();
     updateQuickPrice();
     renderCalcQuote();
@@ -7470,7 +7503,6 @@ function loadSaleState(){
 
 function toggleQuickSale(){
   calcState.saleActive=!calcState.saleActive;
-  if(!calcState.saleActive){ calcState.salePercent=0; }
   syncSaleUIFromState();
   saveSaleState();
   updateQuickPrice();
@@ -10554,7 +10586,7 @@ function buildLeadPayloadFromIntake(type){
     notes:map.notes||'Submitted via intake form',
     conversation:{channel:'form',lastMessageAt:now,lastDirection:'inbound',summary:'Submitted '+type+' intake form'},
     source:type,
-    status:'interested'
+    status:'new'
   };
 }
 
