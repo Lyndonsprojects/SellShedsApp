@@ -116,6 +116,36 @@ select option { background:var(--earth); color:var(--cream); }
 #screenInventory .inv-ocr-review-actions { display:flex; gap:8px; margin-top:10px; }
 #screenInventory .inv-ocr-review-note { margin-top:8px; font-size:0.72rem; color:rgba(232,200,122,0.75); }
 #screenInventory .inv-primary-actions { display:flex; gap:10px; margin-top:14px; }
+#screenInventory .inv-page-intro { margin-bottom:12px; }
+#screenInventory .inv-toolbar { display:flex; flex-direction:column; gap:10px; margin-bottom:14px; }
+#screenInventory .inv-filter-row { display:flex; flex-wrap:wrap; gap:8px; align-items:stretch; }
+#screenInventory .inv-filter-row select {
+  flex:1; min-width:0; box-sizing:border-box;
+  background:rgba(255,255,255,0.07); border:1.5px solid rgba(232,200,122,0.25); border-radius:8px;
+  padding:10px 12px; font-size:0.82rem; color:var(--cream);
+}
+#screenInventory .inv-add-btn { width:100%; margin-top:2px; }
+#screenInventory .inv-section { margin-bottom:18px; }
+#screenInventory .inv-section-label {
+  font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:0.72rem; letter-spacing:2px;
+  color:rgba(232,200,122,0.55); text-transform:uppercase; margin:0 0 8px;
+  padding-bottom:4px; border-bottom:1px solid rgba(196,81,31,0.2);
+}
+#screenInventory .inv-section-label em { font-style:normal; color:rgba(232,200,122,0.85); }
+#screenInventory .inv-list-stack { display:flex; flex-direction:column; gap:10px; }
+#screenInventory .inv-card {
+  border:1.5px solid rgba(232,200,122,0.2); border-radius:10px; padding:10px 12px;
+  background:rgba(255,255,255,0.04);
+}
+#screenInventory .inv-status-pill {
+  display:inline-block; font-size:0.62rem; font-weight:700; letter-spacing:0.8px; text-transform:uppercase;
+  padding:3px 8px; border-radius:6px; margin-bottom:6px;
+}
+#screenInventory .inv-status-pill.available { background:rgba(122,158,135,0.28); color:#c8e6d4; }
+#screenInventory .inv-status-pill.sold { background:rgba(196,81,31,0.25); color:#f0c4a8; }
+#screenInventory .inv-status-pill.delivered { background:rgba(100,100,120,0.35); color:rgba(232,200,122,0.9); }
+.inv-add-modal-overlay { z-index:105; }
+#invPriceModalOverlay { z-index:130; }
 #screenCRM .crm-grid { display:grid; grid-template-columns:1fr; gap:12px; }
 #screenCRM .crm-list { border:1.5px solid rgba(232,200,122,0.2); border-radius:10px; background:rgba(255,255,255,0.04); max-height:280px; overflow:auto; }
 #screenCRM .crm-lead-item { padding:10px 12px; border-bottom:1px solid rgba(232,200,122,0.12); cursor:pointer; }
@@ -184,6 +214,8 @@ select option { background:var(--earth); color:var(--cream); }
   #screenInventory .inv-ocr-review-actions { flex-direction:column; }
   #screenInventory .inv-primary-actions { flex-direction:column; gap:8px; }
   #screenInventory .inv-primary-actions .btn-secondary { margin-top:0; }
+  #screenInventory .inv-filter-row { flex-direction:column; }
+  #screenInventory .inv-filter-row select { width:100%; }
 }
 
 .radio-group,.check-group { display:flex; flex-wrap:wrap; gap:8px; }
@@ -3189,9 +3221,38 @@ input:focus, select:focus, textarea:focus {
 <div class="screen" id="screenInventory">
   <div class="header"><button class="back-btn" onclick="goTo('screenHome')">←</button><div class="header-title">Inventory</div></div>
   <div style="padding:16px;">
-    <div class="page-title">Inventory Unit</div>
-    <div class="page-sub">Track lot units with serial and photos</div>
+    <div class="page-title">Lot inventory</div>
+    <div class="page-sub inv-page-intro">Filter by lot or size/style. Available units are listed first.</div>
 
+    <div class="inv-toolbar">
+      <div class="inv-filter-row">
+        <select id="inv_filterLot" aria-label="Filter by lot" onchange="invRenderList()">
+          <option value="">All lots</option>
+        </select>
+        <select id="inv_filterSizeStyle" aria-label="Filter by size and style" onchange="invRenderList()">
+          <option value="">All sizes / styles</option>
+        </select>
+      </div>
+      <button type="button" class="btn-primary inv-add-btn" onclick="invOpenAddModal()">+ Add inventory</button>
+    </div>
+
+    <div id="inv_listWrap" class="inv-list-stack"></div>
+    <div class="pb40"></div>
+  </div>
+
+  <div class="photo-modal-overlay inv-add-modal-overlay" id="invAddEditModalOverlay" aria-hidden="true" onclick="if(event.target===this)invCloseAddEditModal()">
+    <div class="photo-modal" role="dialog" aria-modal="true" aria-labelledby="invAddEditTitle" onclick="event.stopPropagation()">
+      <h3 id="invAddEditTitle">Add inventory</h3>
+      <button type="button" class="modal-cancel" style="margin:-8px 0 12px;" onclick="invCloseAddEditModal()">Close</button>
+
+    <div class="field-group">
+      <label class="field-label">Status</label>
+      <select id="inv_unitStatus">
+        <option value="available">Available</option>
+        <option value="sold">Sold</option>
+        <option value="delivered">Delivered</option>
+      </select>
+    </div>
     <div class="field-group">
       <label class="field-label">Lot Location <span class="req">*</span></label>
       <input type="text" id="inv_lotLocation" placeholder="Lot row / spot / city lot">
@@ -3279,12 +3340,9 @@ input:focus, select:focus, textarea:focus {
 
     <div class="inv-primary-actions">
       <button class="btn-primary" style="flex:2;" onclick="invSaveItem()">Save Item</button>
-      <button class="btn-secondary" style="flex:1;" onclick="invClearForm()">Clear</button>
+      <button class="btn-secondary" style="flex:1;" onclick="invClearForm();invCloseAddEditModal();">Cancel</button>
     </div>
-
-    <div class="section-head">Saved Inventory</div>
-    <div id="inv_listWrap" style="display:flex;flex-direction:column;gap:10px;"></div>
-    <div class="pb40"></div>
+    </div>
   </div>
 
   <div class="photo-modal-overlay" id="invPriceModalOverlay">
@@ -5124,6 +5182,32 @@ async function crmLeadsBootstrap(){
   await crmWatchLeads();
   return true;
 }
+function firebaseRefreshHomeTilesFromCloud(){
+  try{ renderHomeDashboard(); }catch(_e){}
+  try{ leadsSidePanelsRefresh(); }catch(_e2){}
+  try{
+    var h=document.getElementById('screenHome');
+    if(h&&h.classList.contains('active')) scheduleHomeUniformScale();
+  }catch(_e3){}
+}
+async function firebaseAttachHomeCloudReaders(){
+  try{
+    await crmLeadsBootstrap();
+    await maybeMigrateLegacyInventory();
+    await watchInventoryCloud();
+  }catch(_e){}
+  firebaseRefreshHomeTilesFromCloud();
+}
+function firebaseStartHomeReactiveSync(){
+  if(typeof firebaseWebConfigReady!=='function'||!firebaseWebConfigReady()) return;
+  if(!firebaseTryInit()||!fbAuth) return;
+  firebaseAttachHomeCloudReaders();
+  if(fbAuth._gssHomeReactiveBoot) return;
+  fbAuth._gssHomeReactiveBoot=true;
+  fbAuth.onAuthStateChanged(function(){
+    firebaseAttachHomeCloudReaders();
+  });
+}
 function leadsSidePanelsRefresh(){
   var c=document.getElementById('contacts_leadList');
   if(c) contactsRenderList();
@@ -5534,6 +5618,7 @@ async function maybeMigrateLegacyInventory(){
         trimColor:item.trimColor||'',
         priceData:item.priceData||null,
         photoUrls:{plate:'',front:''},
+        unitStatus:'available',
         createdAt:firebase.firestore.FieldValue.serverTimestamp(),
         updatedAt:firebase.firestore.FieldValue.serverTimestamp()
       },{merge:true});
@@ -5560,6 +5645,160 @@ async function invDeleteItemCloud(docId){
   await fbDb.collection('inventory').doc(docId).delete();
 }
 
+function invNormalizeUnitStatus(s){
+  var v=String(s==null?'':s).trim().toLowerCase();
+  if(v==='sold') return 'sold';
+  if(v==='delivered') return 'delivered';
+  return 'available';
+}
+function invUnitStatusDisplay(st){
+  st=invNormalizeUnitStatus(st);
+  if(st==='sold') return 'Sold';
+  if(st==='delivered') return 'Delivered';
+  return 'Available';
+}
+function invSizeStyleKey(item){
+  return String(item&&item.size!=null?item.size:'').trim()+'\t'+String(item&&item.style!=null?item.style:'').trim();
+}
+function invRefreshFilterOptions(){
+  var lotSel=document.getElementById('inv_filterLot');
+  var ssSel=document.getElementById('inv_filterSizeStyle');
+  if(!lotSel||!ssSel) return;
+  var prevLot=lotSel.value;
+  var prevSs=ssSel.value;
+  var lots={};
+  var pairKeys=[];
+  var pairLabel={};
+  (invState.items||[]).forEach(function(it){
+    var l=String(it.lotLocation||'').trim();
+    if(l) lots[l]=true;
+    var k=invSizeStyleKey(it);
+    if(k!=='\t'){
+      if(!pairLabel[k]) pairLabel[k]=([it.size||'',it.style||''].filter(Boolean).join(' · ')||'—');
+      if(pairKeys.indexOf(k)<0) pairKeys.push(k);
+    }
+  });
+  lotSel.innerHTML='<option value="">All lots</option>';
+  Object.keys(lots).sort(function(a,b){return a.localeCompare(b);}).forEach(function(l){
+    var o=document.createElement('option');
+    o.value=l;
+    o.textContent=l;
+    lotSel.appendChild(o);
+  });
+  ssSel.innerHTML='<option value="">All sizes / styles</option>';
+  pairKeys.sort(function(a,b){return (pairLabel[a]||'').localeCompare(pairLabel[b]||'');}).forEach(function(k){
+    var o=document.createElement('option');
+    o.value=k;
+    o.textContent=pairLabel[k];
+    ssSel.appendChild(o);
+  });
+  var lotOk=false;
+  for(var i=0;i<lotSel.options.length;i++){ if(lotSel.options[i].value===prevLot){ lotOk=true; break; } }
+  if(lotOk) lotSel.value=prevLot;
+  var ssOk=false;
+  for(var j=0;j<ssSel.options.length;j++){ if(ssSel.options[j].value===prevSs){ ssOk=true; break; } }
+  if(ssOk) ssSel.value=prevSs;
+}
+function invPassesInventoryFilters(item){
+  var lotF=(document.getElementById('inv_filterLot')||{}).value||'';
+  var ssF=(document.getElementById('inv_filterSizeStyle')||{}).value||'';
+  if(lotF&&String(item.lotLocation||'').trim()!==lotF) return false;
+  if(ssF&&invSizeStyleKey(item)!==ssF) return false;
+  return true;
+}
+function invSortItemsByUpdatedDesc(arr){
+  return arr.slice().sort(function(a,b){
+    var ta=a&&a.updatedAt?new Date(a.updatedAt).getTime():0;
+    var tb=b&&b.updatedAt?new Date(b.updatedAt).getTime():0;
+    if(!isFinite(ta)) ta=0;
+    if(!isFinite(tb)) tb=0;
+    return tb-ta;
+  });
+}
+function invOpenAddModal(){
+  invClearForm();
+  var t=document.getElementById('invAddEditTitle');
+  if(t) t.textContent='Add inventory';
+  var o=document.getElementById('invAddEditModalOverlay');
+  if(o){
+    o.classList.add('open');
+    o.setAttribute('aria-hidden','false');
+  }
+}
+function invCloseAddEditModal(){
+  var o=document.getElementById('invAddEditModalOverlay');
+  if(o){
+    o.classList.remove('open');
+    o.setAttribute('aria-hidden','true');
+  }
+}
+function invEscapeAttr(val){
+  return String(val==null?'':val).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+}
+function invEditFromBtn(btn){
+  var id=btn&&btn.getAttribute('data-id');
+  if(id!==null&&id!=='') invEditItem(id);
+}
+function invDeleteFromBtn(btn){
+  var id=btn&&btn.getAttribute('data-id');
+  if(id!==null&&id!=='') invDeleteItem(id);
+}
+function invRenderItemCard(item){
+  var st=invNormalizeUnitStatus(item.unitStatus);
+  var subtitle=[item.size,item.style].filter(Boolean).join(' · ');
+  var colorParts=[];
+  if(item.roofColor) colorParts.push('Roof: '+item.roofColor);
+  if(item.wallColor) colorParts.push('Wall: '+item.wallColor);
+  if(item.trimColor) colorParts.push('Trim: '+item.trimColor);
+  var colorLine=colorParts.length?'<div style="font-size:0.72rem;color:rgba(245,240,232,0.65);margin-top:4px;">'+colorParts.join(' · ')+'</div>':'';
+  var dateLine=item.buildDate?'<div style="font-size:0.7rem;color:rgba(232,200,122,0.62);margin-top:3px;">Build: '+item.buildDate+'</div>':'';
+  var priceLine=item.priceData&&item.priceData.finalTotal?'<div style="font-size:0.78rem;color:var(--wheat);margin-top:4px;">Price: '+invFmt(item.priceData.finalTotal)+'</div>':'';
+  var rtosQuick='';
+  if(item.priceData&&item.priceData.baseRaw){
+    var saleDiscount=item.priceData.saleAmt||0;
+    var salePrice=item.priceData.baseRaw-saleDiscount;
+    var imgLinks=[];
+    if(item.plateImage) imgLinks.push('<a href="'+item.plateImage+'" target="_blank" rel="noopener" style="color:var(--sky);text-decoration:none;">Plate Photo</a>');
+    if(item.frontImage) imgLinks.push('<a href="'+item.frontImage+'" target="_blank" rel="noopener" style="color:var(--sky);text-decoration:none;">Front Photo</a>');
+    rtosQuick='<div style="margin-top:8px;padding:8px;border:1px solid rgba(232,200,122,0.2);border-radius:8px;background:rgba(255,255,255,0.03);">'+
+      '<div style="font-size:0.66rem;letter-spacing:1px;color:rgba(232,200,122,0.7);text-transform:uppercase;margin-bottom:4px;">Quick view</div>'+
+      '<div style="font-size:0.74rem;color:rgba(245,240,232,0.88);line-height:1.45;">'+
+      'Full Serial: <strong>'+(item.serialNumber||'—')+'</strong><br>'+
+      'List Price: <strong>'+invFmt(item.priceData.baseRaw||0)+'</strong><br>'+
+      'Sale Discount: <strong>'+invFmt(saleDiscount)+'</strong><br>'+
+      'Sale Price: <strong>'+invFmt(salePrice)+'</strong><br>'+
+      'Colors: <strong>'+([item.roofColor,item.wallColor,item.trimColor].filter(Boolean).join(' / ')||'—')+'</strong><br>'+
+      'Pictures: '+(imgLinks.length?imgLinks.join(' · '):'—')+
+      '</div></div>';
+  }
+  var thumbs='<div style="display:flex;gap:6px;margin-top:8px;">'+
+    (item.plateImage?'<img src="'+item.plateImage+'" alt="" style="width:54px;height:54px;object-fit:cover;border-radius:6px;border:1px solid rgba(232,200,122,0.25);">':'')+
+    (item.frontImage?'<img src="'+item.frontImage+'" alt="" style="width:54px;height:54px;object-fit:cover;border-radius:6px;border:1px solid rgba(232,200,122,0.25);">':'')+
+    '</div>';
+  var idAttr=invEscapeAttr(item.id||'');
+  return '<div class="inv-card">'+
+    '<div style="display:flex;gap:8px;align-items:flex-start;">'+
+      '<div style="flex:1;">'+
+        '<span class="inv-status-pill '+st+'">'+(invUnitStatusDisplay(st).toUpperCase())+'</span>'+
+      '<div style="font-size:0.86rem;font-weight:700;color:var(--wheat);">'+(item.serialNumber||'No Serial')+'</div>'+
+      '<div style="font-size:0.74rem;color:rgba(200,221,232,0.75);">'+(item.lotLocation||'No lot location')+'</div>'+
+      '<div style="font-size:0.72rem;color:rgba(245,240,232,0.75);margin-top:4px;">'+(subtitle||'No size/style')+'</div>'+
+      priceLine+colorLine+dateLine+thumbs+rtosQuick+
+      '</div>'+
+      '<div style="display:flex;flex-direction:column;gap:6px;">'+
+      '<button type="button" data-id="'+idAttr+'" onclick="invEditFromBtn(this)" style="-webkit-appearance:none;appearance:none;border:none;border-radius:6px;padding:7px 10px;background:rgba(122,158,135,0.25);color:var(--wheat);font-size:0.72rem;cursor:pointer;">Edit</button>'+
+      '<button type="button" data-id="'+idAttr+'" onclick="invDeleteFromBtn(this)" style="-webkit-appearance:none;appearance:none;border:none;border-radius:6px;padding:7px 10px;background:rgba(196,81,31,0.25);color:var(--wheat);font-size:0.72rem;cursor:pointer;">Delete</button>'+
+      '</div></div></div>';
+}
+function invRenderSection(headerHtml,items,emptyHint){
+  if(!items.length){
+    return '<div class="inv-section"><h3 class="inv-section-label">'+headerHtml+'</h3>'+
+      '<div style="padding:12px;font-size:0.78rem;color:rgba(232,200,122,0.62);border:1px dashed rgba(232,200,122,0.2);border-radius:10px;">'+emptyHint+'</div></div>';
+  }
+  return '<div class="inv-section"><h3 class="inv-section-label">'+headerHtml+' <em>('+items.length+')</em></h3><div class="inv-list-stack">'+
+    items.map(invRenderItemCard).join('')+'</div></div>';
+}
+
 async function watchInventoryCloud(){
   if(!(await firebaseEnsureAuthed())) return false;
   if(fbInventoryUnsub){
@@ -5584,7 +5823,8 @@ async function watchInventoryCloud(){
         trimColor:d.trimColor||'',
         priceData:d.priceData||null,
         plateImage:d.photoUrls&&d.photoUrls.plate||'',
-        frontImage:d.photoUrls&&d.photoUrls.front||''
+        frontImage:d.photoUrls&&d.photoUrls.front||'',
+        unitStatus:invNormalizeUnitStatus(d.unitStatus)
       };
     });
     invRenderList();
@@ -6395,6 +6635,7 @@ function homeQuickMileage(){
 function homeQuickInventory(){
   homeToggleQuickSheet(false);
   goTo('screenInventory');
+  setTimeout(function(){ try{ invOpenAddModal(); }catch(_e){} }, 120);
 }
 function homeQuickNewQuote(){
   homeToggleQuickSheet(false);
@@ -6436,11 +6677,17 @@ function homeInvNewestItem(){
   try{
     var items=(typeof invState!=='undefined'&&invState.items)?invState.items:[];
     if(!items.length) return null;
+    function rank(it){
+      var st=invNormalizeUnitStatus(it.unitStatus);
+      var avail=st==='available'?2:(st==='sold'?1:0);
+      var ta=it&&it.updatedAt?new Date(it.updatedAt).getTime():0;
+      if(!isFinite(ta)) ta=0;
+      return {avail:avail,t:ta};
+    }
     return items.slice().sort(function(a,b){
-      var ta=a&&a.updatedAt?new Date(a.updatedAt).getTime():0;
-      var tb=b&&b.updatedAt?new Date(b.updatedAt).getTime():0;
-      if(tb!==ta) return tb-ta;
-      return 0;
+      var ra=rank(a),rb=rank(b);
+      if(rb.avail!==ra.avail) return rb.avail-ra.avail;
+      return rb.t-ra.t;
     })[0];
   }catch(_e2){ return null; }
 }
@@ -6804,16 +7051,22 @@ function renderHomeDashboard(){
     var invTitle=document.getElementById('homeDashInvTitle');
     var invMeta=document.getElementById('homeDashInvMeta');
     var invItem=homeInvNewestItem();
-    var invCount=(typeof invState!=='undefined'&&invState.items)?invState.items.length:0;
-    if(invPill) invPill.textContent=invCount?('QTY '+invCount):'EMPTY';
+    var invItems=(typeof invState!=='undefined'&&invState.items)?invState.items:[];
+    var invCount=invItems.length;
+    var invAvail=invItems.filter(function(it){return typeof invNormalizeUnitStatus==='function'&&invNormalizeUnitStatus(it.unitStatus)==='available';}).length;
+    if(invPill){
+      if(!invCount) invPill.textContent='EMPTY';
+      else invPill.textContent=invAvail<invCount?('QTY '+invCount+' · '+invAvail+' avail'):('QTY '+invCount);
+    }
     if(invItem&&invTitle&&invMeta&&invRow&&invEmpty){
       invEmpty.style.display='none';
       invRow.style.display='flex';
       var subj=[invItem.size,invItem.style].filter(Boolean).join(' · ')||'Inventory item';
       invTitle.textContent=subj;
       var added=invItem.updatedAt?new Date(invItem.updatedAt):null;
-      var addedStr=added&&!isNaN(added.getTime())?'Added '+added.toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'numeric'}):'';
-      invMeta.textContent=addedStr;
+      var addedStr=added&&!isNaN(added.getTime())?'Updated '+added.toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'numeric'}):'';
+      var statusStr=(typeof invUnitStatusDisplay==='function'?invUnitStatusDisplay(invItem.unitStatus):'')||'Available';
+      invMeta.textContent=[statusStr,addedStr].filter(Boolean).join(' · ');
       var iu=invItem.frontImage||invItem.plateImage||'';
       if(invThumb&&iu){ invThumb.src=iu; invThumb.style.display='block'; }
       else if(invThumb){ invThumb.src=''; invThumb.style.display='none'; }
@@ -9738,7 +9991,10 @@ try{
     try{ scheduleHomeUniformScale(); }catch(_e2){}
   });
 }catch(e){}
-try{firebaseTryInit();}catch(e){}
+try{
+  firebaseTryInit();
+  firebaseStartHomeReactiveSync();
+}catch(e){}
 try{
   settingsSyncFromCloud().then(function(result){
     if(result&&result.ok&&result.settings){
@@ -10408,56 +10664,26 @@ function invUseCalculatedPrice(){
 function invRenderList(){
   var wrap=document.getElementById('inv_listWrap');
   if(!wrap) return;
+  invRefreshFilterOptions();
   if(!invState.items.length){
-    wrap.innerHTML='<div style="padding:12px;border:1px solid rgba(232,200,122,0.2);border-radius:10px;background:rgba(255,255,255,0.03);font-size:0.8rem;color:rgba(232,200,122,0.7);">No inventory saved yet.</div>';
+    wrap.innerHTML='<div style="padding:12px;border:1px solid rgba(232,200,122,0.2);border-radius:10px;background:rgba(255,255,255,0.03);font-size:0.8rem;color:rgba(232,200,122,0.7);">No inventory saved yet. Tap “Add inventory” to create your first unit.</div>';
     try{ renderHomeDashboard(); }catch(_e){}
     return;
   }
-  wrap.innerHTML=invState.items.map(function(item){
-    var subtitle=[item.size,item.style].filter(Boolean).join(' · ');
-    var colorParts=[];
-    if(item.roofColor) colorParts.push('Roof: '+item.roofColor);
-    if(item.wallColor) colorParts.push('Wall: '+item.wallColor);
-    if(item.trimColor) colorParts.push('Trim: '+item.trimColor);
-    var colorLine=colorParts.length?'<div style="font-size:0.72rem;color:rgba(245,240,232,0.65);margin-top:4px;">'+colorParts.join(' · ')+'</div>':'';
-    var dateLine=item.buildDate?'<div style="font-size:0.7rem;color:rgba(232,200,122,0.62);margin-top:3px;">Build: '+item.buildDate+'</div>':'';
-    var priceLine=item.priceData&&item.priceData.finalTotal?'<div style="font-size:0.78rem;color:var(--wheat);margin-top:4px;">Price: '+invFmt(item.priceData.finalTotal)+'</div>':'';
-    var rtosQuick='';
-    if(item.priceData&&item.priceData.baseRaw){
-      var saleDiscount=item.priceData.saleAmt||0;
-      var salePrice=item.priceData.baseRaw-saleDiscount;
-      var imgLinks=[];
-      if(item.plateImage) imgLinks.push('<a href="'+item.plateImage+'" target="_blank" style="color:var(--sky);text-decoration:none;">Plate Photo</a>');
-      if(item.frontImage) imgLinks.push('<a href="'+item.frontImage+'" target="_blank" style="color:var(--sky);text-decoration:none;">Front Photo</a>');
-      rtosQuick='<div style="margin-top:8px;padding:8px;border:1px solid rgba(232,200,122,0.2);border-radius:8px;background:rgba(255,255,255,0.03);">'+
-        '<div style="font-size:0.66rem;letter-spacing:1px;color:rgba(232,200,122,0.7);text-transform:uppercase;margin-bottom:4px;">RTOStreamline Quick View</div>'+
-        '<div style="font-size:0.74rem;color:rgba(245,240,232,0.88);line-height:1.45;">'+
-        'Full Serial: <strong>'+(item.serialNumber||'—')+'</strong><br>'+
-        'List Price: <strong>'+invFmt(item.priceData.baseRaw||0)+'</strong><br>'+
-        'Sale Discount: <strong>'+invFmt(saleDiscount)+'</strong><br>'+
-        'Sale Price: <strong>'+invFmt(salePrice)+'</strong><br>'+
-        'Colors: <strong>'+([item.roofColor,item.wallColor,item.trimColor].filter(Boolean).join(' / ')||'—')+'</strong><br>'+
-        'Pictures: '+(imgLinks.length?imgLinks.join(' · '):'—')+
-        '</div></div>';
-    }
-    var thumbs='<div style="display:flex;gap:6px;margin-top:8px;">'+
-      (item.plateImage?'<img src="'+item.plateImage+'" alt="" style="width:54px;height:54px;object-fit:cover;border-radius:6px;border:1px solid rgba(232,200,122,0.25);">':'')+
-      (item.frontImage?'<img src="'+item.frontImage+'" alt="" style="width:54px;height:54px;object-fit:cover;border-radius:6px;border:1px solid rgba(232,200,122,0.25);">':'')+
-      '</div>';
-    return '<div style="border:1.5px solid rgba(232,200,122,0.2);border-radius:10px;padding:10px 12px;background:rgba(255,255,255,0.04);">'+
-      '<div style="display:flex;gap:8px;align-items:flex-start;">'+
-      '<div style="flex:1;">'+
-      '<div style="font-size:0.86rem;font-weight:700;color:var(--wheat);">'+(item.serialNumber||'No Serial')+'</div>'+
-      '<div style="font-size:0.74rem;color:rgba(200,221,232,0.75);">'+(item.lotLocation||'No lot location')+'</div>'+
-      '<div style="font-size:0.72rem;color:rgba(245,240,232,0.75);margin-top:4px;">'+(subtitle||'No size/style')+'</div>'+
-      priceLine+colorLine+dateLine+thumbs+rtosQuick+
-      '</div>'+
-      '<div style="display:flex;flex-direction:column;gap:6px;">'+
-      '<button type="button" onclick="invEditItem(\''+item.id+'\')" style="-webkit-appearance:none;appearance:none;border:none;border-radius:6px;padding:7px 10px;background:rgba(122,158,135,0.25);color:var(--wheat);font-size:0.72rem;cursor:pointer;">Edit</button>'+
-      '<button type="button" onclick="invDeleteItem(\''+item.id+'\')" style="-webkit-appearance:none;appearance:none;border:none;border-radius:6px;padding:7px 10px;background:rgba(196,81,31,0.25);color:var(--wheat);font-size:0.72rem;cursor:pointer;">Delete</button>'+
-      '</div></div></div>';
-  }).join('');
-  try{ renderHomeDashboard(); }catch(_e2){}
+  var filt=(invState.items||[]).filter(invPassesInventoryFilters);
+  if(!filt.length){
+    wrap.innerHTML='<div style="padding:12px;border:1px solid rgba(232,200,122,0.2);border-radius:10px;background:rgba(255,255,255,0.03);font-size:0.8rem;color:rgba(232,200,122,0.75);">No units match these filters. Try “All lots” or “All sizes / styles”, or tap Add inventory.</div>';
+    try{ renderHomeDashboard(); }catch(_e2){}
+    return;
+  }
+  var available=invSortItemsByUpdatedDesc(filt.filter(function(it){return invNormalizeUnitStatus(it.unitStatus)==='available';}));
+  var sold=invSortItemsByUpdatedDesc(filt.filter(function(it){return invNormalizeUnitStatus(it.unitStatus)==='sold';}));
+  var delivered=invSortItemsByUpdatedDesc(filt.filter(function(it){return invNormalizeUnitStatus(it.unitStatus)==='delivered';}));
+  wrap.innerHTML=
+    invRenderSection('Available',available,'No available units match these filters.')+
+    invRenderSection('Sold',sold,'No sold units match these filters.')+
+    invRenderSection('Delivered',delivered,'No delivered units match these filters.');
+  try{ renderHomeDashboard(); }catch(_e3){}
 }
 
 function invClearForm(){
@@ -10465,6 +10691,8 @@ function invClearForm(){
     var el=document.getElementById(id);
     if(el) el.value='';
   });
+  var stEl=document.getElementById('inv_unitStatus');
+  if(stEl) stEl.value='available';
   var plateInput=document.getElementById('inv_serialPhotoInput');
   var frontInput=document.getElementById('inv_frontPhotoInput');
   if(plateInput) plateInput.value='';
@@ -10488,6 +10716,7 @@ async function invSaveItem(){
   var roofColor=invGetValue('inv_roofColor');
   var wallColor=invGetValue('inv_wallColor');
   var trimColor=invGetValue('inv_trimColor');
+  var unitStatus=invNormalizeUnitStatus((document.getElementById('inv_unitStatus')||{}).value);
   if(invState.ocrHasResult&&!invState.ocrConfirmed&&!invState.ocrRejected){
     invUpdateOcrStatus('Confirm or reject OCR read before saving.');
     showToast('Confirm or reject OCR read before saving');
@@ -10531,6 +10760,7 @@ async function invSaveItem(){
         roofColor:roofColor,
         wallColor:wallColor,
         trimColor:trimColor,
+        unitStatus:unitStatus,
         priceData:invState.priceData?Object.assign({},invState.priceData):null,
         photoUrls:{
           plate:invToCloudPhotoUrl(plateImageValue),
@@ -10554,6 +10784,7 @@ async function invSaveItem(){
         roofColor:roofColor,
         wallColor:wallColor,
         trimColor:trimColor,
+        unitStatus:unitStatus,
         priceData:invState.priceData?Object.assign({},invState.priceData):null,
         plateImage:(plateImageValue||'').trim(),
         frontImage:(frontImageValue||'').trim()
@@ -10571,6 +10802,7 @@ async function invSaveItem(){
       invRenderList();
       showToast(invState.editId?'Inventory item updated':'Inventory item saved');
       invClearForm();
+      invCloseAddEditModal();
       return;
     }catch(err){
       console.log('Cloud save failed, keeping local fallback:',err);
@@ -10592,6 +10824,7 @@ async function invSaveItem(){
         roofColor:roofColor,
         wallColor:wallColor,
         trimColor:trimColor,
+        unitStatus:unitStatus,
         priceData:invState.priceData?Object.assign({},invState.priceData):null,
         plateImage:invState.images.plate||'',
         frontImage:invState.images.front||''
@@ -10610,6 +10843,7 @@ async function invSaveItem(){
       roofColor:roofColor,
       wallColor:wallColor,
       trimColor:trimColor,
+      unitStatus:unitStatus,
       priceData:invState.priceData?Object.assign({},invState.priceData):null,
       plateImage:invState.images.plate||'',
       frontImage:invState.images.front||''
@@ -10629,12 +10863,15 @@ async function invSaveItem(){
   }
   invRenderList();
   invClearForm();
+  invCloseAddEditModal();
 }
 
 function invEditItem(id){
   var item=invState.items.find(function(it){return it.id===id;});
   if(!item) return;
   invState.editId=item.id;
+  var st=document.getElementById('inv_unitStatus');
+  if(st) st.value=invNormalizeUnitStatus(item.unitStatus);
   document.getElementById('inv_lotLocation').value=item.lotLocation||'';
   document.getElementById('inv_serialNumber').value=item.serialNumber||'';
   document.getElementById('inv_size').value=item.size||'';
@@ -10654,8 +10891,18 @@ function invEditItem(id){
   invSetPreview('inv_serialPreview',invState.images.plate);
   invSetPreview('inv_frontPreview',invState.images.front);
   invUpdateOcrStatus(invState.images.plate?'Serial plate photo ready.':'Waiting for serial plate photo');
+  var ttl=document.getElementById('invAddEditTitle');
+  if(ttl) ttl.textContent='Edit inventory';
+  var o=document.getElementById('invAddEditModalOverlay');
+  if(o){
+    o.classList.add('open');
+    o.setAttribute('aria-hidden','false');
+  }
+  try{
+    var box=document.querySelector('#invAddEditModalOverlay .photo-modal');
+    if(box) box.scrollTop=0;
+  }catch(_sc){}
   showToast('Editing inventory item');
-  window.scrollTo(0,0);
 }
 
 function invDeleteItem(id){
@@ -10663,7 +10910,10 @@ function invDeleteItem(id){
   if(!ok) return;
   if(cloudReady()){
     invDeleteItemCloud(id).then(function(){
-      if(invState.editId===id) invClearForm();
+      if(invState.editId===id){
+        invClearForm();
+        invCloseAddEditModal();
+      }
       showToast('Inventory item deleted');
     }).catch(function(err){
       console.log('Cloud delete failed:',err);
@@ -10672,7 +10922,10 @@ function invDeleteItem(id){
     return;
   }
   invState.items=invState.items.filter(function(it){return it.id!==id;});
-  if(invState.editId===id) invClearForm();
+  if(invState.editId===id){
+    invClearForm();
+    invCloseAddEditModal();
+  }
   if(!invPersist()) return;
   invRenderList();
   showToast('Inventory item deleted');
