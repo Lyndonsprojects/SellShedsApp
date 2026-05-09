@@ -365,6 +365,116 @@ select option { background:var(--earth); color:var(--cream); }
 .opt-override { font-weight:400; color:rgba(245,240,232,0.4); text-transform:none; letter-spacing:0; }
 .opt-calc-preview { font-size:0.78rem; color:var(--rust); font-weight:600; margin-top:4px; min-height:18px; }
 
+/* Quick Price View + Options sheet + summary */
+.qpv-grid { display:grid; grid-template-columns:1fr minmax(108px,38%); gap:12px; align-items:start; }
+.qpv-left { font-size:0.78rem; line-height:1.55; color:rgba(245,240,232,0.88); }
+.qpv-line { display:flex; justify-content:space-between; gap:8px; padding:3px 0; border-bottom:1px solid rgba(232,200,122,0.08); }
+.qpv-line:last-child { border-bottom:none; }
+.qpv-line .qpv-l { color:rgba(245,240,232,0.88); flex:1; min-width:0; }
+.qpv-line .qpv-r { font-weight:600; color:rgba(245,240,232,0.88); flex-shrink:0; text-align:right; }
+.qpv-line.qpv-total { margin-top:6px; padding-top:8px; border-top:1px solid rgba(232,200,122,0.22); border-bottom:none; font-size:0.9rem; }
+.qpv-right { font-size:0.85rem; color:rgba(245,240,232,0.88); text-align:right; }
+.qpv-rto-row { padding:6px 0; border-bottom:1px solid rgba(232,200,122,0.1); display:flex; align-items:baseline; justify-content:flex-end; gap:6px; }
+.qpv-rto-row:last-child { border-bottom:none; }
+.qpv-rto-mo { font-weight:700; color:rgba(245,240,232,0.88); font-size:0.82rem; letter-spacing:0.4px; }
+.qpv-rto-val { color:rgba(245,240,232,0.88); font-size:0.85rem; }
+.qpv-rto-row .qpv-rto-tax { font-size:0.72rem; color:rgba(245,240,232,0.7); }
+.qpv-rto-row .qpv-rto-sep { color:rgba(245,240,232,0.55); font-size:0.85rem; }
+.qpv-tax-toggle { display:inline-flex; align-items:center; gap:6px; cursor:pointer; user-select:none; }
+.qpv-tax-toggle .qpv-tt-track { width:30px; height:16px; background:rgba(255,255,255,0.12); border-radius:9px; position:relative; transition:background 0.18s; }
+.qpv-tax-toggle .qpv-tt-thumb { width:12px; height:12px; background:rgba(245,240,232,0.85); border-radius:50%; position:absolute; top:2px; left:2px; transition:left 0.18s; }
+.qpv-tax-toggle.on .qpv-tt-track { background:rgba(74,138,74,0.65); }
+.qpv-tax-toggle.on .qpv-tt-thumb { left:16px; }
+.qpv-tax-toggle .qpv-tt-label { font-size:0.65rem; letter-spacing:1.5px; color:rgba(245,240,232,0.7); text-transform:uppercase; }
+
+/* QPV settings (gear + assurance/CR) */
+.qpv-gear-btn { -webkit-appearance:none; appearance:none; border:1px solid rgba(232,200,122,0.3); background:rgba(255,255,255,0.05); color:var(--wheat); width:28px; height:28px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; transition:background 0.15s, transform 0.15s; padding:0; }
+.qpv-gear-btn:hover { background:rgba(255,255,255,0.1); }
+.qpv-gear-btn[aria-expanded="true"] { background:rgba(196,81,31,0.25); border-color:var(--barn); transform:rotate(45deg); }
+.qpv-settings-panel { margin-top:12px; padding-top:12px; border-top:1px solid rgba(232,200,122,0.18); display:flex; flex-direction:column; gap:12px; }
+.qpv-settings-row { display:flex; flex-direction:column; gap:6px; }
+.qpv-settings-row .qpv-settings-label { font-size:0.66rem; letter-spacing:1.5px; color:rgba(232,200,122,0.7); text-transform:uppercase; font-weight:700; }
+.qpv-settings-row .qpv-settings-label-row { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.qpv-settings-row .qpv-settings-buttons { display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; }
+.qpv-settings-row .qpv-settings-buttons .rto-btn { padding:6px 4px; font-size:0.74rem; }
+.qpv-settings-row .qpv-settings-cr-input { display:flex; align-items:center; gap:6px; }
+.qpv-settings-row .qpv-settings-cr-input .qpv-settings-prefix { font-size:0.95rem; font-weight:700; color:var(--wheat); }
+.qpv-settings-row .qpv-settings-cr-input input { flex:1; padding:8px 10px; border-radius:6px; border:1.5px solid rgba(232,200,122,0.25); background:rgba(255,255,255,0.08); color:var(--cream); font-size:0.9rem; box-sizing:border-box; }
+
+/* Review Estimate (Step 1) summary cards */
+.review-card { background:rgba(255,255,255,0.05); border:1.5px solid rgba(232,200,122,0.22); border-radius:12px; padding:14px; margin-bottom:12px; }
+.review-card .review-head { display:flex; flex-direction:column; gap:2px; margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid rgba(232,200,122,0.18); }
+.review-card .review-title { font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:1rem; letter-spacing:2px; color:var(--wheat); }
+.review-card .review-sub { font-size:0.72rem; color:rgba(232,200,122,0.65); }
+.review-card .review-body { font-size:0.8rem; line-height:1.55; color:rgba(245,240,232,0.88); }
+.review-card .review-line { display:flex; justify-content:space-between; gap:8px; padding:4px 0; border-bottom:1px solid rgba(232,200,122,0.08); }
+.review-card .review-line:last-child { border-bottom:none; }
+.review-card .review-line .rl-l { color:rgba(245,240,232,0.88); flex:1; min-width:0; }
+.review-card .review-line .rl-r { color:rgba(245,240,232,0.88); font-weight:600; flex-shrink:0; text-align:right; }
+.review-card .review-line.review-sub-line { padding-top:8px; margin-top:6px; border-top:1px solid rgba(232,200,122,0.18); border-bottom:none; }
+.review-card .review-line.review-sub-line .rl-l, .review-card .review-line.review-sub-line .rl-r { color:rgba(245,240,232,0.95); font-weight:700; }
+.review-card .review-grand { display:flex; justify-content:space-between; align-items:baseline; margin-top:14px; padding:12px; background:rgba(196,81,31,0.18); border-radius:10px; border:1.5px solid rgba(196,81,31,0.4); }
+.review-card .review-grand-label { font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:0.95rem; letter-spacing:2px; color:var(--wheat); }
+.review-card .review-grand-val { font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:1.6rem; color:var(--wheat); letter-spacing:0.5px; line-height:1; }
+.review-card .review-foot { font-size:0.7rem; color:rgba(232,200,122,0.6); margin-top:10px; line-height:1.5; }
+.review-card .review-rto-terms { background:rgba(0,0,0,0.18); border-radius:8px; padding:10px 12px; }
+
+/* Your Quote — Share & Export hub tiles */
+.quote-hub-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.quote-hub-tile { -webkit-appearance:none; appearance:none; display:flex; flex-direction:column; align-items:flex-start; gap:4px; background:rgba(255,255,255,0.04); border:1.5px solid rgba(232,200,122,0.22); border-radius:10px; padding:12px; color:var(--cream); cursor:pointer; font:inherit; text-align:left; transition:transform 0.12s ease, border-color 0.12s ease, background 0.12s ease; min-height:88px; }
+.quote-hub-tile:hover, .quote-hub-tile:focus { border-color:rgba(232,200,122,0.45); background:rgba(255,255,255,0.07); }
+.quote-hub-tile:active { transform:scale(0.98); }
+.quote-hub-tile .qhub-icon { font-size:1.4rem; line-height:1; }
+.quote-hub-tile .qhub-label { font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:0.95rem; letter-spacing:1.5px; color:var(--wheat); }
+.quote-hub-tile .qhub-sub { font-size:0.7rem; color:rgba(232,200,122,0.6); letter-spacing:0.4px; }
+.quote-hub-tile.is-soon { opacity:0.7; }
+.quote-hub-tile .qhub-soon-tag { font-size:0.55rem; font-weight:800; background:rgba(232,200,122,0.18); color:var(--wheat); padding:2px 6px; border-radius:5px; letter-spacing:1px; align-self:flex-start; margin-top:2px; }
+
+.opts-summary-wrap { margin:10px 0 8px; }
+.opts-summary-title { font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:0.78rem; letter-spacing:2px; color:rgba(232,200,122,0.65); margin-bottom:6px; }
+.opts-summary-row { display:flex; align-items:center; gap:8px; padding:10px 12px; margin-bottom:6px; background:rgba(0,0,0,0.22); border:1px solid rgba(232,200,122,0.15); border-radius:8px; font-size:0.8rem; }
+.opts-summary-row .os-name { flex:1; min-width:0; font-weight:600; color:var(--cream); }
+.opts-summary-row .os-price { font-weight:700; color:var(--wheat); flex-shrink:0; }
+.opts-summary-row .os-qty { width:52px; padding:6px 8px; border-radius:6px; border:1px solid rgba(232,200,122,0.25); background:rgba(255,255,255,0.08); color:var(--cream); font-size:0.85rem; text-align:center; }
+.opts-summary-row .os-x { -webkit-appearance:none; appearance:none; border:none; background:rgba(196,81,31,0.25); color:var(--wheat); width:32px; height:32px; border-radius:6px; cursor:pointer; flex-shrink:0; font-size:1rem; line-height:1; }
+.opts-summary-row.removed-std { opacity:0.85; border-color:rgba(74,138,74,0.35); }
+.opts-summary-sub { font-size:0.68rem; color:rgba(232,200,122,0.55); margin:8px 0 4px; letter-spacing:1px; text-transform:uppercase; }
+
+.opt-sheet-overlay { display:none; position:fixed; inset:0; z-index:120; background:rgba(0,0,0,0.55); align-items:flex-end; justify-content:center; }
+.opt-sheet-overlay.open { display:flex; }
+.opt-sheet {
+  position:fixed; left:0; right:0; bottom:0; margin:0 auto; z-index:121;
+  width:100%; max-width:480px; max-height:88vh; background:var(--earth);
+  border-radius:14px 14px 0 0; border:1.5px solid rgba(232,200,122,0.28); border-bottom:none;
+  display:flex; flex-direction:column;
+  transform:translateY(105%); transition:transform 0.28s ease, visibility 0.28s;
+  box-shadow:0 -8px 32px rgba(0,0,0,0.45);
+  visibility:hidden; pointer-events:none;
+}
+.opt-sheet.open { transform:translateY(0); visibility:visible; pointer-events:auto; }
+.opt-sheet-head { display:flex; align-items:center; justify-content:space-between; padding:14px 16px 8px; border-bottom:1px solid rgba(232,200,122,0.15); }
+.opt-sheet-head h3 { font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:1.1rem; letter-spacing:2px; color:var(--wheat); margin:0; }
+.opt-sheet-close { -webkit-appearance:none; appearance:none; border:none; background:rgba(255,255,255,0.08); color:var(--wheat); width:36px; height:36px; border-radius:8px; font-size:1.2rem; cursor:pointer; }
+.opt-sheet-search { margin:10px 16px 0; width:calc(100% - 32px); box-sizing:border-box; padding:10px 12px; border-radius:8px; border:1.5px solid rgba(232,200,122,0.25); background:rgba(255,255,255,0.06); color:var(--cream); font-size:0.9rem; }
+.opt-sheet-scroll { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:8px 16px 12px; }
+.opt-sheet-section { margin-bottom:14px; }
+.opt-sheet-section-title { font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:0.82rem; letter-spacing:2px; color:rgba(232,200,122,0.75); margin:12px 0 8px; display:flex; align-items:center; gap:8px; }
+.opt-sheet-count { font-size:0.65rem; background:var(--rust); color:white; padding:2px 7px; border-radius:10px; display:none; }
+.opt-sheet-count.has-items { display:inline-block; }
+.opt-sheet .opt-row { border-radius:8px; overflow:hidden; margin-bottom:6px; border:1px solid rgba(232,200,122,0.12); }
+.opt-sheet .opt-detail { border-top:1px solid rgba(232,200,122,0.08); }
+.opt-sheet-footer { padding:10px 16px calc(14px + env(safe-area-inset-bottom,0px)); border-top:1px solid rgba(232,200,122,0.18); }
+.opt-sheet-footer .btn-primary { margin-top:0; }
+.opt-sheet-section.opt-sheet-hidden { display:none !important; }
+.opt-sheet .opt-cat-body { display:block !important; }
+.opt-sheet .opt-cat-header { pointer-events:none; cursor:default; }
+.opt-sheet .opt-category { background:rgba(255,255,255,0.04); margin-bottom:10px; }
+.opt-sheet .opt-cat-arrow { display:none; }
+
+.quick-price-extras { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px; }
+.quick-price-extras .field-label { font-size:0.65rem; margin-bottom:4px; }
+.quick-price-extras input, .quick-price-extras select { width:100%; box-sizing:border-box; padding:8px 10px; font-size:0.85rem; border-radius:8px; border:1.5px solid rgba(232,200,122,0.22); background:rgba(255,255,255,0.08); color:var(--cream); }
+
 .pb40 { padding-bottom:40px; }
 
 /* ============================================================
@@ -2442,21 +2552,68 @@ input:focus, select:focus, textarea:focus {
             <span style="color:var(--wheat);font-size:1rem;font-weight:600;">% off</span>
           </div>
         </div>
-        <div style="display:flex;justify-content:space-between;align-items:flex-end;">
-          <div>
+        <div>
             <div id="quickBasePrice" style="font-size:0.8rem;color:var(--wheat);opacity:0.55;text-decoration:line-through;min-height:1.2em;"></div>
             <div id="quickSalePrice" style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:2rem;color:var(--wheat);letter-spacing:1px;line-height:1;"></div>
+            <div id="quickBosLine" style="display:none;font-size:0.78rem;color:rgba(232,200,122,0.85);margin-top:6px;line-height:1.4;"></div>
+        </div>
+        <div class="quick-price-extras">
+          <div class="field-group" style="margin-bottom:0;">
+            <label class="field-label">Tax %</label>
+            <select id="calcQuickTaxSelect" onchange="calcQuickTaxSelectChange(this)"></select>
+            <input type="number" id="calcQuickTaxPct" min="0" max="20" step="0.1" placeholder="Custom %" oninput="calcQuickTaxInput(this)" style="display:none;margin-top:6px;">
           </div>
-          <div id="quickRTO" style="text-align:right;">
-            <div style="font-size:0.65rem;color:var(--wheat);opacity:0.6;letter-spacing:1px;">RTO FROM</div>
-            <div id="quickRTOamt" style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:1.2rem;color:var(--wheat);letter-spacing:1px;"></div>
+          <div class="field-group" style="margin-bottom:0;">
+            <label class="field-label">Dealer discount</label>
+            <select id="calcQuickDealer" onchange="calcQuickDealerChange(this)">
+              <option value="0">None</option>
+              <option value="1">1% off base</option>
+              <option value="2">2% off base</option>
+              <option value="3">3% off base</option>
+              <option value="4">4% off base</option>
+              <option value="5">5% off base</option>
+            </select>
           </div>
         </div>
       </div>
 
       <div id="rtoStreamlineCalcCard" style="display:none;background:rgba(255,255,255,0.05);border:1.5px solid rgba(232,200,122,0.25);border-radius:10px;padding:12px 14px;margin:10px 0;">
-        <div style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:0.95rem;letter-spacing:2px;color:var(--wheat);margin-bottom:8px;">RTOStreamline Quick View</div>
-        <div id="rtoStreamlineCalcBody" style="font-size:0.8rem;line-height:1.55;color:var(--cream);"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:10px;">
+          <div style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:0.95rem;letter-spacing:2px;color:var(--wheat);">QUICK PRICE VIEW</div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div id="qpvTaxToggle" class="qpv-tax-toggle" onclick="toggleQpvShowTax()" role="button" aria-pressed="false" title="Show tax in RTO breakdown">
+              <span class="qpv-tt-label">Tax</span>
+              <div class="qpv-tt-track"><div class="qpv-tt-thumb"></div></div>
+            </div>
+            <button type="button" id="qpvSettingsBtn" class="qpv-gear-btn" onclick="toggleQpvSettings()" aria-expanded="false" aria-controls="qpvSettingsPanel" title="RTO settings">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            </button>
+          </div>
+        </div>
+        <div id="rtoStreamlineCalcBody" class="qpv-grid"></div>
+
+        <!-- RTO settings panel: assurance + cost reduction (collapsed by default) -->
+        <div id="qpvSettingsPanel" class="qpv-settings-panel" style="display:none;">
+          <div class="qpv-settings-row">
+            <div class="qpv-settings-label">Assurance Plan</div>
+            <div class="qpv-settings-buttons">
+              <button class="rto-btn" id="assuranceBtn1" onclick="setAssurancePlan(1)">None</button>
+              <button class="rto-btn active" id="assuranceBtn2" onclick="setAssurancePlan(2)">Basic $150</button>
+              <button class="rto-btn" id="assuranceBtn3" onclick="setAssurancePlan(3)">Plus $300</button>
+            </div>
+          </div>
+          <div class="qpv-settings-row">
+            <div class="qpv-settings-label-row">
+              <div class="qpv-settings-label">Cost Reduction</div>
+              <div id="crAutoTag" style="display:none;font-size:0.6rem;font-weight:700;background:var(--barn);color:var(--wheat);border-radius:4px;padding:2px 6px;letter-spacing:0.5px;">AUTO 15%</div>
+            </div>
+            <div class="qpv-settings-cr-input">
+              <span class="qpv-settings-prefix">$</span>
+              <input type="number" id="c_costReduction" min="0" step="50" placeholder="0" oninput="onCostReductionInput(this.value)">
+            </div>
+            <div id="crBreakdown" style="display:none;padding:8px 10px;background:rgba(0,0,0,0.2);border-radius:8px;font-size:0.72rem;line-height:1.7;margin-top:6px;color:rgba(245,240,232,0.85);"></div>
+          </div>
+        </div>
       </div>
 
       <div style="background:rgba(255,255,255,0.05);border:1.5px solid rgba(232,200,122,0.22);border-radius:10px;padding:12px 14px;margin:12px 0;">
@@ -2468,18 +2625,21 @@ input:focus, select:focus, textarea:focus {
           <div class="inv-grid2">
             <div class="field-group"><label class="field-label">Budget</label><input type="number" id="rev_budget" min="0" step="1" placeholder="Enter budget"></div>
             <div class="field-group"><label class="field-label">Mode</label>
-              <select id="rev_mode"><option value="cash">Cash</option><option value="rto">RTO</option></select>
+              <select id="rev_mode" onchange="onReverseModeChange(this.value)"><option value="cash">Cash</option><option value="rto">RTO</option></select>
             </div>
           </div>
           <div class="inv-grid2">
-            <div class="field-group"><label class="field-label">RTO Term</label>
+            <div class="field-group" id="rev_termWrap" style="display:none;"><label class="field-label">RTO Term</label>
               <select id="rev_term"><option value="36">36 Mo</option><option value="48">48 Mo</option><option value="60">60 Mo</option></select>
             </div>
             <div class="field-group"><label class="field-label">Tax %</label><input type="number" id="rev_taxRate" min="0" step="0.01" placeholder="Auto from settings"></div>
           </div>
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin:-2px 0 10px;">
-            <div style="font-size:0.7rem;color:rgba(232,200,122,0.65);">Defaults to Settings tax; you can override.</div>
-            <button type="button" onclick="setReverseTaxFromSettings(true)" style="-webkit-appearance:none;appearance:none;border:1px solid rgba(232,200,122,0.25);background:rgba(255,255,255,0.06);color:var(--wheat);border-radius:6px;padding:6px 8px;font-size:0.68rem;cursor:pointer;">Use Settings Tax</button>
+          <div style="margin:6px 0 8px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;">
+              <div style="font-size:0.72rem;letter-spacing:1px;color:rgba(232,200,122,0.7);text-transform:uppercase;">Options to include</div>
+              <button type="button" id="rev_optsClear" onclick="clearReverseOptions()" style="-webkit-appearance:none;appearance:none;border:1px solid rgba(232,200,122,0.25);background:rgba(255,255,255,0.06);color:var(--wheat);border-radius:6px;padding:4px 8px;font-size:0.68rem;cursor:pointer;">Clear</button>
+            </div>
+            <div id="rev_optsChips" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
           </div>
           <button class="btn-secondary" style="margin-top:0;padding:10px 12px;" onclick="runReversePriceCalculator()">Find Matching Options</button>
           <div id="rev_results" style="margin-top:8px;font-size:0.78rem;line-height:1.5;color:rgba(232,200,122,0.82);">Enter budget and run search.</div>
@@ -2488,19 +2648,24 @@ input:focus, select:focus, textarea:focus {
 
       <div style="border-top:1px solid rgba(232,200,122,0.15);margin:14px 0 10px;"></div>
       <div class="page-title" style="font-size:1.1rem;margin-bottom:4px;">Options &amp; Upgrades</div>
-      <div class="page-sub" style="margin-bottom:10px;">Tap a category to expand</div>
-      <!-- Remove Standard Options -->
-      <div id="removeStdWrap" style="display:none;margin-bottom:12px;">
-        <button onclick="toggleRemoveStd()" id="removeStdBtn" style="-webkit-appearance:none;appearance:none;width:100%;background:rgba(196,81,31,0.15);border:1.5px solid rgba(196,81,31,0.5);border-radius:10px;padding:12px 16px;font-size:0.88rem;font-weight:700;color:var(--wheat);cursor:pointer;text-align:left;display:flex;align-items:center;justify-content:space-between;">
-          <span>&#8722; Remove Standard Options</span>
-          <span id="removeStdArrow" style="font-size:0.75rem;color:#C4511F;transition:transform 0.2s;">&#9660;</span>
-        </button>
-        <div id="removeStdPanel" style="display:none;background:rgba(196,81,31,0.1);border:1.5px solid rgba(196,81,31,0.4);border-top:none;border-radius:0 0 10px 10px;padding:12px 16px;">
-          <div style="font-size:0.75rem;color:#6B3020;margin-bottom:10px;line-height:1.5;">Uncheck items included in this style to remove from the base price.</div>
-          <div id="removeStdList" style="display:flex;flex-direction:column;gap:10px;"></div>
-        </div>
-      </div>
 
+      <div id="optsSummary" class="opts-summary-wrap"></div>
+      <button type="button" id="addOptionBtn" class="btn-primary" style="margin-top:4px;padding:12px;width:100%;" onclick="openOptionsSheet()">+ Add Option</button>
+
+      <!-- Bottom-sheet picker for options -->
+      <div id="optionsSheetOverlay" class="opt-sheet-overlay" onclick="if(event.target===this)closeOptionsSheet()" aria-hidden="true"></div>
+      <div id="optionsSheet" class="opt-sheet" role="dialog" aria-modal="true" aria-labelledby="optionsSheetTitle">
+        <div class="opt-sheet-head">
+          <h3 id="optionsSheetTitle">Add option</h3>
+          <button type="button" class="opt-sheet-close" onclick="closeOptionsSheet()" aria-label="Close">&#10005;</button>
+        </div>
+        <input type="search" id="optionsSheetSearch" class="opt-sheet-search" placeholder="Search options&hellip;" autocomplete="off" oninput="filterOptionsSheetSearch(this.value)">
+        <div id="optionsSheetScroll" class="opt-sheet-scroll">
+          <div id="removeStdSheetSection" class="opt-sheet-section" style="display:none;">
+            <div class="opt-sheet-section-title">Standard options <span id="stdRemovedBadge" class="opt-sheet-count"></span></div>
+            <p style="font-size:0.72rem;color:rgba(232,200,122,0.55);margin:0 0 8px;line-height:1.4;">Remove included standards for a base-price credit.</p>
+            <div id="removeStdList"></div>
+          </div>
       <!-- SIDING & EXTERIOR -->
       <div class="opt-category">
         <button class="opt-cat-header" onclick="toggleCat('catExterior')">
@@ -2974,18 +3139,23 @@ input:focus, select:focus, textarea:focus {
 
         </div>
       </div>
+        </div>
+        <div class="opt-sheet-footer">
+          <button type="button" class="btn-primary" onclick="closeOptionsSheet()">Done</button>
+        </div>
+      </div>
 
     </div>
   </div>
 
-  <!-- Step 1: Payment + Pricing -->
+  <!-- Step 1: Review Estimate -->
   <div class="calc-page" id="cpage1">
     <div style="padding:16px;">
 
       <!-- ── Header row: title + Cash/RTO toggle ── -->
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
         <div>
-          <div class="page-title" style="margin-bottom:0;">Payment &amp; Pricing</div>
+          <div class="page-title" style="margin-bottom:0;">Review Estimate</div>
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
           <span style="font-size:0.72rem;font-weight:700;color:rgba(232,200,122,0.7);" id="payLabelCash">Cash</span>
@@ -2995,14 +3165,31 @@ input:focus, select:focus, textarea:focus {
           <span style="font-size:0.72rem;font-weight:700;color:rgba(232,200,122,0.7);" id="payLabelRTO">RTO</span>
         </div>
       </div>
-      <div class="page-sub" style="margin-bottom:12px;">Payment type and tax</div>
+      <div class="page-sub" style="margin-bottom:12px;">Final summary before you send</div>
 
-      <!-- ── RTO Options (hidden when Cash) ── -->
-      <div id="calcRTOTerms" style="display:none;">
+      <!-- ── Cash Summary ── -->
+      <div id="reviewCashCard" class="review-card" style="display:none;">
+        <div class="review-head">
+          <div class="review-title" id="reviewCashHeadName">Cash Estimate</div>
+          <div class="review-sub" id="reviewCashHeadSub"></div>
+        </div>
+        <div class="review-body" id="reviewCashLines"></div>
+        <div class="review-grand" id="reviewCashGrandWrap">
+          <div class="review-grand-label">Cash Total</div>
+          <div class="review-grand-val" id="reviewCashGrand">—</div>
+        </div>
+        <div class="review-foot" id="reviewCashFoot"></div>
+      </div>
+
+      <!-- ── RTO Summary (uses legacy id calcRTOTerms so setCalcPay still works) ── -->
+      <div id="calcRTOTerms" class="review-card" style="display:none;">
+        <div class="review-head">
+          <div class="review-title" id="reviewRtoHeadName">RTO Estimate</div>
+          <div class="review-sub" id="reviewRtoHeadSub"></div>
+        </div>
 
         <!-- Term selector -->
-        <div style="background:rgba(255,255,255,0.05);border:1.5px solid rgba(232,200,122,0.2);border-radius:10px;padding:10px 12px;margin-bottom:10px;">
-          <label class="field-label" style="margin-bottom:8px;">RTO Term</label>
+        <div class="review-rto-terms">
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
             <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
               <button class="rto-btn active" data-months="36" onclick="setCalcRTO(36)" style="width:100%;padding:8px 4px;">36 Mo</button>
@@ -3019,66 +3206,43 @@ input:focus, select:focus, textarea:focus {
           </div>
         </div>
 
-        <!-- Assurance + Cost Reduction + Live Preview — one merged card -->
-        <div style="background:rgba(255,255,255,0.05);border:1.5px solid rgba(232,200,122,0.2);border-radius:10px;padding:12px;margin-bottom:10px;">
-
-          <!-- Assurance Plan row -->
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-            <label class="field-label" style="margin:0;font-size:0.78rem;">Assurance Plan</label>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:12px;">
-            <button class="rto-btn" id="assuranceBtn1" onclick="setAssurancePlan(1)" style="padding:7px 4px;font-size:0.78rem;">None</button>
-            <button class="rto-btn active" id="assuranceBtn2" onclick="setAssurancePlan(2)" style="padding:7px 4px;font-size:0.78rem;">Basic $150</button>
-            <button class="rto-btn" id="assuranceBtn3" onclick="setAssurancePlan(3)" style="padding:7px 4px;font-size:0.78rem;">Plus $300</button>
-          </div>
-
-          <!-- Divider -->
-          <div style="border-top:1px solid #E8DDD0;margin-bottom:10px;"></div>
-
-          <!-- Cost Reduction input -->
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-            <label class="field-label" style="margin:0;font-size:0.78rem;">Cost Reduction</label>
-            <div id="crAutoTag" style="display:none;font-size:0.65rem;font-weight:700;background:var(--barn);color:var(--wheat);border-radius:4px;padding:2px 6px;letter-spacing:0.5px;">AUTO 15%</div>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-            <span style="font-size:1rem;font-weight:700;color:var(--wheat);">$</span>
-            <input type="number" id="c_costReduction" min="0" step="50" placeholder="0"
-              style="flex:1;padding:9px 10px;border:1.5px solid rgba(232,200,122,0.25);border-radius:8px;font-size:1rem;"
-              oninput="onCostReductionInput(this.value)">
-          </div>
-
-          <!-- CR breakdown lines (visible when CR > 0) -->
-          <div id="crBreakdown" style="display:none;padding:8px 10px;background:rgba(0,0,0,0.2);border-radius:8px;font-size:0.76rem;line-height:1.9;margin-bottom:8px;"></div>
-
-          <!-- Divider -->
-          <div style="border-top:1px solid #E8DDD0;margin-bottom:10px;"></div>
-
-          <!-- Live RTO numbers -->
-          <div id="rtoLiveSummary" style="display:none;">
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center;">
-              <div>
-                <div style="font-size:0.6rem;color:rgba(232,200,122,0.55);letter-spacing:0.8px;margin-bottom:2px;">PRE-TAX</div>
-                <div id="rtoLiveMonthly" style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:1.45rem;color:var(--wheat);line-height:1;">—</div>
-              </div>
-              <div>
-                <div style="font-size:0.6rem;color:rgba(232,200,122,0.55);letter-spacing:0.8px;margin-bottom:2px;">+TAX/MO</div>
-                <div id="rtoLiveTax" style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:1rem;color:rgba(232,200,122,0.6);line-height:1;padding-top:4px;">—</div>
-              </div>
-              <div>
-                <div style="font-size:0.6rem;color:rgba(232,200,122,0.55);letter-spacing:0.8px;margin-bottom:2px;">TOTAL/MO</div>
-                <div id="rtoLiveTotal" style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:1.45rem;color:var(--barn);line-height:1;">—</div>
-              </div>
+        <!-- Live RTO summary numbers -->
+        <div id="rtoLiveSummary" style="display:none;margin-top:14px;padding-top:12px;border-top:1px solid rgba(232,200,122,0.18);">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;text-align:center;">
+            <div>
+              <div style="font-size:0.6rem;color:rgba(232,200,122,0.55);letter-spacing:0.8px;margin-bottom:2px;">PRE-TAX</div>
+              <div id="rtoLiveMonthly" style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:1.45rem;color:var(--wheat);line-height:1;">—</div>
             </div>
-            <div id="rtoLiveDeposit" style="margin-top:8px;font-size:0.72rem;color:rgba(232,200,122,0.55);text-align:center;min-height:1em;"></div>
+            <div>
+              <div style="font-size:0.6rem;color:rgba(232,200,122,0.55);letter-spacing:0.8px;margin-bottom:2px;">+TAX/MO</div>
+              <div id="rtoLiveTax" style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:1rem;color:rgba(232,200,122,0.6);line-height:1;padding-top:4px;">—</div>
+            </div>
+            <div>
+              <div style="font-size:0.6rem;color:rgba(232,200,122,0.55);letter-spacing:0.8px;margin-bottom:2px;">TOTAL/MO</div>
+              <div id="rtoLiveTotal" style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:1.45rem;color:var(--barn);line-height:1;">—</div>
+            </div>
           </div>
+          <div id="rtoLiveDeposit" style="margin-top:8px;font-size:0.72rem;color:rgba(232,200,122,0.55);text-align:center;min-height:1em;"></div>
+        </div>
 
-        </div><!-- end merged card -->
-      </div><!-- end calcRTOTerms -->
+        <!-- RTO line items -->
+        <div class="review-body" id="reviewRtoLines" style="margin-top:14px;border-top:1px solid rgba(232,200,122,0.15);padding-top:12px;"></div>
 
-      <!-- Dealer Discount -->
-      <div style="background:rgba(255,255,255,0.05);border:1.5px solid rgba(232,200,122,0.2);border-radius:10px;padding:12px;margin-bottom:10px;">
-        <label class="field-label" style="margin-bottom:8px;">Dealer Discount</label>
-        <select id="c_dealerDiscount" onchange="onDealerDiscountChange(this.value)" style="width:100%;">
+        <div class="review-foot" id="reviewRtoFoot"></div>
+      </div>
+
+      <!-- ── Estimated Early Payoff Sheet (RTO only, at the bottom) ── -->
+      <button type="button" id="earlyPayoffBtn" onclick="openEarlyPayoffSheet()" style="display:none;-webkit-appearance:none;appearance:none;width:100%;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.04);border:1.5px solid rgba(232,200,122,0.22);border-radius:10px;padding:12px 14px;margin-top:12px;color:var(--wheat);cursor:pointer;font:inherit;text-align:left;">
+        <span style="display:flex;flex-direction:column;gap:2px;">
+          <span style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:0.95rem;letter-spacing:1.5px;">Estimated Early Payoff Sheet</span>
+          <span style="font-size:0.7rem;color:rgba(232,200,122,0.6);letter-spacing:0.5px;">Show buyout savings month-by-month</span>
+        </span>
+        <span style="font-size:0.62rem;font-weight:800;background:rgba(232,200,122,0.15);color:var(--wheat);padding:4px 8px;border-radius:6px;letter-spacing:1px;margin-left:8px;flex-shrink:0;">COMING SOON</span>
+      </button>
+
+      <!-- Hidden mirrors so legacy JS still resolves these IDs -->
+      <div style="display:none;" aria-hidden="true">
+        <select id="c_dealerDiscount" onchange="onDealerDiscountChange(this.value)">
           <option value="0">None</option>
           <option value="1">1% off base</option>
           <option value="2">2% off base</option>
@@ -3086,36 +3250,20 @@ input:focus, select:focus, textarea:focus {
           <option value="4">4% off base</option>
           <option value="5">5% off base</option>
         </select>
-        <div id="discountLabelWrap" style="display:none;margin-top:10px;">
-          <label class="field-label" style="margin-bottom:6px;font-size:0.78rem;">Discount Label <span style="font-weight:400;color:rgba(232,200,122,0.5);">(shown on quote)</span></label>
-          <input type="text" id="c_discountLabel" placeholder='e.g. "Show Special", "Seasonal Deal", "Loyalty Discount"' style="width:100%;box-sizing:border-box;padding:9px 12px;border:1.5px solid rgba(232,200,122,0.25);border-radius:8px;font-size:0.9rem;font-family:inherit;" oninput="renderCalcQuote()">
-        </div>
-      </div>
-
-      <!-- Sales Tax -->
-      <div style="background:rgba(255,255,255,0.05);border:1.5px solid rgba(232,200,122,0.2);border-radius:10px;padding:12px;margin-bottom:10px;">
-        <label class="field-label" style="margin-bottom:8px;">Sales Tax</label>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:0;" id="taxToggleRow">
-          <button class="rto-btn active" id="taxBtn6" onclick="setTaxMode('standard')">Standard %</button>
-          <button class="rto-btn" id="taxBtnCustom" onclick="setTaxMode('custom')">Custom %</button>
-        </div>
-        <div id="customTaxWrap" style="display:none;margin-top:10px;">
-          <div style="display:flex;align-items:center;gap:10px;">
-            <input type="number" id="c_taxCustom" min="0" max="20" step="0.1" placeholder="e.g. 6.5" style="flex:1;" oninput="onTaxInput(this)">
-            <span style="font-size:1.2rem;color:rgba(232,200,122,0.7);font-weight:700;">%</span>
-          </div>
-        </div>
-        <div style="font-size:0.7rem;color:rgba(232,200,122,0.55);margin-top:8px;">RTO: tax shown per month. Cash: tax on full total.</div>
+        <div id="discountLabelWrap"><input type="text" id="c_discountLabel" oninput="renderCalcQuote()"></div>
+        <button id="taxBtn6" onclick="setTaxMode('standard')">Standard</button>
+        <button id="taxBtnCustom" onclick="setTaxMode('custom')">Custom</button>
+        <div id="customTaxWrap"><input type="number" id="c_taxCustom" min="0" max="20" step="0.1" oninput="onTaxInput(this)"></div>
       </div>
 
     </div>
   </div>
 
-  <!-- Step 2: Quote + Email -->
+  <!-- Step 2: Your Quote — Share & Export Hub -->
   <div class="calc-page" id="cpage2">
     <div style="padding:16px;">
       <div class="page-title">Your Quote</div>
-      <div class="page-sub">Review and send to customer</div>
+      <div class="page-sub">Review, share, and turn this estimate into ads or a sales sheet</div>
       <div id="calcQuoteContent"></div>
       <div style="background:rgba(255,255,255,0.05);border:1.5px solid rgba(232,200,122,0.2);border-radius:10px;padding:14px;margin-bottom:12px;">
         <div style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:1.1rem;letter-spacing:2px;color:var(--wheat);margin-bottom:12px;">Customer Info</div>
@@ -3130,6 +3278,39 @@ input:focus, select:focus, textarea:focus {
         </div>
         <div class="field-group"><label class="field-label">Notes</label><textarea id="c_custNotes" rows="2" placeholder="Site conditions, special requests..."></textarea></div>
       </div>
+
+      <!-- Share & Export hub -->
+      <div style="background:rgba(255,255,255,0.05);border:1.5px solid rgba(232,200,122,0.2);border-radius:10px;padding:14px;margin-bottom:12px;">
+        <div style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:1.1rem;letter-spacing:2px;color:var(--wheat);margin-bottom:10px;">Share &amp; Export</div>
+        <div class="quote-hub-grid">
+          <button type="button" class="quote-hub-tile" onclick="copyEstimateTextToClipboard()">
+            <span class="qhub-icon">📋</span>
+            <span class="qhub-label">Copy Estimate Text</span>
+            <span class="qhub-sub">For texts &amp; chat</span>
+          </button>
+          <button type="button" class="quote-hub-tile" onclick="goToSalesSheetFromQuote()">
+            <span class="qhub-icon">📄</span>
+            <span class="qhub-label">Sales Sheet</span>
+            <span class="qhub-sub">Printable one-pager</span>
+          </button>
+          <button type="button" class="quote-hub-tile" onclick="shareEstimate()">
+            <span class="qhub-icon">📤</span>
+            <span class="qhub-label">Share / Email</span>
+            <span class="qhub-sub">Send to customer</span>
+          </button>
+          <button type="button" class="quote-hub-tile" onclick="goToMarketplaceAdFromQuote()">
+            <span class="qhub-icon">🏷️</span>
+            <span class="qhub-label">Marketplace Ad</span>
+            <span class="qhub-sub">Craigslist / OfferUp</span>
+          </button>
+          <button type="button" class="quote-hub-tile" onclick="copyFacebookPost()">
+            <span class="qhub-icon">📣</span>
+            <span class="qhub-label">Facebook Post</span>
+            <span class="qhub-sub">Copy ready-to-post</span>
+          </button>
+        </div>
+      </div>
+
       <div class="setup-note emailjs-note" id="calcSetupNote" style="display:none;"></div>
       <div class="calc-quote-secondary-actions">
         <button class="btn-email" onclick="sendCalcEmail()" id="calcEmailBtn">✉️ Send Email</button>
@@ -4146,7 +4327,6 @@ input:focus, select:focus, textarea:focus {
 
     <div style="border-top:1px solid rgba(232,200,122,0.15);margin:14px 0 10px;"></div>
     <div class="page-title" style="font-size:1.1rem;margin-bottom:4px;">Options &amp; Upgrades</div>
-    <div class="page-sub" style="margin-bottom:10px;">Tap a category to expand</div>
 
     <!-- SIDING & EXTERIOR -->
     <div class="opt-category">
@@ -6714,7 +6894,7 @@ function updateAppBottomNav(){
   var sid=active?active.id:'';
 
   if(sid==='screenCalc'){
-    primBtn.setAttribute('aria-label',(calcCurrentPage===0)?'Next: Payment':(calcCurrentPage===1)?'Next: Quote':'Send email');
+    primBtn.setAttribute('aria-label',(calcCurrentPage===0)?'Next: Review Estimate':(calcCurrentPage===1)?'Next: Quote':'Send email');
     return;
   }
   if(sid==='screenSalesSheet'){
@@ -8086,12 +8266,19 @@ function updateQuickPrice(){
   var wrap=document.getElementById('quickPriceWrap');
   var baseEl=document.getElementById('quickBasePrice');
   var priceEl=document.getElementById('quickSalePrice');
-  var rtoEl=document.getElementById('quickRTOamt');
-  if(!calcState.type||!calcState.width||!calcState.length){if(wrap)wrap.style.display='none';return;}
+  var bosLine=document.getElementById('quickBosLine');
+  if(!calcState.type||!calcState.width||!calcState.length){
+    if(wrap) wrap.style.display='none';
+    renderCalcRTOStreamlineFromState();
+    try{ renderOptsSummary(); }catch(_e){}
+    try{ renderReviewSummary(); }catch(_eR){}
+    return;
+  }
   var row=PRICING[calcState.width]&&PRICING[calcState.width][calcState.length];
   var base=row&&row[calcState.type]?row[calcState.type]:null;
-  if(!base){if(wrap)wrap.style.display='none';return;}
+  if(!base){if(wrap) wrap.style.display='none'; renderCalcRTOStreamlineFromState(); try{ renderOptsSummary(); }catch(_e2){} try{ renderReviewSummary(); }catch(_eR2){} return;}
   wrap.style.display='block';
+  syncCalcQuickControlsFromState();
   // Sale discount and BOS fee both calculated off raw base independently
   var salePct=calcState.saleActive?calcState.salePercent:0;
   var saleAmt=salePct>0?Math.ceil(base*(salePct/100)):0;
@@ -8101,10 +8288,19 @@ function updateQuickPrice(){
   var displayPrice=(base - saleAmt + bosAmt) - stdCredit + addonTotal;
   baseEl.textContent=(saleAmt>0||bosAmt>0)?'$'+base.toLocaleString():'';
   priceEl.textContent='$'+displayPrice.toLocaleString();
-  var _qd=calcRTOData(displayPrice,calcState.width||0,0,calcState.assurancePlan||2,calcState.costReduction||0,calcState.rtoMonths||36);
-  rtoEl.textContent='$'+_qd.monthly.toLocaleString()+'/mo';
-  renderCalcRTOStreamline(base,saleAmt,displayPrice);
+  if(bosLine){
+    if(bosAmt>0){
+      bosLine.style.display='block';
+      bosLine.innerHTML='+ Build-on-Site (30%): <strong>'+fmt(bosAmt)+'</strong>';
+    }else{
+      bosLine.style.display='none';
+      bosLine.textContent='';
+    }
+  }
+  renderCalcRTOStreamlineFromState();
   updateRTOPreviews();
+  try{ renderOptsSummary(); }catch(_e3){}
+  try{ renderReviewSummary(); }catch(_eR3){}
 }
 
 function combineBizAddressFromSettings(s){
@@ -8308,6 +8504,8 @@ function mileageOnFromSelectionChange(){
 
 function initCalcAdvancedTools(){
   setReverseTaxFromSettings(false);
+  renderReverseOptsChips();
+  onReverseModeChange((document.getElementById('rev_mode')||{}).value||'cash');
   renderCalcRTOStreamlineFromState();
 }
 
@@ -8316,6 +8514,60 @@ function setReverseTaxFromSettings(force){
   if(!taxInput) return;
   if(!force&&taxInput.value!=='') return;
   taxInput.value=String(getSettingVal('taxRate',0)||0);
+}
+
+function onReverseModeChange(val){
+  var wrap=document.getElementById('rev_termWrap');
+  if(wrap) wrap.style.display=(val==='rto')?'block':'none';
+}
+
+// ── Reverse calculator: option chip selection ─────────────────────────────
+var REV_OPT_CHOICES=[
+  {key:'metal',label:'Metal Upgrade'},
+  {key:'rooffelt',label:'Roof Felt'},
+  {key:'housewrap',label:'House Wrap'},
+  {key:'paintupgrade',label:'Paint Upgrade'},
+  {key:'doubletopplate',label:'Double Top Plate'},
+  {key:'4ineves',label:'4″ Eaves'},
+  {key:'tallwall',label:'Tall Wall'},
+  {key:'2x6',label:'2×6 Upgrade'},
+  {key:'rooftrusses',label:'16″ Trusses'},
+  {key:'floorjoists',label:'12″ Joists'},
+  {key:'porch',label:'Extra Porch'},
+  {key:'flooring',label:'¾″ Flooring'},
+  {key:'shelves',label:'Shelves'},
+  {key:'intwall',label:'Interior Walls'},
+  {key:'loft',label:'Extra Loft'},
+  {key:'droploft',label:'Drop Loft'},
+  {key:'ins_roof',label:'Insulate Roof'},
+  {key:'ins_wallsroof',label:'Insulate Walls+Roof'}
+];
+var revSelectedOpts={};
+
+function renderReverseOptsChips(){
+  var host=document.getElementById('rev_optsChips');
+  if(!host) return;
+  host.innerHTML='';
+  REV_OPT_CHOICES.forEach(function(o){
+    var chip=document.createElement('button');
+    chip.type='button';
+    chip.dataset.optKey=o.key;
+    chip.textContent=o.label;
+    chip.onclick=function(){ toggleReverseOpt(o.key); };
+    var on=!!revSelectedOpts[o.key];
+    chip.style.cssText='-webkit-appearance:none;appearance:none;border:1.5px solid '+(on?'var(--barn)':'rgba(232,200,122,0.25)')+';background:'+(on?'rgba(196,81,31,0.22)':'rgba(255,255,255,0.04)')+';color:'+(on?'var(--wheat)':'rgba(245,240,232,0.78)')+';border-radius:14px;padding:5px 10px;font-size:0.72rem;cursor:pointer;';
+    host.appendChild(chip);
+  });
+}
+
+function toggleReverseOpt(key){
+  revSelectedOpts[key]=!revSelectedOpts[key];
+  renderReverseOptsChips();
+}
+
+function clearReverseOptions(){
+  revSelectedOpts={};
+  renderReverseOptsChips();
 }
 
 function initMileageScreen(){
@@ -8361,32 +8613,280 @@ function toggleReverseCalcPanel(){
   if(arrow) arrow.textContent=open?'▼':'▲';
 }
 
-function renderCalcRTOStreamline(basePrice,saleDiscount,salePrice){
+function toggleQpvShowTax(){
+  calcState.qpvShowTax=!calcState.qpvShowTax;
+  var t=document.getElementById('qpvTaxToggle');
+  if(t){
+    t.classList.toggle('on',!!calcState.qpvShowTax);
+    t.setAttribute('aria-pressed',calcState.qpvShowTax?'true':'false');
+  }
+  renderCalcRTOStreamline();
+}
+
+function openEarlyPayoffSheet(){
+  showToast('Estimated Early Payoff Sheet — coming soon');
+}
+
+function toggleQpvSettings(){
+  var btn=document.getElementById('qpvSettingsBtn');
+  var panel=document.getElementById('qpvSettingsPanel');
+  if(!panel) return;
+  var isOpen=panel.style.display==='flex';
+  panel.style.display=isOpen?'none':'flex';
+  if(btn) btn.setAttribute('aria-expanded',isOpen?'false':'true');
+}
+
+function renderReviewSummary(){
+  var q=null;
+  try{ q=getCalcQuoteSnapshot(); }catch(_e){}
+  var cashCard=document.getElementById('reviewCashCard');
+  var rtoCard=document.getElementById('calcRTOTerms');
+  var earlyBtn=document.getElementById('earlyPayoffBtn');
+  var pay=calcState.payType==='rto'?'rto':'cash';
+
+  if(!q||!q.base){
+    if(cashCard){
+      cashCard.style.display=pay==='cash'?'block':'none';
+      var emptyL=document.getElementById('reviewCashLines');
+      if(emptyL) emptyL.innerHTML='<div style="font-size:0.78rem;color:rgba(232,200,122,0.55);padding:6px 2px;">Pick a building, size and options to see the estimate.</div>';
+      var grand=document.getElementById('reviewCashGrand');
+      if(grand) grand.textContent='—';
+      var head=document.getElementById('reviewCashHeadName');
+      if(head) head.textContent='Cash Estimate';
+      var sub=document.getElementById('reviewCashHeadSub');
+      if(sub) sub.textContent='';
+      var foot=document.getElementById('reviewCashFoot');
+      if(foot) foot.textContent='';
+    }
+    if(rtoCard){
+      var rtoLines=document.getElementById('reviewRtoLines');
+      if(rtoLines) rtoLines.innerHTML='<div style="font-size:0.78rem;color:rgba(232,200,122,0.55);padding:6px 2px;">Pick a building, size and options to see the estimate.</div>';
+      var rh=document.getElementById('reviewRtoHeadName');
+      if(rh) rh.textContent='RTO Estimate';
+      var rs=document.getElementById('reviewRtoHeadSub');
+      if(rs) rs.textContent='';
+      var rf=document.getElementById('reviewRtoFoot');
+      if(rf) rf.textContent='';
+    }
+    if(earlyBtn) earlyBtn.style.display=pay==='rto'?'flex':'none';
+    return;
+  }
+
+  var bldName=(NAMES[calcState.type]||'Building');
+  var sizeStr=(calcState.width||'')+"' × "+(calcState.length||'')+"'";
+
+  function buildLine(label,val,extraClass){
+    return '<div class="review-line'+(extraClass?' '+extraClass:'')+'"><span class="rl-l">'+label+'</span><span class="rl-r">'+val+'</span></div>';
+  }
+  function buildLineItems(){
+    var html='';
+    html+=buildLine('Base price', fmt(q.base));
+    if(q.saleAmount>0) html+=buildLine('Sale ('+q.salePct+'% off list)','-'+fmt(q.saleAmount));
+    if(q.bosAmt>0) html+=buildLine('Build-on-Site (30%)','+'+fmt(q.bosAmt));
+    if(q.dealerAmount>0){
+      var dlbl=(document.getElementById('c_discountLabel')||{}).value||'Dealer discount';
+      html+=buildLine(dlbl+' ('+q.dealerPct+'%)','-'+fmt(q.dealerAmount));
+    }
+    if(q.stdCredit>0){
+      var _si=STD_OPTIONS[calcState.type]||[];
+      _si.forEach(function(it){
+        var rq=calcState.stdRemoved&&calcState.stdRemoved[it.id];
+        if(rq>0) html+=buildLine('Removed: '+(rq>1?rq+'× ':'')+it.label,'-'+fmt(rq*it.credit));
+      });
+    }
+    if(q.addonLines&&q.addonLines.length){
+      q.addonLines.forEach(function(l){ html+=buildLine('+ '+l.label, fmt(l.val)); });
+    }
+    return html;
+  }
+
+  // ── Cash card
+  if(cashCard){
+    cashCard.style.display=pay==='cash'?'block':'none';
+    var headName=document.getElementById('reviewCashHeadName');
+    if(headName) headName.textContent=bldName;
+    var headSub=document.getElementById('reviewCashHeadSub');
+    if(headSub) headSub.textContent=sizeStr+(calcState.width&&calcState.length?(' · '+(calcState.width*calcState.length)+' sq ft'):'');
+    var lines=document.getElementById('reviewCashLines');
+    if(lines){
+      var html=buildLineItems();
+      html+=buildLine('Subtotal', fmt(q.subtotal),'review-sub-line');
+      var cashTax=Math.ceil(q.subtotal*((q.taxRate||0)/100));
+      if(q.taxRate>0) html+=buildLine('Tax ('+q.taxRate+'%)', fmt(cashTax));
+      lines.innerHTML=html;
+    }
+    var grand=document.getElementById('reviewCashGrand');
+    var cashTotal=q.subtotal+Math.ceil(q.subtotal*((q.taxRate||0)/100));
+    if(grand) grand.textContent=fmt(cashTotal);
+    var foot=document.getElementById('reviewCashFoot');
+    if(foot) foot.textContent='Min cash down: '+fmt(Math.ceil(cashTotal*0.5))+' (50%).';
+  }
+
+  // ── RTO card
+  if(rtoCard){
+    var rh=document.getElementById('reviewRtoHeadName');
+    if(rh) rh.textContent=bldName;
+    var rs=document.getElementById('reviewRtoHeadSub');
+    if(rs) rs.textContent=sizeStr+(calcState.width&&calcState.length?(' · '+(calcState.width*calcState.length)+' sq ft'):'');
+
+    var rtoLines=document.getElementById('reviewRtoLines');
+    if(rtoLines){
+      var rhtml=buildLineItems();
+      var assuranceCost=q.assuranceCost||0;
+      var planLabel={1:'No Assurance',2:'Assurance Basic',3:'Assurance Plus'}[q.assurancePlan||2]||'Assurance';
+      if(assuranceCost>0) rhtml+=buildLine('+ '+planLabel, fmt(assuranceCost));
+      rhtml+=buildLine('Financed amount', fmt(q.subtotalWithAssurance),'review-sub-line');
+      var months=calcState.rtoMonths||36;
+      if(q.rtoData&&q.rtoData.totalMonthly){
+        var contractTotal=q.rtoData.totalMonthly*months;
+        rhtml+=buildLine('Contract value ('+months+' mo)', fmt(Math.round(contractTotal)));
+      }
+      rtoLines.innerHTML=rhtml;
+    }
+    var rf=document.getElementById('reviewRtoFoot');
+    if(rf){
+      var crNote='';
+      if(q.effectiveCR>0) crNote='Includes Cost Reduction of '+fmt(q.effectiveCR)+'.';
+      var crManual=q.manualCR||0;
+      var nonRto=q.effectiveCR-crManual;
+      if(crManual>0&&nonRto>0) crNote+=' (Manual '+fmt(crManual)+' + auto '+fmt(nonRto)+')';
+      var planL2={1:'No assurance plan',2:'Basic Assurance · $150',3:'Assurance Plus · $300'}[q.assurancePlan||2];
+      rf.innerHTML=planL2+(crNote?' · '+crNote:'')+(q.rtoDownDisplayText?' · Down: '+q.rtoDownDisplayText:'');
+    }
+  }
+
+  if(earlyBtn) earlyBtn.style.display=pay==='rto'?'flex':'none';
+}
+
+// ── Step 2 share/export hub helpers ────────────────────────────────────
+function copyEstimateTextToClipboard(){
+  try{
+    var q=getCalcQuoteSnapshot();
+    if(!q||!q.base){ showToast('Build a quote first'); return; }
+    var pkt=buildCalcQuoteText(q);
+    var text=pkt&&pkt.t?pkt.t:'';
+    if(!text){ showToast('Nothing to copy'); return; }
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ showToast('Estimate text copied'); },function(){ legacyCopy(text); });
+    } else { legacyCopy(text); }
+  }catch(e){ showToast('Could not copy'); }
+}
+
+function legacyCopy(text){
+  try{
+    var ta=document.createElement('textarea');
+    ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    showToast('Estimate text copied');
+  }catch(e){ showToast('Could not copy'); }
+}
+
+function goToSalesSheetFromQuote(){
+  try{ goTo('screenSalesSheet'); }
+  catch(_e){ showToast('Sales Sheet unavailable'); }
+}
+
+function goToMarketplaceAdFromQuote(){
+  try{ goTo('screenAd'); }
+  catch(_e){ showToast('Marketplace Ad unavailable'); }
+}
+
+function shareEstimate(){
+  var q=getCalcQuoteSnapshot();
+  if(!q||!q.base){ showToast('Build a quote first'); return; }
+  var pkt=buildCalcQuoteText(q);
+  var text=pkt&&pkt.t?pkt.t:'';
+  var title=(NAMES[calcState.type]||'Shed')+' Estimate';
+  if(navigator.share){
+    navigator.share({title:title,text:text}).catch(function(){});
+    return;
+  }
+  // Fallback: scroll user down to Send Email / Mail App / Print buttons
+  var legacy=document.querySelector('#cpage2 .calc-quote-secondary-actions');
+  if(legacy&&legacy.scrollIntoView){ legacy.scrollIntoView({behavior:'smooth',block:'center'}); }
+  showToast('Use Send Email, Mail App, or Print below');
+}
+
+function copyFacebookPost(){
+  try{
+    var q=getCalcQuoteSnapshot();
+    if(!q||!q.base){ showToast('Build a quote first'); return; }
+    var s=loadSettings();
+    var biz=s.bizName||'';
+    var phone=s.bizPhone||'';
+    var size=(calcState.width||'')+"' × "+(calcState.length||'')+"' ";
+    var name=NAMES[calcState.type]||'';
+    var price=fmt(q.grandTotal||0);
+    var monthly='';
+    if(q.subtotalWithAssurance&&q.taxRate!=null){
+      var d36=getRTODataForMonths(q.subtotalWithAssurance, calcState.width||0, q.taxRate||0, q.assurancePlan||2, q.effectiveCR||0, 36);
+      if(d36&&d36.totalMonthly) monthly=' or as low as $'+Math.round(d36.totalMonthly)+'/mo (36 mo RTO)';
+    }
+    var lines=[];
+    lines.push('🏡 '+size+name+' — IN STOCK');
+    lines.push('💰 '+price+' cash'+monthly);
+    if(q.addonLines&&q.addonLines.length){ lines.push('✅ Includes: '+q.addonLines.slice(0,3).map(function(l){return l.label;}).join(', ')); }
+    lines.push('📦 Free or low-cost delivery available — message for details.');
+    if(biz||phone) lines.push('📞 '+[biz,phone].filter(Boolean).join(' · '));
+    lines.push('#shed #backyardstorage #shedlife #shopsmall');
+    var post=lines.join('\n');
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(post).then(function(){ showToast('Facebook post copied'); },function(){ legacyCopy(post); });
+    } else { legacyCopy(post); }
+  }catch(e){ showToast('Could not build post'); }
+}
+
+function renderCalcRTOStreamline(){
   var card=document.getElementById('rtoStreamlineCalcCard');
   var body=document.getElementById('rtoStreamlineCalcBody');
   if(!card||!body) return;
-  if(!basePrice){ card.style.display='none'; return; }
+  var q=getCalcQuoteSnapshot();
+  if(!q||!q.base){ card.style.display='none'; body.innerHTML=''; return; }
   card.style.display='block';
-  body.innerHTML=
-    '<div>List Price: <strong>'+fmt(basePrice)+'</strong></div>'+
-    '<div>Sale Discount: <strong>'+fmt(saleDiscount||0)+'</strong></div>'+
-    '<div>Sale Price: <strong>'+fmt(salePrice||basePrice)+'</strong></div>';
+  // sync the show-tax toggle visual state
+  var tgl=document.getElementById('qpvTaxToggle');
+  if(tgl){
+    tgl.classList.toggle('on',!!calcState.qpvShowTax);
+    tgl.setAttribute('aria-pressed',calcState.qpvShowTax?'true':'false');
+  }
+  function line(l,r,cls){return '<div class="qpv-line'+(cls||'')+'"><span class="qpv-l">'+l+'</span><span class="qpv-r">'+r+'</span></div>';}
+  var htmlL='';
+  htmlL+=line('Base price', fmt(q.base));
+  if(q.saleAmount>0) htmlL+=line('Sale ('+q.salePct+'% off list)','-'+fmt(q.saleAmount));
+  if(q.bosAmt>0) htmlL+=line('Build-on-Site (30%)','+'+fmt(q.bosAmt));
+  if(q.dealerAmount>0) htmlL+=line('Dealer discount ('+q.dealerPct+'%)','-'+fmt(q.dealerAmount));
+  if(q.stdCredit>0){
+    var _si=STD_OPTIONS[calcState.type]||[];
+    _si.forEach(function(it){
+      var rq=calcState.stdRemoved&&calcState.stdRemoved[it.id];
+      if(rq>0) htmlL+=line('Removed: '+(rq>1?rq+'× ':'')+it.label,'-'+fmt(rq*it.credit));
+    });
+  }
+  q.addonLines.forEach(function(l){ htmlL+=line('+ '+l.label, fmt(l.val)); });
+  htmlL+=line('Subtotal', fmt(q.subtotal));
+  if(q.taxRate>0) htmlL+=line('Tax ('+q.taxRate+'%)', fmt(Math.ceil(q.subtotal*(q.taxRate/100))));
+  var cashTotal=q.subtotal+Math.ceil(q.subtotal*(q.taxRate/100));
+  htmlL+=line('Cash total', fmt(cashTotal),' qpv-total');
+
+  // RTO column — always Basic Assurance ($150), regardless of payType
+  var basicAssurance=ASSURANCE_COST[2]||150;
+  var rtoSubtotal=q.subtotal+basicAssurance;
+  var showTax=!!calcState.qpvShowTax;
+  var htmlR='';
+  [36,48,60].forEach(function(mo){
+    var d=getRTODataForMonths(rtoSubtotal, calcState.width||0, q.taxRate, 2, q.effectiveCR, mo);
+    var perMo=showTax?d.totalMonthly:d.monthly;
+    var moStr='$'+perMo.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0})+'/mo';
+    htmlR+='<div class="qpv-rto-row"><span class="qpv-rto-mo">'+mo+'mo</span><span class="qpv-rto-sep">·</span><span class="qpv-rto-val">'+moStr+'</span></div>';
+  });
+  body.innerHTML='<div class="qpv-left">'+htmlL+'</div><div class="qpv-right">'+htmlR+'</div>';
 }
 
 function renderCalcRTOStreamlineFromState(){
-  if(!calcState.type||!calcState.width||!calcState.length){ renderCalcRTOStreamline(0,0,0); return; }
-  var row=PRICING[calcState.width]&&PRICING[calcState.width][calcState.length];
-  var base=row&&row[calcState.type]?row[calcState.type]:0;
-  var salePct=calcState.saleActive?calcState.salePercent:0;
-  var saleAmt=salePct>0?Math.ceil(base*(salePct/100)):0;
-  var bosAmt=calcState.bosActive?Math.ceil(base*0.30):0;
-  var stdCredit=getStdRemovedTotal();
-  var addonTotal=calcAddons().total;
-  var salePrice=(base-saleAmt+bosAmt)-stdCredit+addonTotal;
-  renderCalcRTOStreamline(base,saleAmt,salePrice);
+  renderCalcRTOStreamline();
 }
 
-function getReverseCandidateSnapshot(width,length,code,taxRate,mode,term){
+function getReverseCandidateSnapshot(width,length,code,taxRate,mode,term,selectedOpts){
   var savedState=JSON.parse(JSON.stringify(calcState));
   try{
     calcState.width=width;
@@ -8396,6 +8896,18 @@ function getReverseCandidateSnapshot(width,length,code,taxRate,mode,term){
     calcState.taxRate=taxRate;
     calcState.payType=mode==='rto'?'rto':'cash';
     calcState.rtoMonths=term;
+    // Reset addons/multi rows so reverse search uses ONLY the chosen options
+    calcState.addons={};
+    calcState.multiDoors=[];
+    calcState.multiWindows=[];
+    calcState.multiGarage=[];
+    calcState.multiCutouts=[];
+    calcState.stdRemoved={};
+    if(selectedOpts){
+      Object.keys(selectedOpts).forEach(function(k){
+        if(selectedOpts[k]) calcState.addons[k]=true;
+      });
+    }
     return getCalcQuoteSnapshot();
   }finally{
     calcState=Object.assign(calcState,savedState);
@@ -8411,6 +8923,8 @@ function runReversePriceCalculator(){
   var targetWrap=document.getElementById('rev_results');
   if(!targetWrap) return;
   if(budget<=0){ targetWrap.textContent='Enter a valid budget.'; return; }
+  var optsSnapshot={};
+  Object.keys(revSelectedOpts).forEach(function(k){ if(revSelectedOpts[k]) optsSnapshot[k]=true; });
   var matches=[];
   Object.keys(PRICING||{}).forEach(function(wKey){
     var width=parseInt(wKey,10)||0;
@@ -8419,7 +8933,7 @@ function runReversePriceCalculator(){
       var length=parseInt(lKey,10)||0;
       var styles=PRICING[width][length]||{};
       Object.keys(styles).forEach(function(code){
-        var snap=getReverseCandidateSnapshot(width,length,code,taxRate,mode,term);
+        var snap=getReverseCandidateSnapshot(width,length,code,taxRate,mode,term,optsSnapshot);
         if(!snap) return;
         var base=snap.base||0;
         if(mode==='cash'){
@@ -8441,11 +8955,72 @@ function runReversePriceCalculator(){
     return;
   }
   var top=matches.slice(0,8);
-  targetWrap.innerHTML=top.map(function(m){
+  targetWrap.innerHTML='';
+  top.forEach(function(m){
     var val=mode==='cash'?(fmt(m.value)+' total'):('$'+m.value.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+'/mo');
     var optionsLine=m.optionsTotal>0?(' · Options '+fmt(m.optionsTotal)):' · No options selected';
-    return '<div style="padding:7px 0;border-bottom:1px solid rgba(232,200,122,0.12);"><strong>'+m.width+'x'+m.length+' '+m.label+'</strong><br><span style="color:rgba(232,200,122,0.78);">'+val+' · List '+fmt(m.base)+' · Sale '+fmt(m.salePrice)+optionsLine+'</span></div>';
-  }).join('');
+    var row=document.createElement('button');
+    row.type='button';
+    row.style.cssText='-webkit-appearance:none;appearance:none;display:block;width:100%;text-align:left;background:rgba(255,255,255,0.04);border:1px solid rgba(232,200,122,0.18);border-radius:8px;padding:9px 12px;margin-bottom:6px;color:var(--cream);cursor:pointer;font:inherit;';
+    row.innerHTML='<div style="font-weight:700;color:var(--wheat);">'+m.width+"' × "+m.length+"' "+m.label+'</div>'
+      +'<div style="font-size:0.74rem;color:rgba(232,200,122,0.78);margin-top:2px;">'+val+' · List '+fmt(m.base)+' · Sale '+fmt(m.salePrice)+optionsLine+'</div>'
+      +'<div style="font-size:0.66rem;color:rgba(232,200,122,0.55);margin-top:3px;letter-spacing:0.5px;">Tap to load into calculator →</div>';
+    row.onclick=(function(match){return function(){ applyReverseMatch(match,mode,taxRate,term,optsSnapshot); };})(m);
+    targetWrap.appendChild(row);
+  });
+}
+
+function applyReverseMatch(match,mode,taxRate,term,optsSnapshot){
+  if(!match) return;
+  // Set type and refresh the style-picker trigger UI
+  var styleItem=(Array.isArray(STYLE_DATA)?STYLE_DATA:[]).find(function(s){return s&&s.code===match.code;});
+  setCalcType(match.code);
+  if(styleItem){
+    _activePickerId='calcTypeSelect';
+    try{ selectStyle(styleItem.code, styleItem.name, styleItem.code, styleItem.img); }catch(_e){}
+  }
+  // Width then length: onCalcWidthChange rebuilds length options
+  var ws=document.getElementById('calcWidth');
+  if(ws){ ws.value=String(match.width); }
+  onCalcWidthChange(String(match.width));
+  var ls=document.getElementById('calcLength');
+  if(ls){ ls.value=String(match.length); }
+  onCalcLengthChange(String(match.length));
+  // Tax (always custom override since reverse used it)
+  calcState.taxMode='custom';
+  calcState.taxRate=parseFloat(taxRate)||0;
+  var tc=document.getElementById('c_taxCustom');
+  if(tc) tc.value=String(calcState.taxRate);
+  // Pay type + RTO term
+  calcState.payType=mode==='rto'?'rto':'cash';
+  if(mode==='rto') calcState.rtoMonths=parseInt(term,10)||36;
+  try{ setCalcPay(calcState.payType); }catch(_e){}
+  if(mode==='rto'){ try{ setCalcRTO(calcState.rtoMonths); }catch(_e2){} }
+  // Apply selected options (replaces current addons set)
+  calcState.addons={};
+  calcState.multiDoors=[];
+  calcState.multiWindows=[];
+  calcState.multiGarage=[];
+  calcState.multiCutouts=[];
+  calcState.stdRemoved={};
+  if(optsSnapshot){
+    Object.keys(optsSnapshot).forEach(function(k){
+      if(optsSnapshot[k]) calcState.addons[k]=true;
+      var chk=document.getElementById('chk_'+k);
+      var detail=document.getElementById('detail_'+k);
+      if(chk) chk.classList.toggle('on',!!optsSnapshot[k]);
+      if(detail) detail.style.display=optsSnapshot[k]?'block':'none';
+    });
+  }
+  syncCalcQuickControlsFromState();
+  updateCatCounts();
+  updateAutoWidthPrices();
+  updateQuickPrice();
+  try{ renderOptsSummary(); }catch(_e3){}
+  // Close panel + scroll up so the user sees the loaded calculator
+  toggleReverseCalcPanel();
+  window.scrollTo({top:0,behavior:'smooth'});
+  showToast('Loaded '+match.width+"' × "+match.length+"' "+match.label);
 }
 
 async function runMileageCalculator(){
@@ -8552,7 +9127,12 @@ function setCalcPay(p){
   calcState.payType=p;
   // legacy pay-btn support (kept in case used elsewhere)
   document.querySelectorAll('.pay-btn').forEach(b=>b.classList.toggle('active',b.dataset.pay===p));
-  document.getElementById('calcRTOTerms').style.display=p==='rto'?'block':'none';
+  var rtoCard=document.getElementById('calcRTOTerms');
+  if(rtoCard) rtoCard.style.display=p==='rto'?'block':'none';
+  var cashCard=document.getElementById('reviewCashCard');
+  if(cashCard) cashCard.style.display=p==='cash'?'block':'none';
+  var earlyBtn=document.getElementById('earlyPayoffBtn');
+  if(earlyBtn) earlyBtn.style.display=p==='rto'?'flex':'none';
   // drive header toggle track
   var track=document.getElementById('payTypeTrack');
   if(track) track.classList.toggle('on',p==='rto');
@@ -8564,6 +9144,7 @@ function setCalcPay(p){
   if(p==='rto') setTimeout(updateCostReductionUI,50);
   updateRTOLivePanel();
   renderCalcQuote();
+  try{ renderReviewSummary(); }catch(_e){}
 }
 
 function setCalcRTO(m){
@@ -8623,6 +9204,7 @@ function setTaxMode(mode){
   document.getElementById('customTaxWrap').style.display=mode==='custom'?'block':'none';
   if(mode==='standard'){calcState.taxRate=getSettingVal('taxRate',0);}
   else{const v=parseFloat(document.getElementById('c_taxCustom').value);calcState.taxRate=isNaN(v)?0:v;}
+  syncCalcQuickControlsFromState();
   renderCalcQuote();
 }
 
@@ -8639,13 +9221,122 @@ function onSaleInput(el){
 function onTaxInput(el){
   const v=parseFloat(el.value);
   calcState.taxRate=isNaN(v)||v<0?0:v;
+  syncCalcQuickControlsFromState();
   renderCalcQuote();
 }
 function onDealerDiscountChange(val){
   calcState.dealerDiscount=parseFloat(val)||0;
   var wrap=document.getElementById('discountLabelWrap');
   if(wrap) wrap.style.display=calcState.dealerDiscount>0?'block':'none';
+  var cq=document.getElementById('calcQuickDealer');
+  if(cq&&String(cq.value)!==String(calcState.dealerDiscount)) cq.value=String(calcState.dealerDiscount||0);
   renderCalcQuote();
+  try{ updateQuickPrice(); }catch(_e){}
+}
+
+function ensureCalcQuickTaxOptions(){
+  var sel=document.getElementById('calcQuickTaxSelect');
+  if(!sel) return;
+  if(sel.options&&sel.options.length>0) return;
+  var frag=document.createDocumentFragment();
+  for(var v=0; v<=12.0001; v+=0.5){
+    var rounded=Math.round(v*10)/10;
+    var opt=document.createElement('option');
+    opt.value=String(rounded);
+    opt.textContent=(rounded%1===0?rounded.toFixed(0):rounded.toFixed(1))+'%';
+    frag.appendChild(opt);
+  }
+  var custom=document.createElement('option');
+  custom.value='custom';
+  custom.textContent='Custom %';
+  frag.appendChild(custom);
+  sel.appendChild(frag);
+}
+
+function syncCalcQuickControlsFromState(){
+  ensureCalcQuickTaxOptions();
+  var sel=document.getElementById('calcQuickTaxSelect');
+  var cust=document.getElementById('calcQuickTaxPct');
+  if(sel){
+    var tr=calcState.taxMode==='standard'?(parseFloat(getSettingVal('taxRate',0))||0):(parseFloat(calcState.taxRate)||0);
+    var nearest=Math.round(tr*2)/2;
+    var matchesPreset=Math.abs(nearest-tr)<0.0001 && nearest>=0 && nearest<=12;
+    if(matchesPreset){
+      sel.value=String(nearest);
+      if(cust){ cust.style.display='none'; }
+    } else {
+      sel.value='custom';
+      if(cust){
+        cust.style.display='block';
+        cust.value=String(tr);
+      }
+    }
+  }
+  var cd=document.getElementById('calcQuickDealer');
+  if(cd) cd.value=String(calcState.dealerDiscount||0);
+}
+
+function calcQuickTaxSelectChange(el){
+  var v=el.value;
+  var inp=document.getElementById('calcQuickTaxPct');
+  if(v==='custom'){
+    if(inp){ inp.style.display='block'; }
+    calcState.taxMode='custom';
+    var cv=parseFloat(inp&&inp.value);
+    if(!isNaN(cv)&&cv>=0) calcState.taxRate=cv;
+    if(inp) try{ inp.focus(); }catch(_e){}
+  } else {
+    if(inp) inp.style.display='none';
+    var num=parseFloat(v);
+    if(!isNaN(num)){
+      var settingsTax=parseFloat(getSettingVal('taxRate',0))||0;
+      if(Math.abs(num-settingsTax)<0.0001){
+        calcState.taxMode='standard';
+        calcState.taxRate=settingsTax;
+      } else {
+        calcState.taxMode='custom';
+        calcState.taxRate=num;
+      }
+    }
+  }
+  // Mirror to Step 1 controls
+  var tc=document.getElementById('c_taxCustom');
+  if(tc) tc.value=String(calcState.taxRate||'');
+  var b6=document.getElementById('taxBtn6'), bc=document.getElementById('taxBtnCustom'), cw=document.getElementById('customTaxWrap');
+  if(calcState.taxMode==='standard'){
+    if(b6) b6.classList.add('active');
+    if(bc) bc.classList.remove('active');
+    if(cw) cw.style.display='none';
+  } else {
+    if(b6) b6.classList.remove('active');
+    if(bc) bc.classList.add('active');
+    if(cw) cw.style.display='block';
+  }
+  updateQuickPrice();
+  renderCalcQuote();
+}
+
+function calcQuickTaxInput(el){
+  var v=parseFloat(el.value);
+  calcState.taxMode='custom';
+  calcState.taxRate=isNaN(v)||v<0?0:v;
+  var tc=document.getElementById('c_taxCustom');
+  if(tc) tc.value=el.value;
+  var b6=document.getElementById('taxBtn6'), bc=document.getElementById('taxBtnCustom'), cw=document.getElementById('customTaxWrap');
+  if(b6) b6.classList.remove('active');
+  if(bc) bc.classList.add('active');
+  if(cw) cw.style.display='block';
+  // Keep dropdown showing "Custom %"
+  var sel=document.getElementById('calcQuickTaxSelect');
+  if(sel) sel.value='custom';
+  updateQuickPrice();
+  renderCalcQuote();
+}
+
+function calcQuickDealerChange(el){
+  var main=document.getElementById('c_dealerDiscount');
+  if(main) main.value=el.value;
+  onDealerDiscountChange(el.value);
 }
 
 function onPaintTypeChange(){
@@ -8760,6 +9451,7 @@ function toggleOpt(key){
   updateQuickPrice();
   if(key==='tallwall') { if(calcState.addons['garagedoor']) calcRenderRows('garage'); }
   if(calcCurrentPage===2) renderCalcQuote();
+  try{ renderOptsSummary(); }catch(_e){}
 }
 
 // ── MULTI-ROW: door/window/garage/cutout option rows (Calc) ─────────────
@@ -9092,13 +9784,17 @@ function ssUpdateQR2(){
 }
 
 function buildRemoveStdPanel(){
-  var wrap=document.getElementById('removeStdWrap');
+  var section=document.getElementById('removeStdSheetSection');
   var list=document.getElementById('removeStdList');
-  if(!wrap||!list) return;
+  if(!list) return;
   var type=calcState.type;
   var items=type&&STD_OPTIONS[type]?STD_OPTIONS[type]:[];
-  if(!items.length){wrap.style.display='none';return;}
-  wrap.style.display='block';
+  if(!items.length){
+    if(section){ section.style.display='none'; }
+    list.innerHTML='';
+    return;
+  }
+  if(section){ section.style.display='block'; }
   if(!calcState.stdRemoved||calcState._stdType!==type){
     calcState.stdRemoved={};
     calcState._stdType=type;
@@ -9108,33 +9804,30 @@ function buildRemoveStdPanel(){
     var qty=calcState.stdRemoved[item.id]||0;
     var checked=qty>0;
     var row=document.createElement('div');
-    row.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(196,81,31,0.18);gap:10px;';
+    row.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(232,200,122,0.12);gap:10px;';
 
-    // Checkbox
     var chkDiv=document.createElement('div');
     chkDiv.onclick=function(){toggleStdRemove(item.id);};
-    chkDiv.style.cssText='width:22px;height:22px;min-width:22px;border-radius:5px;border:2px solid '+(checked?'#8B2E0D':'#C4511F')+';background:'+(checked?'#8B2E0D':'transparent')+';cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;font-size:0.8rem;font-weight:700;';
-    chkDiv.textContent=checked?'x':'';
+    chkDiv.style.cssText='width:22px;height:22px;min-width:22px;border-radius:5px;border:2px solid '+(checked?'var(--sage)':'rgba(232,200,122,0.35)')+';background:'+(checked?'var(--sage)':'transparent')+';cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;font-size:0.8rem;font-weight:700;';
+    chkDiv.textContent=checked?'✓':'';
 
-    // Label block
     var labelDiv=document.createElement('div');
     labelDiv.style.cssText='flex:1;';
     var nameEl=document.createElement('div');
-    nameEl.style.cssText='font-size:0.85rem;font-weight:600;color:#3B1A10;';
+    nameEl.style.cssText='font-size:0.85rem;font-weight:600;color:var(--cream);';
     nameEl.textContent=item.label;
     var subEl=document.createElement('div');
-    subEl.style.cssText='font-size:0.72rem;color:#6B3020;margin-top:1px;';
+    subEl.style.cssText='font-size:0.72rem;color:rgba(232,200,122,0.55);margin-top:1px;';
     subEl.textContent='$'+item.credit+' each'+(item.qty>1?' (up to '+item.qty+')':'');
     labelDiv.appendChild(nameEl);
     labelDiv.appendChild(subEl);
 
-    // Right side: qty select if qty>1 and checked, plus credit display
     var rightDiv=document.createElement('div');
     rightDiv.style.cssText='display:flex;flex-direction:column;align-items:flex-end;gap:4px;';
 
     if(item.qty>1&&checked){
       var sel=document.createElement('select');
-      sel.style.cssText='border:1.5px solid #C4511F;border-radius:6px;padding:3px 6px;font-size:0.8rem;font-weight:600;color:#8B2E0D;background:white;cursor:pointer;';
+      sel.style.cssText='border:1.5px solid rgba(232,200,122,0.25);border-radius:6px;padding:3px 6px;font-size:0.8rem;font-weight:600;color:var(--wheat);background:rgba(255,255,255,0.08);cursor:pointer;';
       for(var q=1;q<=item.qty;q++){
         var opt=document.createElement('option');
         opt.value=q;
@@ -9142,12 +9835,12 @@ function buildRemoveStdPanel(){
         if(q===qty) opt.selected=true;
         sel.appendChild(opt);
       }
-      (function(id){sel.onchange=function(){setStdQty(id,parseInt(this.value));};;})(item.id);
+      (function(id){sel.onchange=function(){setStdQty(id,parseInt(this.value));};})(item.id);
       rightDiv.appendChild(sel);
     }
 
     var creditEl=document.createElement('div');
-    creditEl.style.cssText='font-size:0.85rem;font-weight:700;color:'+(checked?'#8B2E0D':'#A08070')+';';
+    creditEl.style.cssText='font-size:0.85rem;font-weight:700;color:'+(checked?'var(--wheat)':'rgba(232,200,122,0.45)')+';';
     creditEl.textContent='-$'+(checked?qty*item.credit:item.credit);
     rightDiv.appendChild(creditEl);
 
@@ -9156,6 +9849,220 @@ function buildRemoveStdPanel(){
     row.appendChild(rightDiv);
     list.appendChild(row);
   });
+  updateStdRemovedCountBadge();
+}
+
+function updateStdRemovedCountBadge(){
+  var b=document.getElementById('stdRemovedBadge');
+  if(!b) return;
+  var n=0;
+  if(calcState.stdRemoved){
+    Object.keys(calcState.stdRemoved).forEach(function(k){
+      if((calcState.stdRemoved[k]||0)>0) n++;
+    });
+  }
+  if(n>0){
+    b.textContent=String(n);
+    b.style.display='inline-block';
+    b.classList.add('has-items');
+  }else{
+    b.textContent='';
+    b.style.display='none';
+    b.classList.remove('has-items');
+  }
+}
+
+function openOptionsSheet(){
+  var ov=document.getElementById('optionsSheetOverlay');
+  var sh=document.getElementById('optionsSheet');
+  if(!ov||!sh) return;
+  ov.classList.add('open');
+  sh.classList.add('open');
+  ov.setAttribute('aria-hidden','false');
+  document.body.style.overflow='hidden';
+  buildRemoveStdPanel();
+  ensureCalcOptsSheetDetails();
+  filterOptionsSheetSearch((document.getElementById('optionsSheetSearch')||{}).value||'');
+}
+
+function closeOptionsSheet(){
+  var ov=document.getElementById('optionsSheetOverlay');
+  var sh=document.getElementById('optionsSheet');
+  if(ov){
+    ov.classList.remove('open');
+    ov.setAttribute('aria-hidden','true');
+  }
+  if(sh) sh.classList.remove('open');
+  document.body.style.overflow='';
+  var si=document.getElementById('optionsSheetSearch');
+  if(si) si.value='';
+  filterOptionsSheetSearch('');
+}
+
+function ensureCalcOptsSheetDetails(){
+  Object.keys(calcState.addons||{}).forEach(function(k){
+    if(!calcState.addons[k]) return;
+    var d=document.getElementById('detail_'+k);
+    if(d) d.style.display='block';
+    var chk=document.getElementById('chk_'+k);
+    if(chk) chk.classList.add('on');
+  });
+  ['doors','windows','garage','cutouts'].forEach(function(t){ calcRenderRows(t); });
+  updateCatCounts();
+  updateAutoWidthPrices();
+}
+
+function filterOptionsSheetSearch(q){
+  var sheet=document.getElementById('optionsSheet');
+  if(!sheet) return;
+  var qq=(q||'').trim().toLowerCase();
+  var rows=sheet.querySelectorAll('.opt-row');
+  if(!qq){
+    rows.forEach(function(row){ row.style.display=''; });
+    sheet.querySelectorAll('.opt-category').forEach(function(cat){ cat.style.display=''; });
+    return;
+  }
+  rows.forEach(function(row){
+    var name=(row.querySelector('.opt-name')||{}).textContent||'';
+    row.style.display=name.toLowerCase().indexOf(qq)>=0?'':'none';
+  });
+  sheet.querySelectorAll('.opt-category').forEach(function(cat){
+    var vis=false;
+    cat.querySelectorAll('.opt-row').forEach(function(r){
+      if(r.style.display!=='none') vis=true;
+    });
+    cat.style.display=vis?'':'none';
+  });
+}
+
+function _summaryMultiTypeForKey(sk){
+  if(sk==='door36') return 'doors';
+  if(sk==='window'||sk==='vinylwindow') return 'windows';
+  if(sk==='garagedoor'||sk==='rollupdoor') return 'garage';
+  if(sk==='cutouts') return 'cutouts';
+  return null;
+}
+
+function renderOptsSummary(){
+  var host=document.getElementById('optsSummary');
+  if(!host) return;
+  host.innerHTML='';
+  var ca=calcAddons();
+  var stdItems=STD_OPTIONS[calcState.type]||[];
+  var stdRows=[];
+  stdItems.forEach(function(it){
+    var rq=calcState.stdRemoved&&calcState.stdRemoved[it.id];
+    if(!rq||rq<=0) return;
+    stdRows.push({it:it,rq:rq});
+  });
+
+  if(!ca.lines.length&&!stdRows.length){
+    var empty=document.createElement('div');
+    empty.style.fontSize='0.78rem';
+    empty.style.color='rgba(232,200,122,0.45)';
+    empty.style.padding='6px 2px 2px';
+    empty.textContent='No options selected yet.';
+    host.appendChild(empty);
+    return;
+  }
+
+  ca.lines.forEach(function(l){
+    (function(l){
+      var row=document.createElement('div');
+      row.className='opts-summary-row';
+      var name=document.createElement('div');
+      name.className='os-name';
+      name.textContent=l.label;
+      row.appendChild(name);
+
+      var mt=_summaryMultiTypeForKey(l.sourceKey);
+      if(mt!==null&&l.multiIdx!==null){
+        var qv=document.createElement('input');
+        qv.type='number';
+        qv.className='os-qty';
+        qv.min='1';
+        qv.step='1';
+        var arr=calcState[_CALC_MULTI_KEY[mt]];
+        var cur=arr&&arr[l.multiIdx]?Math.max(1,parseInt(arr[l.multiIdx].qty)||1):1;
+        qv.value=String(cur);
+        qv.onchange=function(){
+          calcRowChange(mt,l.multiIdx,'qty',this.value);
+          renderOptsSummary();
+        };
+        row.appendChild(qv);
+      }else{
+        var ph=document.createElement('div');
+        ph.style.width='52px';
+        ph.style.flexShrink='0';
+        row.appendChild(ph);
+      }
+
+      var price=document.createElement('div');
+      price.className='os-price';
+      price.textContent=fmt(l.val);
+      row.appendChild(price);
+
+      var xb=document.createElement('button');
+      xb.type='button';
+      xb.className='os-x';
+      xb.setAttribute('aria-label','Remove');
+      xb.textContent='\u2715';
+      xb.onclick=function(){
+        var sk=l.sourceKey;
+        var mt2=_summaryMultiTypeForKey(sk);
+        if(sk==='shopSurcharge'||sk==='metal'){ toggleOpt('metal'); }
+        else if(sk==='twotone'||sk==='custompaint'){ toggleOpt('paintupgrade'); }
+        else if(mt2!==null&&l.multiIdx!==null){ calcRemoveRow(mt2,l.multiIdx); }
+        else if(sk&&calcState.addons[sk]){ toggleOpt(sk); }
+        else if(sk&&sk.indexOf('ins_')===0){ toggleOpt(sk); }
+        updateQuickPrice();
+        if(calcCurrentPage===2) renderCalcQuote();
+        renderOptsSummary();
+      };
+      row.appendChild(xb);
+      host.appendChild(row);
+    })(l);
+  });
+
+  if(stdRows.length){
+    var sub=document.createElement('div');
+    sub.className='opts-summary-sub';
+    sub.textContent='Standards removed';
+    host.appendChild(sub);
+    stdRows.forEach(function(sr){
+      (function(it,rq){
+        var row=document.createElement('div');
+        row.className='opts-summary-row removed-std';
+        var name=document.createElement('div');
+        name.className='os-name';
+        name.textContent='Standard removed: '+it.label+(rq>1?' ('+rq+'×)':'');
+        row.appendChild(name);
+        var ph=document.createElement('div');
+        ph.style.width='52px';
+        row.appendChild(ph);
+        var cred=document.createElement('div');
+        cred.className='os-price';
+        cred.textContent='-'+fmt(rq*it.credit);
+        row.appendChild(cred);
+        var rb=document.createElement('button');
+        rb.type='button';
+        rb.className='os-x';
+        rb.textContent='Restore';
+        rb.style.fontSize='0.72rem';
+        rb.style.width='auto';
+        rb.style.padding='6px 8px';
+        rb.onclick=function(){
+          calcState.stdRemoved[it.id]=0;
+          buildRemoveStdPanel();
+          updateQuickPrice();
+          if(calcCurrentPage===2) renderCalcQuote();
+          renderOptsSummary();
+        };
+        row.appendChild(rb);
+        host.appendChild(row);
+      })(sr.it,sr.rq);
+    });
+  }
 }
 
 function toggleStdRemove(itemId){
@@ -9168,6 +10075,7 @@ function toggleStdRemove(itemId){
   buildRemoveStdPanel();
   updateQuickPrice();
   if(calcCurrentPage===2) renderCalcQuote();
+  try{ renderOptsSummary(); }catch(_e){}
 }
 
 function setStdQty(itemId,qty){
@@ -9176,6 +10084,7 @@ function setStdQty(itemId,qty){
   buildRemoveStdPanel();
   updateQuickPrice();
   if(calcCurrentPage===2) renderCalcQuote();
+  try{ renderOptsSummary(); }catch(_e){}
 }
 
 function getStdRemovedTotal(){
@@ -9189,12 +10098,7 @@ function getStdRemovedTotal(){
 }
 
 function toggleRemoveStd(){
-  var panel=document.getElementById('removeStdPanel');
-  var arrow=document.getElementById('removeStdArrow');
-  var open=panel.style.display==='none';
-  panel.style.display=open?'block':'none';
-  if(arrow) arrow.style.transform=open?'rotate(180deg)':'rotate(0deg)';
-  if(open) buildRemoveStdPanel();
+  openOptionsSheet();
 }
 
 
@@ -9372,7 +10276,16 @@ function calcAddons(){
   var l=calcState.length||0;
   var total=0; var lines=[];
   var _nrto=getNonRtoOptions();
-  function add(label,val,optKey){if(val>0){total+=val;lines.push({label:label,val:val,nonRto:optKey?!!_nrto[optKey]:false});}}
+  function add(label,val,optKey,multiIdx){
+    if(val<=0) return;
+    total+=val;
+    lines.push({
+      label:label,val:val,
+      nonRto:optKey?!!_nrto[optKey]:false,
+      sourceKey:optKey||null,
+      multiIdx:(multiIdx===undefined||multiIdx===null)?null:multiIdx
+    });
+  }
   if(calcState.addons['metal']){
     var p={8:500,10:500,12:700,14:900,16:1100}[w]||0;
     add('Metal Upgrade ('+w+"\' width)",p,'metal');
@@ -9402,44 +10315,44 @@ function calcAddons(){
     add('Tall Wall ('+w+"\' wide)",p,'tallwall');
   }
   if(calcState.addons['door36']){
-    calcState.multiDoors.forEach(function(row){
+    calcState.multiDoors.forEach(function(row,idx){
       var p=parseInt(row.type)||0;
       var q=Math.max(1,parseInt(row.qty)||1);
       var labels={'150':'70\u2033 Double Door','300':'Fiberglass French Door','400':'6 Panel Door','450':'9 Lite Door','475':'4 Lite Door'};
       var lbl=labels[row.type]||'Door Upgrade';
-      if(p>0) add(lbl+(q>1?' ('+q+'x)':''),p*q,'door36');
+      if(p>0) add(lbl+(q>1?' ('+q+'x)':''),p*q,'door36',idx);
     });
   }
   if(calcState.addons['window']){
-    calcState.multiWindows.forEach(function(row){
+    calcState.multiWindows.forEach(function(row,idx){
       var q=Math.max(1,parseInt(row.qty)||1);
       if(row.type==='custom_vinyl'){
         var cvP=parseFloat(row.customPrice)||0;
         var cvS=row.customSize||'';
         var cvLbl='Custom Vinyl Window'+(cvS?' ('+cvS+')':'');
-        if(cvP>0) add(cvLbl+(q>1?' ('+q+'x)':''),cvP*q,'vinylwindow');
+        if(cvP>0) add(cvLbl+(q>1?' ('+q+'x)':''),cvP*q,'vinylwindow',idx);
       } else {
         var wP=parseInt(row.type)||0;
         var wLbl=wP>=375?'Vinyl Window':'Window';
         var wKey=wP>=375?'vinylwindow':'window';
-        if(wP>0) add(wLbl+(q>1?' ('+q+'x)':''),wP*q,wKey);
+        if(wP>0) add(wLbl+(q>1?' ('+q+'x)':''),wP*q,wKey,idx);
       }
     });
   }
   if(calcState.addons['garagedoor']){
-    calcState.multiGarage.forEach(function(row){
+    calcState.multiGarage.forEach(function(row,idx){
       var sz=parseInt(row.customSize)||0;
       var lbl=row.type==='rollup'?'Rollup Door':'Sectional Garage Door';
       var optKey=row.type==='rollup'?'rollupdoor':'garagedoor';
-      if(sz>0) add(lbl,sz,optKey);
+      if(sz>0) add(lbl,sz,optKey,idx);
     });
   }
   if(calcState.addons['cutouts']){
-    calcState.multiCutouts.forEach(function(row){
+    calcState.multiCutouts.forEach(function(row,idx){
       var p=parseInt(row.type)||0;
       var q=Math.max(1,parseInt(row.qty)||1);
       var lbl={'50':'Window/AC Cutout','75':'Walk Thru Door Cutout','125':'Garage/Double Door Cutout'}[row.type]||'Cutout';
-      if(p>0) add(lbl+(q>1?' ('+q+'x)':''),p*q,'cutouts');
+      if(p>0) add(lbl+(q>1?' ('+q+'x)':''),p*q,'cutouts',idx);
     });
   }
   if(calcState.addons['intwall']){var r={'25':25,'35':35,'40s':40,'40b':40,'45':45}[gv('c_intwallType')]||0;var ft=gn('c_intwallFt',0);add('Interior Walls ('+ft+' ft)',r*ft,'intwall');}
@@ -9786,6 +10699,8 @@ function renderCalcQuote(){
   if(!q){
     document.getElementById('calcQuoteContent').innerHTML='<p style="text-align:center;padding:20px;color:rgba(232,200,122,0.5);">Select a building type, width, and length to see pricing.</p>';
     updateRTOLivePanel();
+    renderCalcRTOStreamlineFromState();
+    try{ renderOptsSummary(); }catch(_e){}
     return;
   }
   var base=q.base;
@@ -9887,6 +10802,8 @@ function renderCalcQuote(){
     var _body=encodeURIComponent(_t);
     document.getElementById('calcMailtoBtn').href='mailto:'+(_email||'')+'?subject='+_sub+'&body='+_body;
   }catch(e){console.warn('Quote text error:',e);}
+  renderCalcRTOStreamlineFromState();
+  try{ renderOptsSummary(); }catch(_e4){}
 }
 
 async function sendCalcEmail(){
