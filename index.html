@@ -120,6 +120,20 @@ body.app-bottom-nav-visible {
   background: var(--barn);
   color: var(--wheat);
 }
+.app-bottom-nav__btn--primary .app-bottom-nav__primary-label {
+  display: none;
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  font-size: 0.95rem;
+  letter-spacing: 2px;
+  color: var(--wheat);
+  line-height: 1.1;
+}
+.app-bottom-nav__btn--primary.has-text-label .app-bottom-nav__primary-label {
+  display: block;
+}
+.app-bottom-nav__btn--primary.has-text-label .app-bottom-nav__icon {
+  display: none;
+}
 .app-bottom-nav__btn:disabled {
   opacity: 0.35;
   cursor: not-allowed;
@@ -223,6 +237,8 @@ select option { background:var(--earth); color:var(--cream); }
   padding:10px 12px; font-size:0.82rem; color:var(--cream);
 }
 #screenInventory .inv-add-btn { width:100%; margin-top:2px; }
+#screenInventory .inv-page-title { text-align:center; width:100%; }
+#screenInventory .inv-page-intro { text-align:center; }
 #screenInventory .inv-section { margin-bottom:18px; }
 #screenInventory .inv-section-label {
   font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:0.72rem; letter-spacing:2px;
@@ -3482,9 +3498,13 @@ input:focus, select:focus, textarea:focus {
      SCREEN: INVENTORY
      ============================================================ -->
 <div class="screen" id="screenInventory">
-  <div class="header"><div class="header-spacer" aria-hidden="true"></div><div class="header-title">Inventory</div></div>
+  <div class="header">
+    <div class="header-spacer" aria-hidden="true"></div>
+    <div class="header-title">Inventory</div>
+    <div class="header-spacer" aria-hidden="true"></div>
+  </div>
   <div style="padding:16px;">
-    <div class="page-title">Lot inventory</div>
+    <div class="page-title inv-page-title">Lot inventory</div>
     <div class="page-sub inv-page-intro">Filter by lot or size/style. Available units are listed first.</div>
 
     <div class="inv-toolbar">
@@ -3496,6 +3516,7 @@ input:focus, select:focus, textarea:focus {
           <option value="">All sizes / styles</option>
         </select>
       </div>
+      <button type="button" class="btn-primary inv-add-btn" onclick="invOpenAddModal()">+ Add inventory</button>
     </div>
 
     <div id="inv_listWrap" class="inv-list-stack"></div>
@@ -4814,6 +4835,7 @@ input:focus, select:focus, textarea:focus {
   <div class="header">
     <div class="header-spacer" aria-hidden="true"></div>
     <div class="header-title">Settings</div>
+    <div class="header-spacer" aria-hidden="true"></div>
   </div>
   <div style="padding:16px;padding-bottom:80px;">
 
@@ -5041,7 +5063,8 @@ input:focus, select:focus, textarea:focus {
     <svg class="app-bottom-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
   </button>
   <button type="button" class="app-bottom-nav__btn app-bottom-nav__btn--primary" id="appBottomNavPrimary" aria-label="Primary action">
-    <svg class="app-bottom-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+    <span class="app-bottom-nav__primary-label" id="appBottomNavPrimaryLabel" aria-hidden="true"></span>
+    <svg class="app-bottom-nav__icon" id="appBottomNavPrimaryIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
   </button>
 </nav>
 
@@ -6874,12 +6897,34 @@ function appBottomNavPrimaryAction(){
   goTo('screenHome');
 }
 
+function appBottomNavSetPrimaryVisual(opts){
+  var primBtn=document.getElementById('appBottomNavPrimary');
+  var lbl=document.getElementById('appBottomNavPrimaryLabel');
+  var icon=document.getElementById('appBottomNavPrimaryIcon');
+  if(!primBtn) return;
+  if(!lbl||!icon){
+    primBtn.classList.remove('has-text-label');
+    return;
+  }
+  if(opts&&opts.mode==='text'&&opts.text){
+    lbl.textContent=opts.text;
+    lbl.removeAttribute('hidden');
+    primBtn.classList.add('has-text-label');
+  }else{
+    lbl.textContent='';
+    lbl.setAttribute('hidden','true');
+    primBtn.classList.remove('has-text-label');
+  }
+}
+
 function updateAppBottomNav(){
   var backBtn=document.getElementById('appBottomNavBack');
   var homeBtn=document.getElementById('appBottomNavHome');
   var primBtn=document.getElementById('appBottomNavPrimary');
   var nav=document.getElementById('appBottomNav');
   if(!backBtn||!homeBtn||!primBtn||!nav||nav.style.display==='none') return;
+
+  appBottomNavSetPrimaryVisual({mode:'icon'});
 
   homeBtn.onclick=function(){ goTo('screenHome'); };
   backBtn.onclick=function(){ appBottomNavBackAction(); };
@@ -6910,10 +6955,18 @@ function updateAppBottomNav(){
   if(sid==='screenRTO'){ primBtn.setAttribute('aria-label','Submit application'); return; }
   if(sid==='screenInterest'){ primBtn.setAttribute('aria-label','Submit'); return; }
   if(sid==='screenIntakeSuccess'){ primBtn.setAttribute('aria-label','Start another'); return; }
-  if(sid==='screenSettings'){ primBtn.setAttribute('aria-label','Save settings'); return; }
+  if(sid==='screenSettings'){
+    primBtn.setAttribute('aria-label','Save settings');
+    appBottomNavSetPrimaryVisual({mode:'text', text:'SAVE'});
+    return;
+  }
   if(sid==='screenLandlordForm'){ primBtn.setAttribute('aria-label','Print / PDF'); return; }
   if(sid==='screenCRM'){ primBtn.setAttribute('aria-label','Save lead'); return; }
-  if(sid==='screenInventory'){ primBtn.setAttribute('aria-label','Add inventory item'); return; }
+  if(sid==='screenInventory'){
+    primBtn.setAttribute('aria-label','Add inventory item');
+    appBottomNavSetPrimaryVisual({mode:'text', text:'ADD'});
+    return;
+  }
 
   primBtn.setAttribute('aria-label','Done');
 }
