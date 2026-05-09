@@ -805,7 +805,20 @@ select option { background:var(--earth); color:var(--cream); }
   flex: 1 1 0%;
   min-height: 0;
   overflow: hidden;
-  -webkit-overflow-scrolling: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+/* Uniform fit: zoom inner grid only — avoids Safari clipping the quick-tools strip vs outer flex clip */
+#screenHome .cc-home-grid-scale-root {
+  flex: 1 1 0%;
+  min-height: 0;
+  zoom: var(--home-uniform-scale, 1);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  width: 100%;
+  box-sizing: border-box;
 }
 /* Home: no instructional / subtitle helper copy (JS can still target hidden nodes) */
 #screenHome .cc-tagline,
@@ -820,6 +833,7 @@ select option { background:var(--earth); color:var(--cream); }
 }
 /* Home: one tile height for CRM, Create, Library (grid stays aligned; no overlap) */
 #screenHome {
+  --home-uniform-scale: 1;
   --home-tile-h: 76px;
   --home-tool-h: 62px;
 }
@@ -875,10 +889,31 @@ select option { background:var(--earth); color:var(--cream); }
   height: 20px;
 }
 #screenHome .cc-tools-wrap {
-  margin: 2px 0 3px;
+  margin: 2px 0 6px;
+  min-width: 0;
+  overflow: visible;
+  position: relative;
+  z-index: 4;
+  min-height: calc(var(--home-tool-h) + 46px);
+  transform: translateZ(0);
 }
 #screenHome .cc-tools-scroll {
-  padding: 2px 2px 4px;
+  padding: 2px 2px 6px;
+  min-height: calc(var(--home-tool-h) + 10px);
+  align-items: stretch;
+  align-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  touch-action: pan-x;
+}
+#screenHome .cc-tools-wrap ~ .cc-section-label {
+  position: relative;
+  z-index: 0;
+}
+#screenHome .cc-tools-wrap ~ .cc-tile-vert-center {
+  position: relative;
+  z-index: 0;
 }
 #screenHome .cc-tile-vert-center {
   justify-content: center;
@@ -893,36 +928,6 @@ select option { background:var(--earth); color:var(--cream); }
 #screenHome .cc-tile-vert-center .cc-tile-label {
   width: 100%;
   text-align: center;
-}
-
-/* Home: fit command center in one viewport (no vertical scroll); zoom reduces layout size in WebKit */
-@media (max-height: 860px) {
-  #screenHome .cc-hero-inner { padding: 8px 10px 6px; gap: 10px; }
-  #screenHome .cc-hero-thumb-wrap { width: 80px; height: 64px; }
-  #screenHome .cc-hero-actions { margin-top: 4px; padding: 0 10px 2px; }
-  #screenHome .cc-hero-card { padding-bottom: 10px; }
-}
-@media (max-height: 800px) {
-  #screenHome .cc-grid { zoom: 0.96; }
-  #screenHome .cc-section-label { padding: 2px 2px 0; }
-  #screenHome .cc-tools-wrap { margin: 2px 0 3px; }
-}
-@media (max-height: 760px) {
-  #screenHome { --home-tile-h: 66px; --home-tool-h: 56px; }
-  #screenHome .cc-grid { zoom: 0.92; }
-  #screenHome .cc-tile .cc-tile-label { font-size: 0.7rem !important; }
-}
-@media (max-height: 700px) {
-  #screenHome .cc-grid { zoom: 0.88; }
-  #screenHome .cc-dash-card { min-height: 92px; }
-  #screenHome .cc-hero-thumb-wrap { width: 72px; height: 58px; }
-}
-@media (max-height: 640px) {
-  #screenHome .cc-grid { zoom: 0.84; }
-  #screenHome .cc-hero-title { font-size: 0.88rem; }
-}
-@media (max-height: 600px) {
-  #screenHome .cc-grid { zoom: 0.8; }
 }
 
 .cc-hero-card {
@@ -1179,10 +1184,6 @@ select option { background:var(--earth); color:var(--cream); }
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
-}
-#screenHome .cc-tools-wrap {
-  min-width: 0;
-  overflow: hidden;
 }
 .cc-tools-scroll {
   display: flex;
@@ -1497,12 +1498,13 @@ select option { background:var(--earth); color:var(--cream); }
   .cc-settings-btn { width: 30px; height: 30px; font-size: 0.9rem; }
 
   .cc-grid { gap: 4px; padding: 7px 8px 0; }
-  #screenHome { --home-tile-h: 70px; --home-tool-h: 58px; }
   #screenHome .cc-grid {
     padding-bottom: calc(56px + max(0px, calc(var(--dock-calc-d) - 52px)) + var(--dock-lift, 0px) + env(safe-area-inset-bottom, 0px));
     overflow: hidden;
-    -webkit-overflow-scrolling: auto;
     min-height: 0;
+  }
+  #screenHome .cc-home-grid-scale-root {
+    gap: 4px;
   }
   .cc-section-label { font-size: 0.54rem; letter-spacing: 2px; padding: 3px 2px 2px; }
 
@@ -2018,6 +2020,7 @@ input:focus, select:focus, textarea:focus {
   <div id="homeContactAddr1" style="display:none;"></div>
   <div id="homeContactAddr2" style="display:none;"></div>
   <div class="cc-grid" style="position:relative;z-index:1;">
+    <div id="homeGridScaleRoot" class="cc-home-grid-scale-root">
 
     <div class="cc-hero-card cc-span2" id="homeHeroCard">
       <div class="cc-hero-accent" aria-hidden="true"></div>
@@ -2143,6 +2146,8 @@ input:focus, select:focus, textarea:focus {
         <span id="homeRTOUrl"></span>
       </a>
     </div>
+
+    </div><!-- homeGridScaleRoot -->
 
   </div>
 
@@ -4750,7 +4755,7 @@ var firebaseLastAuthFailureReason='';
 var fbInventoryUnsub=null;
 var fbLeadsUnsub=null;
 var crmActivitiesUnsub=null;
-var crmState={leads:[],selectedLeadId:'',activities:[]};
+var crmState={leads:[],selectedLeadId:'',activities:[],intentNewLead:false};
 var contactsListState={filter:'all'};
 var SETTINGS_LOCAL_KEY='gss_settings';
 var SETTINGS_CLOUD_COLLECTION='appSettings';
@@ -5255,7 +5260,10 @@ function crmClearLeadForm(){
   crmRenderLeadList();
   crmRenderActivities();
 }
-function crmStartNewLead(){ crmClearLeadForm(); }
+function crmStartNewLead(){
+  crmState.intentNewLead=true;
+  crmClearLeadForm();
+}
 function crmLeadDocToUi(lead){
   var setVal=function(id,v){
     var el=document.getElementById(id);
@@ -5315,7 +5323,17 @@ function crmRenderActivities(){
 }
 async function crmWatchLeads(){
   if(!(await firebaseEnsureAuthed())) return false;
-  if(fbLeadsUnsub) return true;
+  if(fbLeadsUnsub){
+    crmRenderLeadList();
+    if(crmState.selectedLeadId){
+      var pick=crmState.leads.find(function(l){return l.id===crmState.selectedLeadId;});
+      if(pick) crmLeadDocToUi(pick);
+      crmWatchActivities(crmState.selectedLeadId);
+    }
+    leadsSidePanelsRefresh();
+    try{ renderHomeDashboard(); }catch(_e){}
+    return true;
+  }
   fbLeadsUnsub=fbDb.collection('leads').orderBy('updatedAt','desc').onSnapshot(function(snap){
     crmState.leads=snap.docs.map(function(doc){
       var d=doc.data()||{};
@@ -5324,11 +5342,17 @@ async function crmWatchLeads(){
       d.updatedAt=firebaseTsToIso(d.updatedAt);
       return d;
     });
-    crmRenderLeadList();
+    var crmAutoPickedFirst=false;
+    if(crmState.leads.length&&!crmState.selectedLeadId&&!crmState.intentNewLead){
+      crmState.selectedLeadId=crmState.leads[0].id;
+      crmAutoPickedFirst=true;
+    }
     if(crmState.selectedLeadId){
       var active=crmState.leads.find(function(l){return l.id===crmState.selectedLeadId;});
       if(active) crmLeadDocToUi(active);
+      if(crmAutoPickedFirst) crmWatchActivities(crmState.selectedLeadId);
     }
+    crmRenderLeadList();
     leadsSidePanelsRefresh();
     try{ renderHomeDashboard(); }catch(_e){}
   },function(err){
@@ -5355,6 +5379,7 @@ async function crmWatchActivities(leadId){
   });
 }
 async function crmSelectLead(id){
+  crmState.intentNewLead=false;
   crmState.selectedLeadId=id;
   var lead=crmState.leads.find(function(l){return l.id===id;});
   if(lead) crmLeadDocToUi(lead);
@@ -5404,10 +5429,12 @@ async function crmSaveLeadFromForm(){
       return;
     }
     if(crmState.selectedLeadId){
+      crmState.intentNewLead=false;
       await crmUpdateLead(crmState.selectedLeadId,payload);
       showToast('Lead updated');
     }else{
       var id=await crmCreateLead(payload);
+      crmState.intentNewLead=false;
       crmState.selectedLeadId=id;
       await crmAddActivity(id,{channel:payload.conversation.channel||'other',direction:'note',body:'Lead created manually'});
       showToast('Lead saved');
@@ -5479,6 +5506,10 @@ async function crmInit(){
     showToastForFirebaseCRMBlock();
     return;
   }
+  var leads=crmState.leads||[];
+  if(leads.length&&!crmState.selectedLeadId&&!crmState.intentNewLead){
+    await crmSelectLead(leads[0].id);
+  }
 }
 
 async function maybeMigrateLegacyInventory(){
@@ -5531,7 +5562,11 @@ async function invDeleteItemCloud(docId){
 
 async function watchInventoryCloud(){
   if(!(await firebaseEnsureAuthed())) return false;
-  if(fbInventoryUnsub) return true;
+  if(fbInventoryUnsub){
+    invRenderList();
+    try{ renderHomeDashboard(); }catch(_e){}
+    return true;
+  }
   fbInventoryUnsub=fbDb.collection('inventory').orderBy('updatedAt','desc').onSnapshot(function(snap){
     invState.items=snap.docs.map(function(doc){
       var d=doc.data()||{};
@@ -6204,6 +6239,69 @@ function showIntakeForm(type){
 // ============================================================
 // NAVIGATION
 // ============================================================
+var _homeUniformScaleTimer=null;
+var _homeUniformScaleRaf=0;
+var HOME_UNIFORM_SCALE_MIN=0.14;
+var HOME_UNIFORM_SCALE_MAX=1;
+function scheduleHomeUniformScale(){
+  if(_homeUniformScaleTimer) clearTimeout(_homeUniformScaleTimer);
+  _homeUniformScaleTimer=setTimeout(function(){
+    _homeUniformScaleTimer=null;
+    if(_homeUniformScaleRaf) cancelAnimationFrame(_homeUniformScaleRaf);
+    _homeUniformScaleRaf=requestAnimationFrame(function(){
+      _homeUniformScaleRaf=requestAnimationFrame(function(){
+        _homeUniformScaleRaf=0;
+        updateHomeUniformScale();
+      });
+    });
+  },48);
+}
+function updateHomeUniformScale(){
+  var home=document.getElementById('screenHome');
+  var grid=home&&home.querySelector('.cc-grid');
+  var scaleRoot=home&&document.getElementById('homeGridScaleRoot');
+  if(!home||!grid) return;
+  if(!home.classList.contains('active')){
+    home.style.removeProperty('--home-uniform-scale');
+    return;
+  }
+  var measureEl=scaleRoot||grid;
+  home.style.setProperty('--home-uniform-scale','1');
+  if(scaleRoot&&scaleRoot.style&&scaleRoot.style.removeProperty) scaleRoot.style.removeProperty('zoom');
+  else if(grid.style&&grid.style.removeProperty) grid.style.removeProperty('zoom');
+  void measureEl.offsetHeight;
+  var ch=measureEl.scrollHeight;
+  var cw=measureEl.scrollWidth;
+  var csg=getComputedStyle(grid);
+  var padT=parseFloat(csg.paddingTop)||0;
+  var padR=parseFloat(csg.paddingRight)||0;
+  var padB=parseFloat(csg.paddingBottom)||0;
+  var padL=parseFloat(csg.paddingLeft)||0;
+  var ah=grid.clientHeight-(padT+padB);
+  var aw=grid.clientWidth-(padL+padR);
+  var gr=measureEl.getBoundingClientRect();
+  var roughH=0;
+  for(var ci=0;ci<measureEl.children.length;ci++){
+    var cel=measureEl.children[ci];
+    var cst=getComputedStyle(cel);
+    if(cst.display==='none') continue;
+    var rr=cel.getBoundingClientRect();
+    roughH=Math.max(roughH, rr.bottom-gr.top);
+  }
+  if(roughH>ch+2){ ch=roughH; }
+  if(ah<12||ch<12){
+    requestAnimationFrame(function(){ scheduleHomeUniformScale(); });
+    return;
+  }
+  var sh=ah/Math.max(ch,1);
+  var sw=aw/Math.max(cw,1);
+  var s=Math.min(HOME_UNIFORM_SCALE_MAX,sh,sw);
+  if(!isFinite(s)||s<=0) s=HOME_UNIFORM_SCALE_MAX;
+  if(s<HOME_UNIFORM_SCALE_MIN) s=HOME_UNIFORM_SCALE_MIN;
+  if(s>HOME_UNIFORM_SCALE_MAX) s=HOME_UNIFORM_SCALE_MAX;
+  home.style.setProperty('--home-uniform-scale',String(s));
+}
+
 function goTo(screenId){
   var current=document.querySelector('.screen.active');
   var currentId=current?current.id:'';
@@ -6229,6 +6327,7 @@ function goTo(screenId){
     try{ renderHomeDashboard(); }catch(_e2){}
     try{ renderHomeQuickTools(); }catch(_e3){}
     try{ renderHomeQuickSheet(); }catch(_e4){}
+    try{ scheduleHomeUniformScale(); }catch(_eh){}
   }
   if(screenId==='screenWebsites'){
     try{ populateWebsitesScreen(); }catch(_e3){}
@@ -6596,6 +6695,7 @@ function renderHomeQuickTools(){
     btn.addEventListener('click',function(){ runHomeQuickToolItem(tool, false); });
     mount.appendChild(btn);
   });
+  try{ if(document.getElementById('screenHome')&&document.getElementById('screenHome').classList.contains('active')) scheduleHomeUniformScale(); }catch(_e){}
 }
 function renderHomeQuickSheet(){
   var sh=document.getElementById('homeQuickSheet');
@@ -6722,6 +6822,7 @@ function renderHomeDashboard(){
       if(invEmpty) invEmpty.style.display='block';
       if(invThumb){ invThumb.src=''; invThumb.style.display='none'; }
     }
+    try{ if(document.getElementById('screenHome')&&document.getElementById('screenHome').classList.contains('active')) scheduleHomeUniformScale(); }catch(_e){}
   }catch(err){
     console.log('renderHomeDashboard',err);
   }
@@ -7329,7 +7430,11 @@ function closeResumeQuoteList(){
 }
 
 function clearCalcForNewQuote(){
+  var keepSaleActive=calcState.saleActive;
+  var keepSalePct=calcState.salePercent;
   calcState=getDefaultCalcState();
+  calcState.saleActive=keepSaleActive;
+  calcState.salePercent=keepSalePct;
   calcCurrentPage=0;
   var typeSel=document.getElementById('calcTypeSelect');
   if(typeSel) typeSel.value='';
@@ -9626,7 +9731,13 @@ try{renderHomeDashboard();}catch(e){}
 try{renderHomeQuickTools();}catch(e){}
 try{renderHomeQuickSheet();}catch(e){}
 try{updateShareLinks();}catch(e){}
-try{invInit();}catch(e){}
+try{scheduleHomeUniformScale();}catch(e){}
+try{
+  invInit().then(function(){
+    try{ renderHomeDashboard(); }catch(_e){}
+    try{ scheduleHomeUniformScale(); }catch(_e2){}
+  });
+}catch(e){}
 try{firebaseTryInit();}catch(e){}
 try{
   settingsSyncFromCloud().then(function(result){
@@ -9635,9 +9746,30 @@ try{
       try{ renderHomeQuickTools(); }catch(_q){}
       try{ renderHomeQuickSheet(); }catch(_q2){}
       updateShareLinks();
+      try{ scheduleHomeUniformScale(); }catch(_q3){}
     }
   });
 }catch(e){}
+
+try{
+  (function(){
+    var h=document.getElementById('screenHome');
+    if(!h||typeof ResizeObserver==='undefined') return;
+    var ro=new ResizeObserver(function(){ scheduleHomeUniformScale(); });
+    ro.observe(h);
+  })();
+  window.addEventListener('orientationchange',function(){ setTimeout(scheduleHomeUniformScale,200); },{passive:true});
+}catch(e){}
+try{
+  if(document.fonts&&document.fonts.ready){
+    document.fonts.ready.then(function(){ scheduleHomeUniformScale(); });
+  }
+}catch(_e){}
+try{
+  if(window.visualViewport){
+    window.visualViewport.addEventListener('resize',function(){ scheduleHomeUniformScale(); },{passive:true});
+  }
+}catch(_e2){}
 
 // ============================================================
 // INTAKE FORMS
@@ -9734,12 +9866,13 @@ async function invLoad(){
 }
 
 function invPersist(){
-  if(cloudReady()) return true;
   try{
     localStorage.setItem(INV_STORAGE_KEY,JSON.stringify(invState.items));
     return true;
   }catch(e){
-    showToast('Storage full. Remove some inventory photos/items.');
+    if(!cloudReady()){
+      showToast('Storage full. Remove some inventory photos/items.');
+    }
     return false;
   }
 }
@@ -10407,6 +10540,35 @@ async function invSaveItem(){
       };
       if(invState.editId) await invUpdateItemCloud(docId,payload);
       else await invCreateItemCloud(docId,payload);
+      var prevCloud=invState.editId?invState.items.find(function(it){return it.id===invState.editId;}):null;
+      var createdAtCloud=(prevCloud&&prevCloud.createdAt)||now;
+      var localCloudItem={
+        id:docId,
+        createdAt:createdAtCloud,
+        updatedAt:now,
+        lotLocation:lotLocation,
+        serialNumber:serialNumber,
+        size:size,
+        style:style,
+        buildDate:buildDate,
+        roofColor:roofColor,
+        wallColor:wallColor,
+        trimColor:trimColor,
+        priceData:invState.priceData?Object.assign({},invState.priceData):null,
+        plateImage:(plateImageValue||'').trim(),
+        frontImage:(frontImageValue||'').trim()
+      };
+      if(invState.editId){
+        invState.items=invState.items.map(function(it){ return it.id===docId?localCloudItem:it; });
+      }else{
+        invState.items=invState.items.filter(function(it){ return it.id!==docId; });
+        invState.items.unshift(localCloudItem);
+      }
+      if(invState.items.length>INV_MAX_ITEMS){
+        invState.items=invState.items.slice(0,INV_MAX_ITEMS);
+      }
+      invPersist();
+      invRenderList();
       showToast(invState.editId?'Inventory item updated':'Inventory item saved');
       invClearForm();
       return;
