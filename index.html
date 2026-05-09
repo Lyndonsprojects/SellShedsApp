@@ -43,6 +43,7 @@
   --barn:#8B2E0D; --rust:#C4511F; --wheat:#E8C87A;
   --earth:#2C1810; --cream:#F5F0E8; --sage:#7A9E87;
   --sky:#C8DDE8; --white:#FDFCFA; --mid:#5C3D2E;
+  --app-bottom-nav-h: 58px;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-top-offset: max(var(--safe-top), 12px);
   /* Home dock: Price Calc circle diameter (~half app column), shared by dock + scroll padding */
@@ -64,7 +65,104 @@ body { font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'Helvetica Neue',s
 /* HEADER */
 .header { background:var(--earth); padding:calc(14px + var(--safe-top)) 16px 14px; display:flex; align-items:center; gap:12px; position:sticky; top:0; z-index:50; border-bottom:3px solid var(--barn); }
 .back-btn { background:none; border:none; color:var(--wheat); font-size:1.4rem; cursor:pointer; padding:4px; flex-shrink:0; }
-.header-title { font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:1.5rem; color:var(--wheat); letter-spacing:3px; }
+.header-title { font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:1.5rem; color:var(--wheat); letter-spacing:3px; flex:1; min-width:0; text-align:center; }
+.header-spacer { width:40px; flex-shrink:0; height:1px; }
+
+body.app-bottom-nav-visible {
+  padding-bottom: calc(var(--app-bottom-nav-h) + env(safe-area-inset-bottom, 0px));
+}
+
+#appBottomNav.app-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  z-index: 48;
+  box-sizing: border-box;
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+  background: #1A0E09;
+  border-top: 1px solid rgba(232,200,122,0.12);
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  align-items: stretch;
+}
+.app-bottom-nav__btn {
+  min-height: 44px;
+  border-radius: 10px;
+  cursor: pointer;
+  padding: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+}
+.app-bottom-nav__icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+.app-bottom-nav__btn--back {
+  background: rgba(255,255,255,0.07);
+  color: var(--cream);
+  border: 1.5px solid rgba(232,200,122,0.3);
+}
+.app-bottom-nav__btn--home {
+  background: rgba(232,200,122,0.12);
+  color: var(--wheat);
+  border: 1.5px solid rgba(232,200,122,0.25);
+}
+.app-bottom-nav__btn--primary {
+  background: var(--barn);
+  color: var(--wheat);
+}
+.app-bottom-nav__btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.app-bottom-nav__btn:focus-visible {
+  outline: 2px solid var(--wheat);
+  outline-offset: 2px;
+}
+
+.calc-header {
+  background: var(--earth);
+  padding: calc(14px + var(--safe-top)) 16px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 3px solid var(--barn);
+}
+.calc-title {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  font-size: 1.5rem;
+  color: var(--wheat);
+  letter-spacing: 3px;
+  flex: 1;
+  text-align: center;
+}
+
+.calc-quote-secondary-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(232,200,122,0.12);
+}
+.calc-quote-secondary-actions .btn-email,
+.calc-quote-secondary-actions .btn-mailto,
+.calc-quote-secondary-actions .btn-print {
+  flex: 1 1 140px;
+}
 
 /* SHARED FIELD STYLES */
 .field-group { margin-bottom:14px; }
@@ -580,15 +678,6 @@ select option { background:var(--earth); color:var(--cream); }
   #printOverlay .down-card{padding:6px 10px !important;margin-top:5px !important;}
   #printOverlay .po-footer{margin-top:10px !important;padding-top:6px !important;font-size:7.5pt !important;color:#000 !important;}
 }
-.sellsheds-footer {
-  display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 8px;
-  padding: 6px 16px; background: var(--earth);
-  border-top: 2px solid var(--barn);
-  position: sticky;
-  bottom: 0;
-  z-index: 10;
-}
-
 /* ── Toggle Switch ─────────────────────────────────────── */
 .tog-wrap{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;}
 .tog-track{position:relative;width:44px;height:24px;background:#C4B8A8;border-radius:12px;transition:background 0.2s;flex-shrink:0;}
@@ -852,8 +941,7 @@ select option { background:var(--earth); color:var(--cream); }
   width: 100%;
   box-sizing: border-box;
 }
-/* Home: no instructional / subtitle helper copy (JS can still target hidden nodes) */
-#screenHome .cc-tagline,
+/* Home: no instructional / subtitle helper copy (JS can still target hidden nodes); keep .cc-tagline visible for SellSheds branding */
 #screenHome .cc-hero-kicker,
 #screenHome .cc-hero-when,
 #screenHome .cc-create-desc,
@@ -2256,9 +2344,9 @@ input:focus, select:focus, textarea:focus {
      ============================================================ -->
 <div class="screen" id="screenWebsites">
   <div class="calc-header">
-    <button class="back-btn" onclick="goTo('screenHome')">&#8592;</button>
+    <div class="header-spacer" aria-hidden="true"></div>
     <div class="calc-title">WEBSITES</div>
-    <div style="width:40px;"></div>
+    <div class="header-spacer" aria-hidden="true"></div>
   </div>
   <div style="padding:16px 14px 120px;">
     <div id="websitesScreenList" style="display:flex;flex-direction:column;gap:10px;">
@@ -2269,7 +2357,7 @@ input:focus, select:focus, textarea:focus {
 
 <div class="screen" id="screenCalc">
   <div class="header">
-    <button class="back-btn" onclick="goTo('screenHome')">←</button>
+    <div class="header-spacer" aria-hidden="true"></div>
     <div class="header-title">Price Calculator</div>
   </div>
   <div class="calc-steps">
@@ -2887,7 +2975,6 @@ input:focus, select:focus, textarea:focus {
         </div>
       </div>
 
-      <div class="nav-btns"><button class="btn-next" onclick="calcGoTo(1)">Next: Payment →</button></div>
     </div>
   </div>
 
@@ -3021,7 +3108,6 @@ input:focus, select:focus, textarea:focus {
         <div style="font-size:0.7rem;color:rgba(232,200,122,0.55);margin-top:8px;">RTO: tax shown per month. Cash: tax on full total.</div>
       </div>
 
-      <div class="nav-btns"><button class="btn-back" onclick="calcGoTo(0)">←</button><button class="btn-next" onclick="calcGoTo(2)">Next: Quote →</button></div>
     </div>
   </div>
 
@@ -3045,8 +3131,7 @@ input:focus, select:focus, textarea:focus {
         <div class="field-group"><label class="field-label">Notes</label><textarea id="c_custNotes" rows="2" placeholder="Site conditions, special requests..."></textarea></div>
       </div>
       <div class="setup-note emailjs-note" id="calcSetupNote" style="display:none;"></div>
-      <div class="nav-btns" style="flex-wrap:wrap;gap:8px;">
-        <button class="btn-back" onclick="calcGoTo(1)" style="flex:0 0 auto;">←</button>
+      <div class="calc-quote-secondary-actions">
         <button class="btn-email" onclick="sendCalcEmail()" id="calcEmailBtn">✉️ Send Email</button>
         <a class="btn-mailto" id="calcMailtoBtn" href="#" onclick="refreshMailtoHref(this);">📱 Mail App</a>
         <button class="btn-print" onclick="printQuote()" style="background:var(--earth);color:var(--wheat);border:none;border-radius:10px;padding:12px 18px;font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:1rem;letter-spacing:2px;cursor:pointer;">🖨️ Print / PDF</button>
@@ -3062,7 +3147,7 @@ input:focus, select:focus, textarea:focus {
 
 <div class="screen" id="screenMileage">
   <div class="header">
-    <button class="back-btn" onclick="goTo('screenHome')">←</button>
+    <div class="header-spacer" aria-hidden="true"></div>
     <div class="header-title">Mileage Calculator</div>
   </div>
   <div style="padding:16px;">
@@ -3089,11 +3174,9 @@ input:focus, select:focus, textarea:focus {
         <input type="number" id="mile_extra" min="0" step="0.1" placeholder="0" inputmode="decimal" autocomplete="off">
         <div style="font-size:0.72rem;color:rgba(232,200,122,0.55);margin-top:6px;line-height:1.4;">Added to the route distance before the delivery surcharge (e.g. detours or access).</div>
       </div>
-      <button class="btn-secondary" style="margin-top:8px;padding:10px 12px;" onclick="runMileageCalculator()">Calculate Driving Miles</button>
       <div id="mileageFormStatus"></div>
     </div>
     <div id="mileageResultsView" class="mileage-results-view" style="display:none;">
-      <button type="button" class="btn-secondary mileage-results-back" onclick="mileageReturnToSearchForm()">← Calculate another</button>
       <div id="mile_results_summary" class="mileage-results-summary"></div>
     </div>
     <div class="pb40"></div>
@@ -3104,7 +3187,7 @@ input:focus, select:focus, textarea:focus {
      SCREEN: MARKETPLACE AD
      ============================================================ -->
 <div class="screen" id="screenAd">
-  <div class="header"><button class="back-btn" onclick="goTo('screenHome')">←</button><div class="header-title">Ad Writer</div></div>
+  <div class="header"><div class="header-spacer" aria-hidden="true"></div><div class="header-title">Ad Writer</div></div>
   <div style="padding:16px;">
     <div class="page-title">Marketplace Ad</div>
     <div class="page-sub">Fill in the details — listing writes itself</div>
@@ -3172,7 +3255,6 @@ input:focus, select:focus, textarea:focus {
     <div class="field-group"><label class="field-label">Tone</label>
       <select id="adTone"><option value="friendly">Friendly &amp; Conversational</option><option value="professional">Professional &amp; Clean</option><option value="urgent">Creates Urgency</option><option value="value">Value-Focused</option><option value="sale">Limited Time Sale</option></select>
     </div>
-    <button class="btn-primary" onclick="generateAd()">✍️ Generate Ad</button>
     <div class="result-box" id="adResultBox">
       <div class="result-title">Your Marketplace Listing</div>
       <div class="ad-text" id="adText"></div>
@@ -3191,7 +3273,7 @@ input:focus, select:focus, textarea:focus {
      SCREEN: PHOTOS
      ============================================================ -->
 <div class="screen" id="screenPhotos">
-  <div class="header"><button class="back-btn" onclick="goTo('screenHome')">←</button><div class="header-title">Photo Library</div></div>
+  <div class="header"><div class="header-spacer" aria-hidden="true"></div><div class="header-title">Photo Library</div></div>
   <div style="background:rgba(232,200,122,0.08);border-bottom:1.5px solid rgba(232,200,122,0.3);padding:14px 16px;font-size:0.78rem;line-height:1.6;color:var(--cream);">
     <strong style="color:var(--barn);">📁 Setup:</strong> Tap "Edit Links" to paste your Google Drive folder URLs for each building style.
   </div>
@@ -3219,7 +3301,7 @@ input:focus, select:focus, textarea:focus {
      SCREEN: INVENTORY
      ============================================================ -->
 <div class="screen" id="screenInventory">
-  <div class="header"><button class="back-btn" onclick="goTo('screenHome')">←</button><div class="header-title">Inventory</div></div>
+  <div class="header"><div class="header-spacer" aria-hidden="true"></div><div class="header-title">Inventory</div></div>
   <div style="padding:16px;">
     <div class="page-title">Lot inventory</div>
     <div class="page-sub inv-page-intro">Filter by lot or size/style. Available units are listed first.</div>
@@ -3233,7 +3315,6 @@ input:focus, select:focus, textarea:focus {
           <option value="">All sizes / styles</option>
         </select>
       </div>
-      <button type="button" class="btn-primary inv-add-btn" onclick="invOpenAddModal()">+ Add inventory</button>
     </div>
 
     <div id="inv_listWrap" class="inv-list-stack"></div>
@@ -3403,7 +3484,7 @@ input:focus, select:focus, textarea:focus {
      SCREEN: CRM
      ============================================================ -->
 <div class="screen" id="screenCRM">
-  <div class="header"><button class="back-btn" onclick="goTo('screenHome')">←</button><div class="header-title">CRM</div></div>
+  <div class="header"><div class="header-spacer" aria-hidden="true"></div><div class="header-title">CRM</div></div>
   <div style="padding:16px;">
     <div class="page-title">Leads &amp; Conversations</div>
     <div class="page-sub">Lite pipeline for contacts, building interest, notes, and conversation channel.</div>
@@ -3457,7 +3538,6 @@ input:focus, select:focus, textarea:focus {
         </div>
         <div class="field-group"><label class="field-label">Notes</label><textarea id="crm_notes" rows="3" placeholder="General lead notes"></textarea></div>
         <div style="display:flex;gap:8px;">
-          <button class="btn-primary" style="margin-top:0;flex:2;" onclick="crmSaveLeadFromForm()">Save Lead</button>
           <button class="btn-secondary" style="margin-top:0;flex:1;" onclick="crmDeleteLeadFromForm()">Delete</button>
           <button class="btn-secondary" style="margin-top:0;flex:1;" onclick="crmClearLeadForm()">Clear</button>
         </div>
@@ -3496,7 +3576,7 @@ input:focus, select:focus, textarea:focus {
      SCREEN: CONTACTS (status filters)
      ============================================================ -->
 <div class="screen" id="screenContacts">
-  <div class="header"><button class="back-btn" onclick="goTo('screenHome')">←</button><div class="header-title">Contacts</div></div>
+  <div class="header"><div class="header-spacer" aria-hidden="true"></div><div class="header-title">Contacts</div></div>
   <div style="padding:16px;">
     <div class="page-title">Contacts</div>
     <div class="page-sub">Filter by deal status. Tap a row to open the full CRM for that lead.</div>
@@ -3515,7 +3595,7 @@ input:focus, select:focus, textarea:focus {
      SCREEN: FOLLOW-UPS (recent touch)
      ============================================================ -->
 <div class="screen" id="screenFollowups">
-  <div class="header"><button class="back-btn" onclick="goTo('screenHome')">←</button><div class="header-title">Follow-ups</div></div>
+  <div class="header"><div class="header-spacer" aria-hidden="true"></div><div class="header-title">Follow-ups</div></div>
   <div style="padding:16px;">
     <div class="page-title">Follow-ups</div>
     <div class="page-sub">Leads sorted by the latest of last message time or last update.</div>
@@ -3528,7 +3608,7 @@ input:focus, select:focus, textarea:focus {
      SCREEN: INTAKE SELECTOR
      ============================================================ -->
 <div class="screen" id="screenIntakeSelector">
-  <div class="header"><button class="back-btn" onclick="goTo('screenHome')">←</button><div class="header-title">Customer Intake</div></div>
+  <div class="header"><div class="header-spacer" aria-hidden="true"></div><div class="header-title">Customer Intake</div></div>
   <div style="padding:16px;">
     <div class="page-title">Which Form?</div>
     <div class="page-sub">Choose the right form for this customer</div>
@@ -3580,7 +3660,7 @@ input:focus, select:focus, textarea:focus {
      SCREEN: PURCHASE FORM
      ============================================================ -->
 <div class="screen" id="screenPurchase">
-  <div class="header"><button class="back-btn" onclick="goTo('screenIntakeSelector')">←</button><div class="header-title">Purchase Form</div></div>
+  <div class="header"><div class="header-spacer" aria-hidden="true"></div><div class="header-title">Purchase Form</div></div>
   <div style="padding:16px;">
     <div class="form-title purchase">Purchase Form</div>
     <div class="form-sub">Cash / Outright · 50% down required</div>
@@ -3647,8 +3727,6 @@ input:focus, select:focus, textarea:focus {
     <div class="field-group"><label class="field-label">Site Access</label><select id="p_access"><option value="">Select</option><option>Easy — plenty of room</option><option>Moderate — some obstacles</option><option>Difficult — narrow/slope/rough</option><option>Unknown</option></select></div>
     <div class="field-group"><label class="field-label">Site Notes</label><textarea id="p_sitenotes" rows="2" placeholder="Slope, gravel, trees, gate width..."></textarea></div>
     <div class="field-group"><label class="field-label">Additional Notes</label><textarea id="p_notes" rows="3" placeholder="Anything else..."></textarea></div>
-    <button class="btn-primary" onclick="submitIntake('purchase')">Submit Purchase Form</button>
-    <button class="btn-secondary" onclick="goTo('screenIntakeSelector')">← Back</button>
     <div class="pb40"></div>
   <div class="sellsheds-footer">
     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAAA8CAYAAADmBa1FAAAQhklEQVR4nO2ZeZRdVZWHv33uvW+qejUnlVRSlYlKigCSIJAgQ0BmOgwChYoiLWrTrTIpTbf2aosC1BYnUBSIODMosZkUGhEhJYSEEDADJEBIIJWk5vFV1ZvuvWf3H6+CRVYI0OKydb3vn7p1zrln7fs7++yz93lQpEiRIkWKFClSpEiRIkWKFClSpEiRIkWKFCnybqOK/LVt+FtBloDbDA68PdFaWlrM44+3uH9hu/5+aAZHJkgrUmjb29jd4qrqGxbj3mvPrG9pwfxlLf0bpQXMhC1fdmaS604o4XIoCDYutoFCaFDVNwi56o6LG1+87+Irttz9sdU//cKR9wOiLS1/l2L/X7et3A3mPAhbBY6Lcf7CSXL1gile47AvTO3wP7ShR760nPARgCXgihCA6Pe/df7soxY0Lq0y+TPVzxyRjLvxbZt2sGtX53cBvXrFCgew79oX/j/hnQotzWCWQ3gehAfD4YdN4rr5k82J9RVRsulsUK4qS/eLLZpTGf52Zi93/3E03tqWH9303WvOPOjoYxbfPHvenIXJhE0wsIvhnj5e2bw1++Lm17yqiornATgWaHu3P/Ovz9veps3gCOhyCIEpZ5dx4z/MkpVLZkZOnBQz4cu7MnZnxX5OfvYCp68na+clQ3tWY+S8c6bn1pxS5X7p0ScHhkqTVX1gE2Em52fzhEMjebtuzR8jQaiONbwCCCvetu0y4RyQNzmEZc+2ieHsz+GdzvN2Bpq7wVkOoYJzTJRPX1Inzx4/0710VpXrdgzmw01pz5lxwWflU3c9zvl3PqlNV1wrPabC+EOZcFGtlJw5022NrHni4Wc2jAyNpG3eMeJls6Hz1KNtoKEJIJ/JazugV69oC9/sIN2D3Ys+8VmhcHaMH84qgt49YRHGx/3ZoemdzrPPNKx5XGCAuXD8omqua6o0i2tKHUYyftgxhpmy5CRO/3wrTQsXgw3wwwDPi9HdvpW271wjrz3wM/UCbOmppzonX/4xGuqrCdNj/PYnP+TVFzYST0Q1dGJdz+VqF9xyy+9CIAX4b2GzLooy0wmpfypg9YFQVeYwvyvkuW2F93V8bDWQAdIA74VEzOHwVEj7Rti2e663K9YEzAJYnIGRl2Dj25lnXx4tyyGMwpzTk9x+2jQePXSys7jEteHmXb72VDc6Z9zwcz53+29pWriYdGaEsXwOP7SMpkeoaZjJed/4qS794cOUnvEh57iLP2ob6issbpS1j/5Oh3e8qMnqyjHPc0Q9Z3tw/xMf/7cZ0nN5g3nhnGpz5Xwo5U9bX1oKtkrLkoK3H1wuF586K/KHg6qqahfVcPops73HmmoiRwF6bIwln53CqsunSedl0+XVi2rlloVx6qqj1J1Q7zx+aF3kCkCa5+Ox93Bj9tK+Wy8DRBfWyO8PqfVuBtCW1+18s/f2fhi2gGkFPSbOp+eWypdnlFHhRYx2joaaipQ6R1x2qS799BVaUVlDZmyESCzO6gf+m4e/eT1V1TH6h3N85Os3cdDiI2k8+mRmL6yFkY0GU8rWp59i+9qVRJMV0jtizq4u92pKY7UfyJgt86JRf3W1x4KapPv1XaE8w1C27Z/AWwZ+KxQS796CcyQNtiyKRjUmpQ5BVUxsVdTLTCdftaBaHphV4Zb1BjyRcG39LDUX7/SdDjOQvbkqjk2JCQX0V5vJj7vibo80AlYnhKDW8fAw8bkWTHlU8o5IHmDFCgwQMG6jFgR/Q1jZq9BXA62gs0rkwsYKKrJIfnBEIzrnIK689S6dNe8ALCG5XBrjODiOix3qJb5tM8msITto8UcHUCdCpmeVuEOriNfMpHvLJjrX/yGcNqPO2fhKz+8vu2HNI4d5fGrKAfst26Ly3B0vh/3NdZF5nshZq4eybYAsK4SRktlQtw22t24iD5BVJROo5CSrvoW8r2Ys5w4dUcKJDUlTtjblfP7nO7LfAhLNk5xLxZifuhDPhphAJaPAXKXpZdhCITwKBZFpgNntMNgKg7s9dFzkGiDWDTvzVjVPoS44ro0AKJsMNT3QPi76W3v0+OoSIiYdCOKKM5YOmDVnHrPmHUBqeAAcBxGDBj7RWALX83DiBomVoGaEeHk1brhL6F6BW17DUN8APZtWMbm2Rp5bs5N7HtjWArCwxnxGe7bWrelIHAiwvCP/EvC13R50XJwz5pXLrRUeU7p9eWnDsLnw2UzwdF5x/PGoGAKBKml86iOUeyI2HzhdAKpkRPL/BXmWRmgKFHK+nfPBCnl6WimHb83Ik6v77Tn/DH13wcz3lHPXpJgsylhG2nPOVY+lglsA3huheW6c70VcmbQtZ24U0SyKB3Cox0fro3Jj1KUqY9m1PS9XrcvaOyfugn1mHRtH5amXhllvLWJBM+k0WMudX7uGKxcv5OrjD+GLpx3NSHoEYxyswHD3CDMWLWb6dEf6n70Za5XRjDLatZ2qmkm8uGmIB+98isGOEXd8Se9dWGUmnVaXfbARjhkXR1pB50Hd/DK5K5Fwc0Oh86WGEmbPr+AOACuEfgiZDChozoJYjQzjrRoJ1dR5uW8d5pnzRQrbuQWMBckE1lbGbLOJuu0hsvKwajnq8EmRf2wFu7CC22aWOYtS6rVUxuTFuWXcvF80OgdIzC3hB5UJt9IXb1lDnLOTESaHMACUzIjLsnjEvJrBudRxncGIY6oANk2I13sVWkCXgLs+G1426oc/shbjW8JQBYzB9nYS2/4qic5XMJ0vY9WqgvZ3WprOOpdzr2+R1Au/YGRwgIx18YIRkvEEKx/bpg8uezisIktpSdQFeLoreeNz/bKisUQPXdogbR+olNtKhCmAHlDG2RVxk1ib8j5wS0dwbUeKz02LMachWj4bn1E/VIhDECK5AASbXD7ob1w/yLeTjq09aZre8ZEaeazJdRe1gk3lEVVMyjcP3dXtN6/aaS8YSqst8+zcMqiqjpn3t/vuV+7oyV/zPzvsmU5gdf8yTnsfHFwbd8q35p2v3NmXv3goE34k76vkQs3FoLrck3iHz0P3DwXfvWcgOGjNWPB9eD0FfHOhJ8QPUfACq/i2kEgDGNdVogYiLk48CSihOrrkyo/LiZd9WNqf/AkD/cNI1Sxqp0zGzwjLbnqEX996jy2XHK7nEGYDBVjH8PBtncGpzw+Yfxek97Aa+cSpk53fAyVJl/1zFo3msiecnOCT2bxt9FCmJf39/RA/sAWPzoeQt0o6RAH5ZW/4uY0Dct5IIOsbkxy3qFpXvDfhHVIOw6qGoRwvNYPTB2PDOTVGDPvD/IhBM5mg+sgon6iLmrOjgiQcPagywf6Bon1ZVrSA++AofxzISsZRKc9Cx2DAthme/ucxMbkJqKMQLt6QfeyzBBfQEy02VCG0EBbOURuqYhXxw5DRVIpsOieLzzpJep4bYN0938apqGH6oYuo37+J7Wu38M0v/lC712+y9RWCGiFnFSXYbYgIZO/sD742tT9212m1+WUHJ+Xkrkzs3IxmfUdU6uJytcU4ESN+t29SmbzkQ0FCq6iqBIIGFoLxCy5VRCRczjC/aa5wWpvK7b+qcf7twTSXzwuVXGDdeyCcBRICaathLEqpqlLhyQWe41zoKHYwINXlS6rWoyxAJLBmrBUCmGoD053JQwQI2vPmw9M8e+vcEvlMaUSaN6ft6a8GPMOE7OMtK8PQovlQCSyEqgBqRRgbtaTzwiFnnIvf8aRsuvdqeXHlb4hMmk7TEUdSP6+R3/3iCb5w0XV25IVNtqHaIa/gW8S3hRum8cWMKUQF6CTbvnPAfj7n23BSQg/MBYyOhmI3ZEsO7vTLa18Jq6bev7Oqbl1q7LE8lOfHEyg/hMCCCJZCNVg9voKZ5UPhVV1pBhDm56C08M6fnC1UsFZlLEe/r0Z2+u4l/U7VpB1hSf2Pe8OpbUO5/0gHWD9QFWPLC6lgp2dDLQ20UFg9mwnWPJCyh21Jc8kUj+pZCed6QFsm6PjWQofghwYVgykkI5LOWinfv4lzvvpVOf6MA+XFh25goKudaXMaWbh4Ecny6dz4xdv1G5dcH5YM9WpFqUM6X1isIED9EPzxQmRJQn5yQqn8ugIagIg6nJIOcLI+7WnLY65iKjR91qODg8PP9PaWljvdJwChtRCEhBkyWNBQCbOuSR0V4dylpbLyANd9nyrO4S6LXUiM+XRFYEyUUK1agDEAJXSUyFrYlPLVlhj/7Lbe3tHVqdTAXI+lgN+fdZ43qlJhgvME9GiPU5IOnqqmgOgcwwVA0JaxNw3lWe+JzAa4ZkII2WfoUEWOj+Pk0j7dYzA1MACyeOnREjtpqrjZ59ixdgeRkjKm1NdTNb2RlWsH9Zc3/1g7nt1gZ1cKxnUk7SugahUc0FAVA3YJODFh8oFJWVLtyWu5wHY2xKWuM++M7RrjwY052ksc3dgY06+XIGcl4D0Dxk3mhv14YIkYxUmqumqIGYuTH9NohWOmNJYyd2rcrpyTlZ2TXJ3uuA69aed7dWA0xMmrlrSAuRNcR8UJQqkVGOvL6fdnxOSzJ8bl+ahqGI867wmz7inDudzjPTmzvcHVT56WkMPFmHpURUNiM+B9C0rMz2YH+gVUd5W6HNIdmB8AnDvhCmNvQktzMyaxZoYrsj2YDaO10xs45MQD9bAj5rHxvhaJ926QscEu/FBJVE0hUt3Api6jj992r93ctpoao9RVGfGtqvi2EG9U0fHDNEDpD03uGQgY02Pz4vxLubHNUc+p2+6bX20a5ctb/Nw2gPtS9v0nJ52vJByO8zFrRgPn2u342crQrEtnzcPtudK+cgk3j4o8PGTtwIa8vWlEnG1TXb0o6ZoDBqHt2UFZti6bua8UaqbmzEMDVlaN57cDU3PmNxkjKxR4eFQvOSqQHUlHLgyN0Z2he/HWXO4RQAdH3FMOLAluiDimYVvgXNSX1lPyQv92eHxGyCdiRi4SZMbLOec7q9P5qwCWT6gO93mppKqJR2+/5pqEG1xebgY10/+qdHV1MpI3ROLlWLdSX92ethvWbtW+F17SUkWqKkRUhGA8oO/+iUvH61pHsBnE68hxQVPcrs4rJhZjcMsYcd+PJiJhLnXoZKRrjBJH0KRHvs+S7RqjzPPJzCkjzCiljkd+R45wikPUGmyPjz/dJeKHuLUuw+tSmJyJlombyx4eI9sdUC6GsNeSrQxwIx4RHzSnZMosxjrEHNCER2rdKElrCA9JkB4LKbUWpzRKdssoJm1xj4kz9lqAG1UkcIlMjpDakCGaD4jMizNmIRF20LVswuXYnkKbk+ZWz50z3TuotsJ9/7Tpkz5YWx6vzOVypPOGVNZlYNjS1T1Gz65hRjr7IJWhPALxEgHHgFoMEPPeZA0nCP960+62CQbtrZ+JfTJ+QbHn81vMJzJe9u45do//2eO9vfXt7t+z3SoEvm36UT8v7a4O9wwdJpPNJEYzNhX3gj9kX2tfvyU0fcPBFP+FXj/c9kp3YjQ1CMBUcCcbJFbphQMh6mdCtahxEY04OFNdKvd60hY8+/XvfV2RfbG3ft1H/77me6ux7+TdN2lXQTWgGwp3RvuYcR8IhTuuvS1vkTdlr3euzc2F9vk9hb8HTG7W5UDP8uXSBix5GxMf+66Z+LdJ64RffIoUKVKkSJEiRYoUKVKkSJEiRYoUKVKkSJEif2f8LzBi0V2j2gN9AAAAAElFTkSuQmCC" alt="SellSheds" style="height:22px;width:auto;object-fit:contain;opacity:0.75;">
@@ -3662,7 +3740,7 @@ input:focus, select:focus, textarea:focus {
      SCREEN: RTO FORM
      ============================================================ -->
 <div class="screen" id="screenRTO">
-  <div class="header"><button class="back-btn" onclick="goTo('screenIntakeSelector')">←</button><div class="header-title">RTO Application</div></div>
+  <div class="header"><div class="header-spacer" aria-hidden="true"></div><div class="header-title">RTO Application</div></div>
   <div style="padding:16px;">
     <div class="form-title rto">RTO Application</div>
     <div class="form-sub">Rent-To-Own · Full application</div>
@@ -3777,8 +3855,6 @@ input:focus, select:focus, textarea:focus {
       <div class="text-photo-note" id="rtoPhotoNote">📱 <strong>Can't upload?</strong> Text ID photos to us — include your name.</div>
     </div>
     <div class="field-group"><label class="field-label">Additional Notes</label><textarea id="r_notes" rows="3" placeholder="Anything else..."></textarea></div>
-    <button class="btn-primary" style="background:var(--rust);" onclick="submitIntake('rto')">Submit RTO Application</button>
-    <button class="btn-secondary" onclick="goTo('screenIntakeSelector')">← Back</button>
     <div class="pb40"></div>
   <div class="sellsheds-footer">
     <img src="data:image/png;base64,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" alt="SellSheds" style="height:22px;width:auto;object-fit:contain;opacity:0.75;">
@@ -3792,7 +3868,7 @@ input:focus, select:focus, textarea:focus {
      SCREEN: GENERAL INTEREST FORM
      ============================================================ -->
 <div class="screen" id="screenInterest">
-  <div class="header"><button class="back-btn" onclick="goTo('screenIntakeSelector')">←</button><div class="header-title">General Interest</div></div>
+  <div class="header"><div class="header-spacer" aria-hidden="true"></div><div class="header-title">General Interest</div></div>
   <div style="padding:16px;">
     <div class="form-title interest">General Interest</div>
     <div class="form-sub">Quick lead capture</div>
@@ -3821,8 +3897,6 @@ input:focus, select:focus, textarea:focus {
     </div>
     <div class="field-group"><label class="field-label">Site Access</label><select id="i_access"><option value="">Select</option><option>Easy — plenty of room</option><option>Moderate — some obstacles</option><option>Difficult — narrow/slope/rough</option><option>Unknown</option></select></div>
     <div class="field-group"><label class="field-label">Additional Notes</label><textarea id="i_interest" rows="3" placeholder="Anything else we should know..."></textarea></div>
-    <button class="btn-primary" style="background:var(--sage);" onclick="submitIntake('interest')">Submit</button>
-    <button class="btn-secondary" onclick="goTo('screenIntakeSelector')">← Back</button>
     <div class="pb40"></div>
   <div class="sellsheds-footer">
     <img src="data:image/png;base64,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" alt="SellSheds" style="height:22px;width:auto;object-fit:contain;opacity:0.75;">
@@ -3836,13 +3910,11 @@ input:focus, select:focus, textarea:focus {
      SCREEN: INTAKE SUCCESS
      ============================================================ -->
 <div class="screen" id="screenIntakeSuccess">
-  <div class="header"><button class="back-btn" onclick="goTo('screenHome')">←</button><div class="header-title">Submitted!</div></div>
+  <div class="header"><div class="header-spacer" aria-hidden="true"></div><div class="header-title">Submitted!</div></div>
   <div class="success-screen-inner">
     <div class="success-icon-big" id="successIcon">✅</div>
     <div class="success-title-big">Form Submitted!</div>
     <div class="success-msg" id="successMsg">Thank you! We've received your information and will be in touch shortly.</div>
-    <button class="btn-primary" onclick="goTo('screenIntakeSelector')">Start Another Form</button>
-    <div style="margin-top:12px;"><button class="btn-secondary" onclick="goTo('screenHome')" style="font-size:0.85rem;padding:10px;">← Back to Dashboard</button></div>
   <div class="sellsheds-footer">
     <img src="data:image/png;base64,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" alt="SellSheds" style="height:22px;width:auto;object-fit:contain;opacity:0.75;">
     <div style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:0.7rem;color:var(--wheat);letter-spacing:2px;opacity:0.6;">SellSheds</div>
@@ -3856,10 +3928,8 @@ input:focus, select:focus, textarea:focus {
      ============================================================ -->
 <div class="screen" id="screenLandlordForm">
   <div class="header" style="display:flex;justify-content:space-between;align-items:center;">
-    <div style="display:flex;align-items:center;gap:12px;">
-      <button class="back-btn" onclick="goTo('screenRTO')">←</button>
-      <div class="header-title">Landlord Form</div>
-    </div>
+    <div class="header-spacer" aria-hidden="true"></div>
+    <div class="header-title" style="flex:1;text-align:center;">Landlord Form</div>
     <button onclick="printLandlordForm()" style="background:rgba(232,200,122,0.15);color:var(--wheat);border:1.5px solid rgba(232,200,122,0.4);border-radius:8px;padding:8px 14px;font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:0.95rem;letter-spacing:2px;cursor:pointer;">🖨️ Print</button>
   </div>
 
@@ -3930,8 +4000,6 @@ input:focus, select:focus, textarea:focus {
 
     </div><!-- end printable form -->
 
-    <button onclick="printLandlordForm()" class="btn-primary" style="margin-top:16px;">🖨️ Print / Save as PDF</button>
-    <button onclick="goTo('screenRTO')" class="btn-secondary">← Back to RTO Form</button>
   <div class="sellsheds-footer">
     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAAA8CAYAAADmBa1FAAAQhklEQVR4nO2ZeZRdVZWHv33uvW+qejUnlVRSlYlKigCSIJAgQ0BmOgwChYoiLWrTrTIpTbf2aosC1BYnUBSIODMosZkUGhEhJYSEEDADJEBIIJWk5vFV1ZvuvWf3H6+CRVYI0OKydb3vn7p1zrln7fs7++yz93lQpEiRIkWKFClSpEiRIkWKFClSpEiRIkWKFCnybqOK/LVt+FtBloDbDA68PdFaWlrM44+3uH9hu/5+aAZHJkgrUmjb29jd4qrqGxbj3mvPrG9pwfxlLf0bpQXMhC1fdmaS604o4XIoCDYutoFCaFDVNwi56o6LG1+87+Irttz9sdU//cKR9wOiLS1/l2L/X7et3A3mPAhbBY6Lcf7CSXL1gile47AvTO3wP7ShR760nPARgCXgihCA6Pe/df7soxY0Lq0y+TPVzxyRjLvxbZt2sGtX53cBvXrFCgew79oX/j/hnQotzWCWQ3gehAfD4YdN4rr5k82J9RVRsulsUK4qS/eLLZpTGf52Zi93/3E03tqWH9303WvOPOjoYxbfPHvenIXJhE0wsIvhnj5e2bw1++Lm17yqiornATgWaHu3P/Ovz9veps3gCOhyCIEpZ5dx4z/MkpVLZkZOnBQz4cu7MnZnxX5OfvYCp68na+clQ3tWY+S8c6bn1pxS5X7p0ScHhkqTVX1gE2Em52fzhEMjebtuzR8jQaiONbwCCCvetu0y4RyQNzmEZc+2ieHsz+GdzvN2Bpq7wVkOoYJzTJRPX1Inzx4/0710VpXrdgzmw01pz5lxwWflU3c9zvl3PqlNV1wrPabC+EOZcFGtlJw5022NrHni4Wc2jAyNpG3eMeJls6Hz1KNtoKEJIJ/JazugV69oC9/sIN2D3Ys+8VmhcHaMH84qgt49YRHGx/3ZoemdzrPPNKx5XGCAuXD8omqua6o0i2tKHUYyftgxhpmy5CRO/3wrTQsXgw3wwwDPi9HdvpW271wjrz3wM/UCbOmppzonX/4xGuqrCdNj/PYnP+TVFzYST0Q1dGJdz+VqF9xyy+9CIAX4b2GzLooy0wmpfypg9YFQVeYwvyvkuW2F93V8bDWQAdIA74VEzOHwVEj7Rti2e663K9YEzAJYnIGRl2Dj25lnXx4tyyGMwpzTk9x+2jQePXSys7jEteHmXb72VDc6Z9zwcz53+29pWriYdGaEsXwOP7SMpkeoaZjJed/4qS794cOUnvEh57iLP2ob6issbpS1j/5Oh3e8qMnqyjHPc0Q9Z3tw/xMf/7cZ0nN5g3nhnGpz5Xwo5U9bX1oKtkrLkoK3H1wuF586K/KHg6qqahfVcPops73HmmoiRwF6bIwln53CqsunSedl0+XVi2rlloVx6qqj1J1Q7zx+aF3kCkCa5+Ox93Bj9tK+Wy8DRBfWyO8PqfVuBtCW1+18s/f2fhi2gGkFPSbOp+eWypdnlFHhRYx2joaaipQ6R1x2qS799BVaUVlDZmyESCzO6gf+m4e/eT1V1TH6h3N85Os3cdDiI2k8+mRmL6yFkY0GU8rWp59i+9qVRJMV0jtizq4u92pKY7UfyJgt86JRf3W1x4KapPv1XaE8w1C27Z/AWwZ+KxQS796CcyQNtiyKRjUmpQ5BVUxsVdTLTCdftaBaHphV4Zb1BjyRcG39LDUX7/SdDjOQvbkqjk2JCQX0V5vJj7vibo80AlYnhKDW8fAw8bkWTHlU8o5IHmDFCgwQMG6jFgR/Q1jZq9BXA62gs0rkwsYKKrJIfnBEIzrnIK689S6dNe8ALCG5XBrjODiOix3qJb5tM8msITto8UcHUCdCpmeVuEOriNfMpHvLJjrX/yGcNqPO2fhKz+8vu2HNI4d5fGrKAfst26Ly3B0vh/3NdZF5nshZq4eybYAsK4SRktlQtw22t24iD5BVJROo5CSrvoW8r2Ys5w4dUcKJDUlTtjblfP7nO7LfAhLNk5xLxZifuhDPhphAJaPAXKXpZdhCITwKBZFpgNntMNgKg7s9dFzkGiDWDTvzVjVPoS44ro0AKJsMNT3QPi76W3v0+OoSIiYdCOKKM5YOmDVnHrPmHUBqeAAcBxGDBj7RWALX83DiBomVoGaEeHk1brhL6F6BW17DUN8APZtWMbm2Rp5bs5N7HtjWArCwxnxGe7bWrelIHAiwvCP/EvC13R50XJwz5pXLrRUeU7p9eWnDsLnw2UzwdF5x/PGoGAKBKml86iOUeyI2HzhdAKpkRPL/BXmWRmgKFHK+nfPBCnl6WimHb83Ik6v77Tn/DH13wcz3lHPXpJgsylhG2nPOVY+lglsA3huheW6c70VcmbQtZ24U0SyKB3Cox0fro3Jj1KUqY9m1PS9XrcvaOyfugn1mHRtH5amXhllvLWJBM+k0WMudX7uGKxcv5OrjD+GLpx3NSHoEYxyswHD3CDMWLWb6dEf6n70Za5XRjDLatZ2qmkm8uGmIB+98isGOEXd8Se9dWGUmnVaXfbARjhkXR1pB50Hd/DK5K5Fwc0Oh86WGEmbPr+AOACuEfgiZDChozoJYjQzjrRoJ1dR5uW8d5pnzRQrbuQWMBckE1lbGbLOJuu0hsvKwajnq8EmRf2wFu7CC22aWOYtS6rVUxuTFuWXcvF80OgdIzC3hB5UJt9IXb1lDnLOTESaHMACUzIjLsnjEvJrBudRxncGIY6oANk2I13sVWkCXgLs+G1426oc/shbjW8JQBYzB9nYS2/4qic5XMJ0vY9WqgvZ3WprOOpdzr2+R1Au/YGRwgIx18YIRkvEEKx/bpg8uezisIktpSdQFeLoreeNz/bKisUQPXdogbR+olNtKhCmAHlDG2RVxk1ib8j5wS0dwbUeKz02LMachWj4bn1E/VIhDECK5AASbXD7ob1w/yLeTjq09aZre8ZEaeazJdRe1gk3lEVVMyjcP3dXtN6/aaS8YSqst8+zcMqiqjpn3t/vuV+7oyV/zPzvsmU5gdf8yTnsfHFwbd8q35p2v3NmXv3goE34k76vkQs3FoLrck3iHz0P3DwXfvWcgOGjNWPB9eD0FfHOhJ8QPUfACq/i2kEgDGNdVogYiLk48CSihOrrkyo/LiZd9WNqf/AkD/cNI1Sxqp0zGzwjLbnqEX996jy2XHK7nEGYDBVjH8PBtncGpzw+Yfxek97Aa+cSpk53fAyVJl/1zFo3msiecnOCT2bxt9FCmJf39/RA/sAWPzoeQt0o6RAH5ZW/4uY0Dct5IIOsbkxy3qFpXvDfhHVIOw6qGoRwvNYPTB2PDOTVGDPvD/IhBM5mg+sgon6iLmrOjgiQcPagywf6Bon1ZVrSA++AofxzISsZRKc9Cx2DAthme/ucxMbkJqKMQLt6QfeyzBBfQEy02VCG0EBbOURuqYhXxw5DRVIpsOieLzzpJep4bYN0938apqGH6oYuo37+J7Wu38M0v/lC712+y9RWCGiFnFSXYbYgIZO/sD742tT9212m1+WUHJ+Xkrkzs3IxmfUdU6uJytcU4ESN+t29SmbzkQ0FCq6iqBIIGFoLxCy5VRCRczjC/aa5wWpvK7b+qcf7twTSXzwuVXGDdeyCcBRICaathLEqpqlLhyQWe41zoKHYwINXlS6rWoyxAJLBmrBUCmGoD053JQwQI2vPmw9M8e+vcEvlMaUSaN6ft6a8GPMOE7OMtK8PQovlQCSyEqgBqRRgbtaTzwiFnnIvf8aRsuvdqeXHlb4hMmk7TEUdSP6+R3/3iCb5w0XV25IVNtqHaIa/gW8S3hRum8cWMKUQF6CTbvnPAfj7n23BSQg/MBYyOhmI3ZEsO7vTLa18Jq6bev7Oqbl1q7LE8lOfHEyg/hMCCCJZCNVg9voKZ5UPhVV1pBhDm56C08M6fnC1UsFZlLEe/r0Z2+u4l/U7VpB1hSf2Pe8OpbUO5/0gHWD9QFWPLC6lgp2dDLQ20UFg9mwnWPJCyh21Jc8kUj+pZCed6QFsm6PjWQofghwYVgykkI5LOWinfv4lzvvpVOf6MA+XFh25goKudaXMaWbh4Ecny6dz4xdv1G5dcH5YM9WpFqUM6X1isIED9EPzxQmRJQn5yQqn8ugIagIg6nJIOcLI+7WnLY65iKjR91qODg8PP9PaWljvdJwChtRCEhBkyWNBQCbOuSR0V4dylpbLyANd9nyrO4S6LXUiM+XRFYEyUUK1agDEAJXSUyFrYlPLVlhj/7Lbe3tHVqdTAXI+lgN+fdZ43qlJhgvME9GiPU5IOnqqmgOgcwwVA0JaxNw3lWe+JzAa4ZkII2WfoUEWOj+Pk0j7dYzA1MACyeOnREjtpqrjZ59ixdgeRkjKm1NdTNb2RlWsH9Zc3/1g7nt1gZ1cKxnUk7SugahUc0FAVA3YJODFh8oFJWVLtyWu5wHY2xKWuM++M7RrjwY052ksc3dgY06+XIGcl4D0Dxk3mhv14YIkYxUmqumqIGYuTH9NohWOmNJYyd2rcrpyTlZ2TXJ3uuA69aed7dWA0xMmrlrSAuRNcR8UJQqkVGOvL6fdnxOSzJ8bl+ahqGI867wmz7inDudzjPTmzvcHVT56WkMPFmHpURUNiM+B9C0rMz2YH+gVUd5W6HNIdmB8AnDvhCmNvQktzMyaxZoYrsj2YDaO10xs45MQD9bAj5rHxvhaJ926QscEu/FBJVE0hUt3Api6jj992r93ctpoao9RVGfGtqvi2EG9U0fHDNEDpD03uGQgY02Pz4vxLubHNUc+p2+6bX20a5ctb/Nw2gPtS9v0nJ52vJByO8zFrRgPn2u342crQrEtnzcPtudK+cgk3j4o8PGTtwIa8vWlEnG1TXb0o6ZoDBqHt2UFZti6bua8UaqbmzEMDVlaN57cDU3PmNxkjKxR4eFQvOSqQHUlHLgyN0Z2he/HWXO4RQAdH3FMOLAluiDimYVvgXNSX1lPyQv92eHxGyCdiRi4SZMbLOec7q9P5qwCWT6gO93mppKqJR2+/5pqEG1xebgY10/+qdHV1MpI3ROLlWLdSX92ethvWbtW+F17SUkWqKkRUhGA8oO/+iUvH61pHsBnE68hxQVPcrs4rJhZjcMsYcd+PJiJhLnXoZKRrjBJH0KRHvs+S7RqjzPPJzCkjzCiljkd+R45wikPUGmyPjz/dJeKHuLUuw+tSmJyJlombyx4eI9sdUC6GsNeSrQxwIx4RHzSnZMosxjrEHNCER2rdKElrCA9JkB4LKbUWpzRKdssoJm1xj4kz9lqAG1UkcIlMjpDakCGaD4jMizNmIRF20LVswuXYnkKbk+ZWz50z3TuotsJ9/7Tpkz5YWx6vzOVypPOGVNZlYNjS1T1Gz65hRjr7IJWhPALxEgHHgFoMEPPeZA0nCP960+62CQbtrZ+JfTJ+QbHn81vMJzJe9u45do//2eO9vfXt7t+z3SoEvm36UT8v7a4O9wwdJpPNJEYzNhX3gj9kX2tfvyU0fcPBFP+FXj/c9kp3YjQ1CMBUcCcbJFbphQMh6mdCtahxEY04OFNdKvd60hY8+/XvfV2RfbG3ft1H/77me6ux7+TdN2lXQTWgGwp3RvuYcR8IhTuuvS1vkTdlr3euzc2F9vk9hb8HTG7W5UDP8uXSBix5GxMf+66Z+LdJ64RffIoUKVKkSJEiRYoUKVKkSJEiRYoUKVKkSJEif2f8LzBi0V2j2gN9AAAAAElFTkSuQmCC" alt="SellSheds" style="height:22px;width:auto;object-fit:contain;opacity:0.75;">
     <div style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:0.7rem;color:var(--wheat);letter-spacing:2px;opacity:0.6;">SellSheds</div>
@@ -3945,7 +4013,7 @@ input:focus, select:focus, textarea:focus {
      ============================================================ -->
 <div class="screen" id="screenSalesSheet">
   <div class="header">
-    <button class="back-btn" onclick="goTo('screenHome')">←</button>
+    <div class="header-spacer" aria-hidden="true"></div>
     <div class="header-title">Sales Sheet Generator</div>
     <button onclick="openSettings()" style="background:none;border:none;font-size:1.3rem;cursor:pointer;padding:4px 8px;">⚙️</button>
   </div>
@@ -4509,8 +4577,6 @@ input:focus, select:focus, textarea:focus {
       </div>
     </div>
 
-    <div class="nav-btns"><button class="btn-next" onclick="ssGoStep(1)">Next: Pricing →</button></div>
-
   </div><!-- end sspage0 -->
 
   <!-- PAGE 1: Pricing & Generate -->
@@ -4557,10 +4623,6 @@ input:focus, select:focus, textarea:focus {
       <div id="ss_priceSummaryFinal" style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:2.2rem;letter-spacing:2px;color:white;line-height:1;"></div>
     </div>
 
-    <div class="nav-btns">
-      <button class="btn-back" onclick="ssGoStep(0)">←</button>
-      <button class="btn-next" onclick="ssGenerate()" style="flex:2;">🏷️ Generate Sheet</button>
-    </div>
   </div><!-- end sspage1 -->
 
 </div><!-- end screenSalesSheet -->
@@ -4570,7 +4632,7 @@ input:focus, select:focus, textarea:focus {
      ============================================================ -->
 <div class="screen" id="screenSettings">
   <div class="header">
-    <button class="back-btn" onclick="goTo('screenHome')">←</button>
+    <div class="header-spacer" aria-hidden="true"></div>
     <div class="header-title">Settings</div>
   </div>
   <div style="padding:16px;padding-bottom:80px;">
@@ -4748,10 +4810,6 @@ input:focus, select:focus, textarea:focus {
       <div class="nrto-row"><label class="nrto-label"><input type="checkbox" class="nrto-chk" data-key="cutouts"> Cutouts</label></div>
     </div>
 
-    <div style="margin-top:24px;display:flex;gap:10px;">
-      <button class="btn-primary" onclick="saveSettingsForm()" style="flex:2;">💾 Save Settings</button>
-      <button class="btn-secondary" onclick="goTo('screenHome')" style="flex:1;">Cancel</button>
-    </div>
     <div id="settingsSavedMsg" style="display:none;text-align:center;color:var(--sage);font-weight:700;padding:12px;margin-top:8px;">✓ Saved!</div>
 
   </div>
@@ -4794,6 +4852,18 @@ input:focus, select:focus, textarea:focus {
   </div>
 </div>
 
+
+<nav id="appBottomNav" class="app-bottom-nav" aria-label="Screen navigation" aria-hidden="true" style="display:none;">
+  <button type="button" class="app-bottom-nav__btn app-bottom-nav__btn--back" id="appBottomNavBack" aria-label="Back">
+    <svg class="app-bottom-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+  </button>
+  <button type="button" class="app-bottom-nav__btn app-bottom-nav__btn--home" id="appBottomNavHome" aria-label="Home">
+    <svg class="app-bottom-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+  </button>
+  <button type="button" class="app-bottom-nav__btn app-bottom-nav__btn--primary" id="appBottomNavPrimary" aria-label="Primary action">
+    <svg class="app-bottom-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+  </button>
+</nav>
 
 <div class="toast" id="toast"></div>
 
@@ -6542,6 +6612,132 @@ function updateHomeUniformScale(){
   home.style.setProperty('--home-uniform-scale',String(s));
 }
 
+var ssCurrentStep=0;
+
+function syncAppBottomNavForScreen(screenId){
+  var nav=document.getElementById('appBottomNav');
+  var show=!!screenId&&screenId!=='screenHome';
+  document.body.classList.toggle('app-bottom-nav-visible',show);
+  if(nav){
+    nav.style.display=show?'grid':'none';
+    nav.setAttribute('aria-hidden',show?'false':'true');
+  }
+  if(show){
+    try{ updateAppBottomNav(); }catch(_e){}
+  }
+}
+
+function mileageResultsPanelVisible(){
+  var v=document.getElementById('mileageResultsView');
+  return !!(v&&v.style.display==='block');
+}
+
+function appBottomNavBackAction(){
+  var active=document.querySelector('.screen.active');
+  var sid=active?active.id:'';
+  if(sid==='screenCalc'){
+    if(typeof calcCurrentPage==='number'){
+      if(calcCurrentPage<=0) goTo('screenHome');
+      else calcGoTo(calcCurrentPage-1);
+    }else{
+      goTo('screenHome');
+    }
+    return;
+  }
+  if(sid==='screenSalesSheet'){
+    if(ssCurrentStep<=0) goTo('screenHome');
+    else ssGoStep(0);
+    return;
+  }
+  var backMap={
+    screenWebsites:'screenHome', screenMileage:'screenHome', screenAd:'screenHome',
+    screenPhotos:'screenHome', screenInventory:'screenHome', screenCRM:'screenHome',
+    screenContacts:'screenHome', screenFollowups:'screenHome', screenIntakeSelector:'screenHome',
+    screenPurchase:'screenIntakeSelector', screenRTO:'screenIntakeSelector', screenInterest:'screenIntakeSelector',
+    screenIntakeSuccess:'screenHome', screenLandlordForm:'screenRTO', screenSettings:'screenHome',
+    screenSalesSheet:'screenHome'
+  };
+  var t=backMap[sid];
+  if(t) goTo(t);
+}
+
+function appBottomNavPrimaryAction(){
+  var active=document.querySelector('.screen.active');
+  var sid=active?active.id:'';
+  if(sid==='screenCalc'){
+    if(typeof calcCurrentPage==='number'){
+      if(calcCurrentPage===0) calcGoTo(1);
+      else if(calcCurrentPage===1) calcGoTo(2);
+      else if(calcCurrentPage===2) sendCalcEmail();
+    }
+    return;
+  }
+  if(sid==='screenSalesSheet'){
+    if(ssCurrentStep===0) ssGoStep(1);
+    else ssGenerate();
+    return;
+  }
+  if(sid==='screenMileage'){
+    if(mileageResultsPanelVisible()) mileageReturnToSearchForm();
+    else runMileageCalculator();
+    return;
+  }
+  if(sid==='screenAd'){ generateAd(); return; }
+  if(sid==='screenPurchase'){ submitIntake('purchase'); return; }
+  if(sid==='screenRTO'){ submitIntake('rto'); return; }
+  if(sid==='screenInterest'){ submitIntake('interest'); return; }
+  if(sid==='screenIntakeSuccess'){ goTo('screenIntakeSelector'); return; }
+  if(sid==='screenSettings'){ saveSettingsForm(); return; }
+  if(sid==='screenLandlordForm'){ printLandlordForm(); return; }
+  if(sid==='screenCRM'){ crmSaveLeadFromForm(); return; }
+  if(sid==='screenInventory'){ invOpenAddModal(); return; }
+  goTo('screenHome');
+}
+
+function updateAppBottomNav(){
+  var backBtn=document.getElementById('appBottomNavBack');
+  var homeBtn=document.getElementById('appBottomNavHome');
+  var primBtn=document.getElementById('appBottomNavPrimary');
+  var nav=document.getElementById('appBottomNav');
+  if(!backBtn||!homeBtn||!primBtn||!nav||nav.style.display==='none') return;
+
+  homeBtn.onclick=function(){ goTo('screenHome'); };
+  backBtn.onclick=function(){ appBottomNavBackAction(); };
+  primBtn.onclick=function(){ appBottomNavPrimaryAction(); };
+
+  backBtn.disabled=false;
+  primBtn.disabled=false;
+  backBtn.setAttribute('aria-label','Back');
+  homeBtn.setAttribute('aria-label','Home');
+
+  var active=document.querySelector('.screen.active');
+  var sid=active?active.id:'';
+
+  if(sid==='screenCalc'){
+    primBtn.setAttribute('aria-label',(calcCurrentPage===0)?'Next: Payment':(calcCurrentPage===1)?'Next: Quote':'Send email');
+    return;
+  }
+  if(sid==='screenSalesSheet'){
+    primBtn.setAttribute('aria-label',ssCurrentStep===0?'Next: Pricing':'Generate sheet');
+    return;
+  }
+  if(sid==='screenMileage'){
+    primBtn.setAttribute('aria-label',mileageResultsPanelVisible()?'New lookup':'Calculate');
+    return;
+  }
+  if(sid==='screenAd'){ primBtn.setAttribute('aria-label','Generate ad'); return; }
+  if(sid==='screenPurchase'){ primBtn.setAttribute('aria-label','Submit'); return; }
+  if(sid==='screenRTO'){ primBtn.setAttribute('aria-label','Submit application'); return; }
+  if(sid==='screenInterest'){ primBtn.setAttribute('aria-label','Submit'); return; }
+  if(sid==='screenIntakeSuccess'){ primBtn.setAttribute('aria-label','Start another'); return; }
+  if(sid==='screenSettings'){ primBtn.setAttribute('aria-label','Save settings'); return; }
+  if(sid==='screenLandlordForm'){ primBtn.setAttribute('aria-label','Print / PDF'); return; }
+  if(sid==='screenCRM'){ primBtn.setAttribute('aria-label','Save lead'); return; }
+  if(sid==='screenInventory'){ primBtn.setAttribute('aria-label','Add inventory item'); return; }
+
+  primBtn.setAttribute('aria-label','Done');
+}
+
 function goTo(screenId){
   var current=document.querySelector('.screen.active');
   var currentId=current?current.id:'';
@@ -6572,12 +6768,19 @@ function goTo(screenId){
   if(screenId==='screenWebsites'){
     try{ populateWebsitesScreen(); }catch(_e3){}
   }
+  if(screenId==='screenSalesSheet'){
+    try{
+      var _ssp1=document.getElementById('sspage1');
+      ssCurrentStep=(_ssp1&&_ssp1.style.display==='block')?1:0;
+    }catch(_ess){ ssCurrentStep=0; }
+  }
   // Show dock + quick FAB only on home screen
   var dock=document.querySelector('.cc-dock');
   if(dock) dock.style.display = (screenId==='screenHome') ? 'block' : 'none';
   if(screenId!=='screenHome'){
     try{ homeToggleQuickSheet(false); }catch(_e){}
   }
+  syncAppBottomNavForScreen(screenId);
 }
 
 function homeOpenFacebookMessenger(){
@@ -7798,6 +8001,7 @@ function setCalcType(code){
   updateQuickPrice();
   updateTallWallAvailability();
   updatePorchAvailability();
+  updateAutoWidthPrices();
 }
 
 function onCalcWidthChange(val){
@@ -8068,6 +8272,7 @@ function mileageResetPanelsToSearch(){
   var v=document.getElementById('mileageResultsView');
   if(c) c.style.display='block';
   if(v) v.style.display='none';
+  try{ updateAppBottomNav(); }catch(_e){}
 }
 
 function mileageShowResultsPanel(html){
@@ -8077,6 +8282,7 @@ function mileageShowResultsPanel(html){
   if(sum) sum.innerHTML=html;
   if(c) c.style.display='none';
   if(v) v.style.display='block';
+  try{ updateAppBottomNav(); }catch(_e){}
 }
 
 function mileageReturnToSearchForm(){
@@ -8512,6 +8718,7 @@ function calcGoTo(n){
   calcCurrentPage=n;
   window.scrollTo(0,0);
   if(n===2) renderCalcQuote();
+  try{ updateAppBottomNav(); }catch(_e){}
 }
 
 function fmt(n){return'$'+n.toLocaleString('en-US');}
@@ -11026,14 +11233,13 @@ async function submitIntake(type){
   const emails={purchase:cv('p_email'),rto:cv('r_email'),interest:cv('i_email')};
   const phones={purchase:cv('p_phone'),rto:cv('r_phone'),interest:cv('i_phone')};
   const subjects={purchase:'Purchase Inquiry',rto:'RTO Application',interest:'General Interest Lead'};
-  const screenMap={purchase:'screenPurchase',rto:'screenRTO',interest:'screenInterest'};
   const endpoint=(loadSettings().formspreeEndpoint||'').trim();
-  const btn=document.querySelector(`#${screenMap[type]} .btn-primary`);
-  const defaultBtnText=type==='rto'?'Submit RTO Application':type==='purchase'?'Submit Purchase Form':'Submit';
-  if(btn){btn.textContent='Submitting...';btn.disabled=true;}
+  var primSubmitBtn=document.getElementById('appBottomNavPrimary');
+  if(primSubmitBtn){ primSubmitBtn.setAttribute('aria-label','Submitting…'); primSubmitBtn.disabled=true; }
   if(!endpoint){
     showToast('⚙️ Add Formspree endpoint in Settings');
-    if(btn){btn.textContent=defaultBtnText;btn.disabled=false;}
+    if(primSubmitBtn){ primSubmitBtn.disabled=false; }
+    try{ updateAppBottomNav(); }catch(_e){}
     return;
   }
   try{
@@ -11076,7 +11282,8 @@ async function submitIntake(type){
     console.log('Formspree submit error:',err);
     showToast('❌ Submission failed. Check endpoint and try again.');
   }finally{
-    if(btn){btn.textContent=defaultBtnText;btn.disabled=false;}
+    if(primSubmitBtn){ primSubmitBtn.disabled=false; }
+    try{ updateAppBottomNav(); }catch(_e){}
   }
 }
 
@@ -11186,6 +11393,7 @@ var ssAddons={};
 var ssStdRemoved={};
 
 function ssGoStep(n){
+  ssCurrentStep=n;
   for(var i=0;i<2;i++){
     var pg=document.getElementById('sspage'+i);
     var dot=document.getElementById('ssdot'+i);
@@ -11194,6 +11402,7 @@ function ssGoStep(n){
   }
   if(n===1){ ssRebuildStdPanel(); ssCalcPrice(); }
   window.scrollTo(0,0);
+  try{ updateAppBottomNav(); }catch(_e){}
 }
 
 function ssOpenConfirm(){
