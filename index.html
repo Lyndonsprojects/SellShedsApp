@@ -6655,7 +6655,8 @@ async function loadSettingsForm(){
   }
 }
 
-async function saveSettingsForm(){
+async function saveSettingsForm(opts){
+  opts=opts||{};
   var s=loadSettings();
   // Numeric
   var numFields=['metalRate','cabinFlat','metalMinCabin','metalMinUtility','taxRate'];
@@ -6713,8 +6714,9 @@ async function saveSettingsForm(){
     return {ok:false,reason:'error'};
   });
   if(!cloudSaveResult||!cloudSaveResult.ok){
-    showSettingsCloudFailure(cloudSaveResult&&cloudSaveResult.reason||'error');
+    if(!opts.suppressCloudFailureToast) showSettingsCloudFailure(cloudSaveResult&&cloudSaveResult.reason||'error');
   }
+  return { cloudOk: !!(cloudSaveResult&&cloudSaveResult.ok) };
 }
 
 function formatPhoneInput(el){
@@ -7099,7 +7101,18 @@ function appBottomNavPrimaryAction(){
   if(sid==='screenRTO'){ submitIntake('rto'); return; }
   if(sid==='screenInterest'){ submitIntake('interest'); return; }
   if(sid==='screenIntakeSuccess'){ goTo('screenIntakeSelector'); return; }
-  if(sid==='screenSettings'){ saveSettingsForm(); return; }
+  if(sid==='screenSettings'){
+    void (async function(){
+      try{
+        var r=await saveSettingsForm({ suppressCloudFailureToast:true });
+        showToast((r&&r.cloudOk)?'Settings saved':'Settings saved locally');
+        goTo('screenHome');
+      }catch(_e){
+        showToast('Could not save settings');
+      }
+    })();
+    return;
+  }
   if(sid==='screenLandlordForm'){ printLandlordForm(); return; }
   if(sid==='screenCRM'){ crmSaveLeadFromForm(); return; }
   if(sid==='screenInventory'){ invOpenAddModal(); return; }
@@ -8543,13 +8556,19 @@ function updateQuickPrice(){
   syncCalcQuickControlsFromState();
   // Sale discount and BOS fee both calculated off raw base independently
   var salePct=calcState.saleActive?calcState.salePercent:0;
-  var saleAmt=salePct>0?Math.ceil(base*(salePct/100)):0;
+  var saleAmt=saleAmountListPct(base,salePct);
   var bosAmt=calcState.bosActive?Math.ceil(base*0.30):0;
   var stdCredit=getStdRemovedTotal();
   var addonTotal=calcAddons().total;
   var displayPrice=(base - saleAmt + bosAmt) - stdCredit + addonTotal;
   baseEl.textContent=(saleAmt>0||bosAmt>0)?'$'+base.toLocaleString():'';
-  priceEl.textContent='$'+displayPrice.toLocaleString();
+  var qSnap=null;
+  try{ qSnap=getCalcQuoteSnapshot(); }catch(_eQ){}
+  if(qSnap&&qSnap.base){
+    priceEl.textContent=fmt(Math.ceil(qSnap.subtotal));
+  }else{
+    priceEl.textContent=fmt(Math.ceil(displayPrice));
+  }
   if(bosLine){
     if(bosAmt>0){
       bosLine.style.display='block';
@@ -8972,16 +8991,15 @@ function renderReviewSummary(){
     var lines=document.getElementById('reviewCashLines');
     if(lines){
       var html=buildLineItems();
-      html+=buildLine('Subtotal', fmt(q.subtotal),'review-sub-line');
-      var cashTax=Math.ceil(q.subtotal*((q.taxRate||0)/100));
-      if(q.taxRate>0) html+=buildLine('Tax ('+q.taxRate+'%)', fmt(cashTax));
+      html+=buildLine('Subtotal', fmtCents(q.subtotal),'review-sub-line');
+      if(q.taxRate>0) html+=buildLine('Tax ('+q.taxRate+'%)', fmtCents(q.taxAmount));
       lines.innerHTML=html;
     }
     var grand=document.getElementById('reviewCashGrand');
-    var cashTotal=q.subtotal+Math.ceil(q.subtotal*((q.taxRate||0)/100));
-    if(grand) grand.textContent=fmt(cashTotal);
+    var cashTotal=q.grandTotal;
+    if(grand) grand.textContent=fmtCents(cashTotal);
     var foot=document.getElementById('reviewCashFoot');
-    if(foot) foot.textContent='Min cash down: '+fmt(Math.ceil(cashTotal*0.5))+' (50%).';
+    if(foot) foot.textContent='Min cash down: '+fmtCents(Math.ceil(cashTotal*0.5))+' (50%).';
   }
 
   // ── RTO card
@@ -9113,22 +9131,23 @@ function renderCalcRTOStreamline(){
   }
   function line(l,r,cls){return '<div class="qpv-line'+(cls||'')+'"><span class="qpv-l">'+l+'</span><span class="qpv-r">'+r+'</span></div>';}
   var htmlL='';
-  htmlL+=line('Base price', fmt(q.base));
-  if(q.saleAmount>0) htmlL+=line('Sale ('+q.salePct+'% off list)','-'+fmt(q.saleAmount));
-  if(q.bosAmt>0) htmlL+=line('Build-on-Site (30%)','+'+fmt(q.bosAmt));
-  if(q.dealerAmount>0) htmlL+=line('Dealer discount ('+q.dealerPct+'%)','-'+fmt(q.dealerAmount));
+  htmlL+=line('Base price', fmtCents(q.base));
+  if(q.saleAmount>0) htmlL+=line('Sale ('+q.salePct+'% off list)','-'+fmtCents(q.saleAmount));
+  if(q.bosAmt>0) htmlL+=line('Build-on-Site (30%)','+'+fmtCents(q.bosAmt));
+  if(q.dealerAmount>0) htmlL+=line('Dealer discount ('+q.dealerPct+'%)','-'+fmtCents(q.dealerAmount));
   if(q.stdCredit>0){
     var _si=STD_OPTIONS[calcState.type]||[];
     _si.forEach(function(it){
       var rq=calcState.stdRemoved&&calcState.stdRemoved[it.id];
-      if(rq>0) htmlL+=line('Removed: '+(rq>1?rq+'× ':'')+it.label,'-'+fmt(rq*it.credit));
+      if(rq>0) htmlL+=line('Removed: '+(rq>1?rq+'× ':'')+it.label,'-'+fmtCents(rq*it.credit));
     });
   }
-  q.addonLines.forEach(function(l){ htmlL+=line('+ '+l.label, fmt(l.val)); });
-  htmlL+=line('Subtotal', fmt(q.subtotal));
-  if(q.taxRate>0) htmlL+=line('Tax ('+q.taxRate+'%)', fmt(Math.ceil(q.subtotal*(q.taxRate/100))));
-  var cashTotal=q.subtotal+Math.ceil(q.subtotal*(q.taxRate/100));
-  htmlL+=line('Cash total', fmt(cashTotal),' qpv-total');
+  q.addonLines.forEach(function(l){ htmlL+=line('+ '+l.label, fmtCents(l.val)); });
+  htmlL+=line('Subtotal', fmtCents(q.subtotal));
+  var qpvCashTax=Math.round(q.subtotal*(q.taxRate/100)*100)/100;
+  if(q.taxRate>0) htmlL+=line('Tax ('+q.taxRate+'%)', fmtCents(qpvCashTax));
+  var qpvCashTotal=Math.round((q.subtotal+qpvCashTax)*100)/100;
+  htmlL+=line('Cash total', fmtCents(qpvCashTotal),' qpv-total');
 
   // RTO column — always Basic Assurance ($150), regardless of payType
   var basicAssurance=ASSURANCE_COST[2]||150;
@@ -9138,7 +9157,7 @@ function renderCalcRTOStreamline(){
   [36,48,60].forEach(function(mo){
     var d=getRTODataForMonths(rtoSubtotal, calcState.width||0, q.taxRate, 2, q.effectiveCR, mo);
     var perMo=showTax?d.totalMonthly:d.monthly;
-    var moStr='$'+perMo.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0})+'/mo';
+    var moStr='$'+Math.ceil(perMo).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0})+'/mo';
     htmlR+='<div class="qpv-rto-row"><span class="qpv-rto-mo">'+mo+'mo</span><span class="qpv-rto-sep">·</span><span class="qpv-rto-val">'+moStr+'</span></div>';
   });
   body.innerHTML='<div class="qpv-left">'+htmlL+'</div><div class="qpv-right">'+htmlR+'</div>';
@@ -9439,7 +9458,7 @@ function getCalcBasePrice(){
   var base=PRICING[calcState.width]&&PRICING[calcState.width][calcState.length]&&PRICING[calcState.width][calcState.length][calcState.type];
   if(!base) return 0;
   var salePct=calcState.saleActive&&calcState.salePercent>0?calcState.salePercent:0;
-  var saleAmt=salePct>0?Math.ceil(base*(salePct/100)):0;
+  var saleAmt=saleAmountListPct(base,salePct);
   var bosAmt=calcState.bosActive?Math.ceil(base*0.30):0;
   var p=(base - saleAmt + bosAmt) - getStdRemovedTotal() + calcAddons().total;
   if(calcState.dealerDiscount>0) p=p-calcState.dealerDiscount;
@@ -9675,6 +9694,22 @@ function calcGoTo(n){
 }
 
 function fmt(n){return'$'+n.toLocaleString('en-US');}
+function fmtCents(n){
+  var v=isNaN(parseFloat(n))?0:parseFloat(n);
+  return '$'+v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+/** Dollar discount for "% off list" on base — exact to cents (no ceil on discount). */
+function saleAmountListPct(base,salePct){
+  var p=Math.max(0,Math.min(parseFloat(salePct)||0,100));
+  return p>0?Math.round(base*(p/100)*100)/100:0;
+}
+/** Shed Studio: (base − std credit) × (1 − sale%/100), cents. */
+function ssDiscountedBaseCents(baseRaw,stdCredit,pct){
+  var net=Math.round(((baseRaw||0)-(stdCredit||0))*100)/100;
+  var p=Math.max(0,Math.min(parseFloat(pct)||0,100));
+  if(!p) return net;
+  return Math.round(net*(1-p/100)*100)/100;
+}
 
 // ============================================================
 // OPTIONS — CATEGORY TOGGLE + ROW TOGGLE + AUTO PRICES
@@ -10845,18 +10880,18 @@ function getCalcSubtotal(){
   if(!base) return 0;
   var _ar=calcAddons();
   var salePct=calcState.saleActive?Math.min(calcState.salePercent,100):0;
-  var saleAmount=salePct>0?Math.ceil(base*(salePct/100)):0;
+  var saleAmount=saleAmountListPct(base,salePct);
   var bosAmt=calcState.bosActive?Math.ceil(base*0.30):0;
   var stdCredit=getStdRemovedTotal();
   var dealerPct=calcState.dealerDiscount||0;
   var dealerAmount=dealerPct>0?Math.ceil(base*(dealerPct/100)):0;
   var saleBase=(base-saleAmount+bosAmt)-stdCredit-dealerAmount;
-  var _sub=saleBase+_ar.total;
+  var _sub=Math.round((saleBase+_ar.total)*100)/100;
   if(calcState.payType==='rto'){
     var _ap=calcState.assurancePlan||2;
     _sub+=ASSURANCE_COST[_ap]||0;
   }
-  return _sub;
+  return Math.round(_sub*100)/100;
 }
 
 function getCalcQuoteSnapshot(){
@@ -10870,20 +10905,20 @@ function getCalcQuoteSnapshot(){
   var nonRtoTotal=_ar.nonRtoTotal||0;
 
   var salePct=calcState.saleActive?Math.min(calcState.salePercent,100):0;
-  var saleAmount=salePct>0?Math.ceil(base*(salePct/100)):0;
+  var saleAmount=saleAmountListPct(base,salePct);
   var bosAmt=calcState.bosActive?Math.ceil(base*0.30):0;
   var stdCredit=getStdRemovedTotal();
   var dealerPct=calcState.dealerDiscount||0;
   var dealerAmount=dealerPct>0?Math.ceil(base*(dealerPct/100)):0;
   var saleBase=(base - saleAmount + bosAmt) - stdCredit - dealerAmount;
-  var subtotal=saleBase+addonTotal;
+  var subtotal=Math.round((saleBase+addonTotal)*100)/100;
 
   var taxRate=calcState.taxMode==='standard'?getSettingVal('taxRate',0):calcState.taxRate;
   var assurancePlan=calcState.assurancePlan||2;
   var assuranceCost=ASSURANCE_COST[assurancePlan]||0;
   var subtotalWithAssurance=calcState.payType==='rto'?subtotal+assuranceCost:subtotal;
-  var taxAmount=Math.ceil(subtotalWithAssurance*(taxRate/100));
-  var grandTotal=subtotalWithAssurance+taxAmount;
+  var taxAmount=Math.round(subtotalWithAssurance*(taxRate/100)*100)/100;
+  var grandTotal=Math.round((subtotalWithAssurance+taxAmount)*100)/100;
 
   var rtoDown=RTO_DOWN[calcState.width]||100;
   var manualCR=calcState.costReduction||0;
@@ -12010,13 +12045,13 @@ function invComputePriceData(){
   if(!PRICING[width]||!PRICING[width][length]||!PRICING[width][length][styleCode]) return {error:'No price found for selected style/size'};
   var baseRaw=PRICING[width][length][styleCode];
   var sp=Math.max(0,Math.min(100,salePct));
-  var saleAmt=sp>0?Math.ceil(baseRaw*(sp/100)):0;
+  var saleAmt=saleAmountListPct(baseRaw,sp);
   var subtotal=Math.round((baseRaw-saleAmt+adjust)*100)/100;
   if(subtotal<0) subtotal=0;
   var taxRate=taxMode==='none'?0:(taxMode==='standard'?parseFloat(getSettingVal('taxRate',0)||0):customTax);
   taxRate=isNaN(taxRate)?0:taxRate;
-  var taxAmt=taxRate>0?Math.ceil(subtotal*(taxRate/100)):0;
-  var finalTotal=subtotal+taxAmt;
+  var taxAmt=taxRate>0?Math.round(subtotal*(taxRate/100)*100)/100:0;
+  var finalTotal=Math.round((subtotal+taxAmt)*100)/100;
   return {
     styleCode:styleCode,
     styleName:(NAMES&&NAMES[styleCode])?NAMES[styleCode]:styleCode,
@@ -12646,7 +12681,7 @@ function ssOpenConfirm(){
   var baseRaw=PRICING[w][l][t];
   var stdCredit=ssGetStdCredit(t);
   var addons=ssGetAddonLines(w,l,t);
-  var discountedBase=pct>0?Math.ceil((baseRaw-stdCredit)*(1-pct/100)):(baseRaw-stdCredit);
+  var discountedBase=ssDiscountedBaseCents(baseRaw,stdCredit,pct);
   var finalPrice=discountedBase+addons.total;
   var typeName=NAMES[t]||t;
 
@@ -12986,7 +13021,7 @@ function ssCalcPrice(){
   var addons=ssGetAddonLines(w,l,t);
   var stdCredit=ssGetStdCredit(t);
   var pct=parseFloat(document.getElementById('ss_salePct').value)||0;
-  var discountedBase=pct>0?Math.ceil((baseRaw-stdCredit)*(1-pct/100)):(baseRaw-stdCredit);
+  var discountedBase=ssDiscountedBaseCents(baseRaw,stdCredit,pct);
   var finalPrice=discountedBase+addons.total;
 
   if(baseWrap) baseWrap.style.display='block';
@@ -13175,7 +13210,7 @@ function ssGenerate(){
   var addonResult=ssGetAddonLines(w,l,t);
   var addonTotal=addonResult.total;
   var addonLines=addonResult.lines;
-  var discountedBase=pct>0?Math.ceil((baseRaw-stdCredit)*(1-pct/100)):(baseRaw-stdCredit);
+  var discountedBase=ssDiscountedBaseCents(baseRaw,stdCredit,pct);
   var salePrice=discountedBase+addonTotal;
   var base=baseRaw-stdCredit+addonTotal;
   var typeName=NAMES[t]||t;
