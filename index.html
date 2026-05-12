@@ -248,9 +248,29 @@ select option { background:var(--earth); color:var(--cream); }
 #screenInventory .inv-section-label em { font-style:normal; color:rgba(232,200,122,0.85); }
 #screenInventory .inv-list-stack { display:flex; flex-direction:column; gap:10px; }
 #screenInventory .inv-card {
-  border:1.5px solid rgba(232,200,122,0.2); border-radius:10px; padding:10px 12px;
+  border:1.5px solid rgba(232,200,122,0.2); border-radius:10px; padding:0;
   background:rgba(255,255,255,0.04);
 }
+#screenInventory details.inv-card > summary {
+  list-style:none; display:flex; align-items:center; gap:10px; padding:10px 12px;
+  cursor:pointer; user-select:none; -webkit-tap-highlight-color:transparent;
+}
+#screenInventory details.inv-card > summary::-webkit-details-marker { display:none; }
+#screenInventory .inv-card-sum-visual { flex-shrink:0; width:56px; height:56px; border-radius:8px; overflow:hidden;
+  border:1px solid rgba(232,200,122,0.28); background:rgba(0,0,0,0.2); display:flex; align-items:center; justify-content:center; }
+#screenInventory .inv-card-front-thumb { width:100%; height:100%; object-fit:cover; display:block; }
+#screenInventory .inv-card-thumb-ph { font-size:0.62rem; color:rgba(232,200,122,0.45); text-align:center; line-height:1.2; padding:4px; }
+#screenInventory .inv-card-sum-text { flex:1; min-width:0; text-align:left; }
+#screenInventory .inv-card-sum-text .inv-status-pill { margin-bottom:4px; }
+#screenInventory .inv-card-loc { font-size:0.82rem; font-weight:700; color:var(--wheat); line-height:1.25; }
+#screenInventory .inv-card-style { font-size:0.74rem; color:rgba(200,221,232,0.85); margin-top:3px; line-height:1.25; }
+#screenInventory .inv-card-size { font-size:0.72rem; color:rgba(245,240,232,0.72); margin-top:2px; line-height:1.25; }
+#screenInventory .inv-card-sum-chev { flex-shrink:0; font-size:0.7rem; color:rgba(232,200,122,0.55); transition:transform 0.2s ease; padding:4px; }
+#screenInventory details.inv-card[open] > summary .inv-card-sum-chev { transform:rotate(180deg); }
+#screenInventory .inv-card-body { padding:0 12px 12px; border-top:1px solid rgba(232,200,122,0.12); }
+#screenInventory .inv-card-body-inner { padding-top:10px; }
+#screenInventory .inv-card-actions { display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
+#screenInventory .inv-card-actions button { flex:1; min-width:88px; }
 #screenInventory .inv-status-pill {
   display:inline-block; font-size:0.62rem; font-weight:700; letter-spacing:0.8px; text-transform:uppercase;
   padding:3px 8px; border-radius:6px; margin-bottom:6px;
@@ -659,7 +679,7 @@ select option { background:var(--earth); color:var(--cream); }
 .folder-card.not-set .folder-link { opacity:0.5; }
 .photo-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:100; align-items:flex-end; justify-content:center; }
 .photo-modal-overlay.open { display:flex; }
-.photo-modal { background:var(--earth); border:1.5px solid rgba(232,200,122,0.3); border-radius:16px 16px 0 0; padding:24px 20px 40px; width:100%; max-width:480px; max-height:80vh; overflow-y:auto; }
+.photo-modal { position:relative; background:var(--earth); border:1.5px solid rgba(232,200,122,0.3); border-radius:16px 16px 0 0; padding:24px 20px 40px; width:100%; max-width:480px; max-height:80vh; overflow-y:auto; }
 .photo-modal h3 { font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:1.3rem; color:var(--wheat); letter-spacing:2px; margin-bottom:16px; }
 .modal-field { margin-bottom:14px; }
 .modal-field label { display:block; font-size:0.72rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:rgba(232,200,122,0.75); margin-bottom:6px; }
@@ -697,6 +717,30 @@ select option { background:var(--earth); color:var(--cream); }
 .upload-sub { font-size:0.7rem; color:rgba(245,240,232,0.35); margin-top:4px; }
 .upload-preview { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
 .preview-thumb { width:70px; height:70px; object-fit:cover; border-radius:6px; border:1.5px solid rgba(232,200,122,0.3); }
+.inv-photo-pick {
+  background:rgba(255,255,255,0.05); border:2px dashed rgba(232,200,122,0.3); border-radius:10px; padding:20px;
+  text-align:center; cursor:pointer; position:relative;
+}
+.inv-photo-pick:focus { outline:2px solid var(--wheat); outline-offset:2px; }
+.inv-file-inp-wrap { position:absolute; left:-9999px; top:0; width:1px; height:1px; overflow:hidden; opacity:0; }
+#invPhotoSourceSheet {
+  display:none; position:fixed; inset:0; z-index:110; align-items:flex-end; justify-content:center;
+  background:rgba(0,0,0,0.55); padding:0 max(0px, env(safe-area-inset-right, 0px)) max(0px, env(safe-area-inset-bottom, 0px)) max(0px, env(safe-area-inset-left, 0px));
+  box-sizing:border-box;
+}
+#invPhotoSourceSheet.inv-photo-source-open { display:flex; }
+.inv-photo-source-panel {
+  width:100%; max-width:480px; background:var(--earth); border:1.5px solid rgba(232,200,122,0.35);
+  border-radius:14px 14px 0 0; padding:16px 18px calc(18px + env(safe-area-inset-bottom, 0px));
+  box-shadow:0 -8px 32px rgba(0,0,0,0.45);
+}
+.inv-photo-source-panel h4 {
+  font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:1.05rem; letter-spacing:2px;
+  color:var(--wheat); margin:0 0 14px; text-align:center;
+}
+.inv-photo-source-panel .btn-primary,
+.inv-photo-source-panel .btn-secondary { width:100%; margin-top:10px; box-sizing:border-box; }
+.inv-photo-source-panel .btn-primary { margin-top:0; }
 .success-screen-inner { padding:48px 24px; text-align:center; }
 .success-icon-big { font-size:4rem; margin-bottom:16px; }
 .success-title-big { font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:2rem; color:var(--wheat); letter-spacing:3px; margin-bottom:8px; }
@@ -3576,11 +3620,15 @@ input:focus, select:focus, textarea:focus {
     </div>
 
     <div class="section-head">Photos</div>
-    <div class="photo-upload-area" style="margin-bottom:10px;">
-      <input type="file" id="inv_serialPhotoInput" accept="image/*" capture="environment" onchange="invHandlePhoto(this,'plate')">
+    <div class="inv-file-inp-wrap" aria-hidden="true">
+      <input type="file" id="inv_serialPhotoCamera" accept="image/*" capture="environment" onchange="invHandlePhoto(this,'plate')">
+      <input type="file" id="inv_serialPhotoLibrary" accept="image/*" onchange="invHandlePhoto(this,'plate')">
+      <input type="file" id="inv_frontPhotoCamera" accept="image/*" capture="environment" onchange="invHandlePhoto(this,'front')">
+      <input type="file" id="inv_frontPhotoLibrary" accept="image/*" onchange="invHandlePhoto(this,'front')">
+    </div>
+    <div class="inv-photo-pick" style="margin-bottom:10px;" role="button" tabindex="0" onclick="invOpenPhotoSourcePicker('plate')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();invOpenPhotoSourcePicker('plate');}">
       <div class="upload-icon">📷</div>
       <div class="upload-label">Serial Plate Photo</div>
-      <div class="upload-sub">Used for auto-reading full serial code, style, date, size, and colors</div>
       <div class="upload-preview" id="inv_serialPreview"></div>
     </div>
     <div class="inv-inline-actions">
@@ -3604,11 +3652,9 @@ input:focus, select:focus, textarea:focus {
       </div>
       <div class="inv-ocr-review-note" id="inv_ocrConfirmState">Confirm or reject this OCR read before saving.</div>
     </div>
-    <div class="photo-upload-area">
-      <input type="file" id="inv_frontPhotoInput" accept="image/*" capture="environment" onchange="invHandlePhoto(this,'front')">
+    <div class="inv-photo-pick" role="button" tabindex="0" onclick="invOpenPhotoSourcePicker('front')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();invOpenPhotoSourcePicker('front');}">
       <div class="upload-icon">📸</div>
       <div class="upload-label">Front Corner Photo</div>
-      <div class="upload-sub">Outside corner view of the unit</div>
       <div class="upload-preview" id="inv_frontPreview"></div>
     </div>
 
@@ -3622,9 +3668,17 @@ input:focus, select:focus, textarea:focus {
     </div>
 
     <div class="inv-primary-actions">
-      <button class="btn-primary" style="flex:2;" onclick="invSaveItem()">Save Item</button>
-      <button class="btn-secondary" style="flex:1;" onclick="invClearForm();invCloseAddEditModal();">Cancel</button>
+      <button type="button" class="btn-primary" style="flex:2;" onclick="invSaveItem()">Save Item</button>
+      <button type="button" class="btn-secondary" style="flex:1;" onclick="invClearForm();invCloseAddEditModal();">Cancel</button>
     </div>
+    </div>
+    <div id="invPhotoSourceSheet" class="inv-photo-source-sheet" aria-hidden="true" onclick="if(event.target===this)invClosePhotoSourcePicker()">
+      <div class="inv-photo-source-panel" role="dialog" aria-modal="true" aria-labelledby="invPhotoSourceSheetTitle" onclick="event.stopPropagation()">
+        <h4 id="invPhotoSourceSheetTitle">Photo</h4>
+        <button type="button" class="btn-primary" style="margin-top:0;" onclick="invPickInventoryPhotoSource('camera')">Use camera</button>
+        <button type="button" class="btn-secondary" onclick="invPickInventoryPhotoSource('library')">Choose from photos</button>
+        <button type="button" class="btn-secondary" onclick="invClosePhotoSourcePicker()">Cancel</button>
+      </div>
     </div>
   </div>
 
@@ -5999,6 +6053,7 @@ function invOpenAddModal(){
   }
 }
 function invCloseAddEditModal(){
+  try{ invClosePhotoSourcePicker(); }catch(_e){}
   var o=document.getElementById('invAddEditModalOverlay');
   if(o){
     o.classList.remove('open');
@@ -6008,6 +6063,9 @@ function invCloseAddEditModal(){
 function invEscapeAttr(val){
   return String(val==null?'':val).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
 }
+function invEscapeHtml(val){
+  return String(val==null?'':val).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
 function invEditFromBtn(btn){
   var id=btn&&btn.getAttribute('data-id');
   if(id!==null&&id!=='') invEditItem(id);
@@ -6016,52 +6074,134 @@ function invDeleteFromBtn(btn){
   var id=btn&&btn.getAttribute('data-id');
   if(id!==null&&id!=='') invDeleteItem(id);
 }
+function invBuildInventoryQuoteText(it){
+  if(!it) return '';
+  var s={};
+  try{ s=loadSettings()||{}; }catch(_e){}
+  var biz=String(s.bizName||'').trim();
+  var st=invNormalizeUnitStatus(it.unitStatus);
+  var lines=[];
+  lines.push(biz?('['+biz+'] Inventory unit'):'Inventory unit');
+  lines.push('Status: '+invUnitStatusDisplay(st));
+  lines.push('Lot / location: '+(it.lotLocation||'—'));
+  lines.push('Size: '+(it.size||'—'));
+  lines.push('Style: '+(it.style||'—'));
+  lines.push('Serial: '+(it.serialNumber||'—'));
+  if(it.buildDate) lines.push('Build date: '+it.buildDate);
+  var cp=[];
+  if(it.roofColor) cp.push('Roof '+it.roofColor);
+  if(it.wallColor) cp.push('Wall '+it.wallColor);
+  if(it.trimColor) cp.push('Trim '+it.trimColor);
+  if(cp.length) lines.push('Colors: '+cp.join(', '));
+  var p=it.priceData;
+  if(p&&p.finalTotal!=null){
+    lines.push('— Pricing —');
+    lines.push('Final total: '+invFmt(p.finalTotal));
+    if(p.baseRaw!=null) lines.push('List/base: '+invFmt(p.baseRaw));
+    if(p.saleAmt) lines.push('Sale discount: '+invFmt(p.saleAmt));
+    if(p.taxRate!=null&&p.taxAmt!=null) lines.push('Tax ('+p.taxRate+'%): '+invFmt(p.taxAmt));
+  }
+  if(it.plateImage) lines.push('Serial plate photo: '+it.plateImage);
+  if(it.frontImage) lines.push('Front corner photo: '+it.frontImage);
+  if(it.updatedAt) lines.push('Updated: '+it.updatedAt);
+  return lines.join('\n');
+}
+function invCopyInventoryQuoteFromBtn(btn){
+  var id=btn&&btn.getAttribute('data-id');
+  if(id===null||id==='') return;
+  var it=null;
+  for(var i=0;i<invState.items.length;i++){
+    if(String(invState.items[i].id)===String(id)){ it=invState.items[i]; break; }
+  }
+  if(!it){ showToast('Item not found'); return; }
+  var text=invBuildInventoryQuoteText(it);
+  if(!String(text).trim()){ showToast('Nothing to copy'); return; }
+  var ok=function(){ showToast('Quote copied to clipboard'); };
+  var fail=function(){ showToast('Copy failed'); };
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(ok,function(){
+      try{
+        var ta=document.createElement('textarea');
+        ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+        document.body.appendChild(ta); ta.focus(); ta.select();
+        document.execCommand('copy'); document.body.removeChild(ta); ok();
+      }catch(e){ fail(); }
+    });
+  }else{
+    try{
+      var ta2=document.createElement('textarea');
+      ta2.value=text; ta2.style.position='fixed'; ta2.style.opacity='0';
+      document.body.appendChild(ta2); ta2.focus(); ta2.select();
+      document.execCommand('copy'); document.body.removeChild(ta2); ok();
+    }catch(e2){ fail(); }
+  }
+}
 function invRenderItemCard(item){
   var st=invNormalizeUnitStatus(item.unitStatus);
-  var subtitle=[item.size,item.style].filter(Boolean).join(' · ');
+  var idAttr=invEscapeAttr(item.id||'');
+  var frontUrl=String(item.frontImage||'').trim();
+  var sumVisual=frontUrl
+    ? '<span class="inv-card-sum-visual"><img class="inv-card-front-thumb" src="'+invEscapeAttr(frontUrl)+'" alt="" loading="lazy"></span>'
+    : '<span class="inv-card-sum-visual"><span class="inv-card-thumb-ph">No<br>photo</span></span>';
+  var loc=invEscapeHtml(item.lotLocation||'No lot location');
+  var sty=invEscapeHtml(item.style||'—');
+  var sz=invEscapeHtml(item.size||'—');
+
   var colorParts=[];
-  if(item.roofColor) colorParts.push('Roof: '+item.roofColor);
-  if(item.wallColor) colorParts.push('Wall: '+item.wallColor);
-  if(item.trimColor) colorParts.push('Trim: '+item.trimColor);
+  if(item.roofColor) colorParts.push('Roof: '+invEscapeHtml(item.roofColor));
+  if(item.wallColor) colorParts.push('Wall: '+invEscapeHtml(item.wallColor));
+  if(item.trimColor) colorParts.push('Trim: '+invEscapeHtml(item.trimColor));
   var colorLine=colorParts.length?'<div style="font-size:0.72rem;color:rgba(245,240,232,0.65);margin-top:4px;">'+colorParts.join(' · ')+'</div>':'';
-  var dateLine=item.buildDate?'<div style="font-size:0.7rem;color:rgba(232,200,122,0.62);margin-top:3px;">Build: '+item.buildDate+'</div>':'';
+  var dateLine=item.buildDate?'<div style="font-size:0.7rem;color:rgba(232,200,122,0.62);margin-top:3px;">Build: '+invEscapeHtml(item.buildDate)+'</div>':'';
   var priceLine=item.priceData&&item.priceData.finalTotal?'<div style="font-size:0.78rem;color:var(--wheat);margin-top:4px;">Price: '+invFmt(item.priceData.finalTotal)+'</div>':'';
   var rtosQuick='';
   if(item.priceData&&item.priceData.baseRaw){
     var saleDiscount=item.priceData.saleAmt||0;
     var salePrice=item.priceData.baseRaw-saleDiscount;
     var imgLinks=[];
-    if(item.plateImage) imgLinks.push('<a href="'+item.plateImage+'" target="_blank" rel="noopener" style="color:var(--sky);text-decoration:none;">Plate Photo</a>');
-    if(item.frontImage) imgLinks.push('<a href="'+item.frontImage+'" target="_blank" rel="noopener" style="color:var(--sky);text-decoration:none;">Front Photo</a>');
+    if(item.plateImage) imgLinks.push('<a href="'+invEscapeAttr(item.plateImage)+'" target="_blank" rel="noopener" style="color:var(--sky);text-decoration:none;">Plate Photo</a>');
+    if(item.frontImage) imgLinks.push('<a href="'+invEscapeAttr(item.frontImage)+'" target="_blank" rel="noopener" style="color:var(--sky);text-decoration:none;">Front Photo</a>');
     rtosQuick='<div style="margin-top:8px;padding:8px;border:1px solid rgba(232,200,122,0.2);border-radius:8px;background:rgba(255,255,255,0.03);">'+
       '<div style="font-size:0.66rem;letter-spacing:1px;color:rgba(232,200,122,0.7);text-transform:uppercase;margin-bottom:4px;">Quick view</div>'+
       '<div style="font-size:0.74rem;color:rgba(245,240,232,0.88);line-height:1.45;">'+
-      'Full Serial: <strong>'+(item.serialNumber||'—')+'</strong><br>'+
+      'Full Serial: <strong>'+invEscapeHtml(item.serialNumber||'—')+'</strong><br>'+
       'List Price: <strong>'+invFmt(item.priceData.baseRaw||0)+'</strong><br>'+
       'Sale Discount: <strong>'+invFmt(saleDiscount)+'</strong><br>'+
       'Sale Price: <strong>'+invFmt(salePrice)+'</strong><br>'+
-      'Colors: <strong>'+([item.roofColor,item.wallColor,item.trimColor].filter(Boolean).join(' / ')||'—')+'</strong><br>'+
+      'Colors: <strong>'+invEscapeHtml([item.roofColor,item.wallColor,item.trimColor].filter(Boolean).join(' / ')||'—')+'</strong><br>'+
       'Pictures: '+(imgLinks.length?imgLinks.join(' · '):'—')+
       '</div></div>';
   }
-  var thumbs='<div style="display:flex;gap:6px;margin-top:8px;">'+
-    (item.plateImage?'<img src="'+item.plateImage+'" alt="" style="width:54px;height:54px;object-fit:cover;border-radius:6px;border:1px solid rgba(232,200,122,0.25);">':'')+
-    (item.frontImage?'<img src="'+item.frontImage+'" alt="" style="width:54px;height:54px;object-fit:cover;border-radius:6px;border:1px solid rgba(232,200,122,0.25);">':'')+
+  var plateU=String(item.plateImage||'').trim();
+  var frontU=String(item.frontImage||'').trim();
+  var thumbs='<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">'+
+    (plateU?'<img src="'+invEscapeAttr(plateU)+'" alt="Serial plate" style="width:54px;height:54px;object-fit:cover;border-radius:6px;border:1px solid rgba(232,200,122,0.25);">':'')+
+    (frontU?'<img src="'+invEscapeAttr(frontU)+'" alt="Front" style="width:54px;height:54px;object-fit:cover;border-radius:6px;border:1px solid rgba(232,200,122,0.25);">':'')+
     '</div>';
-  var idAttr=invEscapeAttr(item.id||'');
-  return '<div class="inv-card">'+
-    '<div style="display:flex;gap:8px;align-items:flex-start;">'+
-      '<div style="flex:1;">'+
+
+  var btnStyle='-webkit-appearance:none;appearance:none;border:none;border-radius:6px;padding:7px 10px;font-size:0.72rem;cursor:pointer;';
+  var actions='<div class="inv-card-actions">'+
+    '<button type="button" data-id="'+idAttr+'" onclick="invCopyInventoryQuoteFromBtn(this)" style="'+btnStyle+'background:rgba(232,200,122,0.18);color:var(--wheat);">Copy quote</button>'+
+    '<button type="button" data-id="'+idAttr+'" onclick="invEditFromBtn(this)" style="'+btnStyle+'background:rgba(122,158,135,0.25);color:var(--wheat);">Edit</button>'+
+    '<button type="button" data-id="'+idAttr+'" onclick="invDeleteFromBtn(this)" style="'+btnStyle+'background:rgba(196,81,31,0.25);color:var(--wheat);">Delete</button>'+
+    '</div>';
+
+  return '<details class="inv-card">'+
+    '<summary class="inv-card-summary" aria-label="Show or hide unit details">'+
+      sumVisual+
+      '<span class="inv-card-sum-text">'+
         '<span class="inv-status-pill '+st+'">'+(invUnitStatusDisplay(st).toUpperCase())+'</span>'+
-      '<div style="font-size:0.86rem;font-weight:700;color:var(--wheat);">'+(item.serialNumber||'No Serial')+'</div>'+
-      '<div style="font-size:0.74rem;color:rgba(200,221,232,0.75);">'+(item.lotLocation||'No lot location')+'</div>'+
-      '<div style="font-size:0.72rem;color:rgba(245,240,232,0.75);margin-top:4px;">'+(subtitle||'No size/style')+'</div>'+
+        '<div class="inv-card-loc">'+loc+'</div>'+
+        '<div class="inv-card-style">'+sty+'</div>'+
+        '<div class="inv-card-size">'+sz+'</div>'+
+      '</span>'+
+      '<span class="inv-card-sum-chev" aria-hidden="true">▾</span>'+
+    '</summary>'+
+    '<div class="inv-card-body"><div class="inv-card-body-inner">'+
+      '<div style="font-size:0.86rem;font-weight:700;color:var(--wheat);">Serial: '+invEscapeHtml(item.serialNumber||'—')+'</div>'+
       priceLine+colorLine+dateLine+thumbs+rtosQuick+
-      '</div>'+
-      '<div style="display:flex;flex-direction:column;gap:6px;">'+
-      '<button type="button" data-id="'+idAttr+'" onclick="invEditFromBtn(this)" style="-webkit-appearance:none;appearance:none;border:none;border-radius:6px;padding:7px 10px;background:rgba(122,158,135,0.25);color:var(--wheat);font-size:0.72rem;cursor:pointer;">Edit</button>'+
-      '<button type="button" data-id="'+idAttr+'" onclick="invDeleteFromBtn(this)" style="-webkit-appearance:none;appearance:none;border:none;border-radius:6px;padding:7px 10px;background:rgba(196,81,31,0.25);color:var(--wheat);font-size:0.72rem;cursor:pointer;">Delete</button>'+
-      '</div></div></div>';
+      actions+
+    '</div></div></details>';
 }
 function invRenderSection(headerHtml,items,emptyHint){
   if(!items.length){
@@ -11264,6 +11404,32 @@ var invState={
   priceData:null,
   lastPriceCalc:null
 };
+var invPhotoPickerKind=null;
+function invOpenPhotoSourcePicker(kind){
+  invPhotoPickerKind=(kind==='plate'||kind==='front')?kind:null;
+  if(!invPhotoPickerKind) return;
+  var t=document.getElementById('invPhotoSourceSheetTitle');
+  if(t) t.textContent=kind==='plate'?'Serial plate photo':'Front corner photo';
+  var s=document.getElementById('invPhotoSourceSheet');
+  if(s){ s.classList.add('inv-photo-source-open'); s.setAttribute('aria-hidden','false'); }
+}
+function invClosePhotoSourcePicker(){
+  var s=document.getElementById('invPhotoSourceSheet');
+  if(s){ s.classList.remove('inv-photo-source-open'); s.setAttribute('aria-hidden','true'); }
+  invPhotoPickerKind=null;
+}
+function invPickInventoryPhotoSource(source){
+  var kind=invPhotoPickerKind;
+  invClosePhotoSourcePicker();
+  if(!kind||(source!=='camera'&&source!=='library')) return;
+  var inpId=(kind==='plate'?'inv_serialPhoto':'inv_frontPhoto')+(source==='camera'?'Camera':'Library');
+  var inp=document.getElementById(inpId);
+  if(!inp) return;
+  inp.value='';
+  window.setTimeout(function(){
+    try{ inp.click(); }catch(_e){}
+  },16);
+}
 
 async function invInit(){
   await invLoad();
@@ -11479,6 +11645,7 @@ async function invHandlePhoto(input,kind){
     }else{
       invSetPreview('inv_frontPreview',compressed);
     }
+    try{ input.value=''; }catch(_e2){}
   }catch(e){
     showToast('Could not process photo');
   }
@@ -11870,10 +12037,10 @@ function invClearForm(){
   });
   var stEl=document.getElementById('inv_unitStatus');
   if(stEl) stEl.value='available';
-  var plateInput=document.getElementById('inv_serialPhotoInput');
-  var frontInput=document.getElementById('inv_frontPhotoInput');
-  if(plateInput) plateInput.value='';
-  if(frontInput) frontInput.value='';
+  ['inv_serialPhotoCamera','inv_serialPhotoLibrary','inv_frontPhotoCamera','inv_frontPhotoLibrary'].forEach(function(fid){
+    var fi=document.getElementById(fid);
+    if(fi) fi.value='';
+  });
   invState.editId=null;
   invState.images.plate='';
   invState.images.front='';
