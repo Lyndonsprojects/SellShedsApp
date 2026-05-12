@@ -4988,6 +4988,10 @@ input:focus, select:focus, textarea:focus {
     <div class="field-group"><label class="field-label">Upload Token (shared secret)</label><input type="password" id="set_driveUploadToken" placeholder="Used to protect upload endpoint"></div>
     <div class="field-group"><label class="field-label">Drive Folder ID</label><input type="text" id="set_driveFolderId" placeholder="Folder ID where photos are saved"></div>
     <div class="setup-note" style="margin-top:-4px;margin-bottom:12px;">If configured, inventory photos upload to Google Drive and links are stored in Firestore.</div>
+    <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 10px;">Cloudflare R2 photo upload (optional)</div>
+    <div class="setup-note" style="margin-top:-4px;margin-bottom:12px;">If set, inventory photos use this Worker first (multipart JPEG + thumbnail). Deploy the Worker in <code style="font-size:0.72rem;">inv-r2-upload-worker</code>, create the R2 bucket, run <code style="font-size:0.72rem;">wrangler secret put UPLOAD_TOKEN</code>, then paste the deploy URL ending in <code style="font-size:0.72rem;">/upload</code>. JPEG is the canonical format for shareable URLs. Falls back to Google Drive when R2 is not configured.</div>
+    <div class="field-group"><label class="field-label">R2 Worker upload URL</label><input type="url" id="set_cfR2UploadUrl" placeholder="https://your-worker.workers.dev/upload"></div>
+    <div class="field-group"><label class="field-label">R2 upload token (shared secret)</label><input type="password" id="set_cfR2UploadToken" placeholder="Must match Worker secret UPLOAD_TOKEN"></div>
 
     <!-- EmailJS -->
     <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 10px;">EmailJS</div>
@@ -5399,6 +5403,67 @@ function driveConfigFromSettings(){
 }
 function driveConfigReady(cfg){
   return !!(cfg&&cfg.uploadUrl&&cfg.uploadToken&&cfg.folderId);
+}
+function cfR2ConfigFromSettings(){
+  var s=loadSettings();
+  return { uploadUrl:(s.cfR2UploadUrl||'').trim(), token:(s.cfR2UploadToken||'').trim() };
+}
+function cfR2ConfigReady(cfg){
+  return !!(cfg&&cfg.uploadUrl&&cfg.token);
+}
+function invDataUrlToBlob(dataUrl){
+  var s=String(dataUrl||'').trim();
+  var i=s.indexOf(',');
+  if(i===-1) return null;
+  var head=s.slice(0,i);
+  var body=s.slice(i+1);
+  var mimeM=/data:([^;]+)/i.exec(head);
+  var mime=mimeM&&mimeM[1]?mimeM[1].trim():'image/jpeg';
+  try{
+    if(/;base64/i.test(head)){
+      var bin=atob(body);
+      var len=bin.length;
+      var arr=new Uint8Array(len);
+      for(var j=0;j<len;j++) arr[j]=bin.charCodeAt(j);
+      return new Blob([arr],{type:mime});
+    }
+    return new Blob([decodeURIComponent(body)],{type:mime});
+  }catch(_e){ return null; }
+}
+async function invUploadPhotoToR2(fullDataUrl,thumbDataUrl,kind,serialNumber){
+  var cfg=cfR2ConfigFromSettings();
+  if(!cfR2ConfigReady(cfg)) throw new Error('R2 upload not configured');
+  var fullBlob=invDataUrlToBlob(fullDataUrl);
+  var thumbBlob=invDataUrlToBlob(thumbDataUrl)||fullBlob;
+  if(!fullBlob) throw new Error('Invalid image data');
+  var fd=new FormData();
+  fd.append('token',cfg.token);
+  fd.append('serialNumber',serialNumber||'');
+  fd.append('kind',kind||'photo');
+  fd.append('full',fullBlob,(kind||'photo')+'_full.jpg');
+  fd.append('thumb',thumbBlob,(kind||'photo')+'_thumb.jpg');
+  var resp=await fetch(cfg.uploadUrl,{method:'POST',body:fd});
+  if(!resp.ok) throw new Error('R2 upload failed ('+resp.status+')');
+  var out=await resp.json().catch(function(){return {};});
+  var url=typeof out.url==='string'?out.url:'';
+  var thumbUrl=typeof out.thumbUrl==='string'?out.thumbUrl:url;
+  if(!url) throw new Error('R2 upload returned no URL');
+  return {url:url,thumbUrl:thumbUrl||url};
+}
+async function invUploadInventoryPhotoSmart(fullDataUrl,kind,serialNumber){
+  if(!invIsDataUrl(fullDataUrl)){
+    var u=invToCloudPhotoUrl(fullDataUrl);
+    return {url:u,thumbUrl:u};
+  }
+  var thumbDataUrl=await invCompressDataUrl(fullDataUrl,420,420,0.72);
+  if(cfR2ConfigReady(cfR2ConfigFromSettings())){
+    return await invUploadPhotoToR2(fullDataUrl,thumbDataUrl,kind,serialNumber);
+  }
+  if(driveConfigReady(driveConfigFromSettings())){
+    var r=await invUploadPhotoToDrive(fullDataUrl,kind,serialNumber);
+    return {url:r.url||'',thumbUrl:''};
+  }
+  throw new Error('no_upload_target');
 }
 function invIsDataUrl(value){
   return /^data:image\//i.test((value||'').trim());
@@ -6102,7 +6167,9 @@ function invBuildInventoryQuoteText(it){
     if(p.taxRate!=null&&p.taxAmt!=null) lines.push('Tax ('+p.taxRate+'%): '+invFmt(p.taxAmt));
   }
   if(it.plateImage) lines.push('Serial plate photo: '+it.plateImage);
+  if(it.plateThumb&&it.plateThumb!==it.plateImage) lines.push('Serial plate thumbnail: '+it.plateThumb);
   if(it.frontImage) lines.push('Front corner photo: '+it.frontImage);
+  if(it.frontThumb&&it.frontThumb!==it.frontImage) lines.push('Front corner thumbnail: '+it.frontThumb);
   if(it.updatedAt) lines.push('Updated: '+it.updatedAt);
   return lines.join('\n');
 }
@@ -6139,9 +6206,9 @@ function invCopyInventoryQuoteFromBtn(btn){
 function invRenderItemCard(item){
   var st=invNormalizeUnitStatus(item.unitStatus);
   var idAttr=invEscapeAttr(item.id||'');
-  var frontUrl=String(item.frontImage||'').trim();
-  var sumVisual=frontUrl
-    ? '<span class="inv-card-sum-visual"><img class="inv-card-front-thumb" src="'+invEscapeAttr(frontUrl)+'" alt="" loading="lazy"></span>'
+  var frontShow=String(item.frontThumb||item.frontImage||'').trim();
+  var sumVisual=frontShow
+    ? '<span class="inv-card-sum-visual"><img class="inv-card-front-thumb" src="'+invEscapeAttr(frontShow)+'" alt="" loading="lazy"></span>'
     : '<span class="inv-card-sum-visual"><span class="inv-card-thumb-ph">No<br>photo</span></span>';
   var loc=invEscapeHtml(item.lotLocation||'No lot location');
   var sty=invEscapeHtml(item.style||'—');
@@ -6236,7 +6303,9 @@ async function watchInventoryCloud(){
         trimColor:d.trimColor||'',
         priceData:d.priceData||null,
         plateImage:d.photoUrls&&d.photoUrls.plate||'',
+        plateThumb:d.photoUrls&&d.photoUrls.plateThumb||'',
         frontImage:d.photoUrls&&d.photoUrls.front||'',
+        frontThumb:d.photoUrls&&d.photoUrls.frontThumb||'',
         unitStatus:invNormalizeUnitStatus(d.unitStatus)
       };
     });
@@ -6515,7 +6584,7 @@ function renderSettingsFormFromSettings(s){
     if(el) el.value=s[k]||'';
   });
   // Text fields
-  var txtFields=['bizName','bizPhone','bizEmail','bizStreet','bizCity','bizState','bizZip','mainStreet','mainCity','mainState','mainZip','shopStreet','shopCity','shopState','shopZip','contactName','designerUrl','formspreeEndpoint','purchaseUrl','rtoUrl','interestUrl','crmUrl','mapsApiKey','ejsPublicKey','ejsServiceId','ejsTemplateId','quoteDisclaimer','firebaseApiKey','firebaseAuthDomain','firebaseProjectId','firebaseStorageBucket','firebaseMessagingSenderId','firebaseAppId','firebaseEmail','firebasePassword','driveUploadUrl','driveUploadToken','driveFolderId'];
+  var txtFields=['bizName','bizPhone','bizEmail','bizStreet','bizCity','bizState','bizZip','mainStreet','mainCity','mainState','mainZip','shopStreet','shopCity','shopState','shopZip','contactName','designerUrl','formspreeEndpoint','purchaseUrl','rtoUrl','interestUrl','crmUrl','mapsApiKey','ejsPublicKey','ejsServiceId','ejsTemplateId','quoteDisclaimer','firebaseApiKey','firebaseAuthDomain','firebaseProjectId','firebaseStorageBucket','firebaseMessagingSenderId','firebaseAppId','firebaseEmail','firebasePassword','driveUploadUrl','driveUploadToken','driveFolderId','cfR2UploadUrl','cfR2UploadToken'];
   txtFields.forEach(function(k){
     var el=document.getElementById('set_'+k);
     if(el) el.value=s[k]||'';
@@ -6595,7 +6664,7 @@ async function saveSettingsForm(){
     if(el) s[k]=el.value.trim()===''?'':parseFloat(el.value);
   });
   // Text
-  var txtFields=['bizName','bizPhone','bizEmail','bizStreet','bizCity','bizState','bizZip','mainStreet','mainCity','mainState','mainZip','shopStreet','shopCity','shopState','shopZip','contactName','designerUrl','formspreeEndpoint','purchaseUrl','rtoUrl','interestUrl','crmUrl','mapsApiKey','ejsPublicKey','ejsServiceId','ejsTemplateId','quoteDisclaimer','firebaseApiKey','firebaseAuthDomain','firebaseProjectId','firebaseStorageBucket','firebaseMessagingSenderId','firebaseAppId','firebaseEmail','firebasePassword','driveUploadUrl','driveUploadToken','driveFolderId'];
+  var txtFields=['bizName','bizPhone','bizEmail','bizStreet','bizCity','bizState','bizZip','mainStreet','mainCity','mainState','mainZip','shopStreet','shopCity','shopState','shopZip','contactName','designerUrl','formspreeEndpoint','purchaseUrl','rtoUrl','interestUrl','crmUrl','mapsApiKey','ejsPublicKey','ejsServiceId','ejsTemplateId','quoteDisclaimer','firebaseApiKey','firebaseAuthDomain','firebaseProjectId','firebaseStorageBucket','firebaseMessagingSenderId','firebaseAppId','firebaseEmail','firebasePassword','driveUploadUrl','driveUploadToken','driveFolderId','cfR2UploadUrl','cfR2UploadToken'];
   txtFields.forEach(function(k){
     var el=document.getElementById('set_'+k);
     if(el) s[k]=el.value.trim();
@@ -7643,7 +7712,7 @@ function renderHomeDashboard(){
       var addedStr=added&&!isNaN(added.getTime())?'Updated '+added.toLocaleDateString('en-US',{month:'numeric',day:'numeric',year:'numeric'}):'';
       var statusStr=(typeof invUnitStatusDisplay==='function'?invUnitStatusDisplay(invItem.unitStatus):'')||'Available';
       invMeta.textContent=[statusStr,addedStr].filter(Boolean).join(' · ');
-      var iu=invItem.frontImage||invItem.plateImage||'';
+      var iu=invItem.frontThumb||invItem.frontImage||invItem.plateImage||'';
       if(invThumb&&iu){ invThumb.src=iu; invThumb.style.display='block'; }
       else if(invThumb){ invThumb.src=''; invThumb.style.display='none'; }
     }else{
@@ -11506,6 +11575,11 @@ function invCompressDataUrl(dataUrl,maxW,maxH,quality){
   maxH=maxH||1280;
   quality=quality||0.75;
   return new Promise(function(resolve,reject){
+    var s=String(dataUrl||'');
+    if(s.length>38000000){
+      reject(new Error('Image too large'));
+      return;
+    }
     var img=new Image();
     img.onload=function(){
       var w=img.width,h=img.height;
@@ -11647,7 +11721,7 @@ async function invHandlePhoto(input,kind){
     }
     try{ input.value=''; }catch(_e2){}
   }catch(e){
-    showToast('Could not process photo');
+    showToast((e&&e.message==='Image too large')?'Photo file is too large':'Could not process photo');
   }
 }
 
@@ -12075,25 +12149,36 @@ async function invSaveItem(){
     showToast('Lot, serial, size, and style are required');
     return;
   }
+  var plateImageValue=invState.images.plate||'';
+  var frontImageValue=invState.images.front||'';
+  if(invIsDataUrl(plateImageValue)||invIsDataUrl(frontImageValue)){
+    if(!cfR2ConfigReady(cfR2ConfigFromSettings())&&!driveConfigReady(driveConfigFromSettings())){
+      showToast('Configure Cloudflare R2 upload or Google Drive in Settings to save photos.');
+      return;
+    }
+  }
   var now=new Date().toISOString();
   var cloudOk=await firebaseEnsureAuthed();
   if(cloudOk){
     try{
       var docId=invState.editId||('inv_'+Date.now()+'_'+Math.random().toString(36).slice(2,8));
-      var driveCfg=driveConfigFromSettings();
-      var plateImageValue=invState.images.plate||'';
-      var frontImageValue=invState.images.front||'';
-      if(driveConfigReady(driveCfg)){
-        if(invIsDataUrl(plateImageValue)){
-          showToast('Uploading serial plate photo...');
-          plateImageValue=(await invUploadPhotoToDrive(plateImageValue,'plate',serialNumber)).url||'';
+      var prevItem=null;
+      if(invState.editId){
+        for(var pi=0;pi<invState.items.length;pi++){
+          if(invState.items[pi].id===invState.editId){ prevItem=invState.items[pi]; break; }
         }
-        if(invIsDataUrl(frontImageValue)){
-          showToast('Uploading front photo...');
-          frontImageValue=(await invUploadPhotoToDrive(frontImageValue,'front',serialNumber)).url||'';
-        }
-      }else if(invIsDataUrl(plateImageValue)||invIsDataUrl(frontImageValue)){
-        console.log('Drive upload skipped: configure upload URL, token, and folder ID in Settings.');
+      }
+      var plateRes={url:invToCloudPhotoUrl(plateImageValue),thumbUrl:(prevItem&&prevItem.plateThumb)||''};
+      var frontRes={url:invToCloudPhotoUrl(frontImageValue),thumbUrl:(prevItem&&prevItem.frontThumb)||''};
+      if(invIsDataUrl(plateImageValue)){
+        showToast('Uploading serial plate photo...');
+        plateRes=await invUploadInventoryPhotoSmart(plateImageValue,'plate',serialNumber);
+        plateImageValue=plateRes.url||'';
+      }
+      if(invIsDataUrl(frontImageValue)){
+        showToast('Uploading front photo...');
+        frontRes=await invUploadInventoryPhotoSmart(frontImageValue,'front',serialNumber);
+        frontImageValue=frontRes.url||'';
       }
       var payload={
         lotLocation:lotLocation,
@@ -12108,7 +12193,9 @@ async function invSaveItem(){
         priceData:invState.priceData?Object.assign({},invState.priceData):null,
         photoUrls:{
           plate:invToCloudPhotoUrl(plateImageValue),
-          front:invToCloudPhotoUrl(frontImageValue)
+          plateThumb:invToCloudPhotoUrl(plateRes.thumbUrl||''),
+          front:invToCloudPhotoUrl(frontImageValue),
+          frontThumb:invToCloudPhotoUrl(frontRes.thumbUrl||'')
         },
         updatedAt:firebase.firestore.FieldValue.serverTimestamp()
       };
@@ -12131,7 +12218,9 @@ async function invSaveItem(){
         unitStatus:unitStatus,
         priceData:invState.priceData?Object.assign({},invState.priceData):null,
         plateImage:(plateImageValue||'').trim(),
-        frontImage:(frontImageValue||'').trim()
+        plateThumb:(plateRes.thumbUrl||'').trim(),
+        frontImage:(frontImageValue||'').trim(),
+        frontThumb:(frontRes.thumbUrl||'').trim()
       };
       if(invState.editId){
         invState.items=invState.items.map(function(it){ return it.id===docId?localCloudItem:it; });
@@ -12171,7 +12260,9 @@ async function invSaveItem(){
         unitStatus:unitStatus,
         priceData:invState.priceData?Object.assign({},invState.priceData):null,
         plateImage:invState.images.plate||'',
-        frontImage:invState.images.front||''
+        plateThumb:(item.plateThumb||''),
+        frontImage:invState.images.front||'',
+        frontThumb:(item.frontThumb||'')
       };
     });
   }else{
@@ -12190,7 +12281,9 @@ async function invSaveItem(){
       unitStatus:unitStatus,
       priceData:invState.priceData?Object.assign({},invState.priceData):null,
       plateImage:invState.images.plate||'',
-      frontImage:invState.images.front||''
+      plateThumb:'',
+      frontImage:invState.images.front||'',
+      frontThumb:''
     });
   }
   var wasEdit=!!invState.editId;
