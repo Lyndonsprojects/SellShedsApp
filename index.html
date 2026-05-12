@@ -164,20 +164,6 @@ body.app-bottom-nav-visible {
   text-align: center;
 }
 
-.calc-quote-secondary-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 14px;
-  padding-top: 12px;
-  border-top: 1px solid rgba(232,200,122,0.12);
-}
-.calc-quote-secondary-actions .btn-email,
-.calc-quote-secondary-actions .btn-mailto,
-.calc-quote-secondary-actions .btn-print {
-  flex: 1 1 140px;
-}
-
 /* SHARED FIELD STYLES */
 .field-group { margin-bottom:14px; }
 .field-label { display:block; font-size:0.72rem; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:rgba(232,200,122,0.75); margin-bottom:6px; }
@@ -189,7 +175,7 @@ input[type="number"],input[type="url"],select,textarea {
   color:var(--cream); appearance:none; -webkit-appearance:none;
 }
 input::placeholder, textarea::placeholder { color:rgba(245,240,232,0.3); }
-input:focus,select:focus,textarea:focus { outline:none; border-color:var(--wheat); background:rgba(255,255,255,0.1); }
+input:focus,textarea:focus { outline:none; border-color:var(--wheat); background:rgba(255,255,255,0.1); }
 select option { background:var(--earth); color:var(--cream); }
 .row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
 #screenInventory .inv-grid2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
@@ -370,7 +356,7 @@ select option { background:var(--earth); color:var(--cream); }
 .setup-note { background:rgba(232,200,122,0.08); border:1.5px solid rgba(232,200,122,0.35); border-radius:8px; padding:12px; font-size:0.75rem; color:var(--cream); margin-bottom:14px; line-height:1.6; }
 .setup-note strong { color:var(--wheat); }
 
-.toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--earth); color:var(--wheat); padding:12px 24px; border-radius:30px; font-size:0.85rem; font-weight:600; opacity:0; transition:opacity 0.3s; pointer-events:none; z-index:200; white-space:nowrap; max-width:90vw; text-align:center; }
+.toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--earth); color:var(--wheat); padding:12px 24px; border-radius:30px; font-size:0.85rem; font-weight:600; opacity:0; transition:opacity 0.3s; pointer-events:none; z-index:11000; white-space:nowrap; max-width:90vw; text-align:center; box-shadow:0 4px 24px rgba(0,0,0,0.35); }
 .toast.show { opacity:1; }
 /* OPTIONS CATEGORIES */
 .opt-category { margin-bottom:10px; border:1.5px solid rgba(232,200,122,0.2); border-radius:10px; overflow:hidden; background:rgba(255,255,255,0.04); }
@@ -457,14 +443,15 @@ select option { background:var(--earth); color:var(--cream); }
 
 /* Your Quote — Share & Export hub tiles */
 .quote-hub-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-.quote-hub-tile { -webkit-appearance:none; appearance:none; display:flex; flex-direction:column; align-items:flex-start; gap:4px; background:rgba(255,255,255,0.04); border:1.5px solid rgba(232,200,122,0.22); border-radius:10px; padding:12px; color:var(--cream); cursor:pointer; font:inherit; text-align:left; transition:transform 0.12s ease, border-color 0.12s ease, background 0.12s ease; min-height:88px; }
+.quote-hub-tile { -webkit-appearance:none; appearance:none; display:flex; flex-direction:column; align-items:flex-start; gap:8px; background:rgba(255,255,255,0.04); border:1.5px solid rgba(232,200,122,0.22); border-radius:10px; padding:12px; color:var(--cream); cursor:pointer; font:inherit; text-align:left; transition:transform 0.12s ease, border-color 0.12s ease, background 0.12s ease; min-height:76px; }
 .quote-hub-tile:hover, .quote-hub-tile:focus { border-color:rgba(232,200,122,0.45); background:rgba(255,255,255,0.07); }
 .quote-hub-tile:active { transform:scale(0.98); }
-.quote-hub-tile .qhub-icon { font-size:1.4rem; line-height:1; }
+.quote-hub-tile .qhub-icon { display:flex; align-items:center; justify-content:flex-start; color:var(--wheat); line-height:0; }
+.quote-hub-tile .qhub-icon svg { display:block; width:22px; height:22px; flex-shrink:0; }
 .quote-hub-tile .qhub-label { font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:0.95rem; letter-spacing:1.5px; color:var(--wheat); }
-.quote-hub-tile .qhub-sub { font-size:0.7rem; color:rgba(232,200,122,0.6); letter-spacing:0.4px; }
 .quote-hub-tile.is-soon { opacity:0.7; }
 .quote-hub-tile .qhub-soon-tag { font-size:0.55rem; font-weight:800; background:rgba(232,200,122,0.18); color:var(--wheat); padding:2px 6px; border-radius:5px; letter-spacing:1px; align-self:flex-start; margin-top:2px; }
+a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
 
 .opts-summary-wrap { margin:10px 0 8px; }
 .opts-summary-title { font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:0.78rem; letter-spacing:2px; color:rgba(232,200,122,0.65); margin-bottom:6px; }
@@ -746,6 +733,52 @@ select option { background:var(--earth); color:var(--cream); }
 .success-title-big { font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:2rem; color:var(--wheat); letter-spacing:3px; margin-bottom:8px; }
 .success-msg { font-size:0.9rem; color:rgba(232,200,122,0.65); line-height:1.7; margin-bottom:24px; }
 
+/* Quote — send / share recipient sheet */
+#quoteShareRecipientOverlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:10001;
+  background:rgba(0,0,0,0.55);
+  align-items:flex-end;
+  justify-content:center;
+  padding:0 12px max(12px, env(safe-area-inset-bottom, 0px));
+  box-sizing:border-box;
+}
+#quoteShareRecipientOverlay.open{ display:flex !important; }
+.quote-share-sheet{
+  max-width:520px;
+  width:100%;
+  background:var(--earth);
+  border-radius:16px 16px 0 0;
+  border:1.5px solid rgba(232,200,122,0.3);
+  border-bottom:none;
+  padding:16px 16px 22px;
+  max-height:88vh;
+  overflow:auto;
+  box-sizing:border-box;
+}
+.quote-share-mode-row{ display:flex; gap:8px; margin-bottom:12px; }
+.quote-share-mode-btn{
+  flex:1;
+  -webkit-appearance:none;
+  appearance:none;
+  padding:10px 12px;
+  border-radius:10px;
+  border:1.5px solid rgba(232,200,122,0.35);
+  background:rgba(255,255,255,0.06);
+  color:var(--cream);
+  font:inherit;
+  font-size:0.88rem;
+  font-weight:600;
+  cursor:pointer;
+}
+.quote-share-mode-btn.active{
+  border-color:var(--wheat);
+  background:rgba(232,200,122,0.15);
+  color:var(--wheat);
+}
+
 /* ── Print overlay ── */
 #printOverlay{
   display:none;
@@ -803,12 +836,11 @@ select option { background:var(--earth); color:var(--cream); }
   body > *{display:none !important;}
   #ssOverlay{display:block !important;position:static !important;overflow:visible !important;}
   #ssOverlayActions{display:none !important;}
-  #ssSheetContent{padding:0 !important;max-width:100% !important;}
+  #ssSheetContent{padding:0 !important;max-width:100% !important;color:#000 !important;overflow-wrap:break-word !important;word-wrap:break-word !important;}
   #printOverlay{display:block !important;position:static !important;padding:0 !important;font-size:8.5pt !important;-webkit-print-color-adjust:economy;print-color-adjust:economy;}
   #printOverlay #printLogo{
     -webkit-print-color-adjust:exact !important;
     print-color-adjust:exact !important;
-    color-adjust:exact !important;
   }
   #printOverlay .po-actions{display:none !important;}
   #printOverlay .po-print-scroll{padding:0 !important;}
@@ -1862,8 +1894,17 @@ input:focus, select:focus, textarea:focus {
   border-color: var(--barn);
   box-shadow: 0 0 0 3px rgba(139,46,13,0.12);
 }
+select:focus {
+  outline: none;
+  background: #fff;
+  color: var(--earth);
+}
 
-/* -- opt-field-row inputs inside detail panels -- */
+/* Calculator width/length: keep field light; barn border shows a size is chosen */
+#screenCalc #calcWidth:not([value=""]),
+#screenCalc #calcLength:not([value=""]) {
+  border-color: var(--barn);
+}
 .opt-field-row select,
 .opt-field-row input[type="number"],
 .opt-field-row input[type="text"] {
@@ -1956,6 +1997,9 @@ input:focus, select:focus, textarea:focus {
   font-weight: 600;
   letter-spacing: 2px;
   text-transform: uppercase;
+}
+#quickPriceWrap .quick-price-extras .field-label {
+  color: var(--wheat);
 }
 
 /* -- Page titles on Sales Sheet pages match calc style -- */
@@ -2253,6 +2297,46 @@ input:focus, select:focus, textarea:focus {
   font-size: 1.5rem;
 }
 .cpm-opt-label { font-size: 0.9rem; font-weight: 600; color: #0B1A39; line-height: 1.2; }
+
+/* ── DOCS & FACTS SCREEN ───────────────────────────────── */
+.docs-search-btn{background:none;border:none;padding:6px;cursor:pointer;margin-left:auto;display:flex;align-items:center;justify-content:center;border-radius:6px;}
+.docs-search-btn:active{background:rgba(232,200,122,0.1);}
+.docs-sec-label{font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:0.85rem;letter-spacing:3px;color:rgba(232,200,122,0.75);margin:16px 0 8px;display:block;}
+.docs-section{margin-bottom:10px;border:1.5px solid rgba(232,200,122,0.15);border-radius:10px;overflow:hidden;background:rgba(255,255,255,0.03);}
+.docs-sec-hdr{width:100%;background:rgba(44,24,16,0.9);border:none;padding:13px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;text-align:left;color:var(--cream);}
+.docs-sec-hdr:active{background:rgba(60,30,18,0.9);}
+.docs-sec-hdr-icon{font-size:1.1rem;flex-shrink:0;}
+.docs-sec-hdr-name{flex:1;font-weight:700;font-size:0.88rem;color:rgba(232,200,122,0.9);letter-spacing:0.5px;}
+.docs-sec-hdr-count{font-size:0.7rem;background:rgba(139,46,13,0.5);color:rgba(232,200,122,0.8);padding:2px 8px;border-radius:10px;font-weight:600;}
+.docs-sec-hdr-arrow{font-size:0.65rem;color:rgba(232,200,122,0.5);transition:transform 0.2s;flex-shrink:0;}
+.docs-sec-hdr.open .docs-sec-hdr-arrow{transform:rotate(180deg);}
+.docs-sec-body{display:none;}
+.docs-sec-body.open{display:block;}
+.docs-subsec-label{font-size:0.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(122,158,135,0.7);padding:10px 14px 4px;border-top:1px solid rgba(232,200,122,0.08);}
+.docs-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-top:1px solid rgba(232,200,122,0.08);cursor:pointer;transition:background 0.12s;}
+.docs-row:active{background:rgba(255,255,255,0.05);}
+.docs-row-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;background:rgba(139,46,13,0.25);}
+.docs-row-icon.pdf{background:rgba(196,81,31,0.25);}
+.docs-row-icon.image{background:rgba(122,158,135,0.2);}
+.docs-row-icon.doc{background:rgba(44,72,200,0.2);}
+.docs-row-info{flex:1;min-width:0;}
+.docs-row-name{font-size:0.85rem;font-weight:600;color:rgba(245,240,232,0.9);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3;}
+.docs-row-meta{font-size:0.68rem;color:rgba(200,221,232,0.45);margin-top:2px;letter-spacing:0.5px;}
+.docs-flyer-badge{font-size:0.6rem;background:rgba(122,158,135,0.2);color:rgba(122,158,135,0.9);border:1px solid rgba(122,158,135,0.3);border-radius:4px;padding:1px 5px;letter-spacing:1px;font-weight:700;margin-top:2px;display:inline-block;}
+.docs-share-btn{background:none;border:1.5px solid rgba(232,200,122,0.2);color:rgba(232,200,122,0.6);border-radius:6px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:0.85rem;transition:all 0.15s;}
+.docs-share-btn:active{background:rgba(139,46,13,0.3);border-color:rgba(139,46,13,0.6);color:rgba(232,200,122,0.9);}
+.docs-no-results{text-align:center;padding:30px 20px;color:rgba(245,240,232,0.3);font-size:0.82rem;}
+#docsLightbox{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:10002;display:none;flex-direction:column;align-items:center;justify-content:center;}
+#docsLightbox.open{display:flex;}
+#docsFlyerModal{position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:10002;display:none;flex-direction:column;overflow-y:auto;}
+#docsFlyerModal.open{display:flex;}
+
+/* Quote-from flows (above bottom nav / share sheets) */
+#quoteSheetCondModal,#quoteAdWizardModal,#quoteAdResultModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:10001;align-items:flex-end;justify-content:center;}
+.quote-from-sheet{background:var(--earth);border:1.5px solid rgba(232,200,122,0.3);border-radius:16px 16px 0 0;padding:22px 18px 32px;width:100%;max-width:480px;max-height:88vh;overflow-y:auto;}
+.quote-export-row{display:flex;gap:8px;align-items:stretch;flex-wrap:wrap;margin-top:4px;}
+.quote-export-row select{flex:1;min-width:0;width:100%;padding:10px 12px;border-radius:8px;border:1.5px solid rgba(232,200,122,0.25);background:rgba(255,255,255,0.06);color:var(--cream);font-size:0.9rem;}
+#quoteAdResultBody{white-space:pre-wrap;font-size:0.88rem;line-height:1.5;color:rgba(245,240,232,0.92);max-height:42vh;overflow-y:auto;padding:10px;background:rgba(0,0,0,0.2);border-radius:8px;margin-top:10px;}
 </style>
 </head>
 <body>
@@ -3325,58 +3409,24 @@ input:focus, select:focus, textarea:focus {
       <div class="page-title">Your Quote</div>
       <div class="page-sub">Review, share, and turn this estimate into ads or a sales sheet</div>
       <div id="calcQuoteContent"></div>
-      <div style="background:rgba(255,255,255,0.05);border:1.5px solid rgba(232,200,122,0.2);border-radius:10px;padding:14px;margin-bottom:12px;">
-        <div style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:1.1rem;letter-spacing:2px;color:var(--wheat);margin-bottom:12px;">Customer Info</div>
-        <div class="field-group"><label class="field-label">Name</label><input type="text" id="c_custName" placeholder="First Last"></div>
-        <div class="field-group"><label class="field-label">Email</label><input type="email" id="c_custEmail" placeholder="email@example.com"></div>
-        <div class="field-group"><label class="field-label">Phone</label><input type="tel" id="c_custPhone" placeholder="(555) 555-0000"></div>
-        <div class="field-group"><label class="field-label">Delivery Street</label><input type="text" id="c_custAddress" placeholder="123 Main St" style="width:100%;box-sizing:border-box;"></div>
-        <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-bottom:14px;">
-          <div class="field-group" style="margin-bottom:0;"><label class="field-label">City</label><input type="text" id="c_custCity" placeholder="City" style="width:100%;box-sizing:border-box;"></div>
-          <div class="field-group" style="margin-bottom:0;"><label class="field-label">State</label><input type="text" id="c_custState" placeholder="State" maxlength="2" style="width:100%;box-sizing:border-box;text-transform:uppercase;"></div>
-          <div class="field-group" style="margin-bottom:0;"><label class="field-label">Zip</label><input type="text" id="c_custZip" placeholder="12345" maxlength="10" style="width:100%;box-sizing:border-box;"></div>
-        </div>
-        <div class="field-group"><label class="field-label">Notes</label><textarea id="c_custNotes" rows="2" placeholder="Site conditions, special requests..."></textarea></div>
-      </div>
 
       <!-- Share & Export hub -->
       <div style="background:rgba(255,255,255,0.05);border:1.5px solid rgba(232,200,122,0.2);border-radius:10px;padding:14px;margin-bottom:12px;">
         <div style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:1.1rem;letter-spacing:2px;color:var(--wheat);margin-bottom:10px;">Share &amp; Export</div>
-        <div class="quote-hub-grid">
-          <button type="button" class="quote-hub-tile" onclick="copyEstimateTextToClipboard()">
-            <span class="qhub-icon">📋</span>
-            <span class="qhub-label">Copy Estimate Text</span>
-            <span class="qhub-sub">For texts &amp; chat</span>
-          </button>
-          <button type="button" class="quote-hub-tile" onclick="goToSalesSheetFromQuote()">
-            <span class="qhub-icon">📄</span>
-            <span class="qhub-label">Sales Sheet</span>
-            <span class="qhub-sub">Printable one-pager</span>
-          </button>
-          <button type="button" class="quote-hub-tile" onclick="shareEstimate()">
-            <span class="qhub-icon">📤</span>
-            <span class="qhub-label">Share / Email</span>
-            <span class="qhub-sub">Send to customer</span>
-          </button>
-          <button type="button" class="quote-hub-tile" onclick="goToMarketplaceAdFromQuote()">
-            <span class="qhub-icon">🏷️</span>
-            <span class="qhub-label">Marketplace Ad</span>
-            <span class="qhub-sub">Craigslist / OfferUp</span>
-          </button>
-          <button type="button" class="quote-hub-tile" onclick="copyFacebookPost()">
-            <span class="qhub-icon">📣</span>
-            <span class="qhub-label">Facebook Post</span>
-            <span class="qhub-sub">Copy ready-to-post</span>
-          </button>
+        <div class="quote-export-row">
+          <label for="quoteExportActionSel" class="field-label" style="width:100%;margin-bottom:4px;">Share or export</label>
+          <select id="quoteExportActionSel" aria-label="Share or export — pick a command" onchange="onQuoteExportHubSelectChange()">
+            <option value="">Share or export&hellip;</option>
+            <option value="share_email">Share / Email estimate</option>
+            <option value="sales_sheet">Generate sales sheet (PDF)</option>
+            <option value="marketplace">Generate marketplace ad</option>
+            <option value="facebook">Copy Facebook post</option>
+            <option value="print">Print quote</option>
+          </select>
         </div>
       </div>
 
       <div class="setup-note emailjs-note" id="calcSetupNote" style="display:none;"></div>
-      <div class="calc-quote-secondary-actions">
-        <button class="btn-email" onclick="sendCalcEmail()" id="calcEmailBtn">✉️ Send Email</button>
-        <a class="btn-mailto" id="calcMailtoBtn" href="#" onclick="refreshMailtoHref(this);">📱 Mail App</a>
-        <button class="btn-print" onclick="printQuote()" style="background:var(--earth);color:var(--wheat);border:none;border-radius:10px;padding:12px 18px;font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:1rem;letter-spacing:2px;cursor:pointer;">🖨️ Print / PDF</button>
-      </div>
     </div>
   </div>
   <div class="sellsheds-footer">
@@ -5075,13 +5125,148 @@ input:focus, select:focus, textarea:focus {
   </div>
 </div><!-- end screenSettings -->
 
+<div class="screen" id="screenDocs">
+  <div class="header">
+    <button type="button" class="back-btn" onclick="appBottomNavBackAction()">&#8592;</button>
+    <div class="header-title">DOCS &amp; FACTS</div>
+    <button type="button" class="docs-search-btn" onclick="docsToggleSearch()">
+      <svg viewBox="0 0 24 24" fill="none" style="width:20px;height:20px;">
+        <circle cx="11" cy="11" r="7" stroke="rgba(232,200,122,0.9)" stroke-width="1.8"/>
+        <line x1="16.5" y1="16.5" x2="21" y2="21" stroke="rgba(232,200,122,0.9)" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+  <div id="docsSearchBar" style="display:none;padding:10px 16px;background:rgba(44,24,16,0.95);border-bottom:1px solid rgba(232,200,122,0.15);">
+    <div style="position:relative;">
+      <input type="text" id="docsSearchInput" placeholder="Search documents..." oninput="docsSearch(this.value)" style="width:100%;padding:11px 14px 11px 38px;background:rgba(255,255,255,0.08);border:1.5px solid rgba(232,200,122,0.3);border-radius:8px;color:#F5F0E8;font-size:0.95rem;">
+      <svg viewBox="0 0 24 24" fill="none" style="position:absolute;left:11px;top:50%;transform:translateY(-50%);width:16px;height:16px;pointer-events:none;">
+        <circle cx="11" cy="11" r="7" stroke="rgba(232,200,122,0.5)" stroke-width="1.8"/>
+        <line x1="16.5" y1="16.5" x2="21" y2="21" stroke="rgba(232,200,122,0.5)" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      <button type="button" onclick="docsClearSearch()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(232,200,122,0.5);font-size:1.1rem;cursor:pointer;padding:4px;">&times;</button>
+    </div>
+  </div>
+  <div id="docsSearchResults" style="display:none;padding:8px 16px 16px;">
+    <span class="docs-sec-label">SEARCH RESULTS</span>
+    <div id="docsSearchResultsList"></div>
+  </div>
+  <div id="docsMainContent" style="padding:12px 16px 100px;">
+    <div id="docsLoadingState" style="text-align:center;padding:40px 20px;">
+      <div style="font-size:2rem;margin-bottom:12px;">&#128194;</div>
+      <div style="color:rgba(232,200,122,0.6);font-size:0.85rem;letter-spacing:1px;">LOADING...</div>
+    </div>
+    <div id="docsErrorState" style="display:none;text-align:center;padding:40px 20px;">
+      <div style="font-size:2rem;margin-bottom:12px;">&#9888;</div>
+      <div style="color:rgba(196,81,31,0.9);font-size:0.85rem;letter-spacing:1px;margin-bottom:8px;">COULD NOT LOAD DOCUMENTS</div>
+      <div id="docsErrorMsg" style="color:rgba(245,240,232,0.4);font-size:0.78rem;line-height:1.5;">Check Firebase connection.</div>
+      <button type="button" onclick="docsLoadDocuments()" style="margin-top:16px;background:rgba(139,46,13,0.4);border:1.5px solid rgba(139,46,13,0.6);color:rgba(232,200,122,0.8);border-radius:8px;padding:10px 20px;font-size:0.82rem;letter-spacing:1px;cursor:pointer;">RETRY</button>
+    </div>
+    <div id="docsEmptyState" style="display:none;text-align:center;padding:40px 20px;">
+      <div style="font-size:2rem;margin-bottom:12px;">&#128237;</div>
+      <div style="color:rgba(232,200,122,0.6);font-size:0.85rem;letter-spacing:1px;">NO DOCUMENTS YET</div>
+      <div style="color:rgba(245,240,232,0.35);font-size:0.78rem;margin-top:8px;">Add documents in Firestore (collection &quot;documents&quot;) or use demo when offline.</div>
+    </div>
+    <div id="docsSectionContainer"></div>
+  </div>
+  <div id="docsLightbox">
+    <button type="button" onclick="docsCloseLightbox()" style="position:absolute;top:calc(16px + env(safe-area-inset-top));right:16px;background:rgba(44,24,16,0.8);border:1.5px solid rgba(232,200,122,0.3);color:rgba(232,200,122,0.9);border-radius:50%;width:36px;height:36px;font-size:1.1rem;cursor:pointer;z-index:2;">&times;</button>
+    <img id="docsLightboxImg" src="" alt="" style="max-width:92vw;max-height:80vh;object-fit:contain;border-radius:6px;">
+    <div id="docsLightboxCaption" style="color:rgba(232,200,122,0.7);font-size:0.8rem;margin-top:12px;letter-spacing:1px;text-align:center;padding:0 20px;"></div>
+    <button type="button" onclick="docsShareCurrent()" style="margin-top:14px;background:rgba(139,46,13,0.5);border:1.5px solid rgba(139,46,13,0.7);color:rgba(232,200,122,0.9);border-radius:8px;padding:10px 24px;font-size:0.82rem;letter-spacing:1.5px;cursor:pointer;">SHARE</button>
+  </div>
+  <div id="docsFlyerModal">
+    <div style="position:sticky;top:0;background:rgba(26,14,9,0.97);padding:calc(14px + env(safe-area-inset-top)) 16px 14px;display:flex;align-items:center;gap:12px;border-bottom:2px solid rgba(139,46,13,0.5);z-index:2;">
+      <button type="button" onclick="docsCloseFlyerModal()" style="background:none;border:none;color:rgba(232,200,122,0.9);font-size:1.4rem;cursor:pointer;padding:4px;">&#8592;</button>
+      <div id="docsFlyerModalTitle" style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:1.3rem;color:rgba(232,200,122,0.9);letter-spacing:2px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></div>
+      <button type="button" onclick="docsFlyerShare()" style="background:rgba(139,46,13,0.5);border:1.5px solid rgba(139,46,13,0.7);color:rgba(232,200,122,0.9);border-radius:8px;padding:8px 14px;font-size:0.78rem;letter-spacing:1.5px;cursor:pointer;flex-shrink:0;">SHARE</button>
+    </div>
+    <div style="padding:16px;display:flex;flex-direction:column;align-items:center;gap:12px;">
+      <div id="docsFlyerDealerStrip" style="width:100%;max-width:480px;background:rgba(44,24,16,0.9);border:1.5px solid rgba(139,46,13,0.4);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px;">
+        <img id="docsFlyerDealerLogo" src="" alt="" style="height:36px;width:auto;object-fit:contain;display:none;border-radius:4px;">
+        <div style="flex:1;min-width:0;">
+          <div id="docsFlyerDealerName" style="font-weight:700;font-size:0.88rem;color:rgba(232,200,122,0.9);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
+          <div id="docsFlyerDealerContact" style="font-size:0.72rem;color:rgba(200,221,232,0.7);margin-top:2px;line-height:1.4;"></div>
+        </div>
+      </div>
+      <img id="docsFlyerModalImg" src="" alt="" style="width:100%;max-width:480px;border-radius:8px;object-fit:contain;">
+      <div style="color:rgba(245,240,232,0.3);font-size:0.7rem;letter-spacing:1px;text-align:center;padding-bottom:20px;">Dealer info shown above will appear on shared version</div>
+    </div>
+  </div>
+</div><!-- end screenDocs -->
+
+<!-- Sales sheet from quote: condition -->
+<div id="quoteSheetCondModal" onclick="if(event.target===this)closeQuoteSheetCondModal()">
+  <div class="quote-from-sheet" onclick="event.stopPropagation()">
+    <div style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:1.2rem;letter-spacing:2px;color:var(--wheat);margin-bottom:8px;">Sales sheet</div>
+    <div style="font-size:0.82rem;color:rgba(245,240,232,0.65);margin-bottom:14px;line-height:1.45;">Building condition for this sheet (shown at top of generated PDF).</div>
+    <div class="field-group"><label class="field-label">Condition</label>
+      <select id="quoteSheetCondSel">
+        <option value="new" selected>New</option>
+        <option value="used">Used</option>
+        <option value="repo">Repo</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:18px;">
+      <button type="button" class="btn-secondary" style="flex:1;" onclick="closeQuoteSheetCondModal()">Cancel</button>
+      <button type="button" class="btn-primary" style="flex:2;background:var(--barn);" onclick="confirmQuoteSheetCondAndGenerate()">Continue to pricing</button>
+    </div>
+  </div>
+</div>
+
+<!-- Marketplace ad from quote -->
+<div id="quoteAdWizardModal" onclick="if(event.target===this)closeQuoteAdWizardModal()">
+  <div class="quote-from-sheet" onclick="event.stopPropagation()">
+    <div style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:1.2rem;letter-spacing:2px;color:var(--wheat);margin-bottom:8px;">Marketplace ad</div>
+    <div style="font-size:0.82rem;color:rgba(245,240,232,0.65);margin-bottom:12px;line-height:1.45;">Answer a few questions, then copy or print the listing.</div>
+    <div class="field-group"><label class="field-label">Delivery</label>
+      <select id="quoteAdDelSel">
+        <option value="discuss" selected>Discuss delivery to customer area</option>
+        <option value="free">Free delivery to customer city/state</option>
+      </select>
+    </div>
+    <div class="field-group"><label class="field-label">Snow load upgrade blurb</label>
+      <select id="quoteAdSnowSel">
+        <option value="off" selected>Do not include</option>
+        <option value="on">Include auto-priced snow load paragraph</option>
+      </select>
+    </div>
+    <div class="field-group"><label class="field-label">Tone</label>
+      <select id="quoteAdToneSel">
+        <option value="friendly" selected>Friendly</option>
+        <option value="professional">Professional</option>
+        <option value="urgent">Urgent</option>
+        <option value="value">Value</option>
+        <option value="sale">Sale</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:18px;">
+      <button type="button" class="btn-secondary" style="flex:1;" onclick="closeQuoteAdWizardModal()">Cancel</button>
+      <button type="button" class="btn-primary" style="flex:2;background:var(--barn);" onclick="confirmQuoteAdWizardAndGenerate()">Generate</button>
+    </div>
+  </div>
+</div>
+
+<div id="quoteAdResultModal" onclick="if(event.target===this)closeQuoteAdResultModal()">
+  <div class="quote-from-sheet" onclick="event.stopPropagation()">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
+      <div style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:1.2rem;letter-spacing:2px;color:var(--wheat);">Listing</div>
+      <button type="button" class="btn-secondary" onclick="closeQuoteAdResultModal()">Close</button>
+    </div>
+    <div id="quoteAdResultBody"></div>
+    <div style="display:flex;gap:10px;margin-top:14px;">
+      <button type="button" class="btn-primary" style="flex:1;background:var(--barn);" onclick="copyQuoteAdResult()">Copy</button>
+      <button type="button" class="btn-secondary" style="flex:1;" onclick="printQuoteAdResult()">Print</button>
+    </div>
+  </div>
+</div>
+
 <!-- Sales Sheet Print Overlay -->
 <div id="ssOverlay" style="display:none;position:fixed;inset:0;background:white;z-index:9998;overflow-y:auto;">
   <div id="ssOverlayActions" style="display:flex;gap:10px;padding:14px 16px;background:var(--earth);position:sticky;top:0;z-index:1;">
     <button onclick="ssPrint()" class="btn-primary" style="flex:2;background:var(--barn);">🖨️ Print / Save PDF</button>
     <button onclick="document.getElementById('ssOverlay').style.display='none'" class="btn-secondary" style="flex:1;">✕ Close</button>
   </div>
-  <div id="ssSheetContent" style="padding:20px 16px 40px;max-width:600px;margin:0 auto;font-family:Georgia,serif;"></div>
+  <div id="ssSheetContent" style="padding:20px 16px 40px;max-width:600px;margin:0 auto;font-family:Georgia,serif;color:#000;"></div>
 </div>
 
 <!-- SS Confirm Modal -->
@@ -5109,6 +5294,43 @@ input:focus, select:focus, textarea:focus {
     <div id="printCustomerInfo"></div>
     <div id="printQuoteContent"></div>
     <div class="po-footer" id="printFooter"></div>
+  </div>
+</div>
+
+<!-- Quote: recipient picker before share / email / mail -->
+<div id="quoteShareRecipientOverlay" onclick="if(event.target===this)closeQuoteShareRecipientModal()">
+  <div class="quote-share-sheet" onclick="event.stopPropagation()">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;">
+      <div style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:1.25rem;letter-spacing:2px;color:var(--wheat);">Send estimate</div>
+      <button type="button" class="quote-share-mode-btn" style="flex:0;padding:8px 14px;" onclick="closeQuoteShareRecipientModal()" aria-label="Close">✕</button>
+    </div>
+    <div class="quote-share-mode-row">
+      <button type="button" class="quote-share-mode-btn active" id="quoteShareModeNewBtn" onclick="quoteShareSetMode('new')">New customer</button>
+      <button type="button" class="quote-share-mode-btn" id="quoteShareModePickBtn" onclick="quoteShareSetMode('pick')">Pick contact</button>
+    </div>
+    <div id="quoteSharePickWrap" style="display:none;margin-bottom:12px;">
+      <div class="field-group" style="margin-bottom:0;">
+        <label class="field-label" for="quoteShareLeadPicker">CRM contact</label>
+        <select id="quoteShareLeadPicker" onchange="quoteShareApplyLead(this.value)"></select>
+      </div>
+    </div>
+    <div id="quoteShareFirebaseHint" style="display:none;font-size:0.72rem;color:rgba(232,200,122,0.55);margin:-4px 0 10px;line-height:1.35;">Set Firebase in Settings to load contacts from CRM.</div>
+    <div id="quoteShareFieldsWrap">
+      <div class="field-group"><label class="field-label">Name</label><input type="text" id="c_custName" placeholder="First Last"></div>
+      <div class="field-group"><label class="field-label">Email</label><input type="email" id="c_custEmail" placeholder="email@example.com"></div>
+      <div class="field-group"><label class="field-label">Phone</label><input type="tel" id="c_custPhone" placeholder="(555) 555-0000"></div>
+      <div class="field-group"><label class="field-label">Delivery street</label><input type="text" id="c_custAddress" placeholder="123 Main St" style="width:100%;box-sizing:border-box;"></div>
+      <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-bottom:14px;">
+        <div class="field-group" style="margin-bottom:0;"><label class="field-label">City</label><input type="text" id="c_custCity" placeholder="City" style="width:100%;box-sizing:border-box;"></div>
+        <div class="field-group" style="margin-bottom:0;"><label class="field-label">State</label><input type="text" id="c_custState" placeholder="ST" maxlength="2" style="width:100%;box-sizing:border-box;text-transform:uppercase;"></div>
+        <div class="field-group" style="margin-bottom:0;"><label class="field-label">Zip</label><input type="text" id="c_custZip" placeholder="12345" maxlength="10" style="width:100%;box-sizing:border-box;"></div>
+      </div>
+      <div class="field-group"><label class="field-label">Notes</label><textarea id="c_custNotes" rows="2" placeholder="Site conditions, special requests..."></textarea></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:16px;">
+      <button type="button" class="btn-primary" id="quoteShareBtnWebShare" onclick="quoteShareSendWebShare()" style="width:100%;padding:14px;border-radius:10px;border:none;background:var(--barn);color:var(--cream);font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:1rem;letter-spacing:2px;cursor:pointer;">Share…</button>
+      <button type="button" class="btn-email" id="quoteShareSendEmailBtn" onclick="quoteShareSendEmailJs()" style="width:100%;padding:14px;border-radius:10px;border:none;cursor:pointer;font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:0.95rem;letter-spacing:1.5px;">Send email</button>
+    </div>
   </div>
 </div>
 
@@ -5831,6 +6053,7 @@ async function crmWatchLeads(){
     crmRenderLeadList();
     leadsSidePanelsRefresh();
     try{ renderHomeDashboard(); }catch(_e){}
+    try{ if(typeof calcCurrentPage==='number'&&calcCurrentPage===2) populateQuoteShareLeadPickerIfOpen(); }catch(_eQ){}
   },function(err){
     console.log('Lead watch failed:',err);
   });
@@ -7027,6 +7250,9 @@ function updateHomeUniformScale(){
 }
 
 var ssCurrentStep=0;
+var appNavHistory=[];
+var appNavSkipHistoryPush=false;
+var APP_NAV_HISTORY_MAX=48;
 
 function syncAppBottomNavForScreen(screenId){
   var nav=document.getElementById('appBottomNav');
@@ -7050,29 +7276,29 @@ function appBottomNavBackAction(){
   var active=document.querySelector('.screen.active');
   var sid=active?active.id:'';
   if(sid==='screenCalc'){
-    if(typeof calcCurrentPage==='number'){
-      if(calcCurrentPage<=0) goTo('screenHome');
-      else calcGoTo(calcCurrentPage-1);
-    }else{
-      goTo('screenHome');
+    if(typeof calcCurrentPage==='number' && calcCurrentPage>0){
+      calcGoTo(calcCurrentPage-1);
+      return;
     }
-    return;
   }
   if(sid==='screenSalesSheet'){
-    if(ssCurrentStep<=0) goTo('screenHome');
-    else ssGoStep(0);
+    if(typeof ssCurrentStep==='number' && ssCurrentStep>0){
+      ssGoStep(0);
+      return;
+    }
+  }
+  if(sid==='screenMileage' && mileageResultsPanelVisible()){
+    mileageReturnToSearchForm();
     return;
   }
-  var backMap={
-    screenWebsites:'screenHome', screenMileage:'screenHome', screenAd:'screenHome',
-    screenPhotos:'screenHome', screenInventory:'screenHome', screenCRM:'screenHome',
-    screenContacts:'screenHome', screenFollowups:'screenHome', screenIntakeSelector:'screenHome',
-    screenPurchase:'screenIntakeSelector', screenRTO:'screenIntakeSelector', screenInterest:'screenIntakeSelector',
-    screenIntakeSuccess:'screenHome', screenLandlordForm:'screenRTO', screenSettings:'screenHome',
-    screenSalesSheet:'screenHome'
-  };
-  var t=backMap[sid];
-  if(t) goTo(t);
+  appNavSkipHistoryPush=true;
+  var prev=null;
+  while(appNavHistory.length){
+    var cand=appNavHistory.pop();
+    if(cand && document.getElementById(cand)){ prev=cand; break; }
+  }
+  if(prev) goTo(prev);
+  else goTo('screenHome');
 }
 
 function appBottomNavPrimaryAction(){
@@ -7082,7 +7308,7 @@ function appBottomNavPrimaryAction(){
     if(typeof calcCurrentPage==='number'){
       if(calcCurrentPage===0) calcGoTo(1);
       else if(calcCurrentPage===1) calcGoTo(2);
-      else if(calcCurrentPage===2) sendCalcEmail();
+      else if(calcCurrentPage===2) openQuoteShareRecipientModal();
     }
     return;
   }
@@ -7161,7 +7387,7 @@ function updateAppBottomNav(){
   var sid=active?active.id:'';
 
   if(sid==='screenCalc'){
-    primBtn.setAttribute('aria-label',(calcCurrentPage===0)?'Next: Review Estimate':(calcCurrentPage===1)?'Next: Quote':'Send email');
+    primBtn.setAttribute('aria-label',(calcCurrentPage===0)?'Next: Review Estimate':(calcCurrentPage===1)?'Next: Quote':'Send estimate');
     return;
   }
   if(sid==='screenSalesSheet'){
@@ -7194,8 +7420,15 @@ function updateAppBottomNav(){
 }
 
 function goTo(screenId){
+  if(!screenId||!document.getElementById(screenId)) return;
+  var skip=appNavSkipHistoryPush;
+  appNavSkipHistoryPush=false;
   var current=document.querySelector('.screen.active');
   var currentId=current?current.id:'';
+  if(!skip && currentId && currentId!==screenId){
+    appNavHistory.push(currentId);
+    if(appNavHistory.length>APP_NAV_HISTORY_MAX) appNavHistory.shift();
+  }
   if(currentId==='screenCalc'&&screenId==='screenHome'){
     var snapshot=captureCalcSession();
     if(snapshot) pushCalcHistoryEntry(snapshot);
@@ -7229,6 +7462,7 @@ function goTo(screenId){
       ssCurrentStep=(_ssp1&&_ssp1.style.display==='block')?1:0;
     }catch(_ess){ ssCurrentStep=0; }
   }
+  if(screenId==='screenDocs') docsLoadDocuments();
   // Show dock + quick FAB only on home screen
   var dock=document.querySelector('.cc-dock');
   if(dock) dock.style.display = (screenId==='screenHome') ? 'block' : 'none';
@@ -7369,7 +7603,7 @@ function homeHeroNewQuoteClick(){
 }
 
 var HOME_QUICK_TOOL_SCREEN_IDS=[
-  'screenWebsites','screenCalc','screenPhotos','screenSettings','screenMileage','screenAd','screenInventory','screenCRM','screenContacts','screenFollowups','screenIntakeSelector','screenSalesSheet','screenLandlordForm','screenPurchase','screenRTO','screenInterest'
+  'screenWebsites','screenCalc','screenPhotos','screenSettings','screenMileage','screenAd','screenInventory','screenCRM','screenContacts','screenFollowups','screenIntakeSelector','screenSalesSheet','screenLandlordForm','screenPurchase','screenRTO','screenInterest','screenDocs'
 ];
 var HOME_QUICK_ACTION_PRESETS=[
   {id:'__qa_newQuote', label:'New quote (fresh calc)'},
@@ -7391,6 +7625,7 @@ var HOME_QT_SVG={
   photo:'<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linejoin="round" d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4" fill="rgba(232,200,122,0.04)" stroke="rgba(232,200,122,0.88)" stroke-width="1.3"/></svg>',
   settings:'<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" fill="rgba(232,200,122,0.08)" stroke="rgba(232,200,122,0.88)" stroke-width="1.5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="rgba(232,200,122,0.88)" stroke-width="1.3" stroke-linecap="round"/></svg>',
   calc:'<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="3" width="16" height="18" rx="2" fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.5"/><path d="M8 7h8M8 11h5" stroke="rgba(232,200,122,0.75)" stroke-width="1.2" stroke-linecap="round"/></svg>',
+  docs:'<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.6" stroke-linejoin="round" d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="8" y1="13" x2="16" y2="13" stroke="rgba(232,200,122,0.88)" stroke-width="1.3" stroke-linecap="round"/><line x1="8" y1="17" x2="12" y2="17" stroke="rgba(232,200,122,0.88)" stroke-width="1.3" stroke-linecap="round"/></svg>',
   link:'<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 13a5 5 0 0 1 0-7l1-1a5 5 0 0 1 7 7l-1 1" stroke="rgba(232,200,122,0.88)" stroke-width="1.5" stroke-linecap="round"/><path d="M14 11a5 5 0 0 1 0 7l-1 1a5 5 0 0 1-7-7l1-1" stroke="rgba(232,200,122,0.88)" stroke-width="1.5" stroke-linecap="round"/></svg>',
   default:'<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3" fill="rgba(232,200,122,0.08)" stroke="rgba(232,200,122,0.88)" stroke-width="1.5"/><path stroke="rgba(232,200,122,0.88)" stroke-width="1.5" stroke-linecap="round" d="M12 2v2M12 20v2M4.5 4.5l1.5 1.5M18 18l1.5 1.5M2 12h2M20 12h2"/></svg>'
 };
@@ -7403,6 +7638,7 @@ function getDefaultHomeQuickTools(){
     {label:'Websites',action:'screen',target:'screenWebsites'},
     {label:'Designer',action:'designer',target:''},
     {label:'Photo library',action:'screen',target:'screenPhotos'},
+    {label:'Docs & Facts',action:'screen',target:'screenDocs'},
     {label:'Settings',action:'screen',target:'screenSettings'},
     {label:'Price calc',action:'screen',target:'screenCalc'}
   ];
@@ -7454,6 +7690,7 @@ function homeQuickToolSvgForItem(tool){
   if(t==='screenphotos') return HOME_QT_SVG.photo;
   if(t==='screensettings') return HOME_QT_SVG.settings;
   if(t==='screencalc') return HOME_QT_SVG.calc;
+  if(t==='screendocs') return HOME_QT_SVG.docs;
   if(t==='__qa_newquote') return HOME_QT_SVG.calc;
   if(t==='__qa_addphoto') return HOME_QT_SVG.photo;
   return HOME_QT_SVG.default;
@@ -8359,6 +8596,7 @@ function clearCalcForNewQuote(){
     if(el.type==='checkbox'||el.type==='radio') el.checked=false;
     else el.value='';
   });
+  clearQuoteShareCustomerFields();
   document.querySelectorAll('[id^="chk_"]').forEach(function(chk){chk.classList.remove('on');});
   document.querySelectorAll('[id^="detail_"]').forEach(function(detail){detail.style.display='none';});
   calcRenderRows('doors');
@@ -8457,6 +8695,7 @@ function setCalcType(code){
   updateTallWallAvailability();
   updatePorchAvailability();
   updateAutoWidthPrices();
+  if(calcState.width) onCalcWidthChange(String(calcState.width));
 }
 
 function onCalcWidthChange(val){
@@ -8464,7 +8703,7 @@ function onCalcWidthChange(val){
   calcState.width=val?parseInt(val):null;
   const ls=document.getElementById('calcLength');
   ls.innerHTML='<option value="">Length</option>';
-  if(calcState.width){for(let l=8;l<=60;l+=2){const o=document.createElement('option');o.value=l;o.textContent=l+"'"+(PRICING[calcState.width]&&PRICING[calcState.width][l]&&calcState.type&&PRICING[calcState.width][l][calcState.type]?'':' —');ls.appendChild(o);}}
+  if(calcState.width){for(let l=8;l<=60;l+=2){const o=document.createElement('option');o.value=l;var row=PRICING[calcState.width]&&PRICING[calcState.width][l];var hasPrice=calcState.type&&row&&row[calcState.type];o.textContent=l+"'"+(calcState.type&&!hasPrice?' —':'');ls.appendChild(o);}}
   if(prevLength&&calcState.width&&calcState.type&&PRICING[calcState.width]&&PRICING[calcState.width][prevLength]&&PRICING[calcState.width][prevLength][calcState.type]){
     calcState.length=prevLength;
     ls.value=String(prevLength);
@@ -9062,29 +9301,189 @@ function legacyCopy(text){
 }
 
 function goToSalesSheetFromQuote(){
-  try{ goTo('screenSalesSheet'); }
+  try{ openQuoteSheetCondModal(); }
   catch(_e){ showToast('Sales Sheet unavailable'); }
 }
 
 function goToMarketplaceAdFromQuote(){
-  try{ goTo('screenAd'); }
+  try{ openQuoteAdWizardModal(); }
   catch(_e){ showToast('Marketplace Ad unavailable'); }
 }
 
 function shareEstimate(){
+  openQuoteShareRecipientModal();
+}
+
+function quoteShareBuildingSummary(){
+  try{
+    var q=getCalcQuoteSnapshot();
+    if(!q) return '';
+    return [NAMES[calcState.type]||'Building',(calcState.width&&calcState.length)?(calcState.width+"'×"+calcState.length+"'"):'',fmt(q.grandTotal||0)].filter(Boolean).join(' · ');
+  }catch(_e){ return ''; }
+}
+
+var quoteShareMode='new';
+
+function quoteShareSetMode(mode){
+  quoteShareMode=mode;
+  var n=document.getElementById('quoteShareModeNewBtn');
+  var p=document.getElementById('quoteShareModePickBtn');
+  var wrap=document.getElementById('quoteSharePickWrap');
+  if(n) n.classList.toggle('active',mode==='new');
+  if(p) p.classList.toggle('active',mode==='pick');
+  if(wrap) wrap.style.display=mode==='pick'?'block':'none';
+  if(mode==='pick'){
+    firebaseTryInit();
+    if(!cloudReady()){
+      showToast('Set Firebase in Settings');
+      quoteShareSetMode('new');
+      return;
+    }
+    populateQuoteShareLeadPicker();
+  } else {
+    var sel=document.getElementById('quoteShareLeadPicker');
+    if(sel) sel.value='';
+  }
+  updateQuoteShareFirebaseHint();
+}
+
+function updateQuoteShareFirebaseHint(){
+  var h=document.getElementById('quoteShareFirebaseHint');
+  if(!h) return;
+  h.style.display=(quoteShareMode==='pick'&&!cloudReady())?'block':'none';
+}
+
+function populateQuoteShareLeadPicker(){
+  var sel=document.getElementById('quoteShareLeadPicker');
+  if(!sel) return;
+  updateQuoteShareFirebaseHint();
+  var prev=sel.value;
+  sel.innerHTML='';
+  var o0=document.createElement('option');
+  o0.value='';
+  o0.textContent='Choose a contact…';
+  sel.appendChild(o0);
+  var leads=(crmState&&crmState.leads)?crmState.leads:[];
+  leads.slice(0,120).forEach(function(lead){
+    var opt=document.createElement('option');
+    opt.value=String(lead.id||'');
+    var nm=(lead.contact&&lead.contact.name)||'Unnamed';
+    var ph=(lead.contact&&lead.contact.phone)||'';
+    opt.textContent=ph?nm+' \u00b7 '+ph:nm;
+    sel.appendChild(opt);
+  });
+  if(prev){
+    try{ sel.value=prev; }catch(_e){}
+    if(sel.value!==prev) sel.value='';
+  }
+}
+
+function populateQuoteShareLeadPickerIfOpen(){
+  var ov=document.getElementById('quoteShareRecipientOverlay');
+  if(!ov||!ov.classList.contains('open')) return;
+  if(quoteShareMode==='pick') populateQuoteShareLeadPicker();
+}
+
+function quoteShareApplyLead(leadId){
+  if(!leadId) return;
+  var leads=(crmState&&crmState.leads)?crmState.leads:[];
+  var lead=null;
+  for(var i=0;i<leads.length;i++){
+    if(String(leads[i].id)===String(leadId)){ lead=leads[i]; break; }
+  }
+  if(!lead) return;
+  function set(id,v){ var el=document.getElementById(id); if(el) el.value=v!=null?String(v):''; }
+  set('c_custName',lead.contact&&lead.contact.name);
+  set('c_custEmail',lead.contact&&lead.contact.email);
+  set('c_custPhone',lead.contact&&lead.contact.phone);
+}
+
+function clearQuoteShareCustomerFields(){
+  ['c_custName','c_custEmail','c_custPhone','c_custAddress','c_custCity','c_custState','c_custZip','c_custNotes'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el) el.value='';
+  });
+  var sel=document.getElementById('quoteShareLeadPicker');
+  if(sel) sel.value='';
+}
+
+function openQuoteShareRecipientModal(){
   var q=getCalcQuoteSnapshot();
   if(!q||!q.base){ showToast('Build a quote first'); return; }
+  var ov=document.getElementById('quoteShareRecipientOverlay');
+  if(!ov) return;
+  firebaseTryInit();
+  quoteShareMode='new';
+  var n=document.getElementById('quoteShareModeNewBtn');
+  var p=document.getElementById('quoteShareModePickBtn');
+  var wrap=document.getElementById('quoteSharePickWrap');
+  if(n){ n.classList.add('active'); }
+  if(p){ p.classList.remove('active'); }
+  if(wrap){ wrap.style.display='none'; }
+  var sel=document.getElementById('quoteShareLeadPicker');
+  if(sel) sel.value='';
+  updateQuoteShareFirebaseHint();
+  var ws=document.getElementById('quoteShareBtnWebShare');
+  if(ws) ws.style.display=navigator.share?'block':'none';
+  ov.classList.add('open');
+}
+
+function closeQuoteShareRecipientModal(){
+  var ov=document.getElementById('quoteShareRecipientOverlay');
+  if(ov) ov.classList.remove('open');
+}
+
+async function quoteShareLogToCrmAfterSend(method){
+  try{
+    if(!(await firebaseEnsureAuthed())) return;
+    var methodLabel=method==='web_share'?'Web Share':method==='emailjs'?'Email':'Share';
+    var summary=quoteShareBuildingSummary();
+    var body='Price estimate sent via '+methodLabel+'. '+summary;
+    var sel=document.getElementById('quoteShareLeadPicker');
+    var leadId=(quoteShareMode==='pick'&&sel&&sel.value)?String(sel.value):'';
+    if(leadId){
+      await crmAddActivity(leadId,{channel:'email',direction:'outbound',body:body.slice(0,900),createdBy:loadSettings().contactName||'sales'});
+      await crmUpdateLead(leadId,{conversation:{channel:'email',lastMessageAt:new Date().toISOString(),lastDirection:'outbound',summary:('Estimate · '+summary).slice(0,180)}});
+      return;
+    }
+    var name=cv('c_custName'), phone=cv('c_custPhone'), email=cv('c_custEmail');
+    if(!name&&!phone) return;
+    var now=new Date().toISOString();
+    var payload={
+      contact:{name:name,phone:phone,email:email},
+      buildingInterest:{summary:summary},
+      notes:cv('c_custNotes')||'',
+      conversation:{channel:'email',lastMessageAt:now,lastDirection:'outbound',summary:'Estimate sent ('+methodLabel+')'},
+      source:'calculator',
+      status:crmStatusToFirestore('new')
+    };
+    var newId=await crmCreateLead(payload);
+    await crmAddActivity(newId,{channel:'email',direction:'outbound',body:body.slice(0,900),createdBy:loadSettings().contactName||'sales'});
+  }catch(e){
+    console.log('Quote share CRM log failed:',e);
+  }
+}
+
+async function quoteShareSendWebShare(){
+  var q=getCalcQuoteSnapshot();
+  if(!q||!q.base){ showToast('Build a quote first'); return; }
+  if(!navigator.share){ showToast('Web Share not available on this device'); return; }
   var pkt=buildCalcQuoteText(q);
   var text=pkt&&pkt.t?pkt.t:'';
   var title=(NAMES[calcState.type]||'Shed')+' Estimate';
-  if(navigator.share){
-    navigator.share({title:title,text:text}).catch(function(){});
-    return;
+  try{
+    await navigator.share({title:title,text:text});
+    await quoteShareLogToCrmAfterSend('web_share');
+    closeQuoteShareRecipientModal();
+    showToast('Shared');
+  }catch(e){
+    if(e&&e.name==='AbortError') return;
+    showToast('Share cancelled or failed');
   }
-  // Fallback: scroll user down to Send Email / Mail App / Print buttons
-  var legacy=document.querySelector('#cpage2 .calc-quote-secondary-actions');
-  if(legacy&&legacy.scrollIntoView){ legacy.scrollIntoView({behavior:'smooth',block:'center'}); }
-  showToast('Use Send Email, Mail App, or Print below');
+}
+
+async function quoteShareSendEmailJs(){
+  await sendCalcEmail({logCrm:true,closeModal:true});
 }
 
 function copyFacebookPost(){
@@ -11084,39 +11483,70 @@ function renderCalcQuote(){
   }
 
   html+=`<div class="down-card"><div class="down-lbl">Minimum Down</div><div class="down-chips"><div class="down-chip">Cash: ${fmt(Math.ceil(grandTotal*0.5))}</div><div class="down-chip">RTO: ${q.rtoDownDisplayText}</div></div></div>`;
+  html+='<button type="button" class="btn-secondary" style="width:100%;margin-top:10px;padding:12px 14px;border-radius:10px;letter-spacing:0.5px;font-weight:700;" onclick="copyEstimateTextToClipboard()">Copy estimate text</button>';
 
-  if((q.disclaimerText||'').trim()){
-    html+=`<div style="margin-top:10px;padding:10px 12px;background:#f8f5f0;border:1px solid rgba(232,200,122,0.2);border-radius:8px;font-size:0.7rem;color:rgba(232,200,122,0.55);line-height:1.5;">${q.disclaimerText}</div>`;
-  }
   document.getElementById('calcQuoteContent').innerHTML=html;
   // ── refresh live RTO summary on cpage1 ──
   updateRTOLivePanel();
-  try{
-    var _qt=buildCalcQuoteText(q);
-    var _t=_qt.t; var _email=_qt.email;
-    var _bizName=loadSettings().bizName||'Your Business';
-    var _sub=encodeURIComponent('Price Estimate - '+_bizName);
-    var _body=encodeURIComponent(_t);
-    document.getElementById('calcMailtoBtn').href='mailto:'+(_email||'')+'?subject='+_sub+'&body='+_body;
-  }catch(e){console.warn('Quote text error:',e);}
   renderCalcRTOStreamlineFromState();
   try{ renderOptsSummary(); }catch(_e4){}
 }
 
-async function sendCalcEmail(){
-  if(!isEJSConfigured()){showToast('⚙️ Set up EmailJS first — see setup note');return;}
+async function sendCalcEmail(opts){
+  opts=opts||{};
+  if(!isEJSConfigured()){showToast('Set up EmailJS in Settings (public key, service ID, template ID)');return false;}
   const email=cv('c_custEmail');
-  if(!email){showToast('Enter customer email first');return;}
+  if(!email){showToast('Enter customer email first');return false;}
   var q=getCalcQuoteSnapshot();
-  if(!q){showToast('Generate a quote first');return;}
+  if(!q){showToast('Generate a quote first');return false;}
   var _qt2=buildCalcQuoteText(q);var t=_qt2.t;var name=_qt2.name;
+  var cfg=getEJSConfig();
   const btn=document.getElementById('calcEmailBtn');
-  btn.textContent='Sending...';btn.disabled=true;
+  var sheetBtn=document.getElementById('quoteShareSendEmailBtn');
+  var lab=btn?btn.querySelector('.qhub-label'):null;
+  if(btn){ btn.disabled=true; if(lab) lab.textContent='Sending...'; }
+  if(sheetBtn){ sheetBtn.disabled=true; sheetBtn.textContent='Sending…'; }
+  initEmailJS();
+  if(typeof emailjs==='undefined'||!emailjs.send){
+    showToast('EmailJS script failed to load. Check your connection.');
+    if(btn){ btn.disabled=false; if(lab) lab.textContent='Send Email'; }
+    if(sheetBtn){ sheetBtn.disabled=false; sheetBtn.textContent='Send email'; }
+    return false;
+  }
+  if(cfg.publicKey){
+    try{ emailjs.init({publicKey:cfg.publicKey}); }
+    catch(_e1){ try{ emailjs.init(cfg.publicKey); }catch(_e2){} }
+  }
   try{
-    await emailjs.send(getEJSConfig().serviceId,getEJSConfig().templateId,{to_email:email,to_name:name||'Customer',from_name:loadSettings().bizName||'Your Business',subject:'Your Price Estimate — '+(loadSettings().bizName||'Your Business'),message:t});
-    showToast('✅ Email sent!');btn.textContent='✅ Sent!';
-    setTimeout(()=>{btn.textContent='✉️ Send Email';btn.disabled=false;},3000);
-  }catch(err){showToast('❌ Failed — try Mail App button');btn.textContent='✉️ Send Email';btn.disabled=false;}
+    var result=await emailjs.send(cfg.serviceId,cfg.templateId,{
+      to_email:email,
+      to_name:name||'Customer',
+      from_name:loadSettings().bizName||'Your Business',
+      subject:'Your Price Estimate — '+(loadSettings().bizName||'Your Business'),
+      message:t
+    });
+    if(result&&result.status!=null&&result.status!==200){
+      throw new Error((result.text||'Unexpected status')+' ('+result.status+')');
+    }
+    showToast('Email sent');
+    if(opts.logCrm){
+      try{ await quoteShareLogToCrmAfterSend('emailjs'); }
+      catch(_crm){ console.warn('CRM log after email failed:',_crm); }
+    }
+    if(lab) lab.textContent='Sent';
+    setTimeout(function(){ if(lab) lab.textContent='Send Email'; if(btn) btn.disabled=false; },3000);
+    if(sheetBtn){ sheetBtn.textContent='Send email'; sheetBtn.disabled=false; }
+    if(opts.closeModal) closeQuoteShareRecipientModal();
+    return true;
+  }catch(err){
+    console.warn('EmailJS send failed:',err);
+    var detail=(err&&err.text)||(err&&err.message)||(typeof err==='string'?err:'');
+    showToast('Email failed'+(detail?': '+String(detail).slice(0,120):'. Check template params in EmailJS.'));
+    if(lab) lab.textContent='Send Email';
+    if(btn) btn.disabled=false;
+    if(sheetBtn){ sheetBtn.textContent='Send email'; sheetBtn.disabled=false; }
+    return false;
+  }
 }
 
 // ============================================================
@@ -11285,10 +11715,498 @@ function adBuildOptionsSummarySentence(){
   return sentence+'.';
 }
 
-function generateAd(){
-  var _adS=loadSettings();
+// ── DOCS & FACTS (screenDocs) + quote export hub + ad/sheet from quote ─────
+var _docsData=[];
+var _docsCurrentDoc=null;
+window._quoteSheetConditionHtml='';
+
+function openDocsScreen(){ goTo('screenDocs'); }
+
+function docsLoadDocuments(){
+  var loading=document.getElementById('docsLoadingState');
+  var error=document.getElementById('docsErrorState');
+  var empty=document.getElementById('docsEmptyState');
+  var cont=document.getElementById('docsSectionContainer');
+  if(loading) loading.style.display='block';
+  if(error) error.style.display='none';
+  if(empty) empty.style.display='none';
+  if(cont) cont.innerHTML='';
+
+  if(typeof fbDb==='undefined'||!fbDb){
+    docsRenderDemo();
+    return;
+  }
+  try{
+    fbDb.collection('documents').orderBy('category').get()
+      .then(function(snap){
+        _docsData=[];
+        snap.forEach(function(d){ var o=d.data(); o.id=d.id; _docsData.push(o); });
+        if(loading) loading.style.display='none';
+        if(_docsData.length===0){ if(empty) empty.style.display='block'; }
+        else docsRenderSections(_docsData);
+      })
+      .catch(function(e){
+        if(loading) loading.style.display='none';
+        if(error){
+          error.style.display='block';
+          var m=document.getElementById('docsErrorMsg');
+          if(m) m.textContent=e.message||'Firebase error.';
+        }
+      });
+  }catch(e){
+    if(loading) loading.style.display='none';
+    if(error){
+      error.style.display='block';
+      var m2=document.getElementById('docsErrorMsg');
+      if(m2) m2.textContent='Firebase not connected.';
+    }
+  }
+}
+
+/** Firestore tags: include building code (e.g. ULB) or style:CODE for marketplace merge */
+function getQuotedStyleDocsSnippets(typeCode){
+  var tc=String(typeCode||'').trim();
+  if(!tc||!_docsData.length) return [];
+  var out=[];
+  _docsData.forEach(function(d){
+    var tags=Array.isArray(d.tags)?d.tags:[];
+    var tagStr=tags.map(function(t){return String(t||'').toLowerCase();}).join(' ');
+    var hit=tags.some(function(t){return String(t||'').toUpperCase()===tc;})||tagStr.indexOf('style:'+tc.toLowerCase())>=0;
+    if(!hit) return;
+    var txt=String(d.description||'').trim()||String(d.name||'').trim();
+    if(txt) out.push(txt);
+  });
+  return out;
+}
+
+function docsRenderDemo(){
+  _docsData=[
+    {id:'d1', name:'Idaho Full Set 130 PSF Engineering Plans', category:'Engineering Plans', subcategory:'Premier Portable Buildings', fileType:'pdf', isFlyerTemplate:false, downloadUrl:'#'},
+    {id:'d2', name:'Idaho Sales Tax Exemption Certificate ST-101', category:'Forms & Compliance', subcategory:'Tax Forms', fileType:'pdf', isFlyerTemplate:false, downloadUrl:'#'},
+    {id:'d23', name:'Building Style Descriptions and Specs', category:'Product Reference', subcategory:'Building Specs', fileType:'doc', isFlyerTemplate:false, downloadUrl:'#', tags:['ULB','UUTX'], description:'Tag documents with your style code (e.g. ULB) or style:CODE in tags[] for ad merge.'}
+  ];
+  var loading=document.getElementById('docsLoadingState');
+  if(loading) loading.style.display='none';
+  docsRenderSections(_docsData);
+}
+
+var DOCS_CAT_ICONS={'Engineering Plans':'📐','Forms & Compliance':'📋','Marketing & Sales':'📣','Product Reference':'📦'};
+
+function docsRenderSections(docs){
+  var grouped={};
+  docs.forEach(function(d){
+    var cat=d.category||'Other';
+    var sub=d.subcategory||'';
+    if(!grouped[cat]) grouped[cat]={};
+    if(!grouped[cat][sub]) grouped[cat][sub]=[];
+    grouped[cat][sub].push(d);
+  });
+  var cont=document.getElementById('docsSectionContainer');
+  if(!cont) return;
+  cont.innerHTML='';
+  Object.keys(grouped).sort().forEach(function(cat){
+    var subs=grouped[cat];
+    var total=Object.values(subs).reduce(function(a,b){return a+b.length;},0);
+    var icon=DOCS_CAT_ICONS[cat]||'📁';
+    var hid='dsh'+cat.replace(/\W+/g,'');
+    var bid='dsb'+cat.replace(/\W+/g,'');
+    var html='<div class="docs-section">';
+    html+='<button type="button" class="docs-sec-hdr" id="'+hid+'" onclick="docsToggleSec(\''+hid+'\',\''+bid+'\')">';
+    html+='<span class="docs-sec-hdr-icon">'+icon+'</span>';
+    html+='<span class="docs-sec-hdr-name">'+cat+'</span>';
+    html+='<span class="docs-sec-hdr-count">'+total+'</span>';
+    html+='<span class="docs-sec-hdr-arrow">&#9660;</span>';
+    html+='</button>';
+    html+='<div class="docs-sec-body" id="'+bid+'">';
+    var subKeys=Object.keys(subs).sort();
+    var multiSub=subKeys.length>1||(subKeys.length===1&&subKeys[0]!=='');
+    subKeys.forEach(function(sub){
+      if(multiSub&&sub) html+='<div class="docs-subsec-label">'+sub+'</div>';
+      subs[sub].forEach(function(d){ html+=docsRowHTML(d); });
+    });
+    html+='</div></div>';
+    cont.insertAdjacentHTML('beforeend',html);
+  });
+}
+
+function docsRowHTML(doc){
+  var ft=(doc.fileType||'file').toLowerCase();
+  var ic=ft==='pdf'?'pdf':(ft==='image'||ft==='jpg'||ft==='jpeg'||ft==='png')?'image':'doc';
+  var em=ft==='pdf'?'&#128196;':ic==='image'?'&#128444;':ft==='doc'||ft==='docx'?'&#128221;':'&#128206;';
+  var badge=doc.isFlyerTemplate?'<span class="docs-flyer-badge">FLYER</span>':'';
+  var sid=(doc.id||'').replace(/'/g,'');
+  return '<div class="docs-row" onclick="docsOpenDoc(\''+sid+'\')">'
+    +'<div class="docs-row-icon '+ic+'">'+em+'</div>'
+    +'<div class="docs-row-info">'
+    +'<div class="docs-row-name">'+(doc.name||'Untitled')+'</div>'
+    +'<div class="docs-row-meta">'+ft.toUpperCase()+(doc.subcategory?' &middot; '+doc.subcategory:'')+'</div>'
+    +badge
+    +'</div>'
+    +'<button type="button" class="docs-share-btn" onclick="event.stopPropagation();docsShareById(\''+sid+'\')" title="Share">&#8679;</button>'
+    +'</div>';
+}
+
+function docsToggleSec(hid,bid){
+  var h=document.getElementById(hid),b=document.getElementById(bid);
+  if(!h||!b) return;
+  var open=h.classList.contains('open');
+  h.classList.toggle('open',!open);
+  b.classList.toggle('open',!open);
+}
+
+function docsOpenDoc(id){
+  var doc=_docsData.find(function(d){return d.id===id;});
+  if(!doc) return;
+  _docsCurrentDoc=doc;
+  var ft=(doc.fileType||'').toLowerCase();
+  if(doc.isFlyerTemplate){ docsOpenFlyerModal(doc); return; }
+  if(ft==='image'||ft==='jpg'||ft==='jpeg'||ft==='png'||ft==='gif'||ft==='webp'){ docsOpenLightbox(doc); return; }
+  if(doc.downloadUrl&&doc.downloadUrl!=='#') window.open(doc.downloadUrl,'_blank');
+  else showToast('No file URL available');
+}
+
+function docsOpenLightbox(doc){
+  var lb=document.getElementById('docsLightbox');
+  document.getElementById('docsLightboxImg').src=doc.downloadUrl||'';
+  document.getElementById('docsLightboxCaption').textContent=doc.name||'';
+  lb.classList.add('open');
+}
+function docsCloseLightbox(){
+  document.getElementById('docsLightbox').classList.remove('open');
+  document.getElementById('docsLightboxImg').src='';
+}
+
+function docsOpenFlyerModal(doc){
+  document.getElementById('docsFlyerModalTitle').textContent=doc.name||'Flyer';
+  document.getElementById('docsFlyerModalImg').src=doc.downloadUrl||'';
+  var s={};
+  try{ s=JSON.parse(localStorage.getItem('gss_settings')||'{}'); }catch(e){}
+  document.getElementById('docsFlyerDealerName').textContent=s.bizName||'Your Business Name';
+  var phone=s.bizPhone||'';
+  var addr=(s.bizAddr1||'')+(s.bizAddr2?', '+s.bizAddr2:'');
+  var web='';
+  if(s.websites&&s.websites.length>0) web=s.websites[0].url||s.websites[0]||'';
+  document.getElementById('docsFlyerDealerContact').textContent=[phone,addr,web].filter(Boolean).join('  ·  ')||'Set dealer info in Settings';
+  var logo=document.getElementById('docsFlyerDealerLogo');
+  if(s.logoData){ logo.src=s.logoData; logo.style.display='block'; }
+  else logo.style.display='none';
+  document.getElementById('docsFlyerModal').classList.add('open');
+}
+function docsCloseFlyerModal(){
+  document.getElementById('docsFlyerModal').classList.remove('open');
+  document.getElementById('docsFlyerModalImg').src='';
+}
+function docsFlyerShare(){ if(_docsCurrentDoc) docsShareDoc(_docsCurrentDoc); }
+
+function docsShareById(id){
+  var doc=_docsData.find(function(d){return d.id===id;});
+  if(doc) docsShareDoc(doc);
+}
+function docsShareCurrent(){ if(_docsCurrentDoc) docsShareDoc(_docsCurrentDoc); }
+function docsShareDoc(doc){
+  var url=doc.downloadUrl;
+  if(!url||url==='#'){ showToast('No shareable URL for this file'); return; }
+  if(navigator.share){
+    navigator.share({title:doc.name||'Document',text:doc.description||'',url:url}).catch(function(){});
+  }else{
+    try{
+      navigator.clipboard.writeText(url).then(function(){ showToast('Link copied'); });
+    }catch(e){ window.open(url,'_blank'); }
+  }
+}
+
+function docsToggleSearch(){
+  var bar=document.getElementById('docsSearchBar');
+  var res=document.getElementById('docsSearchResults');
+  var main=document.getElementById('docsMainContent');
+  var vis=bar.style.display!=='none';
+  if(vis){
+    bar.style.display='none'; res.style.display='none'; main.style.display='block';
+    document.getElementById('docsSearchInput').value='';
+  }else{
+    bar.style.display='block';
+    setTimeout(function(){ document.getElementById('docsSearchInput').focus(); },100);
+  }
+}
+function docsSearch(q){
+  var res=document.getElementById('docsSearchResults');
+  var main=document.getElementById('docsMainContent');
+  var list=document.getElementById('docsSearchResultsList');
+  if(!q||!q.trim()){ res.style.display='none'; main.style.display='block'; return; }
+  main.style.display='none'; res.style.display='block';
+  var lq=q.toLowerCase().trim();
+  var hits=_docsData.filter(function(d){
+    return (d.name||'').toLowerCase().includes(lq)
+      ||(d.category||'').toLowerCase().includes(lq)
+      ||(d.subcategory||'').toLowerCase().includes(lq)
+      ||(d.description||'').toLowerCase().includes(lq)
+      ||((d.tags||[]).join(' ')).toLowerCase().includes(lq);
+  });
+  list.innerHTML=hits.length?hits.map(docsRowHTML).join(''):'<div class="docs-no-results">No results for "'+q+'"</div>';
+}
+function docsClearSearch(){
+  document.getElementById('docsSearchInput').value='';
+  docsSearch('');
+  document.getElementById('docsSearchBar').style.display='none';
+  document.getElementById('docsMainContent').style.display='block';
+}
+
+function quoteRunExportHubByValue(v){
+  if(v==='share_email') openQuoteShareRecipientModal();
+  else if(v==='sales_sheet') goToSalesSheetFromQuote();
+  else if(v==='marketplace') goToMarketplaceAdFromQuote();
+  else if(v==='facebook') copyFacebookPost();
+  else if(v==='print') printQuote();
+}
+
+/** Selecting a Share and Export option runs it immediately (no separate Go). */
+function onQuoteExportHubSelectChange(){
+  var sel=document.getElementById('quoteExportActionSel');
+  if(!sel) return;
+  var v=sel.value;
+  if(!v) return;
+  quoteRunExportHubByValue(v);
+  sel.value='';
+}
+
+function runQuoteExportHubAction(){
+  var sel=document.getElementById('quoteExportActionSel');
+  var v=sel?sel.value:'';
+  if(!v){ showToast('Pick an option under Share or export'); return; }
+  quoteRunExportHubByValue(v);
+}
+
+function _copyInputById(fromId,toId){
+  var a=document.getElementById(fromId),b=document.getElementById(toId);
+  if(a&&b) b.value=a.value;
+}
+
+function syncSalesSheetFromCalcForQuote(){
+  var t=calcState.type,w=calcState.width,l=calcState.length;
+  if(!t||!w||!l) return false;
+  var et=document.getElementById('ss_type'); if(et) et.value=t;
+  var sw=document.getElementById('ss_width');
+  if(sw){
+    sw.value=String(w);
+    try{ ssOnWidthChange(w); }catch(_e){}
+  }
+  var sl=document.getElementById('ss_length'); if(sl) sl.value=String(l);
+  var ssp=document.getElementById('ss_salePct');
+  if(ssp) ssp.value=(calcState.saleActive&&calcState.salePercent>0)?String(calcState.salePercent):'0';
+  var pfx=(calcState.payType==='rto')?'r_':'p_';
+  _copyInputById(pfx+'roofColor','ss_roof');
+  _copyInputById(pfx+'sidingColor','ss_siding');
+  _copyInputById(pfx+'sidingCustom','ss_sidingCustom');
+  _copyInputById(pfx+'bottomColor','ss_bottomColor');
+  _copyInputById(pfx+'bottomCustom','ss_bottomCustom');
+  _copyInputById(pfx+'trimColor','ss_trim');
+  var srcTT=document.getElementById(pfx+'twoToneFields');
+  var dstTT=document.getElementById('ss_ttFields');
+  if(srcTT&&dstTT) dstTT.style.display=srcTT.style.display;
+  [['c_rooffeltFt','ss_c_rooffeltFt'],['c_housewrapFt','ss_c_housewrapFt'],['c_paintType','ss_c_paintType'],['c_2x6type','ss_c_2x6type'],['c_2x6ft','ss_c_2x6ft'],['c_rooftrussft','ss_c_rooftrussft'],['c_floorjoistFt','ss_c_floorjoistFt'],['c_porchFt','ss_c_porchFt'],['c_flooringSqFt','ss_c_flooringSqFt'],['c_shelvesLinFt','ss_c_shelvesLinFt'],['c_intwallType','ss_c_intwallType'],['c_intwallFt','ss_c_intwallFt'],['c_loftFt','ss_c_loftFt'],['c_manual_ins_roof','ss_c_manual_ins_roof'],['c_manual_ins_wallsroof','ss_c_manual_ins_wallsroof'],['c_manual_ins_floor_foamboard','ss_c_manual_ins_floor_foamboard'],['c_manual_ins_floor_sprayfoam','ss_c_manual_ins_floor_sprayfoam']].forEach(function(pair){ _copyInputById(pair[0],pair[1]); });
+  Object.keys(ssAddons).forEach(function(k){ ssAddons[k]=!!(calcState.addons&&calcState.addons[k]); });
+  ssMulti.doors=JSON.parse(JSON.stringify(calcState.multiDoors||[]));
+  ssMulti.windows=JSON.parse(JSON.stringify(calcState.multiWindows||[]));
+  ssMulti.garage=JSON.parse(JSON.stringify(calcState.multiGarage||[]));
+  ssMulti.cutouts=JSON.parse(JSON.stringify(calcState.multiCutouts||[]));
+  ['doors','windows','garage','cutouts'].forEach(function(ty){ try{ ssRenderRows(ty); }catch(e){} });
+  try{ ssSyncCatCounts(); }catch(e){}
+  ssRebuildStdPanel();
+  var chips=document.querySelectorAll('#ss_stdList .check-chip');
+  var opts=STD_OPTIONS[t]||[];
+  opts.forEach(function(item,ix){
+    if(calcState.stdRemoved&&calcState.stdRemoved[item.id]){
+      ssStdRemoved[item.id]=true;
+      if(chips[ix]) chips[ix].classList.add('on');
+    }
+  });
+  try{ ssSidingChange(); }catch(e){}
+  try{ ssBottomChange(); }catch(e){}
+  try{ ssSyncTwoToneToggleVisual(); }catch(e){}
+  try{ ssCalcPrice(); }catch(e){}
+  return true;
+}
+
+function openQuoteSheetCondModal(){
+  var m=document.getElementById('quoteSheetCondModal');
+  if(m){ m.style.display='flex'; var s=document.getElementById('quoteSheetCondSel'); if(s) s.value='new'; }
+}
+function closeQuoteSheetCondModal(){
+  var m=document.getElementById('quoteSheetCondModal');
+  if(m) m.style.display='none';
+}
+function confirmQuoteSheetCondAndGenerate(){
+  var sel=document.getElementById('quoteSheetCondSel');
+  var cond=sel?sel.value:'new';
+  window._quoteSheetConditionHtml='';
+  if(cond==='used') window._quoteSheetConditionHtml='<div style="text-align:center;font-weight:800;color:#8B4513;margin-bottom:10px;">PRE-OWNED</div><div style="text-align:center;font-size:0.95rem;color:#000;line-height:1.5;">Pre-owned building, sold as described.</div>';
+  else if(cond==='repo') window._quoteSheetConditionHtml='<div style="text-align:center;font-weight:800;color:#8B4513;margin-bottom:10px;">REPO / AS-IS</div><div style="text-align:center;font-size:0.95rem;color:#000;line-height:1.5;">Repossessed inventory; sold as-is. Financing may differ — ask for details.</div>';
+  closeQuoteSheetCondModal();
+  if(!syncSalesSheetFromCalcForQuote()){ showToast('Select building type, width, and length first'); return; }
+  try{
+    goTo('screenSalesSheet');
+    try{ ssRefreshSalesSheetTriggersFromDom(); }catch(_t){}
+    ssGoStep(1);
+  }catch(e){ showToast('Could not open sales sheet'); }
+}
+
+function openQuoteAdWizardModal(){
+  var m=document.getElementById('quoteAdWizardModal');
+  if(m) m.style.display='flex';
+}
+function closeQuoteAdWizardModal(){
+  var m=document.getElementById('quoteAdWizardModal');
+  if(m) m.style.display='none';
+}
+function closeQuoteAdResultModal(){
+  var m=document.getElementById('quoteAdResultModal');
+  if(m) m.style.display='none';
+}
+
+function _quoteAdCustomerCityState(){
+  var city=(cv('c_custCity')||'').trim();
+  var st=(cv('c_custState')||'').trim();
+  if(city&&st) return city+', '+st;
+  var s=loadSettings();
+  var c=(s.bizCity||'').trim();
+  var z=(s.bizState||'').trim();
+  if(c&&z) return c+', '+z;
+  return '';
+}
+
+function _quoteSnowloadParagraph(){
+  var w=parseInt(calcState.width,10)||0;
+  var linFt=parseInt(calcState.length,10)||0;
+  if(!w||!linFt) return '';
+  var rate=(w<=12)?32:(w>=14?35:32);
+  var total=rate*linFt;
+  return 'Snow load upgrade package: rated for Idaho loads — about $'+rate+'/linear foot on the '+linFt+'-foot building length (~$'+total.toLocaleString()+' for this size). Confirm final engineering with your dealer.';
+}
+
+function confirmQuoteAdWizardAndGenerate(){
+  var del=document.getElementById('quoteAdDelSel');
+  var snow=document.getElementById('quoteAdSnowSel');
+  var toneEl=document.getElementById('quoteAdToneSel');
+  var delMode=del?del.value:'discuss';
+  var snowOn=snow&&snow.value==='on';
+  var tone=toneEl?toneEl.value:'friendly';
+  closeQuoteAdWizardModal();
+  var q=getCalcQuoteSnapshot();
+  if(!q){ showToast('Select a building first'); return; }
+  var typeCode=calcState.type;
+  var type=AD_TYPE_NAMES[typeCode]||NAMES[typeCode]||typeCode;
+  var width=String(calcState.width||'')+"'";
+  var length=String(calcState.length||'')+"'";
+  var pfx=(calcState.payType==='rto')?'r_':'p_';
+  var siding=document.getElementById(pfx+'sidingColor')?document.getElementById(pfx+'sidingColor').value:'';
+  var bottom=document.getElementById(pfx+'bottomColor')?document.getElementById(pfx+'bottomColor').value:'';
+  var trim=document.getElementById(pfx+'trimColor')?document.getElementById(pfx+'trimColor').value:'';
+  var roof=document.getElementById(pfx+'roofColor')?document.getElementById(pfx+'roofColor').value:'';
+  var locBase=_quoteAdCustomerCityState();
+  var location=delMode==='free'&&locBase?('Free delivery to '+locBase):(delMode==='discuss'&&locBase?('Delivery: discuss options to '+locBase):(combineBizAddressFromSettings(loadSettings())||'on the lot'));
+  var price='$'+Math.round(q.grandTotal||0).toLocaleString()+' cash';
+  var rtoLine='';
+  if(calcState.payType==='rto'&&q.rtoMonthly){
+    rtoLine='Rent-to-own from $'+q.rtoMonthly.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+'+/mo (before tax; see estimate for details)';
+  }
+  var features=[...document.querySelectorAll('#adFeatureChips .toggle-chip.active')].map(function(c){return c.dataset.val;});
+  var optionsSummary=adBuildOptionsSummarySentence();
+  var extras=[];
+  if(snowOn) extras.push(_quoteSnowloadParagraph());
+  var docSnips=getQuotedStyleDocsSnippets(typeCode);
+  if(docSnips.length) extras.push('About this style:\n'+docSnips.join('\n\n'));
+  var ad=buildAdListingText({
+    settings:loadSettings(),
+    typeCode:typeCode,
+    type:type,
+    width:width,
+    length:length,
+    price:price,
+    rto:rtoLine,
+    rtoFormatted:true,
+    siding:siding,
+    bottom:bottom,
+    trim:trim,
+    roof:roof,
+    location:location,
+    tone:tone,
+    features:features,
+    optionsSummary:optionsSummary,
+    extraParagraphs:extras
+  });
+  window._quoteAdResultText=ad;
+  var body=document.getElementById('quoteAdResultBody');
+  if(body) body.textContent=ad;
+  var rm=document.getElementById('quoteAdResultModal');
+  if(rm) rm.style.display='flex';
+}
+
+function copyQuoteAdResult(){
+  var t=window._quoteAdResultText||'';
+  if(!t) return;
+  try{
+    navigator.clipboard.writeText(t).then(function(){ showToast('Listing copied'); });
+  }catch(e){ legacyCopy(t); }
+}
+
+function printQuoteAdResult(){
+  var t=window._quoteAdResultText||'';
+  if(!t) return;
+  var w=window.open('','_blank');
+  if(!w){ showToast('Popup blocked'); return; }
+  w.document.write('<pre style="font-family:system-ui,sans-serif;white-space:pre-wrap;padding:16px;">'+t.replace(/</g,'&lt;')+'</pre>');
+  w.document.close();
+  w.focus();
+  setTimeout(function(){ w.print(); },300);
+}
+
+function buildAdListingText(opts){
+  opts=opts||{};
+  var _adS=opts.settings||loadSettings();
   var _adPhone=_adS.bizPhone||'(call for pricing)';
   var _adUrl=_adS.designerUrl||_adS.bizEmail||'';
+  var typeCode=opts.typeCode||'';
+  var type=opts.type||typeCode;
+  var width=opts.width||'';
+  var length=opts.length||'';
+  var price=opts.price||'';
+  var rto=opts.rto||'';
+  var siding=opts.siding||'';
+  var bottom=opts.bottom||'';
+  var trim=opts.trim||'';
+  var roof=opts.roof||'';
+  var colorParts=[];
+  if(siding&&bottom) colorParts.push(siding+' / '+bottom+' two-tone siding');
+  else if(siding) colorParts.push(siding+' siding');
+  if(trim) colorParts.push(trim+' trim');
+  if(roof) colorParts.push(roof+' roof');
+  var color=colorParts.join(', ');
+  var location=opts.location||(combineBizAddressFromSettings(_adS)||'on the lot');
+  var tone=opts.tone||'friendly';
+  var features=Array.isArray(opts.features)?opts.features:[];
+  var optionsSummary=opts.optionsSummary||'';
+  var extras=Array.isArray(opts.extraParagraphs)?opts.extraParagraphs.filter(Boolean):[];
+  var size=width&&length?width+' x '+length:'';
+  var sqft=parseInt(String(width||'').replace(/[^0-9]/g,''),10)*parseInt(String(length||'').replace(/[^0-9]/g,''),10)||'';
+  var rtoRaw=String(rto||'').trim();
+  var rtoFmt=opts.rtoFormatted===true;
+  function rtoBlock(shortPrefix,shortSuffix){
+    if(!rtoRaw) return '';
+    if(rtoFmt) return rtoRaw+'\n';
+    return shortPrefix+rtoRaw+(shortSuffix||'')+'\n';
+  }
+  var ad='';
+  if(tone==='friendly'){ad=''+size+' '+type+(color?' — '+color:'')+' | '+location+'\n\n';if(sqft)ad+=sqft+' sq ft of quality built outdoor storage!\n\n';if(features.length)ad+='Includes: '+features.join(', ')+'\n';if(optionsSummary) ad+=optionsSummary+'\n';ad+='\n';if(price)ad+='Cash price: '+price+'\n';ad+=rtoBlock('Rent-to-own from ',' (no credit check!)');ad+='\nAll buildings built with quality materials. Delivery available throughout Idaho!\n\nLocation: '+location+'\nCall or text: '+_adPhone+(_adUrl?'\n'+_adUrl:'')+'\n\nDM us anytime — we\'d love to help!';}
+  else if(tone==='professional'){ad=size+' '+type+(color?' — '+color:'')+'\n'+'─'.repeat(28)+'\n\n';if(sqft)ad+='Size: '+size+' ('+sqft+' sq ft)\n';if(color)ad+='Color: '+color+'\n';if(features.length)ad+='Features: '+features.join(', ')+'\n';if(optionsSummary) ad+='Options: '+optionsSummary+'\n';ad+='\n';if(price)ad+='Cash price: '+price+'\n';ad+=rtoBlock('RTO from ','');ad+='\nProfessionally built and delivered throughout Idaho.\n\nLocation: '+location+'\nPhone: '+_adPhone+(_adUrl?'\nWebsite: '+_adUrl:'');}
+  else if(tone==='urgent'){ad='LIMITED — '+size+' '+type+'!\n\n';if(color)ad+='Color: '+color+'\n';if(sqft)ad+=sqft+' sq ft\n\n';if(features.length)ad+='Comes with: '+features.join(', ')+'\n';if(optionsSummary) ad+=optionsSummary+'\n';ad+='\n';if(price)ad+='Cash: '+price+' — don\'t miss out!\n';ad+=rtoBlock('RTO from ','');ad+='\nCall or text NOW to hold this unit!\n\nLocation: '+location+'\nPhone: '+_adPhone+(_adUrl?'\n'+_adUrl:'');}
+  else if(tone==='value'){ad='BEST PRICE — '+size+' '+type+'\n\n';if(color)ad+=color+'\n';if(sqft)ad+=sqft+' sq ft of premium storage\n\n';if(features.length)ad+='What\'s included:\n'+features.map(function(f){return'• '+f;}).join('\n')+'\n';if(optionsSummary) ad+='• '+optionsSummary+'\n';ad+='\n';if(price)ad+='Cash: '+price+'\n';ad+=rtoBlock('RTO from ','');ad+='\nQuality buildings, unbeatable prices. No credit check for RTO. Delivery statewide.\n\nLocation: '+location+'\nPhone: '+_adPhone+(_adUrl?'\n'+_adUrl:'');}
+  else if(tone==='sale'){ad='SALE — '+size+' '+type+'!\n';if(color)ad+='Color: '+color+'\n';ad+='LIMITED TIME OFFER — This price won\'t last!\n\n';if(sqft)ad+=sqft+' sq ft of quality storage\n\n';if(features.length)ad+='Includes: '+features.join(', ')+'\n';if(optionsSummary) ad+=optionsSummary+'\n';ad+='\n';if(price)ad+='SALE PRICE: '+price+'\n';ad+=rtoBlock('RTO from ',' (no credit check!)');ad+='\nAct fast — sale prices are for a limited time only!\n\nLocation: '+location+'\nCall or text: '+_adPhone+(_adUrl?'\n'+_adUrl:'');}
+  if(extras.length) ad+='\n\n'+extras.join('\n\n');
+  return ad;
+}
+
+function generateAd(){
+  var _adS=loadSettings();
   var typeCode=document.getElementById('adType').value;
   var type=AD_TYPE_NAMES[typeCode]||typeCode;
   var width=document.getElementById('adWidth').value;
@@ -11299,18 +12217,10 @@ function generateAd(){
   var bottom=document.getElementById('adBottomColor').value;
   var trim=document.getElementById('adColorTrim').value;
   var roof=document.getElementById('adColorRoof').value;
-  // Build color description
-  var colorParts=[];
-  if(siding && bottom) colorParts.push(siding+' / '+bottom+' two-tone siding');
-  else if(siding) colorParts.push(siding+' siding');
-  if(trim) colorParts.push(trim+' trim');
-  if(roof) colorParts.push(roof+' roof');
-  var color=colorParts.join(', ');
   var locVal=document.getElementById('adLocation').value;
   var location=locVal||(combineBizAddressFromSettings(_adS)||'on the lot');
   var tone=document.getElementById('adTone').value;
   var features=[...document.querySelectorAll('#adFeatureChips .toggle-chip.active')].map(function(c){return c.dataset.val;});
-  // Add detail card features (doors / windows / garage) if toggled on
   var _cardDefs=[
     {key:'doors',fallback:'Double Doors'},
     {key:'windows',fallback:'Windows'},
@@ -11324,14 +12234,24 @@ function generateAd(){
   });
   var optionsSummary=adBuildOptionsSummarySentence();
   if(!typeCode||!width||!length){showToast('Select building type and size');return;}
-  var size=width+' x '+length;
-  var sqft=parseInt(width)*parseInt(length)||'';
-  var ad='';
-  if(tone==='friendly'){ad=''+size+' '+type+(color?' — '+color:'')+' | '+location+'\n\n';if(sqft)ad+=sqft+' sq ft of quality built outdoor storage!\n\n';if(features.length)ad+='Includes: '+features.join(', ')+'\n';if(optionsSummary) ad+=optionsSummary+'\n';ad+='\n';if(price)ad+='Cash price: '+price+'\n';if(rto)ad+='Rent-to-own from '+rto+' (no credit check!)\n';ad+='\nAll buildings built with quality materials. Delivery available throughout Idaho!\n\nLocation: '+location+'\nCall or text: '+_adPhone+(_adUrl?'\n'+_adUrl:'')+'\n\nDM us anytime — we\'d love to help!';}
-  else if(tone==='professional'){ad=size+' '+type+(color?' — '+color:'')+'\n'+'─'.repeat(28)+'\n\n';if(sqft)ad+='Size: '+size+' ('+sqft+' sq ft)\n';if(color)ad+='Color: '+color+'\n';if(features.length)ad+='Features: '+features.join(', ')+'\n';if(optionsSummary) ad+='Options: '+optionsSummary+'\n';ad+='\n';if(price)ad+='Cash price: '+price+'\n';if(rto)ad+='RTO from '+rto+'\n';ad+='\nProfessionally built and delivered throughout Idaho.\n\nLocation: '+location+'\nPhone: '+_adPhone+(_adUrl?'\nWebsite: '+_adUrl:'');}
-  else if(tone==='urgent'){ad='LIMITED — '+size+' '+type+'!\n\n';if(color)ad+='Color: '+color+'\n';if(sqft)ad+=sqft+' sq ft\n\n';if(features.length)ad+='Comes with: '+features.join(', ')+'\n';if(optionsSummary) ad+=optionsSummary+'\n';ad+='\n';if(price)ad+='Cash: '+price+' — don\'t miss out!\n';if(rto)ad+='RTO from '+rto+'\n';ad+='\nCall or text NOW to hold this unit!\n\nLocation: '+location+'\nPhone: '+_adPhone+(_adUrl?'\n'+_adUrl:'');}
-  else if(tone==='value'){ad='BEST PRICE — '+size+' '+type+'\n\n';if(color)ad+=color+'\n';if(sqft)ad+=sqft+' sq ft of premium storage\n\n';if(features.length)ad+='What\'s included:\n'+features.map(function(f){return'• '+f;}).join('\n')+'\n';if(optionsSummary) ad+='• '+optionsSummary+'\n';ad+='\n';if(price)ad+='Cash: '+price+'\n';if(rto)ad+='RTO from '+rto+'\n';ad+='\nQuality buildings, unbeatable prices. No credit check for RTO. Delivery statewide.\n\nLocation: '+location+'\nPhone: '+_adPhone+(_adUrl?'\n'+_adUrl:'');}
-  else if(tone==='sale'){ad='SALE — '+size+' '+type+'!\n';if(color)ad+='Color: '+color+'\n';ad+='LIMITED TIME OFFER — This price won\'t last!\n\n';if(sqft)ad+=sqft+' sq ft of quality storage\n\n';if(features.length)ad+='Includes: '+features.join(', ')+'\n';if(optionsSummary) ad+=optionsSummary+'\n';ad+='\n';if(price)ad+='SALE PRICE: '+price+'\n';if(rto)ad+='RTO from '+rto+' (no credit check!)\n';ad+='\nAct fast — sale prices are for a limited time only!\n\nLocation: '+location+'\nCall or text: '+_adPhone+(_adUrl?'\n'+_adUrl:'');}
+  var ad=buildAdListingText({
+    settings:_adS,
+    typeCode:typeCode,
+    type:type,
+    width:width,
+    length:length,
+    price:price,
+    rto:rto,
+    siding:siding,
+    bottom:bottom,
+    trim:trim,
+    roof:roof,
+    location:location,
+    tone:tone,
+    features:features,
+    optionsSummary:optionsSummary,
+    extraParagraphs:[]
+  });
   document.getElementById('adText').textContent=ad;
   document.getElementById('adResultBox').style.display='block';
   document.getElementById('adResultBox').scrollIntoView({behavior:'smooth'});
@@ -12611,8 +13531,21 @@ function printQuote(){
     custHtml+='</div>';
   }
   if(pi) pi.innerHTML=custHtml;
-  if(pq) pq.innerHTML=content.innerHTML;
-  stripInlineStylesForPrint(pq);
+  if(pq){
+    pq.innerHTML=content.innerHTML;
+    stripInlineStylesForPrint(pq);
+    try{
+      var qPrint=getCalcQuoteSnapshot();
+      var dTxt=(qPrint&&qPrint.disclaimerText||'').trim();
+      if(dTxt){
+        var dis=document.createElement('div');
+        dis.className='po-quote-disclaimer';
+        dis.style.cssText='margin-top:10px;padding:10px 12px;background:#f8f5f0;border:1px solid rgba(232,200,122,0.2);border-radius:8px;font-size:0.7rem;color:rgba(92,70,40,0.75);line-height:1.5;';
+        dis.textContent=dTxt;
+        pq.appendChild(dis);
+      }
+    }catch(_eP){}
+  }
   stripInlineStylesForPrint(pi);
 
   // Show overlay then print — direct window.print() required for iOS Safari
@@ -12775,6 +13708,18 @@ function ssTwoToneToggle(){
   var lbl=document.getElementById('ss_sidingLabel');
   var active=fields&&fields.style.display==='none';
   if(fields) fields.style.display=active?'block':'none';
+  if(toggle) toggle.style.background=active?'#7B2D1E':'#ccc';
+  if(dot) dot.style.left=active?'17px':'3px';
+  if(lbl) lbl.textContent=active?'Top Siding Color':'Siding Color';
+}
+
+/** Keep two-tone switch visuals in sync when ss_ttFields display is set from code (e.g. quote import). */
+function ssSyncTwoToneToggleVisual(){
+  var fields=document.getElementById('ss_ttFields');
+  var toggle=document.getElementById('ss_ttToggle');
+  var dot=document.getElementById('ss_ttDot');
+  var lbl=document.getElementById('ss_sidingLabel');
+  var active=fields&&fields.style.display==='block';
   if(toggle) toggle.style.background=active?'#7B2D1E':'#ccc';
   if(dot) dot.style.left=active?'17px':'3px';
   if(lbl) lbl.textContent=active?'Top Siding Color':'Siding Color';
@@ -13232,12 +14177,18 @@ function ssGenerate(){
     h+='</div>';
   }
 
+  var _condBanner=typeof window._quoteSheetConditionHtml==='string'?window._quoteSheetConditionHtml:'';
+  if(_condBanner){
+    h+=_condBanner;
+    window._quoteSheetConditionHtml='';
+  }
+
   // Title: size + style (nowrap), color, includes + value
   h+='<div style="text-align:center;margin-bottom:14px;">';
   h+='<div style="font-size:2rem;font-weight:900;font-family:Arial Black,Arial,sans-serif;color:#111;line-height:1.1;margin-bottom:6px;white-space:nowrap;">'+sizeStr+' '+typeName+'</div>';
-  if(color){h+='<div style="font-size:1rem;color:#555;margin-bottom:4px;">Color: '+color+'</div>';}
+  if(color){h+='<div style="font-size:1rem;color:#000;margin-bottom:4px;">Color: '+color+'</div>';}
   if(optLabels.length){
-    h+='<div style="font-size:1rem;font-weight:700;color:#333;margin-bottom:2px;">(Includes: '+optLabels.join(', ')+')</div>';
+    h+='<div style="font-size:1rem;font-weight:700;color:#000;margin-bottom:2px;">(Includes: '+optLabels.join(', ')+')</div>';
     h+='<div style="font-size:1rem;color:#C0392B;font-weight:700;">$'+addonTotal.toLocaleString()+' Value</div>';
   }
   h+='</div>';
@@ -13246,7 +14197,7 @@ function ssGenerate(){
   h+='<div style="text-align:center;margin-bottom:16px;">';
   if(hasSale){
     h+='<div style="font-size:1.8rem;font-weight:900;color:#C0392B;font-family:Arial Black,Arial,sans-serif;white-space:nowrap;">SALE Price: $'+salePrice.toLocaleString()+' + Tax</div>';
-    h+='<div style="font-size:1rem;color:#555;margin-top:4px;">(Original $'+base.toLocaleString()+')</div>';
+    h+='<div style="font-size:1rem;color:#000;margin-top:4px;">(Original $'+base.toLocaleString()+')</div>';
   } else {
     h+='<div style="font-size:1.8rem;font-weight:900;color:#111;font-family:Arial Black,Arial,sans-serif;white-space:nowrap;">Price: $'+salePrice.toLocaleString()+' + Tax</div>';
   }
@@ -13263,22 +14214,22 @@ function ssGenerate(){
   h+='<div style="font-size:1.05rem;">36 Month - $'+rto[36].toLocaleString()+'/Mo</div>';
   h+='<div style="font-size:1.05rem;">48 Month - $'+rto[48].toLocaleString()+'/Mo</div>';
   h+='<div style="font-size:1.05rem;">60 Month - $'+rto[60].toLocaleString()+'/Mo</div>';
-  h+='<div style="font-size:0.85rem;color:#555;">(No early Payoff Penalty)</div>';
+  h+='<div style="font-size:0.85rem;color:#000;">(No early Payoff Penalty)</div>';
   h+='</div>';
 
   // Contact CTA — bold single line
   if(bizPhone||contactName){
     h+='<div style="text-align:center;margin-bottom:16px;">';
-    h+='<div style="font-size:1.05rem;font-weight:700;font-family:Arial,sans-serif;color:#333;margin-bottom:4px;">Call/Text</div>';
+    h+='<div style="font-size:1.05rem;font-weight:700;font-family:Arial,sans-serif;color:#000;margin-bottom:4px;">Call/Text</div>';
     h+='<div style="font-size:1.3rem;font-weight:900;font-family:Arial Black,Arial,sans-serif;color:#C0392B;">'+contactName+(bizPhone?' — '+bizPhone:'')+ '</div>';
     h+='</div>';
   }
 
-  // Info box
-  h+='<div style="border:2px solid #333;border-radius:4px;padding:8px 10px;margin-bottom:20px;text-align:center;line-height:1.7;">';
-  if(bizUrl) h+='<div style="font-size:0.72rem;white-space:nowrap;">Go to <strong>'+bizUrl.replace(/https?:\/\//,'')+'</strong> to design your own building with your own colors and layout.</div>';
-  h+='<div style="font-size:0.72rem;white-space:nowrap;">These '+typeName+'s are available in multiple sizes.</div>';
-  h+='<div style="color:#C0392B;font-size:0.52rem;white-space:nowrap;text-align:center;text-decoration:underline;margin-top:2px;">Purchase can be made over the phone or in person by appointment.</div>';
+  // Info box (wrap inside border; all body copy black)
+  h+='<div style="border:2px solid #000;border-radius:4px;padding:8px 10px;margin-bottom:20px;text-align:center;line-height:1.7;box-sizing:border-box;max-width:100%;overflow-wrap:break-word;word-wrap:break-word;word-break:break-word;">';
+  if(bizUrl) h+='<div style="font-size:0.72rem;color:#000;">Go to <strong>'+bizUrl.replace(/https?:\/\//,'')+'</strong> to design your own building with your own colors and layout.</div>';
+  h+='<div style="font-size:0.72rem;color:#000;">These '+typeName+'s are available in multiple sizes.</div>';
+  h+='<div style="color:#C0392B;font-size:0.52rem;text-align:center;text-decoration:underline;margin-top:2px;">Purchase can be made over the phone or in person by appointment.</div>';
   h+='</div>';
 
   // QR codes — side by side if both present, single centered if just one
@@ -13287,7 +14238,7 @@ function ssGenerate(){
       h+='<div style="display:flex;gap:16px;margin-bottom:16px;padding:14px;border:1px solid #ccc;border-radius:6px;justify-content:center;">';
       h+='<div style="text-align:center;">';
       h+=ssGetQRImgTag(qrUrl,95,'ssQRImg');
-      h+='<div style="font-size:0.8rem;color:#555;margin-top:4px;font-weight:700;">View Listing</div>';
+      h+='<div style="font-size:0.8rem;color:#000;margin-top:4px;font-weight:700;">View Listing</div>';
       h+='</div>';
       h+='<div style="text-align:center;">';
       h+=ssGetQRImgTag(qrPurchaseUrl,95,'ssQRImg2');
@@ -13300,14 +14251,14 @@ function ssGenerate(){
       var lbl=qrUrl?'Scan to view this listing online':'<span style="color:#C0392B;font-weight:700;">Scan to Purchase</span>';
       h+='<div style="display:flex;align-items:center;gap:20px;margin-bottom:16px;padding:14px;border:1px solid #ccc;border-radius:6px;">';
       h+=ssGetQRImgTag(url,110,imgId);
-      h+='<div style="font-size:1rem;color:#333;line-height:1.6;"><strong>'+lbl+'</strong></div>';
+      h+='<div style="font-size:1rem;color:#000;line-height:1.6;"><strong>'+lbl+'</strong></div>';
       h+='</div>';
     }
   }
 
   // Footer
   if(bizName||bizAddr){
-    h+='<div style="text-align:center;font-size:0.8rem;color:rgba(232,200,122,0.5);border-top:1px solid rgba(232,200,122,0.15);padding-top:10px;margin-top:8px;">';
+    h+='<div style="text-align:center;font-size:0.8rem;color:#000;border-top:1px solid #ccc;padding-top:10px;margin-top:8px;">';
     h+=bizName;
     if(bizAddr) h+=' &nbsp;&middot;&nbsp; '+bizAddr;
     h+='</div>';
@@ -13491,6 +14442,46 @@ var STYLE_LABEL_MAP = {
   'USLBC':'Side Lofted Barn Cabin','UPLBC':'Premier Lofted Barn Cabin',
   'ULG':'Lofted Garage'
 };
+
+/** After programmatic ss_* updates (e.g. from quote), refresh hidden-select trigger buttons. */
+function ssUpdateSsColorTrigger(selectId,colorData){
+  var sel=document.getElementById(selectId);
+  var trig=document.getElementById(selectId+'_trigger');
+  if(!sel||!trig) return;
+  var v=sel.value;
+  if(!v) return;
+  var data=colorData||(typeof COLOR_DATA!=='undefined'?COLOR_DATA:[]);
+  var c=null;
+  for(var i=0;i<data.length;i++){ if(data[i].name===v){ c=data[i]; break; } }
+  var imgSrc=c?c.img:null;
+  var thumbHtml;
+  if(imgSrc) thumbHtml='<img class="spt-thumb" src="'+imgSrc+'" alt="'+v+'">';
+  else if(v==='Same as Siding'){
+    thumbHtml='<div class="spt-thumb" style="width:44px;height:33px;border-radius:4px;background:#D1D3D4;display:flex;align-items:center;justify-content:center;font-size:0.42rem;font-weight:700;color:#898B8D;text-align:center;line-height:1.3;flex-shrink:0;">SAME<br>SIDING</div>';
+  }else{
+    thumbHtml='<span class="spt-placeholder" style="font-size:1.1rem;">✏️</span>';
+  }
+  trig.innerHTML=thumbHtml+'<span class="spt-text"><span class="spt-name">'+v+'</span></span><span class="spt-arrow">&#9660;</span>';
+}
+
+function ssRefreshSalesSheetTriggersFromDom(){
+  var typeSel=document.getElementById('ss_type');
+  var typeTrig=document.getElementById('ss_type_trigger');
+  var typeVal=typeSel?typeSel.value:'';
+  if(typeVal&&typeTrig&&typeof STYLE_DATA!=='undefined'){
+    var st=null;
+    for(var j=0;j<STYLE_DATA.length;j++){ if(STYLE_DATA[j].code===typeVal){ st=STYLE_DATA[j]; break; } }
+    if(st){
+      var img=st.img;
+      var thumb=img?'<img class="spt-thumb" src="'+img+'" alt="'+st.name+'">':'<span class="spt-placeholder"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:28px;height:28px;display:block;"><path fill="rgba(80,50,30,0.12)" stroke="#8B5E3C" stroke-width="1.6" stroke-linejoin="round" d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/><rect x="9" y="13" width="6" height="9" rx="0.5" fill="rgba(80,50,30,0.07)" stroke="#8B5E3C" stroke-width="1.3"/></svg></span>';
+      typeTrig.innerHTML=thumb+'<span class="spt-text"><span class="spt-name">'+st.name+'</span><span class="spt-code">'+st.code+'</span></span><span class="spt-arrow">&#9660;</span>';
+    }
+  }
+  if(typeof ROOF_COLOR_DATA!=='undefined') ssUpdateSsColorTrigger('ss_roof',ROOF_COLOR_DATA);
+  ssUpdateSsColorTrigger('ss_siding',null);
+  ssUpdateSsColorTrigger('ss_bottomColor',null);
+  if(typeof TRIM_COLOR_DATA!=='undefined') ssUpdateSsColorTrigger('ss_trim',TRIM_COLOR_DATA);
+}
 
 // Intake form selects use text values (not codes) — map name→name for display
 var STYLE_TEXT_IDS = ['p_btype','r_btype','i_btype'];
