@@ -27,6 +27,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <style>
 /* Force light mode — prevent Safari dark mode override */
 :root {
@@ -2304,6 +2306,17 @@ select:focus {
 .style-ref-table .src-code { font-size: 0.72rem; font-weight: 700; color: #8E1B23; font-family: monospace; }
 .style-ref-table .src-name { font-size: 0.9rem; font-weight: 600; color: #0B1A39; }
 
+.settings-style-collapse { margin: 16px 0 12px; border: 1.5px solid rgba(232,200,122,0.22); border-radius: 10px; overflow: hidden; background: rgba(255,255,255,0.03); }
+.settings-style-collapse-btn { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 14px; background: rgba(44,24,16,0.65); border: none; color: rgba(232,200,122,0.95); font: inherit; font-weight: 700; font-size: 0.78rem; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; text-align: left; box-sizing: border-box; }
+.settings-style-collapse-btn:active { background: rgba(60,30,18,0.85); }
+.settings-style-collapse-chevron { font-size: 0.65rem; transition: transform 0.2s; flex-shrink: 0; color: rgba(232,200,122,0.65); }
+.settings-style-collapse.open .settings-style-collapse-chevron { transform: rotate(180deg); }
+.settings-style-collapse-body { display: none; padding: 12px 14px 14px; }
+.settings-style-collapse.open .settings-style-collapse-body { display: block; }
+.set-style-json { width: 100%; min-height: 260px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.66rem; line-height: 1.35; background: rgba(0,0,0,0.28); border: 1.5px solid rgba(232,200,122,0.25); border-radius: 8px; color: var(--cream); padding: 10px; box-sizing: border-box; -webkit-appearance: none; }
+.set-style-json:focus { outline: none; border-color: rgba(232,200,122,0.45); }
+.settings-style-collapse-note { font-size: 0.72rem; color: rgba(232,200,122,0.5); margin: 0 0 10px; line-height: 1.45; }
+
 /* ── COLOR PICKER — siding color selector ── */
 #colorPickerModal {
   display: none;
@@ -2389,6 +2402,77 @@ select:focus {
   font-size: 1.5rem;
 }
 .cpm-opt-label { font-size: 0.9rem; font-weight: 600; color: #0B1A39; line-height: 1.2; }
+
+/* ── DOCS ADMIN SCREEN ──────────────────────────────────── */
+.da-sec-label{font-size:0.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(232,200,122,0.6);margin:20px 0 8px;padding-bottom:4px;border-bottom:1px solid rgba(232,200,122,0.12);display:block;}
+.da-card{background:rgba(255,255,255,0.04);border:1.5px solid rgba(232,200,122,0.15);border-radius:10px;padding:14px;margin-bottom:10px;}
+.da-field-label{font-size:0.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(232,200,122,0.6);margin-bottom:5px;display:block;}
+.da-input{width:100%;background:rgba(255,255,255,0.07);border:1.5px solid rgba(232,200,122,0.2);border-radius:8px;padding:10px 12px;color:var(--cream);font-size:0.88rem;font-family:inherit;-webkit-appearance:none;box-sizing:border-box;}
+.da-input:focus{outline:none;border-color:rgba(232,200,122,0.5);background:rgba(255,255,255,0.1);}
+.da-select{width:100%;background:rgba(44,24,16,0.95);border:1.5px solid rgba(232,200,122,0.2);border-radius:8px;padding:10px 12px;color:var(--cream);font-size:0.88rem;font-family:inherit;-webkit-appearance:none;box-sizing:border-box;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(232,200,122,0.6)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+.da-select:focus{outline:none;border-color:rgba(232,200,122,0.5);}
+.da-textarea{width:100%;background:rgba(255,255,255,0.07);border:1.5px solid rgba(232,200,122,0.2);border-radius:8px;padding:10px 12px;color:var(--cream);font-size:0.88rem;font-family:inherit;resize:vertical;min-height:72px;-webkit-appearance:none;box-sizing:border-box;}
+.da-textarea:focus{outline:none;border-color:rgba(232,200,122,0.5);}
+.da-toggle{position:relative;width:44px;height:26px;flex-shrink:0;}
+.da-toggle input{opacity:0;width:0;height:0;position:absolute;}
+.da-toggle-track{position:absolute;inset:0;background:rgba(255,255,255,0.12);border-radius:13px;transition:background 0.2s;cursor:pointer;}
+.da-toggle input:checked+.da-toggle-track{background:var(--sage);}
+.da-toggle-thumb{position:absolute;top:3px;left:3px;width:20px;height:20px;background:white;border-radius:50%;transition:transform 0.2s;pointer-events:none;}
+.da-toggle input:checked~.da-toggle-thumb{transform:translateX(18px);}
+.da-drop-zone{border:2px dashed rgba(232,200,122,0.3);border-radius:10px;padding:28px 16px;text-align:center;cursor:pointer;transition:all 0.2s;background:rgba(255,255,255,0.03);margin-bottom:8px;}
+.da-drop-zone.drag-over{border-color:rgba(232,200,122,0.7);background:rgba(232,200,122,0.05);}
+.da-file-chip{display:flex;align-items:center;gap:8px;background:rgba(122,158,135,0.15);border:1px solid rgba(122,158,135,0.3);border-radius:8px;padding:8px 10px;margin-bottom:8px;font-size:0.78rem;color:rgba(122,158,135,0.9);}
+.da-file-chip-name{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.da-file-chip-remove{background:none;border:none;color:rgba(196,81,31,0.7);font-size:1rem;cursor:pointer;padding:0 2px;flex-shrink:0;}
+.da-progress-wrap{margin-top:8px;display:none;}
+.da-progress-wrap.visible{display:block;}
+.da-progress-bar-bg{background:rgba(255,255,255,0.1);border-radius:4px;height:6px;overflow:hidden;}
+.da-progress-bar-fill{height:100%;background:var(--sage);border-radius:4px;transition:width 0.15s;width:0%;}
+.da-progress-label{font-size:0.72rem;color:rgba(232,200,122,0.6);margin-top:4px;letter-spacing:0.5px;}
+.da-btn-primary{width:100%;background:var(--barn);border:none;color:var(--wheat);font-family:'Bebas Neue',Impact,sans-serif;font-size:1.1rem;letter-spacing:2px;border-radius:10px;padding:14px;cursor:pointer;transition:opacity 0.15s;margin-top:8px;}
+.da-btn-primary:active{opacity:0.8;}
+.da-btn-primary:disabled{opacity:0.4;cursor:not-allowed;}
+.da-mode-btn{flex:1;padding:9px 8px;border-radius:8px;font-size:0.78rem;font-weight:700;letter-spacing:1px;cursor:pointer;font-family:inherit;transition:all 0.15s;}
+.da-mode-btn.active{background:var(--barn);border:none;color:var(--wheat);}
+.da-mode-btn.inactive{background:rgba(139,46,13,0.25);border:1.5px solid rgba(139,46,13,0.5);color:rgba(232,200,122,0.7);}
+.da-doc-row{display:flex;align-items:center;gap:10px;padding:11px 12px;border-top:1px solid rgba(232,200,122,0.08);cursor:pointer;}
+.da-doc-row:first-child{border-top:none;}
+.da-doc-row:active{background:rgba(255,255,255,0.04);}
+.da-doc-row-icon{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:0.95rem;flex-shrink:0;background:rgba(139,46,13,0.25);}
+.da-doc-row-icon.pdf{background:rgba(196,81,31,0.25);}
+.da-doc-row-icon.image{background:rgba(122,158,135,0.2);}
+.da-doc-row-icon.doc{background:rgba(44,72,200,0.2);}
+.da-doc-row-info{flex:1;min-width:0;}
+.da-doc-row-name{font-size:0.82rem;font-weight:600;color:rgba(245,240,232,0.9);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.da-doc-row-meta{font-size:0.65rem;color:rgba(200,221,232,0.4);margin-top:1px;}
+.da-doc-row-del{background:none;border:1.5px solid rgba(196,81,31,0.25);color:rgba(196,81,31,0.6);border-radius:6px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:0.85rem;}
+.da-doc-row-del:active{background:rgba(196,81,31,0.2);}
+.da-tabs{display:flex;gap:0;border-bottom:2px solid rgba(232,200,122,0.15);margin-bottom:16px;}
+.da-tab{flex:1;background:none;border:none;padding:10px 8px;font-size:0.78rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(232,200,122,0.4);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.15s;font-family:inherit;}
+.da-tab.active{color:rgba(232,200,122,0.95);border-bottom-color:var(--barn);}
+.da-tab-panel{display:none;}
+.da-tab-panel.active{display:block;}
+.da-batch-row{display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,255,255,0.04);border:1px solid rgba(232,200,122,0.1);border-radius:7px;margin-bottom:6px;}
+.da-batch-row-name{flex:1;min-width:0;font-size:0.78rem;color:rgba(245,240,232,0.8);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.da-batch-status{font-size:0.68rem;letter-spacing:0.5px;flex-shrink:0;padding:2px 7px;border-radius:4px;}
+.da-batch-status.pending{color:rgba(232,200,122,0.5);background:rgba(232,200,122,0.08);}
+.da-batch-status.uploading{color:rgba(122,158,135,0.9);background:rgba(122,158,135,0.15);}
+.da-batch-status.done{color:rgba(122,158,135,0.9);background:rgba(122,158,135,0.2);}
+.da-batch-status.error{color:rgba(196,81,31,0.9);background:rgba(196,81,31,0.15);}
+.da-batch-remove{background:none;border:none;color:rgba(196,81,31,0.5);cursor:pointer;font-size:1rem;padding:0 3px;flex-shrink:0;}
+.da-tag-wrap{display:flex;flex-wrap:wrap;gap:6px;background:rgba(255,255,255,0.07);border:1.5px solid rgba(232,200,122,0.2);border-radius:8px;padding:8px 10px;min-height:42px;cursor:text;}
+.da-tag-wrap:focus-within{border-color:rgba(232,200,122,0.5);}
+.da-tag-chip{background:rgba(122,158,135,0.2);border:1px solid rgba(122,158,135,0.35);color:rgba(122,158,135,0.9);border-radius:5px;padding:2px 7px;font-size:0.72rem;display:flex;align-items:center;gap:4px;white-space:nowrap;}
+.da-tag-x{background:none;border:none;color:rgba(122,158,135,0.7);cursor:pointer;padding:0;font-size:0.85rem;line-height:1;}
+.da-tag-bare{background:none;border:none;color:var(--cream);font-size:0.82rem;font-family:inherit;min-width:80px;flex:1;padding:2px 0;}
+.da-tag-bare:focus{outline:none;}
+.da-tag-suggestion{display:inline-block;background:rgba(139,46,13,0.2);border:1px solid rgba(139,46,13,0.4);color:rgba(232,200,122,0.7);border-radius:4px;padding:2px 8px;font-size:0.68rem;cursor:pointer;margin:2px;letter-spacing:0.5px;}
+.da-tag-suggestion:active{background:rgba(139,46,13,0.4);}
+.da-edit-modal{position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:9999;display:none;flex-direction:column;overflow-y:auto;}
+.da-edit-modal.open{display:flex;}
+.da-edit-hdr{position:sticky;top:0;background:rgba(26,14,9,0.97);padding:calc(14px + env(safe-area-inset-top)) 16px 14px;display:flex;align-items:center;gap:12px;border-bottom:2px solid rgba(139,46,13,0.5);z-index:2;}
+.da-edit-body{padding:16px 16px 60px;}
+.da-extract-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(122,158,135,0.15);border:1px solid rgba(122,158,135,0.3);border-radius:6px;padding:3px 10px;font-size:0.7rem;color:rgba(122,158,135,0.8);letter-spacing:0.5px;margin-top:6px;}
 
 /* ── DOCS & FACTS SCREEN ───────────────────────────────── */
 .docs-search-btn{background:none;border:none;padding:6px;cursor:pointer;margin-left:auto;display:flex;align-items:center;justify-content:center;border-radius:6px;}
@@ -4687,18 +4771,15 @@ select:focus {
   <!-- PAGE 1: Options & pricing (matches calculator “review estimate” step) -->
   <div id="sspage1" style="display:none;padding:16px;">
     <div class="page-title">Options &amp; Pricing</div>
-    <div class="page-sub">Add upgrades — discount and quick price match the Price Calculator.</div>
 
-    <div class="page-title" style="font-size:1.05rem;margin:4px 0 6px;">Options &amp; Upgrades</div>
     <div id="ss_optsSummary" class="opts-summary-wrap"></div>
     <button type="button" class="btn-primary" style="margin-top:4px;padding:12px;width:100%;" onclick="openSsOptionsSheet()">+ Add Option</button>
-    <p style="font-size:0.72rem;color:rgba(232,200,122,0.55);margin-top:8px;line-height:1.4;">Changes apply to this sales sheet when you close the options sheet.</p>
 
     <div style="border-top:1px solid rgba(232,200,122,0.15);margin:16px 0 12px;"></div>
 
     <!-- Std options panel -->
     <div id="ss_stdPanel" style="display:none;margin-bottom:12px;background:rgba(232,200,122,0.08);border:1.5px solid rgba(232,200,122,0.3);border-radius:8px;padding:12px;">
-      <div style="font-size:0.78rem;font-weight:700;color:var(--wheat);margin-bottom:6px;">Standard Options (tap to remove)</div>
+      <div style="font-size:0.78rem;font-weight:700;color:var(--wheat);margin-bottom:6px;">Standard options (tap to remove; use menu when quantity &gt; 1)</div>
       <div id="ss_stdList" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
     </div>
     <div id="ss_stdEmpty" style="display:none;font-size:0.8rem;color:rgba(232,200,122,0.55);margin-bottom:10px;">No standard options for this type.</div>
@@ -4732,13 +4813,17 @@ select:focus {
     <input type="hidden" id="ss_salePct" value="0">
     <input type="hidden" id="ss_qrUrl" value="">
     <input type="hidden" id="ss_qrPurchaseUrl" value="">
-    <input type="checkbox" id="ss_qrUseDesigner" style="display:none;" onchange="ssOnQrCheckboxChange()">
-    <input type="checkbox" id="ss_qrUsePurchase" style="display:none;" onchange="ssOnQrCheckboxChange()">
+    <input type="checkbox" id="ss_qrUseListing" style="display:none;">
+    <input type="checkbox" id="ss_qrUsePurchase" style="display:none;">
 
     <div class="field-label" style="margin:12px 0 6px;">QR codes</div>
     <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:12px;">
-      <div id="ss_qrDesignerChip" class="toggle-chip ss-qr-chip" role="checkbox" tabindex="0" aria-checked="false" onclick="ssQrChipClick('designer')" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();ssQrChipClick('designer');}"><span class="ss-qr-chip-txt">Designer / listing QR <span style="opacity:0.65;font-weight:500;font-size:0.72rem;">· Settings</span></span><span class="ss-qr-check" aria-hidden="true">✓</span></div>
-      <div id="ss_qrPurchaseChip" class="toggle-chip ss-qr-chip" role="checkbox" tabindex="0" aria-checked="false" onclick="ssQrChipClick('purchase')" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();ssQrChipClick('purchase');}"><span class="ss-qr-chip-txt">Purchase QR <span style="opacity:0.65;font-weight:500;font-size:0.72rem;">· Settings</span></span><span class="ss-qr-check" aria-hidden="true">✓</span></div>
+      <div id="ss_qrListingChip" class="toggle-chip ss-qr-chip" role="checkbox" tabindex="0" aria-checked="false" onclick="ssQrChipClick('listing')" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();ssQrChipClick('listing');}"><span class="ss-qr-chip-txt">Listing QR</span><span class="ss-qr-check" aria-hidden="true">✓</span></div>
+      <div id="ss_qrListingUrlRow" class="field-group" style="display:none;margin:0;">
+        <label class="field-label" for="ss_qrListingUrlInput">Listing URL</label>
+        <input type="url" id="ss_qrListingUrlInput" placeholder="https://…" autocomplete="off" oninput="ssOnListingQrUrlInput()" onblur="ssOnListingQrUrlInput()">
+      </div>
+      <div id="ss_qrPurchaseChip" class="toggle-chip ss-qr-chip" role="checkbox" tabindex="0" aria-checked="false" onclick="ssQrChipClick('purchase')" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();ssQrChipClick('purchase');}"><span class="ss-qr-chip-txt">Purchase QR</span><span class="ss-qr-check" aria-hidden="true">✓</span></div>
     </div>
     <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:4px;">
       <div id="ss_qrContainer" style="display:none;min-height:70px;"></div>
@@ -4832,10 +4917,24 @@ select:focus {
     <div class="field-group"><label class="field-label">Metal Min (Utility)</label><input type="number" id="set_metalMinUtility" placeholder="e.g. 400"></div>
     <div class="field-group"><label class="field-label">Tax Rate %</label><input type="number" id="set_taxRate" placeholder="e.g. 6" step="0.01"></div>
 
-    <!-- Building Style Reference -->
-    <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 10px;">Building Style Reference</div>
-    <div style="font-size:0.78rem;color:rgba(232,200,122,0.5);margin-bottom:10px;">16 styles · read-only reference</div>
-    <table class="style-ref-table" id="settingsStyleRefTable"></table>
+    <!-- Building style & picker reference (collapsed; saved separately from main settings) -->
+    <div class="settings-style-collapse" id="settingsStyleRefCollapse">
+      <button type="button" class="settings-style-collapse-btn" onclick="toggleSettingsStyleRefCollapse()" aria-expanded="false" id="settingsStyleRefCollapseBtn">
+        <span>Building style &amp; picker reference</span>
+        <span class="settings-style-collapse-chevron" id="settingsStyleRefChevron">▼</span>
+      </button>
+      <div class="settings-style-collapse-body" id="settingsStyleRefBody">
+        <p class="settings-style-collapse-note">Edit the JSON array of <strong>code</strong>, <strong>name</strong>, and <strong>img</strong> (image URL or data URL). Saved only on this device via <strong>Save style data</strong> — not included when you tap Done on main settings.</p>
+        <textarea id="set_styleDataJson" class="set-style-json" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder='[{"code":"ULB","name":"Lofted Barn","img":"https://..."}]'></textarea>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;">
+          <button type="button" class="btn-primary" style="flex:1;min-width:140px;padding:12px;" onclick="saveStyleDataFromEditor()">Save style data</button>
+          <button type="button" class="btn-secondary" style="flex:1;min-width:140px;padding:12px;" onclick="resetStyleDataToBaseline()">Restore defaults</button>
+        </div>
+        <div id="settingsStyleDataMsg" style="display:none;text-align:center;font-size:0.78rem;font-weight:600;margin-top:10px;padding:8px;"></div>
+        <div style="font-size:0.72rem;font-weight:700;color:rgba(232,200,122,0.55);text-transform:uppercase;letter-spacing:1px;margin:14px 0 8px;">Preview table</div>
+        <table class="style-ref-table" id="settingsStyleRefTable"></table>
+      </div>
+    </div>
 
     <!-- Links -->
     <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 10px;">Links &amp; Integrations</div>
@@ -4951,10 +5050,206 @@ select:focus {
       <div class="nrto-row"><label class="nrto-label"><input type="checkbox" class="nrto-chk" data-key="cutouts"> Cutouts</label></div>
     </div>
 
+    <!-- Manage Documents -->
+    <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:20px 0 8px;">Documents &amp; Files</div>
+    <button type="button" onclick="openDocsAdmin()" style="width:100%;background:rgba(139,46,13,0.35);border:1.5px solid rgba(139,46,13,0.6);color:rgba(232,200,122,0.9);border-radius:10px;padding:13px;font-family:'Bebas Neue',Impact,sans-serif;font-size:1.1rem;letter-spacing:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;">
+      <svg viewBox="0 0 24 24" fill="none" style="width:20px;height:20px;flex-shrink:0;"><path fill="rgba(232,200,122,0.1)" stroke="rgba(232,200,122,0.8)" stroke-width="1.6" stroke-linejoin="round" d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17" stroke="rgba(232,200,122,0.8)" stroke-width="1.5" stroke-linecap="round"/><line x1="9" y1="14" x2="15" y2="14" stroke="rgba(232,200,122,0.8)" stroke-width="1.5" stroke-linecap="round"/></svg>
+      MANAGE DOCUMENTS
+    </button>
+
     <div id="settingsSavedMsg" style="display:none;text-align:center;color:var(--sage);font-weight:700;padding:12px;margin-top:8px;">✓ Saved!</div>
 
   </div>
 </div><!-- end screenSettings -->
+
+<div class="screen" id="screenDocsAdmin">
+  <div class="header">
+    <button class="back-btn" onclick="goTo('screenSettings')">&#8592;</button>
+    <div class="header-title">MANAGE DOCS</div>
+    <div style="width:36px;"></div>
+  </div>
+
+  <div style="padding:14px 16px 100px;">
+    <div class="da-tabs">
+      <button class="da-tab active" id="daTabUpload" onclick="daShowTab('upload')">Upload</button>
+      <button class="da-tab" id="daTabManage" onclick="daShowTab('manage')">Manage</button>
+    </div>
+
+    <!-- UPLOAD TAB -->
+    <div class="da-tab-panel active" id="daTabPanelUpload">
+      <div style="display:flex;gap:8px;margin-bottom:14px;">
+        <button class="da-mode-btn active" id="daModeBtn_single" onclick="daSetMode('single')">SINGLE FILE</button>
+        <button class="da-mode-btn inactive" id="daModeBtn_batch" onclick="daSetMode('batch')">BATCH UPLOAD</button>
+      </div>
+
+      <!-- SINGLE PANEL -->
+      <div id="daSinglePanel">
+        <div class="da-drop-zone" id="daDropZone" onclick="document.getElementById('daFileInput').click()" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="daHandleDrop(event)">
+          <div style="font-size:2rem;margin-bottom:6px;">&#128229;</div>
+          <div style="font-size:0.82rem;color:rgba(232,200,122,0.7);line-height:1.5;">Tap to choose a file<br><span style="font-size:0.72rem;color:rgba(232,200,122,0.4);">PDF, image, or document</span></div>
+        </div>
+        <input type="file" id="daFileInput" style="display:none;" accept="*/*" onchange="daHandleFileSelect(this.files)">
+        <div id="daFileChip" style="display:none;" class="da-file-chip">
+          <span>&#128206;</span>
+          <span class="da-file-chip-name" id="daFileChipName"></span>
+          <button class="da-file-chip-remove" onclick="daClearFile()">&times;</button>
+        </div>
+        <div id="daExtractBadge" style="display:none;" class="da-extract-badge">&#128196; Text extracted — will be used for AI context</div>
+        <div class="da-progress-wrap" id="daSingleProgress">
+          <div class="da-progress-bar-bg"><div class="da-progress-bar-fill" id="daSingleFill"></div></div>
+          <div class="da-progress-label" id="daSingleLabel">Uploading...</div>
+        </div>
+
+        <div style="margin-top:14px;">
+          <div style="margin-bottom:10px;">
+            <span class="da-field-label">Document Name</span>
+            <input type="text" class="da-input" id="daName" placeholder="e.g. Lofted Barn ULB Product Flyer">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+            <div>
+              <span class="da-field-label">Category</span>
+              <select class="da-select" id="daCategory" onchange="daUpdateSubs('daSubcategory','daCategory','daCatCustom')">
+                <option value="">Select...</option>
+                <option value="Engineering Plans">Engineering Plans</option>
+                <option value="Forms &amp; Compliance">Forms &amp; Compliance</option>
+                <option value="Marketing &amp; Sales">Marketing &amp; Sales</option>
+                <option value="Product Reference">Product Reference</option>
+                <option value="custom">+ Custom...</option>
+              </select>
+              <input type="text" class="da-input" id="daCatCustom" placeholder="Custom category" style="display:none;margin-top:6px;">
+            </div>
+            <div>
+              <span class="da-field-label">Subcategory</span>
+              <select class="da-select" id="daSubcategory" onchange="daCheckCustomSub('daSubcategory','daSubCustom')">
+                <option value="">Select...</option>
+              </select>
+              <input type="text" class="da-input" id="daSubCustom" placeholder="Custom subcategory" style="display:none;margin-top:6px;">
+            </div>
+          </div>
+          <div style="margin-bottom:10px;">
+            <span class="da-field-label">Description <span style="font-weight:400;text-transform:none;letter-spacing:0;">(optional — used for AI context)</span></span>
+            <textarea class="da-textarea" id="daDesc" placeholder="Brief description of this document..."></textarea>
+          </div>
+          <div style="margin-bottom:10px;">
+            <span class="da-field-label">Tags <span style="font-weight:400;text-transform:none;letter-spacing:0;">(Enter or comma to add)</span></span>
+            <div class="da-tag-wrap" id="daTagWrap" onclick="document.getElementById('daTagBare').focus()">
+              <input type="text" class="da-tag-bare" id="daTagBare" placeholder="e.g. ULB, lofted barn, flyer..." onkeydown="daTagKey(event,'_daTags','daTagWrap','daTagBare')" oninput="daTagOninput(this,'_daTags','daTagWrap','daTagBare')">
+            </div>
+            <div id="daTagSuggestions" style="margin-top:6px;"></div>
+          </div>
+          <div class="da-card" style="margin-bottom:10px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:0.85rem;color:rgba(245,240,232,0.85);">Flyer template<br><span style="font-size:0.7rem;color:rgba(200,221,232,0.4);">Opens with dealer info + shareable from Ad Generator</span></span>
+              <label class="da-toggle"><input type="checkbox" id="daIsFlyer"><div class="da-toggle-track"></div><div class="da-toggle-thumb"></div></label>
+            </div>
+          </div>
+          <button class="da-btn-primary" id="daUploadBtn" onclick="daUploadSingle()" disabled>UPLOAD &amp; SAVE</button>
+        </div>
+      </div><!-- end daSinglePanel -->
+
+      <!-- BATCH PANEL -->
+      <div id="daBatchPanel" style="display:none;">
+        <div class="da-drop-zone" onclick="document.getElementById('daBatchInput').click()" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="daBatchDrop(event)">
+          <div style="font-size:2rem;margin-bottom:6px;">&#128193;</div>
+          <div style="font-size:0.82rem;color:rgba(232,200,122,0.7);line-height:1.5;">Tap to choose multiple files<br><span style="font-size:0.72rem;color:rgba(232,200,122,0.4);">All files will be queued for upload</span></div>
+        </div>
+        <input type="file" id="daBatchInput" style="display:none;" accept="*/*" multiple onchange="daBatchSelect(this.files)">
+        <div id="daBatchList"></div>
+        <div id="daBatchDefaults" style="display:none;margin-top:14px;">
+          <div style="font-size:0.7rem;font-weight:700;letter-spacing:1.5px;color:rgba(232,200,122,0.5);margin-bottom:10px;">DEFAULT METADATA FOR ALL FILES</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+            <div>
+              <span class="da-field-label">Category</span>
+              <select class="da-select" id="daBatchCat" onchange="daUpdateSubs('daBatchSub','daBatchCat','daBatchCatCustom')">
+                <option value="">Select...</option>
+                <option value="Engineering Plans">Engineering Plans</option>
+                <option value="Forms &amp; Compliance">Forms &amp; Compliance</option>
+                <option value="Marketing &amp; Sales">Marketing &amp; Sales</option>
+                <option value="Product Reference">Product Reference</option>
+                <option value="custom">+ Custom...</option>
+              </select>
+              <input type="text" class="da-input" id="daBatchCatCustom" placeholder="Custom category" style="display:none;margin-top:6px;">
+            </div>
+            <div>
+              <span class="da-field-label">Subcategory</span>
+              <select class="da-select" id="daBatchSub" onchange="daCheckCustomSub('daBatchSub','daBatchSubCustom')">
+                <option value="">Select...</option>
+              </select>
+              <input type="text" class="da-input" id="daBatchSubCustom" placeholder="Custom subcategory" style="display:none;margin-top:6px;">
+            </div>
+          </div>
+          <div class="da-card" style="margin-bottom:10px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:0.85rem;color:rgba(245,240,232,0.85);">Mark all as flyer templates</span>
+              <label class="da-toggle"><input type="checkbox" id="daBatchFlyer"><div class="da-toggle-track"></div><div class="da-toggle-thumb"></div></label>
+            </div>
+          </div>
+          <div class="da-progress-wrap" id="daBatchProgress">
+            <div class="da-progress-bar-bg"><div class="da-progress-bar-fill" id="daBatchFill"></div></div>
+            <div class="da-progress-label" id="daBatchLabel">0 of 0 uploaded</div>
+          </div>
+          <button class="da-btn-primary" id="daBatchBtn" onclick="daUploadBatch()">UPLOAD ALL</button>
+        </div>
+      </div><!-- end daBatchPanel -->
+    </div><!-- end daTabPanelUpload -->
+
+    <!-- MANAGE TAB -->
+    <div class="da-tab-panel" id="daTabPanelManage">
+      <div id="daManageLoading" style="text-align:center;padding:30px;color:rgba(232,200,122,0.5);font-size:0.82rem;">Loading...</div>
+      <div id="daManageList"></div>
+      <div id="daManageEmpty" style="display:none;text-align:center;padding:24px;color:rgba(245,240,232,0.3);font-size:0.82rem;">No documents yet. Upload some!</div>
+    </div>
+  </div>
+
+  <!-- EDIT MODAL -->
+  <div id="daEditModal" class="da-edit-modal">
+    <div class="da-edit-hdr">
+      <button onclick="daCloseEdit()" style="background:none;border:none;color:rgba(232,200,122,0.9);font-size:1.4rem;cursor:pointer;padding:4px;">&#8592;</button>
+      <div style="font-family:'Bebas Neue',Impact,sans-serif;font-size:1.3rem;color:rgba(232,200,122,0.9);letter-spacing:2px;flex:1;">EDIT DOCUMENT</div>
+      <button onclick="daSaveEdit()" style="background:var(--barn);border:none;color:var(--wheat);font-family:'Bebas Neue',Impact,sans-serif;font-size:1rem;letter-spacing:2px;border-radius:8px;padding:8px 16px;cursor:pointer;">SAVE</button>
+    </div>
+    <div class="da-edit-body">
+      <input type="hidden" id="daEditId">
+      <div style="margin-bottom:10px;"><span class="da-field-label">Document Name</span><input type="text" class="da-input" id="daEditName"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+        <div>
+          <span class="da-field-label">Category</span>
+          <select class="da-select" id="daEditCat" onchange="daUpdateSubs('daEditSub','daEditCat','daEditCatCustom')">
+            <option value="">Select...</option>
+            <option value="Engineering Plans">Engineering Plans</option>
+            <option value="Forms &amp; Compliance">Forms &amp; Compliance</option>
+            <option value="Marketing &amp; Sales">Marketing &amp; Sales</option>
+            <option value="Product Reference">Product Reference</option>
+            <option value="custom">+ Custom...</option>
+          </select>
+          <input type="text" class="da-input" id="daEditCatCustom" placeholder="Custom" style="display:none;margin-top:6px;">
+        </div>
+        <div>
+          <span class="da-field-label">Subcategory</span>
+          <select class="da-select" id="daEditSub" onchange="daCheckCustomSub('daEditSub','daEditSubCustom')">
+            <option value="">Select...</option>
+          </select>
+          <input type="text" class="da-input" id="daEditSubCustom" placeholder="Custom" style="display:none;margin-top:6px;">
+        </div>
+      </div>
+      <div style="margin-bottom:10px;"><span class="da-field-label">Description</span><textarea class="da-textarea" id="daEditDesc"></textarea></div>
+      <div style="margin-bottom:10px;">
+        <span class="da-field-label">Tags</span>
+        <div class="da-tag-wrap" id="daEditTagWrap" onclick="document.getElementById('daEditTagBare').focus()">
+          <input type="text" class="da-tag-bare" id="daEditTagBare" placeholder="Add tags..." onkeydown="daTagKey(event,'_daEditTags','daEditTagWrap','daEditTagBare')" oninput="daTagOninput(this,'_daEditTags','daEditTagWrap','daEditTagBare')">
+        </div>
+      </div>
+      <div class="da-card" style="margin-bottom:10px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-size:0.85rem;color:rgba(245,240,232,0.85);">Flyer template</span>
+          <label class="da-toggle"><input type="checkbox" id="daEditFlyer"><div class="da-toggle-track"></div><div class="da-toggle-thumb"></div></label>
+        </div>
+      </div>
+      <div style="font-size:0.68rem;color:rgba(200,221,232,0.25);word-break:break-all;margin-top:8px;" id="daEditUrlDisplay"></div>
+      <div id="daEditExtract" class="da-extract-badge" style="display:none;margin-top:6px;">&#128196; Text content indexed</div>
+    </div>
+  </div>
+</div><!-- end screenDocsAdmin -->
 
 <div class="screen" id="screenDocs">
   <div class="header">
@@ -6858,6 +7153,7 @@ async function loadSettingsForm(){
     try{ renderHomeQuickSheet(); }catch(_q2){}
     updateShareLinks();
   }
+  try{ syncStyleDataEditorField(); }catch(_eSd){}
 }
 
 async function saveSettingsForm(opts){
@@ -7491,6 +7787,7 @@ function goTo(screenId){
     try{ updateAppBottomNav(); }catch(_eSsNav2){}
   }
   if(screenId==='screenDocs') docsLoadDocuments();
+  if(screenId==='screenDocsAdmin') daLoadManage();
   // Show dock + quick FAB only on home screen
   var dock=document.querySelector('.cc-dock');
   if(dock) dock.style.display = (screenId==='screenHome') ? 'block' : 'none';
@@ -11014,7 +11311,9 @@ function renderSsOptsSummary(){
   var stdItems=STD_OPTIONS[t]||[];
   var stdRows=[];
   stdItems.forEach(function(it){
-    if(ssStdRemoved&&ssStdRemoved[it.id]) stdRows.push({it:it});
+    var maxQ=it.qty||1;
+    var rq=ssNormalizeStdRemovedCount(ssStdRemoved&&ssStdRemoved[it.id],maxQ);
+    if(rq>0) stdRows.push({it:it,rq:rq});
   });
   if(!sa.lines.length&&!stdRows.length){
     var empty=document.createElement('div');
@@ -11086,19 +11385,19 @@ function renderSsOptsSummary(){
     sub.textContent='Standards removed';
     host.appendChild(sub);
     stdRows.forEach(function(sr){
-      (function(it){
+      (function(it,rq){
         var row=document.createElement('div');
         row.className='opts-summary-row removed-std';
         var name=document.createElement('div');
         name.className='os-name';
-        name.textContent='Standard removed: '+it.label;
+        name.textContent='Standard removed: '+it.label+(rq>1?' ('+rq+'×)':'');
         row.appendChild(name);
         var ph=document.createElement('div');
         ph.style.width='52px';
         row.appendChild(ph);
         var cred=document.createElement('div');
         cred.className='os-price';
-        cred.textContent='-'+fmt((it.credit||0)*(it.qty||1));
+        cred.textContent='-'+fmt(rq*(it.credit||0));
         row.appendChild(cred);
         var rb=document.createElement('button');
         rb.type='button';
@@ -11108,18 +11407,14 @@ function renderSsOptsSummary(){
         rb.style.width='auto';
         rb.style.padding='6px 8px';
         rb.onclick=function(){
-          ssStdRemoved[it.id]=false;
-          var chips=document.querySelectorAll('#ss_stdList .check-chip');
-          var opts=STD_OPTIONS[t]||[];
-          for(var ixi=0;ixi<opts.length;ixi++){
-            if(opts[ixi].id===it.id&&chips[ixi]) chips[ixi].classList.remove('on');
-          }
+          ssStdRemoved[it.id]=0;
+          try{ ssRebuildStdPanel(); }catch(_e){}
           ssCalcPrice();
           renderSsOptsSummary();
         };
         row.appendChild(rb);
         host.appendChild(row);
-      })(sr.it);
+      })(sr.it,sr.rq);
     });
   }
 }
@@ -11987,6 +12282,578 @@ function adBuildOptionsSummarySentence(){
   return sentence+'.';
 }
 
+// ── DOCS ADMIN ───────────────────────────────────────────────
+var _daFiles=[];
+var _daBatchFiles=[];
+var _daTags=[];
+var _daEditTags=[];
+var _daMode='single';
+var _daCurrentEditDoc=null;
+
+var DA_SUBS={
+  'Engineering Plans':['Premier Portable Buildings'],
+  'Forms & Compliance':['Tax Forms','Order Forms','RTO Forms'],
+  'Marketing & Sales':['Brochures','Color Charts','Flyers','Photo Gallery','Warranty & Support'],
+  'Product Reference':['Building Specs','Building Heights','Loft Specs','Options & Upgrades','Installation & Site Prep']
+};
+
+var DA_TAG_SUGGESTIONS={
+  'Flyers':['ULB','USLB','ULBC','USLBC','UCLBC','UPLBC','UC','USC','UCC','UPC','UUTX','USUTX','UG','ULG','UPCS','UPGS','flyer','all-styles'],
+  'Building Specs':['ULB','USLB','ULBC','USLBC','UCLBC','UPLBC','UC','USC','UCC','UPC','UUTX','USUTX','UG','ULG','UPCS','UPGS','specs','all-styles'],
+  'Building Heights':['building heights','all-styles','lofted barn','utility','tall wall'],
+  'Loft Specs':['loft','all-styles','lofted barn'],
+  'Installation & Site Prep':['delivery','blocking','all-styles','site prep'],
+  'Warranty & Support':['warranty','assurance','RTO','all-styles'],
+  'Tax Forms':['tax','exemption','compliance','all-styles'],
+  'Order Forms':['order','PO','payment','all-styles'],
+  'RTO Forms':['RTO','landlord','rental','all-styles'],
+  'Engineering Plans':['engineering','Idaho','130PSF','structural'],
+  'Brochures':['brochure','all-styles'],
+  'Color Charts':['colors','urethane','metal','all-styles'],
+  'Photo Gallery':['photo','delivery','crane','all-styles']
+};
+
+function openDocsAdmin(){ goTo('screenDocsAdmin'); daLoadManage(); }
+
+function daShowTab(tab){
+  ['upload','manage'].forEach(function(t){
+    document.getElementById('daTabPanel'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active',t===tab);
+    document.getElementById('daTab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active',t===tab);
+  });
+  if(tab==='manage') daLoadManage();
+}
+
+function daSetMode(mode){
+  _daMode=mode;
+  document.getElementById('daSinglePanel').style.display=mode==='single'?'block':'none';
+  document.getElementById('daBatchPanel').style.display=mode==='batch'?'block':'none';
+  document.getElementById('daModeBtn_single').className='da-mode-btn '+(mode==='single'?'active':'inactive');
+  document.getElementById('daModeBtn_batch').className='da-mode-btn '+(mode==='batch'?'active':'inactive');
+}
+
+function daUpdateSubs(subSelId,catSelId,catCustomId){
+  var cat=document.getElementById(catSelId).value;
+  var catCustomEl=document.getElementById(catCustomId);
+  if(catCustomEl) catCustomEl.style.display=cat==='custom'?'block':'none';
+  var subSel=document.getElementById(subSelId);
+  subSel.innerHTML='<option value="">Select...</option>';
+  (DA_SUBS[cat]||[]).forEach(function(s){
+    var o=document.createElement('option'); o.value=s; o.textContent=s; subSel.appendChild(o);
+  });
+  var custOpt=document.createElement('option'); custOpt.value='custom'; custOpt.textContent='+ Custom...'; subSel.appendChild(custOpt);
+  var subCustomMap={'daSubcategory':'daSubCustom','daBatchSub':'daBatchSubCustom','daEditSub':'daEditSubCustom'};
+  var subCustomEl=document.getElementById(subCustomMap[subSelId]||'');
+  if(subCustomEl) subCustomEl.style.display='none';
+  if(subSelId==='daSubcategory') daShowTagSuggestions(cat==='custom'?'':cat);
+}
+
+function daCheckCustomSub(subSelId,subCustomId){
+  var val=document.getElementById(subSelId).value;
+  var el=document.getElementById(subCustomId);
+  if(el) el.style.display=val==='custom'?'block':'none';
+  if(subSelId==='daSubcategory'){
+    var sub=val==='custom'?'':val;
+    daShowTagSuggestions(sub);
+  }
+}
+
+function daShowTagSuggestions(sub){
+  var wrap=document.getElementById('daTagSuggestions');
+  if(!wrap) return;
+  var suggs=DA_TAG_SUGGESTIONS[sub]||[];
+  wrap.innerHTML=suggs.length?'<div style="font-size:0.68rem;color:rgba(232,200,122,0.45);margin-bottom:4px;letter-spacing:0.5px;">SUGGESTED TAGS</div>'+suggs.map(function(s){return'<span class="da-tag-suggestion" onclick="daAddTagDirect(\'_daTags\',\'daTagWrap\',\''+String(s).replace(/\\/g,'\\\\').replace(/'/g,'\\\'')+'\')">'+s+'</span>';}).join(''):'';
+}
+
+function daGetCatVal(selId,customId){
+  var v=document.getElementById(selId).value;
+  if(v==='custom'){v=(document.getElementById(customId).value||'').trim();}
+  return v;
+}
+
+function daGetSubVal(selId,customId){
+  var v=document.getElementById(selId).value;
+  if(v==='custom'){v=(document.getElementById(customId).value||'').trim();}
+  return v;
+}
+
+function daRenderTags(wrapId,tagsVar,bareId){
+  var wrap=document.getElementById(wrapId);
+  if(!wrap) return;
+  var input=document.getElementById(bareId);
+  wrap.querySelectorAll('.da-tag-chip').forEach(function(c){c.remove();});
+  var tags=window[tagsVar]||[];
+  tags.forEach(function(tag,i){
+    var chip=document.createElement('span');
+    chip.className='da-tag-chip';
+    chip.innerHTML=tag+'<button class="da-tag-x" onclick="daRemoveTag(\''+tagsVar+'\',\''+wrapId+'\',\''+bareId+'\','+i+')">&times;</button>';
+    wrap.insertBefore(chip,input);
+  });
+}
+
+function daRemoveTag(tagsVar,wrapId,bareId,idx){
+  window[tagsVar].splice(idx,1);
+  daRenderTags(wrapId,tagsVar,bareId);
+}
+
+function daAddTag(tagsVar,wrapId,bareId,val){
+  var v=(val||'').trim().replace(/,$/,'');
+  if(!v) return;
+  if(!window[tagsVar]) window[tagsVar]=[];
+  if(!window[tagsVar].includes(v)){window[tagsVar].push(v);daRenderTags(wrapId,tagsVar,bareId);}
+}
+
+function daAddTagDirect(tagsVar,wrapId,val){
+  daAddTag(tagsVar,wrapId,'daTagBare',val);
+}
+
+function daTagKey(e,tagsVar,wrapId,bareId){
+  if(e.key==='Enter'||e.key===','){e.preventDefault();daAddTag(tagsVar,wrapId,bareId,e.target.value);e.target.value='';}
+}
+
+function daTagOninput(el,tagsVar,wrapId,bareId){
+  if(el.value.includes(',')){el.value.split(',').forEach(function(p){daAddTag(tagsVar,wrapId,bareId,p);});el.value='';}
+}
+
+function daGetFileType(file){
+  var n=(file.name||'').toLowerCase();
+  if(n.endsWith('.pdf')) return 'pdf';
+  if(n.match(/\.(jpg|jpeg|png|gif|webp|heic)$/)) return 'image';
+  if(n.match(/\.(doc|docx)$/)) return 'doc';
+  return 'file';
+}
+
+async function daExtractPdfText(file){
+  try{
+    if(typeof pdfjsLib==='undefined') return '';
+    pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    var arrayBuf=await file.arrayBuffer();
+    var pdf=await pdfjsLib.getDocument({data:arrayBuf}).promise;
+    var text='';
+    var maxPages=Math.min(pdf.numPages,20);
+    for(var i=1;i<=maxPages;i++){
+      var page=await pdf.getPage(i);
+      var content=await page.getTextContent();
+      text+=content.items.map(function(s){return s.str;}).join(' ')+'\n';
+    }
+    return text.trim().substring(0,15000);
+  }catch(e){
+    console.warn('PDF extraction failed:',e);
+    return '';
+  }
+}
+
+async function daExtractDocText(file){
+  try{
+    return await new Promise(function(resolve){
+      var r=new FileReader();
+      r.onload=function(e){
+        var text=(e.target.result||'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().substring(0,15000);
+        resolve(text);
+      };
+      r.onerror=function(){resolve('');};
+      r.readAsText(file);
+    });
+  }catch(e){return '';}
+}
+
+async function daExtractText(file){
+  var ft=daGetFileType(file);
+  if(ft==='pdf') return await daExtractPdfText(file);
+  if(ft==='doc') return await daExtractDocText(file);
+  return '';
+}
+
+function daHandleFileSelect(files){
+  if(!files||!files.length) return;
+  var f=files[0];
+  _daFiles=[f];
+  document.getElementById('daFileChipName').textContent=f.name;
+  document.getElementById('daFileChip').style.display='flex';
+  document.getElementById('daDropZone').style.display='none';
+  var n=document.getElementById('daName');
+  if(!n.value) n.value=f.name.replace(/\.[^.]+$/,'').replace(/[_-]/g,' ');
+  document.getElementById('daUploadBtn').disabled=false;
+  var ft=daGetFileType(f);
+  document.getElementById('daExtractBadge').style.display=(ft==='pdf'||ft==='doc')?'flex':'none';
+}
+
+function daHandleDrop(e){
+  e.preventDefault();
+  document.getElementById('daDropZone').classList.remove('drag-over');
+  if(e.dataTransfer.files.length) daHandleFileSelect(e.dataTransfer.files);
+}
+
+function daClearFile(){
+  _daFiles=[];
+  document.getElementById('daFileChip').style.display='none';
+  document.getElementById('daDropZone').style.display='block';
+  document.getElementById('daExtractBadge').style.display='none';
+  document.getElementById('daUploadBtn').disabled=true;
+  document.getElementById('daFileInput').value='';
+  document.getElementById('daSingleProgress').classList.remove('visible');
+  document.getElementById('daSingleFill').style.width='0%';
+}
+
+async function daUploadSingle(){
+  var file=_daFiles[0];
+  if(!file){daToast('Please select a file first');return;}
+  var name=(document.getElementById('daName').value||'').trim();
+  if(!name){daToast('Please enter a document name');return;}
+  var cat=daGetCatVal('daCategory','daCatCustom');
+  if(!cat){daToast('Please select a category');return;}
+
+  var btn=document.getElementById('daUploadBtn');
+  btn.disabled=true; btn.textContent='UPLOADING...';
+  var pw=document.getElementById('daSingleProgress');
+  var pf=document.getElementById('daSingleFill');
+  var pl=document.getElementById('daSingleLabel');
+  pw.classList.add('visible');
+
+  try{
+    pl.textContent='Extracting text...';
+    var textContent=await daExtractText(file);
+
+    pl.textContent='Uploading file...';
+    var cat2=cat.replace(/[^a-zA-Z0-9]/g,'_');
+    var storagePath='documents/'+cat2+'/'+Date.now()+'_'+file.name;
+    var storageRef=firebase.storage().ref().child(storagePath);
+    var uploadTask=storageRef.put(file);
+
+    await new Promise(function(resolve,reject){
+      uploadTask.on('state_changed',
+        function(snap){
+          var pct=Math.round((snap.bytesTransferred/snap.totalBytes)*100);
+          pf.style.width=pct+'%';
+          pl.textContent='Uploading... '+pct+'%';
+        },
+        reject,
+        resolve
+      );
+    });
+
+    pf.style.width='100%';
+    pl.textContent='Saving to database...';
+
+    var downloadUrl=await storageRef.getDownloadURL();
+    var sub=daGetSubVal('daSubcategory','daSubCustom');
+    var desc=(document.getElementById('daDesc').value||'').trim();
+    var isFlyer=document.getElementById('daIsFlyer').checked;
+    var ft=daGetFileType(file);
+
+    var tagInput=document.getElementById('daTagBare');
+    if(tagInput&&tagInput.value.trim()) daAddTag('_daTags','daTagWrap','daTagBare',tagInput.value);
+
+    await fbDb.collection('documents').add({
+      name:name,
+      category:cat,
+      subcategory:sub||'',
+      fileType:ft,
+      description:desc,
+      tags:_daTags.slice(),
+      textContent:textContent,
+      downloadUrl:downloadUrl,
+      storagePath:storagePath,
+      isFlyerTemplate:isFlyer,
+      updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    pl.textContent='Saved!';
+    daToast('Uploaded successfully');
+    daResetSingle();
+    if(typeof docsLoadDocuments==='function') docsLoadDocuments();
+
+  }catch(e){
+    pl.textContent='Error: '+(e.message||'Upload failed');
+    btn.disabled=false; btn.textContent='UPLOAD & SAVE';
+    daToast('Upload failed: '+(e.message||'Unknown error'));
+  }
+}
+
+function daResetSingle(){
+  _daFiles=[]; _daTags=[];
+  document.getElementById('daFileChip').style.display='none';
+  document.getElementById('daDropZone').style.display='block';
+  document.getElementById('daExtractBadge').style.display='none';
+  document.getElementById('daFileInput').value='';
+  document.getElementById('daName').value='';
+  document.getElementById('daCategory').value='';
+  document.getElementById('daSubcategory').innerHTML='<option value="">Select...</option>';
+  document.getElementById('daDesc').value='';
+  document.getElementById('daTagWrap').querySelectorAll('.da-tag-chip').forEach(function(c){c.remove();});
+  document.getElementById('daTagBare').value='';
+  document.getElementById('daIsFlyer').checked=false;
+  document.getElementById('daCatCustom').style.display='none';
+  document.getElementById('daSubCustom').style.display='none';
+  document.getElementById('daTagSuggestions').innerHTML='';
+  var btn=document.getElementById('daUploadBtn');
+  btn.disabled=true; btn.textContent='UPLOAD & SAVE';
+  setTimeout(function(){
+    document.getElementById('daSingleProgress').classList.remove('visible');
+    document.getElementById('daSingleFill').style.width='0%';
+    document.getElementById('daSingleLabel').textContent='Uploading...';
+  },2000);
+}
+
+function daBatchSelect(files){
+  if(!files||!files.length) return;
+  Array.from(files).forEach(function(f){
+    if(!_daBatchFiles.find(function(b){return b.file.name===f.name;})){
+      _daBatchFiles.push({file:f,status:'pending'});
+    }
+  });
+  daBatchRender();
+  document.getElementById('daBatchDefaults').style.display=_daBatchFiles.length?'block':'none';
+}
+
+function daBatchDrop(e){
+  e.preventDefault();
+  if(e.dataTransfer.files.length) daBatchSelect(e.dataTransfer.files);
+}
+
+function daBatchRender(){
+  var list=document.getElementById('daBatchList');
+  list.innerHTML='';
+  _daBatchFiles.forEach(function(item,i){
+    var statusLabels={pending:'PENDING',uploading:'UPLOADING',done:'DONE',error:'ERROR'};
+    list.insertAdjacentHTML('beforeend',
+      '<div class="da-batch-row" id="daBatchRow_'+i+'">'
+      +'<span class="da-batch-row-name">'+item.file.name+'</span>'
+      +'<span class="da-batch-status '+item.status+'" id="daBatchStat_'+i+'">'+statusLabels[item.status]+'</span>'
+      +(item.status==='pending'?'<button class="da-batch-remove" onclick="daBatchRemove('+i+')">&times;</button>':'')
+      +'</div>'
+    );
+  });
+}
+
+function daBatchRemove(idx){
+  _daBatchFiles.splice(idx,1);
+  daBatchRender();
+  document.getElementById('daBatchDefaults').style.display=_daBatchFiles.length?'block':'none';
+}
+
+async function daUploadBatch(){
+  if(!_daBatchFiles.length){daToast('No files queued');return;}
+  var cat=daGetCatVal('daBatchCat','daBatchCatCustom');
+  if(!cat){daToast('Please select a category');return;}
+  var sub=daGetSubVal('daBatchSub','daBatchSubCustom');
+  var isFlyer=document.getElementById('daBatchFlyer').checked;
+  var btn=document.getElementById('daBatchBtn');
+  btn.disabled=true; btn.textContent='UPLOADING...';
+  var pw=document.getElementById('daBatchProgress');
+  var pf=document.getElementById('daBatchFill');
+  var pl=document.getElementById('daBatchLabel');
+  pw.classList.add('visible');
+
+  var total=_daBatchFiles.length;
+  var done=0;
+  var errors=0;
+
+  for(var i=0;i<_daBatchFiles.length;i++){
+    var item=_daBatchFiles[i];
+    item.status='uploading';
+    var statEl=document.getElementById('daBatchStat_'+i);
+    if(statEl){statEl.textContent='UPLOADING';statEl.className='da-batch-status uploading';}
+    pl.textContent='Uploading '+( i+1)+' of '+total+'...';
+    pf.style.width=Math.round(((i)/total)*100)+'%';
+
+    try{
+      var textContent=await daExtractText(item.file);
+      var cat2=cat.replace(/[^a-zA-Z0-9]/g,'_');
+      var storagePath='documents/'+cat2+'/'+Date.now()+'_'+item.file.name;
+      var ref=firebase.storage().ref().child(storagePath);
+      await ref.put(item.file);
+      var url=await ref.getDownloadURL();
+      var cleanName=item.file.name.replace(/\.[^.]+$/,'').replace(/[_-]/g,' ');
+      await fbDb.collection('documents').add({
+        name:cleanName,
+        category:cat,
+        subcategory:sub||'',
+        fileType:daGetFileType(item.file),
+        description:'',
+        tags:[],
+        textContent:textContent,
+        downloadUrl:url,
+        storagePath:storagePath,
+        isFlyerTemplate:isFlyer,
+        updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+      });
+      item.status='done'; done++;
+      if(statEl){statEl.textContent='DONE';statEl.className='da-batch-status done';}
+    }catch(e){
+      item.status='error'; errors++;
+      if(statEl){statEl.textContent='ERROR';statEl.className='da-batch-status error';}
+      console.warn('Batch upload error:',e);
+    }
+  }
+
+  pf.style.width='100%';
+  pl.textContent=done+' of '+total+' uploaded'+(errors?' ('+errors+' failed)':'');
+  daToast(done+' of '+total+' files uploaded successfully');
+  btn.disabled=false; btn.textContent='UPLOAD ALL';
+  if(typeof docsLoadDocuments==='function') docsLoadDocuments();
+  setTimeout(function(){
+    _daBatchFiles=_daBatchFiles.filter(function(b){return b.status!=='done';});
+    daBatchRender();
+    document.getElementById('daBatchDefaults').style.display=_daBatchFiles.length?'block':'none';
+    if(!_daBatchFiles.length) pw.classList.remove('visible');
+  },3000);
+}
+
+function daLoadManage(){
+  var loading=document.getElementById('daManageLoading');
+  var list=document.getElementById('daManageList');
+  var empty=document.getElementById('daManageEmpty');
+  if(loading) loading.style.display='block';
+  if(list) list.innerHTML='';
+  if(empty) empty.style.display='none';
+
+  if(!fbDb){if(loading) loading.style.display='none';if(empty){empty.style.display='block';empty.textContent='Firebase not connected.';}return;}
+
+  fbDb.collection('documents').orderBy('category').get()
+    .then(function(snap){
+      if(loading) loading.style.display='none';
+      var docs=[];
+      snap.forEach(function(d){var o=d.data();o.id=d.id;docs.push(o);});
+      if(!docs.length){if(empty) empty.style.display='block';return;}
+      var grouped={};
+      docs.forEach(function(d){
+        var c=d.category||'Other';
+        if(!grouped[c]) grouped[c]=[];
+        grouped[c].push(d);
+      });
+      var html='';
+      Object.keys(grouped).sort().forEach(function(cat){
+        html+='<div style="font-size:0.7rem;font-weight:700;letter-spacing:2px;color:rgba(232,200,122,0.5);margin:16px 0 6px;text-transform:uppercase;">'+cat+'</div>';
+        html+='<div style="background:rgba(255,255,255,0.04);border:1.5px solid rgba(232,200,122,0.12);border-radius:10px;overflow:hidden;">';
+        grouped[cat].forEach(function(doc){
+          var ft=(doc.fileType||'file').toLowerCase();
+          var ic=ft==='pdf'?'pdf':ft==='image'?'image':'doc';
+          var em=ft==='pdf'?'&#128196;':ic==='image'?'&#128444;':'&#128221;';
+          var sid=(doc.id||'').replace(/'/g,'');
+          html+='<div class="da-doc-row">'
+            +'<div class="da-doc-row-icon '+ic+'">'+em+'</div>'
+            +'<div class="da-doc-row-info" onclick="daOpenEdit(\''+sid+'\')"><div class="da-doc-row-name">'+doc.name+'</div>'
+            +'<div class="da-doc-row-meta">'+ft.toUpperCase()+(doc.subcategory?' &middot; '+doc.subcategory:'')+(doc.textContent?' &middot; &#128196; indexed':'')+'</div></div>'
+            +'<button class="da-doc-row-del" onclick="daDeleteDoc(\''+sid+'\')" title="Delete">&#128465;</button>'
+            +'</div>';
+        });
+        html+='</div>';
+      });
+      if(list) list.innerHTML=html;
+    })
+    .catch(function(e){
+      if(loading) loading.style.display='none';
+      if(list) list.innerHTML='<div style="text-align:center;padding:20px;color:rgba(196,81,31,0.7);font-size:0.82rem;">Error: '+(e.message||'Could not load')+'</div>';
+    });
+}
+
+function daOpenEdit(id){
+  fbDb.collection('documents').doc(id).get().then(function(snap){
+    if(!snap.exists) return;
+    var d=snap.data();
+    d.id=snap.id;
+    _daCurrentEditDoc=d;
+    _daEditTags=(d.tags||[]).slice();
+
+    document.getElementById('daEditId').value=id;
+    document.getElementById('daEditName').value=d.name||'';
+    document.getElementById('daEditDesc').value=d.description||'';
+    document.getElementById('daEditFlyer').checked=!!d.isFlyerTemplate;
+    document.getElementById('daEditUrlDisplay').textContent=d.downloadUrl||'';
+    document.getElementById('daEditExtract').style.display=d.textContent?'flex':'none';
+
+    var catSel=document.getElementById('daEditCat');
+    var knownCats=['Engineering Plans','Forms & Compliance','Marketing & Sales','Product Reference'];
+    if(knownCats.includes(d.category||'')){
+      catSel.value=d.category;
+      document.getElementById('daEditCatCustom').style.display='none';
+    } else {
+      catSel.value='custom';
+      document.getElementById('daEditCatCustom').style.display='block';
+      document.getElementById('daEditCatCustom').value=d.category||'';
+    }
+    daUpdateSubs('daEditSub','daEditCat','daEditCatCustom');
+
+    setTimeout(function(){
+      var subSel=document.getElementById('daEditSub');
+      var opts=Array.from(subSel.options).map(function(o){return o.value;});
+      if(opts.includes(d.subcategory||'')){
+        subSel.value=d.subcategory||'';
+        document.getElementById('daEditSubCustom').style.display='none';
+      } else if(d.subcategory){
+        subSel.value='custom';
+        document.getElementById('daEditSubCustom').style.display='block';
+        document.getElementById('daEditSubCustom').value=d.subcategory;
+      }
+    },50);
+
+    daRenderTags('daEditTagWrap','_daEditTags','daEditTagBare');
+
+    document.getElementById('daEditModal').classList.add('open');
+  }).catch(function(e){ daToast('Could not load document: '+e.message); });
+}
+
+function daCloseEdit(){
+  document.getElementById('daEditModal').classList.remove('open');
+  _daCurrentEditDoc=null; _daEditTags=[];
+}
+
+async function daSaveEdit(){
+  var id=document.getElementById('daEditId').value;
+  if(!id) return;
+  var name=(document.getElementById('daEditName').value||'').trim();
+  if(!name){daToast('Name is required');return;}
+
+  var tb=document.getElementById('daEditTagBare');
+  if(tb&&tb.value.trim()) daAddTag('_daEditTags','daEditTagWrap','daEditTagBare',tb.value);
+
+  var cat=daGetCatVal('daEditCat','daEditCatCustom');
+  var sub=daGetSubVal('daEditSub','daEditSubCustom');
+
+  try{
+    await fbDb.collection('documents').doc(id).update({
+      name:name,
+      category:cat,
+      subcategory:sub||'',
+      description:(document.getElementById('daEditDesc').value||'').trim(),
+      tags:_daEditTags.slice(),
+      isFlyerTemplate:document.getElementById('daEditFlyer').checked,
+      updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    daToast('Saved');
+    daCloseEdit();
+    daLoadManage();
+    if(typeof docsLoadDocuments==='function') docsLoadDocuments();
+  }catch(e){ daToast('Save failed: '+e.message); }
+}
+
+async function daDeleteDoc(id){
+  if(!confirm('Delete this document? This cannot be undone.')) return;
+  try{
+    var snap=await fbDb.collection('documents').doc(id).get();
+    if(snap.exists){
+      var sp=snap.data().storagePath;
+      if(sp){
+        try{ await firebase.storage().ref().child(sp).delete(); }catch(e){ console.warn('Storage delete failed:',e); }
+      }
+    }
+    await fbDb.collection('documents').doc(id).delete();
+    daToast('Deleted');
+    daLoadManage();
+    if(typeof docsLoadDocuments==='function') docsLoadDocuments();
+  }catch(e){ daToast('Delete failed: '+e.message); }
+}
+
+function daToast(msg){
+  try{ showToast(msg); }catch(e){
+    var t=document.querySelector('.toast');
+    if(!t){t=document.createElement('div');t.className='toast';document.body.appendChild(t);}
+    t.textContent=msg; t.classList.add('show');
+    setTimeout(function(){t.classList.remove('show');},2200);
+  }
+}
+// ── END DOCS ADMIN ────────────────────────────────────────────
+
 // ── DOCS & FACTS (screenDocs) + quote export hub + ad/sheet from quote ─────
 var _docsData=[];
 var _docsCurrentDoc=null;
@@ -12395,8 +13262,11 @@ function syncCalcFromSsOptions(){
   _SS_CALC_FIELD_PAIRS.forEach(function(pair){ _copyInputById(pair[1],pair[0]); });
   if(!calcState.stdRemoved) calcState.stdRemoved={};
   calcState.stdRemoved={};
-  Object.keys(ssStdRemoved||{}).forEach(function(id){
-    if(ssStdRemoved[id]) calcState.stdRemoved[id]=1;
+  var _stdOpts=STD_OPTIONS[t]||[];
+  _stdOpts.forEach(function(item){
+    var maxQ=item.qty||1;
+    var rq=ssNormalizeStdRemovedCount(ssStdRemoved&&ssStdRemoved[item.id],maxQ);
+    if(rq>0) calcState.stdRemoved[item.id]=rq;
   });
   calcState._stdType=t;
   try{ updateAutoWidthPrices(); }catch(_eA){}
@@ -12422,16 +13292,8 @@ function syncSsOptionsFromCalc(){
   ssMulti.windows=JSON.parse(JSON.stringify(calcState.multiWindows||[]));
   ssMulti.garage=JSON.parse(JSON.stringify(calcState.multiGarage||[]));
   ssMulti.cutouts=JSON.parse(JSON.stringify(calcState.multiCutouts||[]));
-  var t=(document.getElementById('ss_type')||{}).value||'';
+  ssApplyStdRemovedFromCalc();
   ssRebuildStdPanel();
-  var chips=document.querySelectorAll('#ss_stdList .check-chip');
-  var opts=STD_OPTIONS[t]||[];
-  opts.forEach(function(item,ix){
-    if(calcState.stdRemoved&&calcState.stdRemoved[item.id]){
-      ssStdRemoved[item.id]=true;
-      if(chips[ix]) chips[ix].classList.add('on');
-    }
-  });
   ['doors','windows','garage','cutouts'].forEach(function(ty){ try{ ssRenderRows(ty); }catch(_e){} });
   try{ ssSyncCatCounts(); }catch(_e2){}
   try{
@@ -12479,15 +13341,8 @@ function syncSalesSheetFromCalcForQuote(){
   ssMulti.cutouts=JSON.parse(JSON.stringify(calcState.multiCutouts||[]));
   ['doors','windows','garage','cutouts'].forEach(function(ty){ try{ ssRenderRows(ty); }catch(e){} });
   try{ ssSyncCatCounts(); }catch(e){}
+  ssApplyStdRemovedFromCalc();
   ssRebuildStdPanel();
-  var chips=document.querySelectorAll('#ss_stdList .check-chip');
-  var opts=STD_OPTIONS[t]||[];
-  opts.forEach(function(item,ix){
-    if(calcState.stdRemoved&&calcState.stdRemoved[item.id]){
-      ssStdRemoved[item.id]=true;
-      if(chips[ix]) chips[ix].classList.add('on');
-    }
-  });
   try{ ssSidingChange(); }catch(e){}
   try{ ssBottomChange(); }catch(e){}
   try{ ssSyncTwoToneToggleVisual(); }catch(e){}
@@ -14283,16 +15138,17 @@ function ssSyncQrHiddenFromCheckboxes(){
   var s=loadSettings()||{};
   var u1=document.getElementById('ss_qrUrl');
   var u2=document.getElementById('ss_qrPurchaseUrl');
-  var c1=document.getElementById('ss_qrUseDesigner');
+  var c1=document.getElementById('ss_qrUseListing');
   var c2=document.getElementById('ss_qrUsePurchase');
-  if(u1) u1.value=(c1&&c1.checked)?((s.designerUrl||'').trim()):'';
+  var listingInp=document.getElementById('ss_qrListingUrlInput');
+  if(u1) u1.value=(c1&&c1.checked)?((listingInp&&listingInp.value)||'').trim():'';
   if(u2) u2.value=(c2&&c2.checked)?((s.purchaseUrl||'').trim()):'';
 }
 
 function ssSyncQrChipVisuals(){
-  var c1=document.getElementById('ss_qrUseDesigner');
+  var c1=document.getElementById('ss_qrUseListing');
   var c2=document.getElementById('ss_qrUsePurchase');
-  var d=document.getElementById('ss_qrDesignerChip');
+  var d=document.getElementById('ss_qrListingChip');
   var p=document.getElementById('ss_qrPurchaseChip');
   if(d&&c1){
     d.classList.toggle('active',!!c1.checked);
@@ -14302,26 +15158,36 @@ function ssSyncQrChipVisuals(){
     p.classList.toggle('active',!!c2.checked);
     p.setAttribute('aria-checked',c2.checked?'true':'false');
   }
+  ssToggleListingUrlRow();
+}
+
+function ssToggleListingUrlRow(){
+  var row=document.getElementById('ss_qrListingUrlRow');
+  var c=document.getElementById('ss_qrUseListing');
+  if(!row) return;
+  row.style.display=c&&c.checked?'block':'none';
+}
+
+function ssOnListingQrUrlInput(){
+  ssSyncQrHiddenFromCheckboxes();
+  try{ ssUpdateQR(); }catch(_e1){}
+  try{ ssCalcPrice(); }catch(_e3){}
 }
 
 function ssQrChipClick(which){
-  var c=document.getElementById(which==='designer'?'ss_qrUseDesigner':'ss_qrUsePurchase');
+  var c=document.getElementById(which==='listing'?'ss_qrUseListing':'ss_qrUsePurchase');
   if(!c) return;
   var s=loadSettings()||{};
   var willEnable=!c.checked;
-  if(willEnable){
-    var u=(which==='designer'?(s.designerUrl||''):(s.purchaseUrl||'')).trim();
+  if(willEnable&&which==='purchase'){
+    var u=(s.purchaseUrl||'').trim();
     if(!u){
-      showToast(which==='designer'?'Add Designer URL in Settings first':'Add Purchase URL in Settings first');
+      showToast('Add Purchase URL in Settings first');
       return;
     }
   }
   c.checked=!c.checked;
   ssSyncQrChipVisuals();
-  ssOnQrCheckboxChange();
-}
-
-function ssOnQrCheckboxChange(){
   ssSyncQrHiddenFromCheckboxes();
   try{ ssUpdateQR(); }catch(_e1){}
   try{ ssUpdateQR2(); }catch(_e2){}
@@ -14376,11 +15242,8 @@ function ssMirrorOnQuickSaleInput(el){
 
 function ssApplySettingsToSalesSheetQrs(){
   var s=loadSettings()||{};
-  var c1=document.getElementById('ss_qrUseDesigner');
   var c2=document.getElementById('ss_qrUsePurchase');
-  var hasD=!!(s.designerUrl||'').trim();
   var hasP=!!(s.purchaseUrl||'').trim();
-  if(c1) c1.checked=hasD;
   if(c2) c2.checked=hasP;
   ssSyncQrChipVisuals();
   ssSyncQrHiddenFromCheckboxes();
@@ -14695,15 +15558,15 @@ function ssBuildSalesSheetReviewHtml(){
 
   var sset=loadSettings()||{};
   try{ ssSyncQrHiddenFromCheckboxes(); }catch(_eQr0){}
-  var designShow=((document.getElementById('ss_qrUseDesigner')||{}).checked)?(sset.designerUrl||'').trim():'';
+  var listingShow=((document.getElementById('ss_qrUseListing')||{}).checked)?((document.getElementById('ss_qrUrl')||{}).value||'').trim():'';
   var purchShow=((document.getElementById('ss_qrUsePurchase')||{}).checked)?(sset.purchaseUrl||'').trim():'';
   function _ssEsc(s){
     return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
-  if(designShow||purchShow){
+  if(listingShow||purchShow){
     h+='<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(0,0,0,0.08);">';
-    h+='<div style="font-size:0.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(232,200,122,0.5);margin-bottom:4px;">Designer and purchase links</div>';
-    if(designShow) h+='<div style="font-size:0.75rem;word-break:break-all;"><strong>Designer / listing:</strong> '+_ssEsc(designShow)+'</div>';
+    h+='<div style="font-size:0.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(232,200,122,0.5);margin-bottom:4px;">QR link targets</div>';
+    if(listingShow) h+='<div style="font-size:0.75rem;word-break:break-all;"><strong>Listing:</strong> '+_ssEsc(listingShow)+'</div>';
     if(purchShow) h+='<div style="font-size:0.75rem;word-break:break-all;margin-top:4px;"><strong>Purchase:</strong> '+_ssEsc(purchShow)+'</div>';
     h+='</div>';
   }
@@ -15143,14 +16006,46 @@ function ssClearPriceLabels(){
   ssUpdateOptionPrices();
 }
 
+/** Normalize sales-sheet standard removal count (0…maxQ). Legacy true = remove all maxQ. */
+function ssNormalizeStdRemovedCount(raw,maxQ){
+  maxQ=Math.max(1,parseInt(maxQ,10)||1);
+  var n=0;
+  if(typeof raw==='number'&&!isNaN(raw)) n=Math.floor(raw);
+  else if(raw===true) n=maxQ;
+  else n=parseInt(raw,10)||0;
+  if(n<0) n=0;
+  if(n>maxQ) n=maxQ;
+  return n;
+}
+
+/** Replace ssStdRemoved from calculator stdRemoved for current ss_type (capped per option). */
+function ssApplyStdRemovedFromCalc(){
+  var t=(document.getElementById('ss_type')||{}).value||'';
+  var opts=STD_OPTIONS[t]||[];
+  ssStdRemoved={};
+  opts.forEach(function(item){
+    var maxQ=item.qty||1;
+    var q=calcState.stdRemoved&&calcState.stdRemoved[item.id];
+    var rq=ssNormalizeStdRemovedCount(q,maxQ);
+    if(rq>0) ssStdRemoved[item.id]=rq;
+  });
+}
 
 function ssRebuildStdPanel(){
   var t=document.getElementById('ss_type').value;
   var panel=document.getElementById('ss_stdPanel');
   var list=document.getElementById('ss_stdList');
   var empty=document.getElementById('ss_stdEmpty');
-  ssStdRemoved={};
-  if(!t||!STD_OPTIONS[t]||!STD_OPTIONS[t].length){
+  var opts=STD_OPTIONS[t]||[];
+  var pruned={};
+  opts.forEach(function(item){
+    var maxQ=item.qty||1;
+    var rq=ssNormalizeStdRemovedCount(ssStdRemoved&&ssStdRemoved[item.id],maxQ);
+    if(rq>0) pruned[item.id]=rq;
+  });
+  ssStdRemoved=pruned;
+
+  if(!t||!opts.length){
     if(panel) panel.style.display='none';
     if(empty) empty.style.display='block';
     return;
@@ -15158,24 +16053,54 @@ function ssRebuildStdPanel(){
   if(empty) empty.style.display='none';
   if(panel) panel.style.display='block';
   list.innerHTML='';
-  STD_OPTIONS[t].forEach(function(item){
+  opts.forEach(function(item){
+    var maxQ=item.qty||1;
+    var cur=ssStdRemoved[item.id]||0;
     var row=document.createElement('div');
-    row.style.cssText='display:flex;align-items:center;justify-content:space-between;';
+    row.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;flex-basis:100%;';
     var lbl=document.createElement('div');
-    lbl.style.cssText='font-size:0.85rem;';
-    lbl.textContent=item.label+(item.qty>1?' (x'+item.qty+')':'');
-    var chip=document.createElement('div');
-    chip.className='check-chip';
-    chip.style.cssText='font-size:0.72rem;padding:4px 10px;';
-    chip.textContent='Remove -$'+item.credit;
-    chip.onclick=(function(i,c){
-      return function(){
-        ssStdRemoved[i.id]=!ssStdRemoved[i.id];
-        c.classList.toggle('on',ssStdRemoved[i.id]);
-        ssCalcPrice();
-      };
-    })(item,chip);
-    row.appendChild(lbl); row.appendChild(chip);
+    lbl.style.cssText='font-size:0.85rem;flex:1;min-width:0;';
+    lbl.textContent=item.label+(maxQ>1?' (x'+maxQ+')':'');
+    if(maxQ>1){
+      var sel=document.createElement('select');
+      sel.style.cssText='border:1.5px solid rgba(232,200,122,0.25);border-radius:6px;padding:4px 8px;font-size:0.72rem;font-weight:600;color:var(--wheat);background:rgba(255,255,255,0.08);cursor:pointer;flex-shrink:0;max-width:55%;';
+      for(var qv=0;qv<=maxQ;qv++){
+        var opt=document.createElement('option');
+        opt.value=String(qv);
+        if(qv===0) opt.textContent='Keep all (included)';
+        else opt.textContent='Remove '+qv+' (−$'+(qv*item.credit)+')';
+        if(qv===cur) opt.selected=true;
+        sel.appendChild(opt);
+      }
+      (function(id,mx){
+        sel.onchange=function(){
+          var n=ssNormalizeStdRemovedCount(parseInt(this.value,10),mx);
+          if(n<=0) delete ssStdRemoved[id];
+          else ssStdRemoved[id]=n;
+          ssCalcPrice();
+        };
+      })(item.id,maxQ);
+      row.appendChild(lbl);
+      row.appendChild(sel);
+    }else{
+      var chip=document.createElement('div');
+      chip.className='check-chip';
+      chip.style.cssText='font-size:0.72rem;padding:4px 10px;flex-shrink:0;';
+      chip.textContent='Remove -$'+item.credit;
+      if(cur>=1) chip.classList.add('on');
+      chip.onclick=(function(i,c,mx){
+        return function(){
+          var now=ssNormalizeStdRemovedCount(ssStdRemoved[i.id],mx);
+          var next=now>=1?0:1;
+          if(next<=0) delete ssStdRemoved[i.id];
+          else ssStdRemoved[i.id]=next;
+          c.classList.toggle('on',next>0);
+          ssCalcPrice();
+        };
+      })(item,chip,maxQ);
+      row.appendChild(lbl);
+      row.appendChild(chip);
+    }
     list.appendChild(row);
   });
 }
@@ -15183,7 +16108,11 @@ function ssRebuildStdPanel(){
 function ssGetStdCredit(t){
   var c=0;
   if(!t||!STD_OPTIONS[t]) return 0;
-  STD_OPTIONS[t].forEach(function(item){if(ssStdRemoved[item.id]) c+=item.credit*(item.qty||1);});
+  STD_OPTIONS[t].forEach(function(item){
+    var maxQ=item.qty||1;
+    var rq=ssNormalizeStdRemovedCount(ssStdRemoved&&ssStdRemoved[item.id],maxQ);
+    if(rq>0) c+=item.credit*rq;
+  });
   return c;
 }
 
@@ -15429,7 +16358,7 @@ function ssBuildSalesSheetPrintHtml(imgId1, imgId2, opts){
       h+='<div style="display:flex;gap:16px;margin-bottom:14px;padding:14px;border:1px solid #ccc;border-radius:6px;justify-content:center;flex-wrap:wrap;">';
       h+='<div style="text-align:center;">';
       h+=ssGetQRImgTag(qrUrl,95,imgId1);
-      h+='<div style="font-size:0.8rem;color:#000;margin-top:4px;font-weight:700;">View Listing</div>';
+      h+='<div style="font-size:0.8rem;color:#000;margin-top:4px;font-weight:700;">Listing</div>';
       h+='</div>';
       h+='<div style="text-align:center;">';
       h+=ssGetQRImgTag(qrPurchaseUrl,95,imgId2);
@@ -15439,7 +16368,7 @@ function ssBuildSalesSheetPrintHtml(imgId1, imgId2, opts){
     } else {
       var url=qrUrl||qrPurchaseUrl;
       var singleId=qrUrl?imgId1:imgId2;
-      var lbl=qrUrl?'Scan to view this listing online':'<span class="ss-flyer-accent" style="font-weight:700;">Scan to Purchase</span>';
+      var lbl=qrUrl?'Scan listing QR':'<span class="ss-flyer-accent" style="font-weight:700;">Scan to Purchase</span>';
       h+='<div style="display:flex;align-items:center;gap:20px;margin-bottom:14px;padding:14px;border:1px solid #ccc;border-radius:6px;flex-wrap:wrap;justify-content:center;">';
       h+=ssGetQRImgTag(url,110,singleId);
       h+='<div style="font-size:1rem;color:#000;line-height:1.6;"><strong>'+lbl+'</strong></div>';
@@ -15868,6 +16797,31 @@ var STYLE_LABEL_MAP = {
   'ULG':'Lofted Garage'
 };
 
+function syncStyleLabelMapFromData(){
+  STYLE_LABEL_MAP={};
+  STYLE_DATA.forEach(function(s){
+    if(s&&s.code) STYLE_LABEL_MAP[s.code]=s.name||'';
+  });
+}
+
+var _STYLE_DATA_BASELINE=null;
+(function initStyleDataOverridesFromStorage(){
+  _STYLE_DATA_BASELINE=STYLE_DATA.map(function(r){return {code:r.code,name:r.name,img:r.img};});
+  try{
+    var raw=localStorage.getItem('gss_styleDataJson');
+    if(!raw) return;
+    var parsed=JSON.parse(raw);
+    if(!Array.isArray(parsed)||parsed.length<1) return;
+    for(var i=0;i<parsed.length;i++){
+      var p=parsed[i];
+      if(!p||typeof p.code!=='string'||typeof p.name!=='string') return;
+    }
+    STYLE_DATA.splice(0,STYLE_DATA.length);
+    parsed.forEach(function(r){ STYLE_DATA.push({code:r.code,name:r.name,img:String(r.img||'')});});
+  }catch(e){ console.warn('gss_styleDataJson',e); }
+  syncStyleLabelMapFromData();
+})();
+
 /** After programmatic ss_* updates (e.g. from quote), refresh hidden-select trigger buttons. */
 function ssUpdateSsColorTrigger(selectId,colorData){
   var sel=document.getElementById(selectId);
@@ -16016,6 +16970,60 @@ document.addEventListener('DOMContentLoaded', function() {
     }catch(e){ console.log('firebaseBootstrapAuth',e); }
   })();
 });
+
+function toggleSettingsStyleRefCollapse(){
+  var wrap=document.getElementById('settingsStyleRefCollapse');
+  var btn=document.getElementById('settingsStyleRefCollapseBtn');
+  if(!wrap) return;
+  var open=wrap.classList.toggle('open');
+  if(btn) btn.setAttribute('aria-expanded',open?'true':'false');
+}
+
+function syncStyleDataEditorField(){
+  var ta=document.getElementById('set_styleDataJson');
+  if(!ta) return;
+  try{ ta.value=JSON.stringify(STYLE_DATA,null,2); }catch(e){ ta.value=''; }
+}
+
+function saveStyleDataFromEditor(){
+  var ta=document.getElementById('set_styleDataJson');
+  if(!ta) return;
+  if(!confirm('Save custom building style data on this device only? This is separate from main settings and does not sync to the cloud.')) return;
+  var parsed;
+  try{ parsed=JSON.parse(ta.value); }
+  catch(e){ showToast('Invalid JSON — fix syntax and try again'); return; }
+  if(!Array.isArray(parsed)||parsed.length<1){ showToast('JSON must be a non-empty array'); return; }
+  for(var i=0;i<parsed.length;i++){
+    var p=parsed[i];
+    if(!p||typeof p.code!=='string'||!p.code.trim()||typeof p.name!=='string'||!p.name.trim()){
+      showToast('Each item needs non-empty code and name (row '+(i+1)+').');
+      return;
+    }
+  }
+  try{
+    localStorage.setItem('gss_styleDataJson',JSON.stringify(parsed));
+    STYLE_DATA.splice(0,STYLE_DATA.length);
+    parsed.forEach(function(r){ STYLE_DATA.push({code:r.code.trim(),name:r.name.trim(),img:String(r.img||'')});});
+    syncStyleLabelMapFromData();
+    buildStyleRefTable();
+    var msg=document.getElementById('settingsStyleDataMsg');
+    if(msg){ msg.textContent='Style data saved on this device.'; msg.style.display='block'; msg.style.color='var(--sage)'; setTimeout(function(){msg.style.display='none';},2800); }
+    showToast('Building style data saved');
+  }catch(err){ showToast('Could not save: '+(err.message||'error')); }
+}
+
+function resetStyleDataToBaseline(){
+  if(!confirm('Restore factory building styles (images and codes) on this device? Custom JSON will be cleared from local storage.')) return;
+  try{ localStorage.removeItem('gss_styleDataJson'); }catch(_e){}
+  STYLE_DATA.splice(0,STYLE_DATA.length);
+  (_STYLE_DATA_BASELINE||[]).forEach(function(r){ STYLE_DATA.push({code:r.code,name:r.name,img:r.img});});
+  syncStyleLabelMapFromData();
+  syncStyleDataEditorField();
+  buildStyleRefTable();
+  var msg=document.getElementById('settingsStyleDataMsg');
+  if(msg){ msg.textContent='Defaults restored.'; msg.style.display='block'; msg.style.color='var(--sage)'; setTimeout(function(){msg.style.display='none';},2800); }
+  showToast('Style data restored to defaults');
+}
 
 function buildStyleRefTable() {
   var tbl = document.getElementById('settingsStyleRefTable');
