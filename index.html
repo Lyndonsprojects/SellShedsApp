@@ -558,18 +558,117 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
 .rto-dd-item { padding:10px 14px; font-size:0.82rem; color:var(--wheat); border-bottom:1px solid rgba(255,255,255,0.08); cursor:pointer; }
 .rto-dd-item:last-child { border-bottom:none; }
 .rto-dd-item:active { background:rgba(255,255,255,0.1); }
-#screenSettings input[type="text"],
-#screenSettings input[type="url"],
-#screenSettings input[type="tel"],
-#screenSettings input[type="email"],
-#screenSettings input[type="number"],
-#screenSettings select {
+.settings-hub-nav {
+  width: 100%;
+  background: rgba(139,46,13,0.35);
+  border: 1.5px solid rgba(139,46,13,0.6);
+  color: rgba(232,200,122,0.9);
+  border-radius: 10px;
+  padding: 13px;
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: 1.05rem;
+  letter-spacing: 2px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  display: block;
+  box-sizing: border-box;
+  text-align: center;
+}
+.settings-hub-nav:active { opacity: 0.92; }
+.settings-section-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: rgba(232, 200, 122, 0.92);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.settings-contact-input::placeholder {
+  color: rgba(232, 200, 122, 0.55);
+  opacity: 1;
+}
+.settings-pin-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background: rgba(18, 12, 8, 0.88);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-sizing: border-box;
+}
+.settings-pin-card {
+  width: 100%;
+  max-width: 340px;
+  background: var(--earth);
+  border: 1.5px solid rgba(232, 200, 122, 0.35);
+  border-radius: 14px;
+  padding: 22px 20px 18px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+}
+.settings-pin-card h2 {
+  margin: 0 0 6px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--wheat);
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  letter-spacing: 2px;
+}
+.settings-pin-card p {
+  margin: 0 0 14px;
+  font-size: 0.78rem;
+  color: rgba(232, 200, 122, 0.65);
+  line-height: 1.45;
+}
+.settings-pin-card input[type="password"],
+.settings-pin-card input[type="tel"] {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  font-size: 1.1rem;
+  letter-spacing: 0.2em;
+  text-align: center;
+  border-radius: 10px;
+  border: 1.5px solid rgba(232, 200, 122, 0.35);
+  background: rgba(0,0,0,0.2);
+  color: var(--cream);
+  margin-bottom: 10px;
+}
+.settings-pin-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+.settings-pin-actions button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+.settings-pin-err {
+  min-height: 1.2em;
+  font-size: 0.75rem;
+  color: #f0a8a8;
+  margin-bottom: 6px;
+  text-align: center;
+}
+.settings-panel-screen .field-group { margin-bottom: 14px; }
+.settings-panel-screen input[type="text"],
+.settings-panel-screen input[type="url"],
+.settings-panel-screen input[type="tel"],
+.settings-panel-screen input[type="email"],
+.settings-panel-screen input[type="number"],
+.settings-panel-screen input[type="password"],
+.settings-panel-screen select {
   width: 100%;
   box-sizing: border-box;
   font-size: 0.9rem;
 }
-#screenSettings input[type="number"] { width: auto; min-width: 140px; }
-#screenSettings .field-group { margin-bottom: 14px; }
+.settings-panel-screen input[type="number"] { width: auto; min-width: 140px; }
 
 /* ============================================================
    SCREEN: CALCULATOR
@@ -2007,16 +2106,16 @@ select:focus {
   font-size: 0.85rem;
 }
 
-/* -- Settings screen inputs match global style exactly -- */
-#screenSettings input,
-#screenSettings select,
-#screenSettings textarea {
+/* -- Settings sub-panels: inputs match prior settings screen -- */
+.settings-panel-screen input,
+.settings-panel-screen select,
+.settings-panel-screen textarea {
   border-color: #D4C5B0;
   background: white;
 }
-#screenSettings input:focus,
-#screenSettings select:focus,
-#screenSettings textarea:focus {
+.settings-panel-screen input:focus,
+.settings-panel-screen select:focus,
+.settings-panel-screen textarea:focus {
   border-color: var(--barn);
   box-shadow: 0 0 0 3px rgba(139,46,13,0.12);
 }
@@ -2409,6 +2508,47 @@ select:focus {
 .da-field-label{font-size:0.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(232,200,122,0.6);margin-bottom:5px;display:block;}
 .da-input{width:100%;background:rgba(255,255,255,0.07);border:1.5px solid rgba(232,200,122,0.2);border-radius:8px;padding:10px 12px;color:var(--cream);font-size:0.88rem;font-family:inherit;-webkit-appearance:none;box-sizing:border-box;}
 .da-input:focus{outline:none;border-color:rgba(232,200,122,0.5);background:rgba(255,255,255,0.1);}
+/* Docs admin: beat global input[type=text]{background:white;color:earth} — cream on white was nearly invisible */
+#screenDocsAdmin input.da-input,
+#screenDocsAdmin textarea.da-textarea,
+.da-edit-modal input.da-input,
+.da-edit-modal textarea.da-textarea{
+  background:rgba(44,24,16,0.95);
+  color:#F5F0E8;
+  -webkit-text-fill-color:#F5F0E8;
+  border-color:rgba(232,200,122,0.35);
+}
+#screenDocsAdmin input.da-input::placeholder,
+#screenDocsAdmin textarea.da-textarea::placeholder,
+.da-edit-modal input.da-input::placeholder,
+.da-edit-modal textarea.da-textarea::placeholder{
+  color:rgba(245,240,232,0.5);
+  opacity:1;
+}
+#screenDocsAdmin input.da-input:focus,
+#screenDocsAdmin textarea.da-textarea:focus,
+.da-edit-modal input.da-input:focus,
+.da-edit-modal textarea.da-textarea:focus{
+  background:rgba(30,18,12,0.98);
+  color:#F5F0E8;
+  -webkit-text-fill-color:#F5F0E8;
+  border-color:rgba(232,200,122,0.55);
+  box-shadow:0 0 0 2px rgba(139,46,13,0.2);
+}
+#screenDocsAdmin input.da-input:-webkit-autofill,
+.da-edit-modal input.da-input:-webkit-autofill{
+  -webkit-text-fill-color:#F5F0E8;
+  box-shadow:0 0 0 1000px rgba(44,24,16,0.95) inset;
+  transition:background-color 99999s ease-out 0s;
+}
+.da-edit-modal input.da-tag-bare{
+  color:#F5F0E8;
+  -webkit-text-fill-color:#F5F0E8;
+}
+.da-edit-modal input.da-tag-bare::placeholder{
+  color:rgba(245,240,232,0.45);
+  opacity:1;
+}
 .da-select{width:100%;background:rgba(44,24,16,0.95);border:1.5px solid rgba(232,200,122,0.2);border-radius:8px;padding:10px 12px;color:var(--cream);font-size:0.88rem;font-family:inherit;-webkit-appearance:none;box-sizing:border-box;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(232,200,122,0.6)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
 .da-select:focus{outline:none;border-color:rgba(232,200,122,0.5);}
 .da-textarea{width:100%;background:rgba(255,255,255,0.07);border:1.5px solid rgba(232,200,122,0.2);border-radius:8px;padding:10px 12px;color:var(--cream);font-size:0.88rem;font-family:inherit;resize:vertical;min-height:72px;-webkit-appearance:none;box-sizing:border-box;}
@@ -3720,6 +3860,10 @@ select:focus {
         <option value="Available by order">Available by order</option>
       </select>
     </div>
+    <div class="field-group"><label class="field-label">Listing contact (by lot)</label>
+      <select id="adLotContact"></select>
+      <p style="font-size:0.68rem;color:rgba(232,200,122,0.55);margin:6px 0 0;line-height:1.35;">Phone line in the listing uses lot-linked contacts when set; otherwise your default business phone.</p>
+    </div>
     <div class="field-group"><label class="field-label">Tone</label>
       <select id="adTone"><option value="friendly">Friendly &amp; Conversational</option><option value="professional">Professional &amp; Clean</option><option value="urgent">Creates Urgency</option><option value="value">Value-Focused</option><option value="sale">Limited Time Sale</option></select>
     </div>
@@ -4604,6 +4748,11 @@ select:focus {
     <div class="page-title">Building &amp; Colors</div>
     <div class="page-sub">Select style, size, and colors — then go to step 2 for options and pricing</div>
 
+    <div class="field-group"><label class="field-label">Flyer contact (by lot)</label>
+      <select id="ss_sheetLotContact"></select>
+      <p style="font-size:0.68rem;color:rgba(232,200,122,0.55);margin:6px 0 0;line-height:1.35;">Uses contacts linked to the chosen lot in Settings (Business &amp; lots). Default follows the lot marked Main location.</p>
+    </div>
+
     <div id="ss_plateStrip" style="display:none;margin:0 0 14px;padding:12px;border-radius:10px;border:1.5px solid rgba(232,200,122,0.28);background:rgba(232,200,122,0.06);">
       <div class="field-label" style="margin-bottom:8px;">Serial plate</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
@@ -4858,9 +5007,31 @@ select:focus {
     <div class="header-spacer" aria-hidden="true"></div>
   </div>
   <div style="padding:16px;padding-bottom:80px;">
+    <p style="font-size:0.78rem;color:rgba(232,200,122,0.55);margin:0 0 16px;line-height:1.45;">Open a section, make changes, then tap <strong>Save</strong> in the bar below to return here.</p>
+    <button type="button" class="settings-hub-nav" onclick="goTo('screenSettingsBizLots')">BUSINESS, LOTS &amp; LOGO</button>
+    <button type="button" class="settings-hub-nav" onclick="goTo('screenSettingsPricing')">PRICING &amp; STYLE DATA</button>
+    <button type="button" class="settings-hub-nav" onclick="goTo('screenSettingsLinksCloud')">LINKS &amp; CLOUD</button>
+    <button type="button" class="settings-hub-nav" onclick="goTo('screenSettingsComms')">EMAIL &amp; FORMS</button>
+    <button type="button" class="settings-hub-nav" onclick="goTo('screenSettingsHomeQuick')">HOME &amp; QUICK ACTIONS</button>
+    <button type="button" class="settings-hub-nav" onclick="goTo('screenSettingsLists')">WEBSITES, RTO &amp; OPTIONS</button>
+    <div class="settings-section-title" style="margin:20px 0 8px;">Documents &amp; Files</div>
+    <button type="button" onclick="openDocsAdmin()" style="width:100%;background:rgba(139,46,13,0.35);border:1.5px solid rgba(139,46,13,0.6);color:rgba(232,200,122,0.9);border-radius:10px;padding:13px;font-family:'Bebas Neue',Impact,sans-serif;font-size:1.1rem;letter-spacing:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;">
+      <svg viewBox="0 0 24 24" fill="none" style="width:20px;height:20px;flex-shrink:0;"><path fill="rgba(232,200,122,0.1)" stroke="rgba(232,200,122,0.8)" stroke-width="1.6" stroke-linejoin="round" d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17" stroke="rgba(232,200,122,0.8)" stroke-width="1.5" stroke-linecap="round"/><line x1="9" y1="14" x2="15" y2="14" stroke="rgba(232,200,122,0.8)" stroke-width="1.5" stroke-linecap="round"/></svg>
+      MANAGE DOCUMENTS
+    </button>
+    <div id="settingsSavedMsg" style="display:none;text-align:center;color:var(--sage);font-weight:700;padding:12px;margin-top:8px;">✓ Saved!</div>
+  </div>
+</div><!-- end screenSettings -->
 
-    <!-- Business Info -->
-    <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Business Info</div>
+<div class="screen settings-panel-screen" id="screenSettingsBizLots">
+<div class="header">
+    <button type="button" class="back-btn" onclick="goTo('screenSettings')">&#8592;</button>
+    <div class="header-title">BUSINESS & LOTS</div>
+    <div class="header-spacer" aria-hidden="true"></div>
+  </div>
+  <div style="padding:16px;padding-bottom:100px;" class="settings-panel-body">
+<!-- Business Info -->
+    <div class="settings-section-title" style="margin-bottom:10px;">Business Info</div>
     <div class="field-group"><label class="field-label">Business Name</label><input type="text" id="set_bizName" placeholder="Your Business"></div>
     <div class="field-group"><label class="field-label">Contact Name</label><input type="text" id="set_contactName" placeholder="Sales rep name"></div>
     <div class="field-group"><label class="field-label">Phone</label><input type="tel" id="set_bizPhone" placeholder="123-123-1234"></div>
@@ -4872,13 +5043,6 @@ select:focus {
       <div class="field-group" style="flex:0 0 72px;"><label class="field-label">ST</label><input type="text" id="set_bizState" maxlength="2" placeholder="ID" style="text-transform:uppercase;"></div>
       <div class="field-group" style="flex:1;min-width:100px;"><label class="field-label">ZIP</label><input type="text" id="set_bizZip" placeholder="00000"></div>
     </div>
-    <div style="font-size:0.72rem;color:rgba(232,200,122,0.55);margin:12px 0 6px;">Main address override (optional)</div>
-    <div class="field-group"><label class="field-label">Street</label><input type="text" id="set_mainStreet" placeholder="Street"></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;">
-      <div class="field-group" style="flex:1;min-width:120px;"><label class="field-label">City</label><input type="text" id="set_mainCity" placeholder="City"></div>
-      <div class="field-group" style="flex:0 0 72px;"><label class="field-label">ST</label><input type="text" id="set_mainState" maxlength="2" placeholder="ID" style="text-transform:uppercase;"></div>
-      <div class="field-group" style="flex:1;min-width:100px;"><label class="field-label">ZIP</label><input type="text" id="set_mainZip" placeholder="ZIP"></div>
-    </div>
     <div style="font-size:0.72rem;color:rgba(232,200,122,0.55);margin:12px 0 6px;">Shop address</div>
     <div class="field-group"><label class="field-label">Street</label><input type="text" id="set_shopStreet" placeholder="Street"></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
@@ -4888,7 +5052,7 @@ select:focus {
     </div>
 
     <!-- Logo -->
-    <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 10px;">Logo</div>
+    <div class="settings-section-title" style="margin:16px 0 10px;">Logo</div>
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
       <img id="set_logoPreview" src="" style="display:none;max-height:50px;max-width:150px;object-fit:contain;border:1px solid #ddd;border-radius:6px;padding:4px;">
       <div>
@@ -4899,8 +5063,27 @@ select:focus {
       </div>
     </div>
 
-    <!-- Pricing -->
-    <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 10px;">Pricing</div>
+    
+    <div class="settings-section-title" style="margin:16px 0 6px;">Location contacts</div>
+    <div style="font-size:0.72rem;color:rgba(232,200,122,0.5);margin-bottom:8px;">Used on sales sheets and listings when a lot is selected. Add people or numbers, then link them to each lot below.</div>
+    <div id="set_businessContactsList" style="margin-bottom:6px;"></div>
+    <button type="button" onclick="addBusinessContactRow()" class="btn-secondary" style="font-size:0.8rem;padding:7px 14px;">+ Add contact</button>
+    <div class="settings-section-title" style="margin:16px 0 6px;">Lot addresses</div>
+    <div style="font-size:0.72rem;color:rgba(232,200,122,0.5);margin-bottom:8px;">Check <strong>Main location</strong> for the address used as &quot;Main&quot; in mileage and inventory. Only one lot can be main.</div>
+    <div id="set_lotAddressesList" style="margin-bottom:6px;"></div>
+    <button type="button" onclick="addLotAddressField()" class="btn-secondary" style="font-size:0.8rem;padding:7px 14px;">+ Add lot address</button>
+  </div>
+</div><!-- end screenSettingsBizLots -->
+
+<div class="screen settings-panel-screen" id="screenSettingsPricing">
+<div class="header">
+    <button type="button" class="back-btn" onclick="goTo('screenSettings')">&#8592;</button>
+    <div class="header-title">PRICING</div>
+    <div class="header-spacer" aria-hidden="true"></div>
+  </div>
+  <div style="padding:16px;padding-bottom:100px;" class="settings-panel-body">
+<!-- Pricing -->
+    <div class="settings-section-title" style="margin:16px 0 10px;">Pricing</div>
     <div class="field-group"><label class="field-label">Metal Rate (per sq ft)</label><input type="number" id="set_metalRate" placeholder="e.g. 12"></div>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
       <span class="field-label" style="margin:0;">Metal Shop Basis</span>
@@ -4917,110 +5100,9 @@ select:focus {
     <div class="field-group"><label class="field-label">Metal Min (Utility)</label><input type="number" id="set_metalMinUtility" placeholder="e.g. 400"></div>
     <div class="field-group"><label class="field-label">Tax Rate %</label><input type="number" id="set_taxRate" placeholder="e.g. 6" step="0.01"></div>
 
-    <!-- Building style & picker reference (collapsed; saved separately from main settings) -->
-    <div class="settings-style-collapse" id="settingsStyleRefCollapse">
-      <button type="button" class="settings-style-collapse-btn" onclick="toggleSettingsStyleRefCollapse()" aria-expanded="false" id="settingsStyleRefCollapseBtn">
-        <span>Building style &amp; picker reference</span>
-        <span class="settings-style-collapse-chevron" id="settingsStyleRefChevron">▼</span>
-      </button>
-      <div class="settings-style-collapse-body" id="settingsStyleRefBody">
-        <p class="settings-style-collapse-note">Edit the JSON array of <strong>code</strong>, <strong>name</strong>, and <strong>img</strong> (image URL or data URL). Saved only on this device via <strong>Save style data</strong> — not included when you tap Done on main settings.</p>
-        <textarea id="set_styleDataJson" class="set-style-json" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder='[{"code":"ULB","name":"Lofted Barn","img":"https://..."}]'></textarea>
-        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;">
-          <button type="button" class="btn-primary" style="flex:1;min-width:140px;padding:12px;" onclick="saveStyleDataFromEditor()">Save style data</button>
-          <button type="button" class="btn-secondary" style="flex:1;min-width:140px;padding:12px;" onclick="resetStyleDataToBaseline()">Restore defaults</button>
-        </div>
-        <div id="settingsStyleDataMsg" style="display:none;text-align:center;font-size:0.78rem;font-weight:600;margin-top:10px;padding:8px;"></div>
-        <div style="font-size:0.72rem;font-weight:700;color:rgba(232,200,122,0.55);text-transform:uppercase;letter-spacing:1px;margin:14px 0 8px;">Preview table</div>
-        <table class="style-ref-table" id="settingsStyleRefTable"></table>
-      </div>
-    </div>
-
-    <!-- Links -->
-    <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 10px;">Links &amp; Integrations</div>
-    <div class="field-group"><label class="field-label">Designer URL</label><input type="url" id="set_designerUrl" placeholder="https://..."></div>
-    <div class="field-group"><label class="field-label">Purchase URL</label><input type="url" id="set_purchaseUrl" placeholder="https://..."></div>
-    <div class="field-group"><label class="field-label">RTO URL</label><input type="url" id="set_rtoUrl" placeholder="https://..."></div>
-    <div class="field-group"><label class="field-label">Interest URL</label><input type="url" id="set_interestUrl" placeholder="https://..."></div>
-    <div class="field-group"><label class="field-label">Google Maps API Key</label><input type="text" id="set_mapsApiKey" placeholder="Used for mileage calculator"></div>
-
-    <!-- CRM -->
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-      <span class="field-label" style="margin:0;">CRM Integration</span>
-      <div id="set_crmChip" class="toggle-chip" onclick="toggleCRMSetting()" style="margin-left:auto;">Off</div>
-    </div>
-    <div id="set_crmUrlWrap" style="display:none;">
-      <div class="field-group"><label class="field-label">CRM URL</label><input type="url" id="set_crmUrl" placeholder="https://..."></div>
-    </div>
-    <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 10px;">Firebase (Firestore only)</div>
-    <div class="field-group"><label class="field-label">Project API Key</label><input type="text" id="set_firebaseApiKey" placeholder="AIza..."></div>
-    <div class="field-group"><label class="field-label">Auth Domain</label><input type="text" id="set_firebaseAuthDomain" placeholder="your-project.firebaseapp.com"></div>
-    <div class="field-group"><label class="field-label">Project ID</label><input type="text" id="set_firebaseProjectId" placeholder="your-project-id"></div>
-    <div class="field-group"><label class="field-label">Storage Bucket (optional for later)</label><input type="text" id="set_firebaseStorageBucket" placeholder="Optional — Firebase Storage not required"></div>
-    <div class="setup-note" style="margin-top:-4px;margin-bottom:12px;">Firestore sync is active. Firebase Storage is optional and not required.</div>
-    <div class="field-group"><label class="field-label">Messaging Sender ID</label><input type="text" id="set_firebaseMessagingSenderId" placeholder="1234567890"></div>
-    <div class="field-group"><label class="field-label">App ID</label><input type="text" id="set_firebaseAppId" placeholder="1:123456:web:abc..."></div>
-    <div class="field-group"><label class="field-label">Staff email (Firebase Auth)</label><input type="email" id="set_firebaseEmail" placeholder="staff@yourcompany.com"></div>
-    <div class="field-group"><label class="field-label">Staff password (this device only)</label><input type="password" id="set_firebasePassword" placeholder="Saved locally — not synced to cloud"></div>
-    <div class="setup-note" style="margin-top:-4px;margin-bottom:12px;">The app signs in when it opens and keeps this browser signed in. Leave both blank to use <strong>Anonymous</strong> auth (enable it in Firebase Console → Authentication) if you prefer not to store a password here.</div>
-    <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 10px;">Google Drive Photo Upload</div>
-    <div class="field-group"><label class="field-label">Apps Script Upload URL</label><input type="url" id="set_driveUploadUrl" placeholder="https://script.google.com/macros/s/.../exec"></div>
-    <div class="field-group"><label class="field-label">Upload Token (shared secret)</label><input type="password" id="set_driveUploadToken" placeholder="Used to protect upload endpoint"></div>
-    <div class="field-group"><label class="field-label">Drive Folder ID</label><input type="text" id="set_driveFolderId" placeholder="Folder ID where photos are saved"></div>
-    <div class="setup-note" style="margin-top:-4px;margin-bottom:12px;">If configured, inventory photos upload to Google Drive and links are stored in Firestore.</div>
-    <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 10px;">Cloudflare R2 photo upload (optional)</div>
-    <div class="setup-note" style="margin-top:-4px;margin-bottom:12px;">If set, inventory photos use this Worker first (multipart JPEG + thumbnail). Deploy the Worker in <code style="font-size:0.72rem;">inv-r2-upload-worker</code>, create the R2 bucket, run <code style="font-size:0.72rem;">wrangler secret put UPLOAD_TOKEN</code>, then paste the deploy URL ending in <code style="font-size:0.72rem;">/upload</code>. JPEG is the canonical format for shareable URLs. Falls back to Google Drive when R2 is not configured.</div>
-    <div class="field-group"><label class="field-label">R2 Worker upload URL</label><input type="url" id="set_cfR2UploadUrl" placeholder="https://your-worker.workers.dev/upload"></div>
-    <div class="field-group"><label class="field-label">R2 upload token (shared secret)</label><input type="password" id="set_cfR2UploadToken" placeholder="Must match Worker secret UPLOAD_TOKEN"></div>
-
-    <!-- EmailJS -->
-    <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 10px;">EmailJS</div>
-    <div class="field-group"><label class="field-label">Public Key</label><input type="text" id="set_ejsPublicKey" placeholder="..."></div>
-    <div class="field-group"><label class="field-label">Service ID</label><input type="text" id="set_ejsServiceId" placeholder="service_..."></div>
-    <div class="field-group"><label class="field-label">Template ID</label><input type="text" id="set_ejsTemplateId" placeholder="template_..."></div>
-    <div class="field-group"><label class="field-label">Formspree Endpoint</label><input type="url" id="set_formspreeEndpoint" placeholder="https://formspree.io/f/..."></div>
-
-    <!-- Quote Disclaimer -->
-    <div class="field-group" style="margin-top:16px;">
-      <label class="field-label">Quote Disclaimer</label>
-      <textarea id="set_quoteDisclaimer" rows="3" placeholder="e.g. Prices subject to change..." style="width:100%;box-sizing:border-box;border-radius:8px;border:1.5px solid #ddd;padding:10px;font-size:0.85rem;"></textarea>
-    </div>
-
-    <!-- Extra Info -->
-    <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 6px;">Extra Info Lines</div>
-    <div id="set_extraInfoList" style="margin-bottom:6px;"></div>
-    <button onclick="addExtraInfoField()" class="btn-secondary" style="font-size:0.8rem;padding:7px 14px;">+ Add Line</button>
-
-    <!-- Home quick tools (command center) -->
-    <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 6px;">Home quick tools</div>
-    <div style="font-size:0.72rem;color:rgba(232,200,122,0.5);margin-bottom:8px;">Controls the <strong>Quick tools</strong> horizontal strip on the home screen. Add as many as you need; the row scrolls sideways. Same action types as below: <strong>Open screen</strong>, <strong>Quick action</strong> presets, <strong>External URL</strong>, or <strong>Designer</strong>.</div>
-    <div id="set_homeQuickToolsList" style="margin-bottom:6px;"></div>
-    <button type="button" onclick="addHomeQuickListItem('set_homeQuickToolsList')" class="btn-secondary" style="font-size:0.8rem;padding:7px 14px;">+ Add quick tool</button>
-
-    <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:20px 0 6px;">Quick action menu (+)</div>
-    <div style="font-size:0.72rem;color:rgba(232,200,122,0.5);margin-bottom:8px;">Controls the <strong>+</strong> button sheet only — separate from <strong>Quick tools</strong>, so you can show a short menu here and more chips in the row (or the reverse).</div>
-    <div id="set_homeQuickActionsList" style="margin-bottom:6px;"></div>
-    <button type="button" onclick="addHomeQuickListItem('set_homeQuickActionsList')" class="btn-secondary" style="font-size:0.8rem;padding:7px 14px;">+ Add quick action</button>
-
-    <!-- Websites -->
-    <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 6px;">Websites</div>
-    <div id="set_websitesList" style="margin-bottom:6px;"></div>
-    <button onclick="addWebsiteField()" class="btn-secondary" style="font-size:0.8rem;padding:7px 14px;">+ Add Website</button>
-
-    <!-- Lot Addresses -->
-    <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 6px;">Lot Addresses</div>
-    <div id="set_lotAddressesList" style="margin-bottom:6px;"></div>
-    <button onclick="addLotAddressField()" class="btn-secondary" style="font-size:0.8rem;padding:7px 14px;">+ Add Lot Address</button>
-
-    <!-- RTO Links -->
-    <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 6px;">RTO Links</div>
-    <div id="set_rtoLinksList" style="margin-bottom:6px;"></div>
-    <button onclick="addRTOLink()" class="btn-secondary" style="font-size:0.8rem;padding:7px 14px;">+ Add RTO Link</button>
-
-    <!-- Non-RTO Options -->
-    <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:16px 0 6px;">Non-RTO Options</div>
-    <div style="font-size:0.78rem;color:rgba(232,200,122,0.5);margin-bottom:10px;">Checked options are paid upfront (added to Cost Reduction) — not financed in RTO. Default: all unchecked (all options RTO-eligible).</div>
-    <div id="set_nonRtoList" style="background:rgba(255,255,255,0.04);border:1.5px solid rgba(232,200,122,0.2);border-radius:10px;padding:10px 14px;">
+    <div class="settings-section-title" style="margin:18px 0 6px;">Non-RTO options</div>
+    <div style="font-size:0.78rem;color:rgba(232,200,122,0.55);margin-bottom:10px;">Checked options are paid upfront (added to Cost Reduction) — not financed in RTO. Default: all unchecked (all options RTO-eligible).</div>
+    <div id="set_nonRtoList" style="background:rgba(255,255,255,0.04);border:1.5px solid rgba(232,200,122,0.2);border-radius:10px;padding:10px 14px;margin-bottom:8px;">
       <div class="nrto-row"><label class="nrto-label"><input type="checkbox" class="nrto-chk" data-key="metal"> Metal Upgrade</label></div>
       <div class="nrto-row"><label class="nrto-label"><input type="checkbox" class="nrto-chk" data-key="shopSurcharge"> Shop Surcharge</label></div>
       <div class="nrto-row"><label class="nrto-label"><input type="checkbox" class="nrto-chk" data-key="tallwall"> Tall Wall</label></div>
@@ -5050,17 +5132,158 @@ select:focus {
       <div class="nrto-row"><label class="nrto-label"><input type="checkbox" class="nrto-chk" data-key="cutouts"> Cutouts</label></div>
     </div>
 
-    <!-- Manage Documents -->
-    <div style="font-size:0.8rem;font-weight:700;color:#8E1B23;text-transform:uppercase;letter-spacing:1px;margin:20px 0 8px;">Documents &amp; Files</div>
-    <button type="button" onclick="openDocsAdmin()" style="width:100%;background:rgba(139,46,13,0.35);border:1.5px solid rgba(139,46,13,0.6);color:rgba(232,200,122,0.9);border-radius:10px;padding:13px;font-family:'Bebas Neue',Impact,sans-serif;font-size:1.1rem;letter-spacing:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;">
-      <svg viewBox="0 0 24 24" fill="none" style="width:20px;height:20px;flex-shrink:0;"><path fill="rgba(232,200,122,0.1)" stroke="rgba(232,200,122,0.8)" stroke-width="1.6" stroke-linejoin="round" d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17" stroke="rgba(232,200,122,0.8)" stroke-width="1.5" stroke-linecap="round"/><line x1="9" y1="14" x2="15" y2="14" stroke="rgba(232,200,122,0.8)" stroke-width="1.5" stroke-linecap="round"/></svg>
-      MANAGE DOCUMENTS
-    </button>
+    <div class="settings-section-title" style="margin:18px 0 6px;">RTO monthly divisors</div>
+    <div style="font-size:0.76rem;color:rgba(232,200,122,0.55);margin-bottom:10px;line-height:1.45;">The calculator uses: <strong>pre‑tax monthly = RTO amount ÷ divisor</strong> for the selected term (36 / 48 / 60 mo), where <strong>RTO amount</strong> = building subtotal (with assurance if RTO) minus <strong>pre‑tax cost reduction</strong>. Tax is added on the payment. Down payments still follow the built‑in width table (RTO_DOWN). Defaults match the previous app: <strong>19.8 / 22.56 / 27</strong>.</div>
+    <div class="row2">
+      <div class="field-group"><label class="field-label">36‑mo divisor</label><input type="number" id="set_rtoMonthlyDiv36" step="0.01" min="0.01" placeholder="19.8"></div>
+      <div class="field-group"><label class="field-label">48‑mo divisor</label><input type="number" id="set_rtoMonthlyDiv48" step="0.01" min="0.01" placeholder="22.56"></div>
+      <div class="field-group"><label class="field-label">60‑mo divisor</label><input type="number" id="set_rtoMonthlyDiv60" step="0.01" min="0.01" placeholder="27"></div>
+    </div>
 
-    <div id="settingsSavedMsg" style="display:none;text-align:center;color:var(--sage);font-weight:700;padding:12px;margin-top:8px;">✓ Saved!</div>
+    <!-- Building style & picker reference (collapsed; saved separately from main settings) -->
+    <div class="settings-style-collapse" id="settingsStyleRefCollapse">
+      <button type="button" class="settings-style-collapse-btn" onclick="toggleSettingsStyleRefCollapse()" aria-expanded="false" id="settingsStyleRefCollapseBtn">
+        <span>Building style &amp; picker reference</span>
+        <span class="settings-style-collapse-chevron" id="settingsStyleRefChevron">▼</span>
+      </button>
+      <div class="settings-style-collapse-body" id="settingsStyleRefBody">
+        <p class="settings-style-collapse-note">Edit the JSON array of <strong>code</strong>, <strong>name</strong>, and <strong>img</strong> (image URL or data URL). Saved only on this device via <strong>Save style data</strong> — not included when you tap Done on main settings.</p>
+        <textarea id="set_styleDataJson" class="set-style-json" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder='[{"code":"ULB","name":"Lofted Barn","img":"https://..."}]'></textarea>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;">
+          <button type="button" class="btn-primary" style="flex:1;min-width:140px;padding:12px;" onclick="saveStyleDataFromEditor()">Save style data</button>
+          <button type="button" class="btn-secondary" style="flex:1;min-width:140px;padding:12px;" onclick="resetStyleDataToBaseline()">Restore defaults</button>
+        </div>
+        <div id="settingsStyleDataMsg" style="display:none;text-align:center;font-size:0.78rem;font-weight:600;margin-top:10px;padding:8px;"></div>
+        <div style="font-size:0.72rem;font-weight:700;color:rgba(232,200,122,0.55);text-transform:uppercase;letter-spacing:1px;margin:14px 0 8px;">Preview table</div>
+        <table class="style-ref-table" id="settingsStyleRefTable"></table>
+      </div>
+    </div>
 
+    
   </div>
-</div><!-- end screenSettings -->
+</div><!-- end screenSettingsPricing -->
+
+<div class="screen settings-panel-screen" id="screenSettingsLinksCloud">
+<div class="header">
+    <button type="button" class="back-btn" onclick="goTo('screenSettings')">&#8592;</button>
+    <div class="header-title">LINKS & CLOUD</div>
+    <div class="header-spacer" aria-hidden="true"></div>
+  </div>
+  <div style="padding:16px;padding-bottom:100px;" class="settings-panel-body">
+<!-- Links -->
+    <div class="settings-section-title" style="margin:16px 0 10px;">Links &amp; Integrations</div>
+    <div class="field-group"><label class="field-label">Designer URL</label><input type="url" id="set_designerUrl" placeholder="https://..."></div>
+    <div class="field-group"><label class="field-label">Purchase URL</label><input type="url" id="set_purchaseUrl" placeholder="https://..."></div>
+    <div class="field-group"><label class="field-label">RTO URL</label><input type="url" id="set_rtoUrl" placeholder="https://..."></div>
+    <div class="field-group"><label class="field-label">Interest URL</label><input type="url" id="set_interestUrl" placeholder="https://..."></div>
+    <div class="field-group"><label class="field-label">Google Maps API Key</label><input type="text" id="set_mapsApiKey" placeholder="Used for mileage calculator"></div>
+
+    <!-- CRM -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+      <span class="field-label" style="margin:0;">CRM Integration</span>
+      <div id="set_crmChip" class="toggle-chip" onclick="toggleCRMSetting()" style="margin-left:auto;">Off</div>
+    </div>
+    <div id="set_crmUrlWrap" style="display:none;">
+      <div class="field-group"><label class="field-label">CRM URL</label><input type="url" id="set_crmUrl" placeholder="https://..."></div>
+    </div>
+    <div class="settings-section-title" style="margin:16px 0 10px;">Firebase (Firestore only)</div>
+    <div class="field-group"><label class="field-label">Project API Key</label><input type="text" id="set_firebaseApiKey" placeholder="AIza..."></div>
+    <div class="field-group"><label class="field-label">Auth Domain</label><input type="text" id="set_firebaseAuthDomain" placeholder="your-project.firebaseapp.com"></div>
+    <div class="field-group"><label class="field-label">Project ID</label><input type="text" id="set_firebaseProjectId" placeholder="your-project-id"></div>
+    <div class="field-group"><label class="field-label">Storage Bucket (optional for later)</label><input type="text" id="set_firebaseStorageBucket" placeholder="Optional — Firebase Storage not required"></div>
+    <div class="setup-note" style="margin-top:-4px;margin-bottom:12px;">Firestore sync is active. Firebase Storage is optional and not required.</div>
+    <div class="field-group"><label class="field-label">Messaging Sender ID</label><input type="text" id="set_firebaseMessagingSenderId" placeholder="1234567890"></div>
+    <div class="field-group"><label class="field-label">App ID</label><input type="text" id="set_firebaseAppId" placeholder="1:123456:web:abc..."></div>
+    <div class="field-group"><label class="field-label">Staff email (Firebase Auth)</label><input type="email" id="set_firebaseEmail" placeholder="staff@yourcompany.com"></div>
+    <div class="field-group"><label class="field-label">Staff password (this device only)</label><input type="password" id="set_firebasePassword" placeholder="Saved locally — not synced to cloud"></div>
+    <div class="setup-note" style="margin-top:-4px;margin-bottom:12px;">The app signs in when it opens and keeps this browser signed in. Leave both blank to use <strong>Anonymous</strong> auth (enable it in Firebase Console → Authentication) if you prefer not to store a password here.</div>
+    <div class="settings-section-title" style="margin:16px 0 10px;">Google Drive Photo Upload</div>
+    <div class="field-group"><label class="field-label">Apps Script Upload URL</label><input type="url" id="set_driveUploadUrl" placeholder="https://script.google.com/macros/s/.../exec"></div>
+    <div class="field-group"><label class="field-label">Upload Token (shared secret)</label><input type="password" id="set_driveUploadToken" placeholder="Used to protect upload endpoint"></div>
+    <div class="field-group"><label class="field-label">Drive Folder ID</label><input type="text" id="set_driveFolderId" placeholder="Folder ID where photos are saved"></div>
+    <div class="setup-note" style="margin-top:-4px;margin-bottom:12px;">If configured, inventory photos upload to Google Drive and links are stored in Firestore.</div>
+    <div class="settings-section-title" style="margin:16px 0 10px;">Cloudflare R2 photo upload (optional)</div>
+    <div class="setup-note" style="margin-top:-4px;margin-bottom:12px;">If set, inventory photos use this Worker first (multipart JPEG + thumbnail). Deploy the Worker in <code style="font-size:0.72rem;">inv-r2-upload-worker</code>, create the R2 bucket, run <code style="font-size:0.72rem;">wrangler secret put UPLOAD_TOKEN</code>, then paste the deploy URL ending in <code style="font-size:0.72rem;">/upload</code>. JPEG is the canonical format for shareable URLs. Falls back to Google Drive when R2 is not configured.</div>
+    <div class="field-group"><label class="field-label">R2 Worker upload URL</label><input type="url" id="set_cfR2UploadUrl" placeholder="https://your-worker.workers.dev/upload"></div>
+    <div class="field-group"><label class="field-label">R2 upload token (shared secret)</label><input type="password" id="set_cfR2UploadToken" placeholder="Must match Worker secret UPLOAD_TOKEN"></div>
+
+    
+  </div>
+</div><!-- end screenSettingsLinksCloud -->
+
+<div class="screen settings-panel-screen" id="screenSettingsComms">
+<div class="header">
+    <button type="button" class="back-btn" onclick="goTo('screenSettings')">&#8592;</button>
+    <div class="header-title">EMAIL & FORMS</div>
+    <div class="header-spacer" aria-hidden="true"></div>
+  </div>
+  <div style="padding:16px;padding-bottom:100px;" class="settings-panel-body">
+<!-- EmailJS -->
+    <div class="settings-section-title" style="margin:16px 0 10px;">EmailJS</div>
+    <div class="field-group"><label class="field-label">Public Key</label><input type="text" id="set_ejsPublicKey" placeholder="..."></div>
+    <div class="field-group"><label class="field-label">Service ID</label><input type="text" id="set_ejsServiceId" placeholder="service_..."></div>
+    <div class="field-group"><label class="field-label">Template ID</label><input type="text" id="set_ejsTemplateId" placeholder="template_..."></div>
+    <div class="field-group"><label class="field-label">Formspree Endpoint</label><input type="url" id="set_formspreeEndpoint" placeholder="https://formspree.io/f/..."></div>
+
+    <!-- Quote Disclaimer -->
+    <div class="field-group" style="margin-top:16px;">
+      <label class="field-label">Quote Disclaimer</label>
+      <textarea id="set_quoteDisclaimer" rows="3" placeholder="e.g. Prices subject to change..." style="width:100%;box-sizing:border-box;border-radius:8px;border:1.5px solid #ddd;padding:10px;font-size:0.85rem;"></textarea>
+    </div>
+
+    
+  </div>
+</div><!-- end screenSettingsComms -->
+
+<div class="screen settings-panel-screen" id="screenSettingsHomeQuick">
+<div class="header">
+    <button type="button" class="back-btn" onclick="goTo('screenSettings')">&#8592;</button>
+    <div class="header-title">HOME & QUICK ACTIONS</div>
+    <div class="header-spacer" aria-hidden="true"></div>
+  </div>
+  <div style="padding:16px;padding-bottom:100px;" class="settings-panel-body">
+<!-- Extra Info -->
+    <div class="settings-section-title" style="margin:16px 0 6px;">Extra Info Lines</div>
+    <div id="set_extraInfoList" style="margin-bottom:6px;"></div>
+    <button onclick="addExtraInfoField()" class="btn-secondary" style="font-size:0.8rem;padding:7px 14px;">+ Add Line</button>
+
+    <!-- Home quick tools (command center) -->
+    <div class="settings-section-title" style="margin:16px 0 6px;">Home quick tools</div>
+    <div style="font-size:0.72rem;color:rgba(232,200,122,0.5);margin-bottom:8px;">Controls the <strong>Quick tools</strong> horizontal strip on the home screen. Add as many as you need; the row scrolls sideways. Same action types as below: <strong>Open screen</strong>, <strong>Quick action</strong> presets, <strong>External URL</strong>, or <strong>Designer</strong>.</div>
+    <div id="set_homeQuickToolsList" style="margin-bottom:6px;"></div>
+    <button type="button" onclick="addHomeQuickListItem('set_homeQuickToolsList')" class="btn-secondary" style="font-size:0.8rem;padding:7px 14px;">+ Add quick tool</button>
+
+    <div class="settings-section-title" style="margin:20px 0 6px;">Quick action menu (+)</div>
+    <div style="font-size:0.72rem;color:rgba(232,200,122,0.5);margin-bottom:8px;">Controls the <strong>+</strong> button sheet only — separate from <strong>Quick tools</strong>, so you can show a short menu here and more chips in the row (or the reverse).</div>
+    <div id="set_homeQuickActionsList" style="margin-bottom:6px;"></div>
+    <button type="button" onclick="addHomeQuickListItem('set_homeQuickActionsList')" class="btn-secondary" style="font-size:0.8rem;padding:7px 14px;">+ Add quick action</button>
+
+    
+  </div>
+</div><!-- end screenSettingsHomeQuick -->
+
+<div class="screen settings-panel-screen" id="screenSettingsLists">
+<div class="header">
+    <button type="button" class="back-btn" onclick="goTo('screenSettings')">&#8592;</button>
+    <div class="header-title">WEBSITES & OPTIONS</div>
+    <div class="header-spacer" aria-hidden="true"></div>
+  </div>
+  <div style="padding:16px;padding-bottom:100px;" class="settings-panel-body">
+<!-- Websites -->
+    <div class="settings-section-title" style="margin:16px 0 6px;">Websites</div>
+    <div id="set_websitesList" style="margin-bottom:6px;"></div>
+    <button onclick="addWebsiteField()" class="btn-secondary" style="font-size:0.8rem;padding:7px 14px;">+ Add Website</button>
+
+    <!-- RTO Links -->
+    <div class="settings-section-title" style="margin:16px 0 6px;">RTO Links</div>
+    <div id="set_rtoLinksList" style="margin-bottom:6px;"></div>
+    <button onclick="addRTOLink()" class="btn-secondary" style="font-size:0.8rem;padding:7px 14px;">+ Add RTO Link</button>
+
+    
+  </div>
+</div><!-- end screenSettingsLists -->
+
+
 
 <div class="screen" id="screenDocsAdmin">
   <div class="header">
@@ -5461,6 +5684,18 @@ select:focus {
   </div>
 </div>
 
+<div id="settingsPinOverlay" class="settings-pin-overlay" role="dialog" aria-modal="true" aria-labelledby="settingsPinHeading" aria-hidden="true">
+  <div class="settings-pin-card">
+    <h2 id="settingsPinHeading">Settings lock</h2>
+    <p>Enter your PIN whenever you open Settings (hub) or enter Settings from outside. Sub-pages opened from the hub do not ask again until you return to the hub or leave Settings.</p>
+    <div id="settingsPinErr" class="settings-pin-err" aria-live="polite"></div>
+    <input type="password" id="settingsPinInput" inputmode="numeric" pattern="[0-9]*" maxlength="12" autocomplete="off" aria-label="PIN" onkeydown="if(event.key==='Enter'){event.preventDefault();submitSettingsPin();}">
+    <div class="settings-pin-actions">
+      <button type="button" class="btn-secondary" onclick="cancelSettingsPin()">Cancel</button>
+      <button type="button" class="btn-primary" style="background:var(--barn);border:none;color:var(--cream);" onclick="submitSettingsPin()">Unlock</button>
+    </div>
+  </div>
+</div>
 
 <nav id="appBottomNav" class="app-bottom-nav" aria-label="Screen navigation" aria-hidden="true" style="display:none;">
   <button type="button" class="app-bottom-nav__btn app-bottom-nav__btn--back" id="appBottomNavBack" aria-label="Back">
@@ -6844,7 +7079,7 @@ function initEmailJS(){
 // ============================================================
 // SETTINGS
 // ============================================================
-function openSettings(){goTo('screenSettings');loadSettingsForm();}
+function openSettings(){goTo('screenSettings');}
 // ============================================================
 // LOGO HANDLING
 // ============================================================
@@ -7071,27 +7306,59 @@ function applyBizInfoToHome(){
 }
 
 // ============================================================
-// SETTINGS FORM — LOAD / SAVE
+// SETTINGS FORM — LOAD / SAVE (hub + sub-panels)
 // ============================================================
-function renderSettingsFormFromSettings(s){
-  s=s||{};
-  // Simple numeric fields
-  var numFields=['metalRate','cabinFlat','metalMinCabin','metalMinUtility','taxRate'];
-  numFields.forEach(function(k){
-    var el=document.getElementById('set_'+k);
-    if(el) el.value=s[k]||'';
+var SETTINGS_SAVE_SCREEN_IDS={screenSettingsBizLots:1,screenSettingsPricing:1,screenSettingsLinksCloud:1,screenSettingsComms:1,screenSettingsHomeQuick:1,screenSettingsLists:1};
+function isSettingsSaveSubScreen(sid){ return !!SETTINGS_SAVE_SCREEN_IDS[sid]; }
+
+function settingsAfterLocalSave(s){
+  if(calcState.taxMode==='standard') calcState.taxRate=getSettingVal('taxRate',0);
+  var stdBtn=document.getElementById('taxBtn6');
+  var tr=getSettingVal('taxRate',0);
+  if(stdBtn) stdBtn.textContent=tr>0?tr+'% Standard':'0% Standard';
+  applyBizInfoToHome();
+  try{ renderHomeQuickTools(); }catch(_qt){}
+  try{ renderHomeQuickSheet(); }catch(_qt2){}
+  updateShareLinks();
+  initCalcAdvancedTools();
+  updateAutoWidthPrices();
+  initEmailJS();
+  fbApp=null; fbDb=null; fbAuth=null; fbReady=false;
+  try{ populateLotContactPickSelect('ss_sheetLotContact'); }catch(_eSsPop){}
+  try{ populateLotContactPickSelect('adLotContact'); }catch(_eAdPop){}
+}
+
+async function settingsSaveToCloudAndToast(s, opts){
+  opts=opts||{};
+  var cloudSaveResult=await settingsSaveToCloud(s).catch(function(err){
+    console.log('Cloud settings save failed:',err);
+    return {ok:false,reason:'error'};
   });
-  // Text fields
-  var txtFields=['bizName','bizPhone','bizEmail','bizStreet','bizCity','bizState','bizZip','mainStreet','mainCity','mainState','mainZip','shopStreet','shopCity','shopState','shopZip','contactName','designerUrl','formspreeEndpoint','purchaseUrl','rtoUrl','interestUrl','crmUrl','mapsApiKey','ejsPublicKey','ejsServiceId','ejsTemplateId','quoteDisclaimer','firebaseApiKey','firebaseAuthDomain','firebaseProjectId','firebaseStorageBucket','firebaseMessagingSenderId','firebaseAppId','firebaseEmail','firebasePassword','driveUploadUrl','driveUploadToken','driveFolderId','cfR2UploadUrl','cfR2UploadToken'];
+  if(!cloudSaveResult||!cloudSaveResult.ok){
+    if(!opts.suppressCloudFailureToast) showSettingsCloudFailure(cloudSaveResult&&cloudSaveResult.reason||'error');
+  }
+  return { cloudOk: !!(cloudSaveResult&&cloudSaveResult.ok) };
+}
+
+function renderSettingsBizLotsForm(s){
+  s=s||{};
+  var txtFields=['bizName','bizPhone','bizEmail','bizStreet','bizCity','bizState','bizZip','shopStreet','shopCity','shopState','shopZip','contactName'];
   txtFields.forEach(function(k){
     var el=document.getElementById('set_'+k);
     if(el) el.value=s[k]||'';
   });
   var _setBizPh=document.getElementById('set_bizPhone');
   if(_setBizPh) applyPhoneFormatToElement(_setBizPh);
-  // Logo preview
   if(s.logoData) applyLogoToUI(s.logoData);
-  // Metal basis toggle
+  renderSettingsBusinessContacts(s.businessContacts||[]);
+  renderSettingsLotAddresses(s.lotAddresses||[],s);
+}
+function renderSettingsPricingForm(s){
+  s=s||{};
+  ['metalRate','cabinFlat','metalMinCabin','metalMinUtility','taxRate'].forEach(function(k){
+    var el=document.getElementById('set_'+k);
+    if(el) el.value=s[k]||'';
+  });
   var metalBasisTrack=document.getElementById('set_metalBasisTrack');
   var metalBasisDot=document.getElementById('set_metalBasisDot');
   var mbLblLeft=document.getElementById('set_metalBasisLabelLeft');
@@ -7104,12 +7371,25 @@ function renderSettingsFormFromSettings(s){
     if(mbLblLeft){mbLblLeft.style.color=fp?'#aaa':'var(--wheat)';mbLblLeft.style.fontWeight=fp?'400':'700';}
     if(mbLblRight){mbLblRight.style.color=fp?'var(--wheat)':'#aaa';mbLblRight.style.fontWeight=fp?'700':'400';}
   }
-  // CRM toggle
+  ['rtoMonthlyDiv36','rtoMonthlyDiv48','rtoMonthlyDiv60'].forEach(function(k){
+    var el=document.getElementById('set_'+k);
+    if(el) el.value=(s[k]!=null&&s[k]!=='')?String(s[k]):'';
+  });
+  var nrto=s.nonRtoOptions||{};
+  document.querySelectorAll('#set_nonRtoList .nrto-chk').forEach(function(chk){
+    chk.checked=!!nrto[chk.dataset.key];
+  });
+}
+function renderSettingsLinksCloudForm(s){
+  s=s||{};
+  ['designerUrl','purchaseUrl','rtoUrl','interestUrl','crmUrl','mapsApiKey','firebaseApiKey','firebaseAuthDomain','firebaseProjectId','firebaseStorageBucket','firebaseMessagingSenderId','firebaseAppId','firebaseEmail','firebasePassword','driveUploadUrl','driveUploadToken','driveFolderId','cfR2UploadUrl','cfR2UploadToken'].forEach(function(k){
+    var el=document.getElementById('set_'+k);
+    if(el) el.value=s[k]||'';
+  });
   var crmChip=document.getElementById('set_crmChip');
   var crmWrap=document.getElementById('set_crmUrlWrap');
   if(crmChip){crmChip.textContent=s.crmEnabled?'On':'Off';crmChip.classList.toggle('active',!!s.crmEnabled);}
   if(crmWrap) crmWrap.style.display=s.crmEnabled?'block':'none';
-  // Form toggles
   ['purchase','rto','interest'].forEach(function(f){
     var chip=document.getElementById('set_'+f+'Toggle');
     var label=document.getElementById('set_'+f+'UrlLabel');
@@ -7117,7 +7397,18 @@ function renderSettingsFormFromSettings(s){
     if(chip){chip.textContent=embedded?'Embedded Form':'Link Only';chip.classList.toggle('active',embedded);}
     if(label) label.textContent=embedded?'Formspree Endpoint':'Shareable Link';
   });
-  // Dynamic lists
+}
+function renderSettingsCommsForm(s){
+  s=s||{};
+  ['ejsPublicKey','ejsServiceId','ejsTemplateId','formspreeEndpoint'].forEach(function(k){
+    var el=document.getElementById('set_'+k);
+    if(el) el.value=s[k]||'';
+  });
+  var qd=document.getElementById('set_quoteDisclaimer');
+  if(qd) qd.value=s.quoteDisclaimer||'';
+}
+function renderSettingsHomeQuickForm(s){
+  s=s||{};
   renderSettingsExtraInfo(s.extraInfo||[]);
   var _qt=s.homeQuickTools;
   if(!Array.isArray(_qt)||!_qt.length) _qt=getDefaultHomeQuickTools();
@@ -7132,14 +7423,32 @@ function renderSettingsFormFromSettings(s){
     _qa=s.homeQuickActions;
   }
   renderSettingsHomeQuickList('set_homeQuickActionsList',_qa);
+}
+function renderSettingsListsForm(s){
+  s=s||{};
   renderSettingsWebsites(s.websites||[]);
-  renderSettingsLotAddresses(s.lotAddresses||[]);
   renderSettingsRTOLinks(s.rtoLinks||[]);
-  // Non-RTO options
-  var nrto=s.nonRtoOptions||{};
-  document.querySelectorAll('.nrto-chk').forEach(function(chk){
-    chk.checked=!!nrto[chk.dataset.key];
-  });
+}
+
+function renderSettingsFormFromSettings(s){
+  s=s||loadSettings()||{};
+  renderSettingsBizLotsForm(s);
+  renderSettingsPricingForm(s);
+  renderSettingsLinksCloudForm(s);
+  renderSettingsCommsForm(s);
+  renderSettingsHomeQuickForm(s);
+  renderSettingsListsForm(s);
+}
+
+function renderSettingsFormForScreen(screenId,s){
+  s=s||loadSettings()||{};
+  if(screenId==='screenSettingsBizLots') renderSettingsBizLotsForm(s);
+  else if(screenId==='screenSettingsPricing') renderSettingsPricingForm(s);
+  else if(screenId==='screenSettingsLinksCloud') renderSettingsLinksCloudForm(s);
+  else if(screenId==='screenSettingsComms') renderSettingsCommsForm(s);
+  else if(screenId==='screenSettingsHomeQuick') renderSettingsHomeQuickForm(s);
+  else if(screenId==='screenSettingsLists') renderSettingsListsForm(s);
+  else if(screenId==='screenSettings') renderSettingsFormFromSettings(s);
 }
 
 async function loadSettingsForm(){
@@ -7156,60 +7465,125 @@ async function loadSettingsForm(){
   try{ syncStyleDataEditorField(); }catch(_eSd){}
 }
 
-async function saveSettingsForm(opts){
-  opts=opts||{};
+async function saveSettingsBizLots(opts){
   var s=loadSettings();
-  // Numeric
-  var numFields=['metalRate','cabinFlat','metalMinCabin','metalMinUtility','taxRate'];
-  numFields.forEach(function(k){
-    var el=document.getElementById('set_'+k);
-    if(el) s[k]=el.value.trim()===''?'':parseFloat(el.value);
-  });
-  // Text
-  var txtFields=['bizName','bizPhone','bizEmail','bizStreet','bizCity','bizState','bizZip','mainStreet','mainCity','mainState','mainZip','shopStreet','shopCity','shopState','shopZip','contactName','designerUrl','formspreeEndpoint','purchaseUrl','rtoUrl','interestUrl','crmUrl','mapsApiKey','ejsPublicKey','ejsServiceId','ejsTemplateId','quoteDisclaimer','firebaseApiKey','firebaseAuthDomain','firebaseProjectId','firebaseStorageBucket','firebaseMessagingSenderId','firebaseAppId','firebaseEmail','firebasePassword','driveUploadUrl','driveUploadToken','driveFolderId','cfR2UploadUrl','cfR2UploadToken'];
-  txtFields.forEach(function(k){
+  ['bizName','bizPhone','bizEmail','bizStreet','bizCity','bizState','bizZip','shopStreet','shopCity','shopState','shopZip','contactName'].forEach(function(k){
     var el=document.getElementById('set_'+k);
     if(el) s[k]=el.value.trim();
   });
-  // Metal basis toggle
+  s.businessContacts=collectBusinessContactsFromForm();
+  s.lotAddresses=collectDynamicList('set_lotAddressesList','lot');
+  var mainEl=document.querySelector('input[name="gss_lot_main_group"]:checked');
+  var mi=mainEl?parseInt(mainEl.value,10):-1;
+  if(!isNaN(mi)&&mi>=0){
+    s.lotAddresses.forEach(function(l,idx){ l.isMain=(idx===mi); });
+  }else if(s.lotAddresses.length){
+    var any=s.lotAddresses.some(function(l){return l&&l.isMain;});
+    if(!any) s.lotAddresses[0].isMain=true;
+  }
+  saveSettings(s);
+  settingsAfterLocalSave(s);
+  if(opts&&opts.skipCloud) return { cloudOk: true };
+  return settingsSaveToCloudAndToast(s,opts);
+}
+async function saveSettingsPricing(opts){
+  var s=loadSettings();
+  ['metalRate','cabinFlat','metalMinCabin','metalMinUtility','taxRate'].forEach(function(k){
+    var el=document.getElementById('set_'+k);
+    if(el) s[k]=el.value.trim()===''?'':parseFloat(el.value);
+  });
   var mbTrack=document.getElementById('set_metalBasisTrack');
   s.metalBasisFootprint=mbTrack&&mbTrack.classList.contains('active');
-  // CRM
-  s.crmEnabled=document.getElementById('set_crmChip')&&document.getElementById('set_crmChip').classList.contains('active');
-  // Form modes
-  ['purchase','rto','interest'].forEach(function(f){
-    var chip=document.getElementById('set_'+f+'Toggle');
-    s['form_'+f+'_embedded']=chip&&chip.classList.contains('active');
+  ['rtoMonthlyDiv36','rtoMonthlyDiv48','rtoMonthlyDiv60'].forEach(function(k){
+    var el=document.getElementById('set_'+k);
+    if(!el) return;
+    var raw=String(el.value||'').trim();
+    if(raw===''){ try{ delete s[k]; }catch(_d){ s[k]=''; } }
+    else{
+      var n=parseFloat(raw);
+      if(isFinite(n)&&n>0) s[k]=n;
+    }
   });
-  // Dynamic lists — collect from DOM
-  s.extraInfo=collectDynamicList('set_extraInfoList','ei');
-  s.homeQuickTools=collectHomeQuickListFromForm('set_homeQuickToolsList');
-  s.homeQuickActions=collectHomeQuickListFromForm('set_homeQuickActionsList');
-  s.websites=collectDynamicList('set_websitesList','ws');
-  s.lotAddresses=collectDynamicList('set_lotAddressesList','lot');
-  s.rtoLinks=collectDynamicList('set_rtoLinksList','rto');
-  // Non-RTO options
   var nrto={};
-  document.querySelectorAll('.nrto-chk').forEach(function(chk){
+  document.querySelectorAll('#set_nonRtoList .nrto-chk').forEach(function(chk){
     if(chk.checked) nrto[chk.dataset.key]=true;
   });
   s.nonRtoOptions=nrto;
   saveSettings(s);
-  // Refresh dependent UI
-  if(calcState.taxMode==='standard') calcState.taxRate=getSettingVal('taxRate',0);
-  var stdBtn=document.getElementById('taxBtn6');
-  var tr=getSettingVal('taxRate',0);
-  if(stdBtn) stdBtn.textContent=tr>0?tr+'% Standard':'0% Standard';
-  applyBizInfoToHome();
-  try{ renderHomeQuickTools(); }catch(_qt){}
-  try{ renderHomeQuickSheet(); }catch(_qt2){}
-  updateShareLinks();
-  initCalcAdvancedTools();
-  var msg=document.getElementById('settingsSavedMsg');
-  if(msg){msg.style.display='block';setTimeout(function(){msg.style.display='none';},2500);}
-  updateAutoWidthPrices();
-  initEmailJS();
-  fbApp=null; fbDb=null; fbAuth=null; fbReady=false;
+  settingsAfterLocalSave(s);
+  if(opts&&opts.skipCloud) return { cloudOk: true };
+  return settingsSaveToCloudAndToast(s,opts);
+}
+async function saveSettingsLinksCloud(opts){
+  var s=loadSettings();
+  ['designerUrl','purchaseUrl','rtoUrl','interestUrl','crmUrl','mapsApiKey','firebaseApiKey','firebaseAuthDomain','firebaseProjectId','firebaseStorageBucket','firebaseMessagingSenderId','firebaseAppId','firebaseEmail','firebasePassword','driveUploadUrl','driveUploadToken','driveFolderId','cfR2UploadUrl','cfR2UploadToken'].forEach(function(k){
+    var el=document.getElementById('set_'+k);
+    if(el) s[k]=el.value.trim();
+  });
+  s.crmEnabled=document.getElementById('set_crmChip')&&document.getElementById('set_crmChip').classList.contains('active');
+  ['purchase','rto','interest'].forEach(function(f){
+    var chip=document.getElementById('set_'+f+'Toggle');
+    s['form_'+f+'_embedded']=chip&&chip.classList.contains('active');
+  });
+  saveSettings(s);
+  settingsAfterLocalSave(s);
+  if(opts&&opts.skipCloud) return { cloudOk: true };
+  return settingsSaveToCloudAndToast(s,opts);
+}
+async function saveSettingsComms(opts){
+  var s=loadSettings();
+  ['ejsPublicKey','ejsServiceId','ejsTemplateId','formspreeEndpoint'].forEach(function(k){
+    var el=document.getElementById('set_'+k);
+    if(el) s[k]=el.value.trim();
+  });
+  var qd=document.getElementById('set_quoteDisclaimer');
+  if(qd) s.quoteDisclaimer=qd.value.trim();
+  saveSettings(s);
+  settingsAfterLocalSave(s);
+  if(opts&&opts.skipCloud) return { cloudOk: true };
+  return settingsSaveToCloudAndToast(s,opts);
+}
+async function saveSettingsHomeQuick(opts){
+  var s=loadSettings();
+  s.extraInfo=collectDynamicList('set_extraInfoList','ei');
+  s.homeQuickTools=collectHomeQuickListFromForm('set_homeQuickToolsList');
+  s.homeQuickActions=collectHomeQuickListFromForm('set_homeQuickActionsList');
+  saveSettings(s);
+  settingsAfterLocalSave(s);
+  if(opts&&opts.skipCloud) return { cloudOk: true };
+  return settingsSaveToCloudAndToast(s,opts);
+}
+async function saveSettingsLists(opts){
+  var s=loadSettings();
+  s.websites=collectDynamicList('set_websitesList','ws');
+  s.rtoLinks=collectDynamicList('set_rtoLinksList','rto');
+  saveSettings(s);
+  settingsAfterLocalSave(s);
+  if(opts&&opts.skipCloud) return { cloudOk: true };
+  return settingsSaveToCloudAndToast(s,opts);
+}
+
+async function saveSettingsSection(screenId, opts){
+  opts=opts||{};
+  if(screenId==='screenSettingsBizLots') return saveSettingsBizLots(opts);
+  if(screenId==='screenSettingsPricing') return saveSettingsPricing(opts);
+  if(screenId==='screenSettingsLinksCloud') return saveSettingsLinksCloud(opts);
+  if(screenId==='screenSettingsComms') return saveSettingsComms(opts);
+  if(screenId==='screenSettingsHomeQuick') return saveSettingsHomeQuick(opts);
+  if(screenId==='screenSettingsLists') return saveSettingsLists(opts);
+  return { cloudOk: false };
+}
+
+async function saveSettingsForm(opts){
+  opts=opts||{};
+  var chainOpt={ suppressCloudFailureToast:true, skipCloud:true };
+  await saveSettingsBizLots(chainOpt);
+  await saveSettingsPricing(chainOpt);
+  await saveSettingsLinksCloud(chainOpt);
+  await saveSettingsComms(chainOpt);
+  await saveSettingsHomeQuick(chainOpt);
+  await saveSettingsLists(chainOpt);
+  var s=loadSettings();
   var cloudSaveResult=await settingsSaveToCloud(s).catch(function(err){
     console.log('Cloud settings save failed:',err);
     return {ok:false,reason:'error'};
@@ -7217,6 +7591,8 @@ async function saveSettingsForm(opts){
   if(!cloudSaveResult||!cloudSaveResult.ok){
     if(!opts.suppressCloudFailureToast) showSettingsCloudFailure(cloudSaveResult&&cloudSaveResult.reason||'error');
   }
+  var msg=document.getElementById('settingsSavedMsg');
+  if(msg){msg.style.display='block';setTimeout(function(){msg.style.display='none';},2500);}
   return { cloudOk: !!(cloudSaveResult&&cloudSaveResult.ok) };
 }
 
@@ -7274,6 +7650,173 @@ function toggleFormMode(formKey){
   if(label) label.textContent=embedded?'Formspree Endpoint':'Shareable Link';
 }
 
+function renderSettingsBusinessContacts(items){
+  var container=document.getElementById('set_businessContactsList');
+  if(!container) return;
+  container.innerHTML='';
+  (items||[]).forEach(function(it,i){
+    var div=document.createElement('div');
+    div.setAttribute('data-bc-row','1');
+    div.style.cssText='margin-bottom:10px;padding:10px;border:1px solid rgba(232,200,122,0.2);border-radius:8px;background:rgba(255,255,255,0.03);';
+    var id=(it&&it.id)?String(it.id):('bc_'+Date.now()+'_'+i);
+    div.innerHTML='<input type="hidden" data-bc-id value="'+escAttr(id)+'">'+
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">'+
+      '<input data-bc-name class="settings-contact-input" type="text" placeholder="Name" style="flex:1;min-width:120px;min-height:42px;font-size:0.9rem;box-sizing:border-box;" value="'+escAttr(it.name||'')+'">'+
+      '<input data-bc-phone class="settings-contact-input" type="tel" placeholder="Phone" style="flex:1;min-width:120px;min-height:42px;font-size:0.9rem;box-sizing:border-box;" value="'+escAttr(it.phone||'')+'">'+
+      '<input data-bc-phone2 class="settings-contact-input" type="tel" placeholder="Alt phone" style="flex:1;min-width:100px;min-height:42px;font-size:0.9rem;box-sizing:border-box;" value="'+escAttr(it.phone2||'')+'">'+
+      '<button type="button" onclick="removeBusinessContactRow(this)" style="-webkit-appearance:none;appearance:none;background:none;border:none;color:var(--barn);font-size:1.1rem;cursor:pointer;padding:4px;">✕</button></div>';
+    container.appendChild(div);
+  });
+}
+function collectBusinessContactsFromForm(){
+  var container=document.getElementById('set_businessContactsList');
+  if(!container) return[];
+  var out=[];
+  container.querySelectorAll('[data-bc-row]').forEach(function(row){
+    var idEl=row.querySelector('[data-bc-id]');
+    var nm=row.querySelector('[data-bc-name]');
+    var p1=row.querySelector('[data-bc-phone]');
+    var p2=row.querySelector('[data-bc-phone2]');
+    var name=nm?nm.value.trim():'';
+    var phone=p1?p1.value.trim():'';
+    var phone2=p2?p2.value.trim():'';
+    if(!name&&!phone&&!phone2) return;
+    var id=idEl&&idEl.value.trim()?idEl.value.trim():('bc_'+Date.now()+'_'+out.length);
+    out.push({id:id,name:name,phone:phone,phone2:phone2});
+  });
+  return out;
+}
+function addBusinessContactRow(){
+  var container=document.getElementById('set_businessContactsList');
+  if(!container) return;
+  var existing=collectBusinessContactsFromForm();
+  existing.push({id:'bc_'+Date.now(),name:'',phone:'',phone2:''});
+  renderSettingsBusinessContacts(existing);
+}
+function removeBusinessContactRow(btn){
+  var row=btn.closest&&btn.closest('[data-bc-row]');
+  if(row) row.remove();
+}
+function findBusinessContactById(s, cid){
+  var arr=(s&&s.businessContacts)||[];
+  for(var i=0;i<arr.length;i++){
+    if(String((arr[i]||{}).id)===String(cid)) return arr[i];
+  }
+  return null;
+}
+function formatBizContactLine(bc){
+  if(!bc) return '';
+  var bits=[];
+  if(bc.name) bits.push(bc.name);
+  var p=(bc.phone||'').trim();
+  var p2=(bc.phone2||'').trim();
+  if(p) bits.push(normalizePhoneTenDigits(p));
+  if(p2) bits.push(normalizePhoneTenDigits(p2));
+  return bits.join(' — ');
+}
+function buildLotFlyerContact(s, lot){
+  if(!lot) return null;
+  var ids=Array.isArray(lot.contactIds)?lot.contactIds:[];
+  var parts=[];
+  ids.forEach(function(id){
+    if(!id) return;
+    var bc=findBusinessContactById(s,id);
+    var line=formatBizContactLine(bc);
+    if(line) parts.push(line);
+  });
+  if(!parts.length) return null;
+  var first=findBusinessContactById(s,ids.filter(Boolean)[0]);
+  return {contactName:(first&&first.name)||'',bizPhone:parts.join(' · '),block:parts.join('<br>')};
+}
+function resolveFlyerContactFromLotPick(s, addr){
+  s=s||loadSettings()||{};
+  var raw=String(addr!=null?addr:'').trim();
+  var lotList=s.lotAddresses||[];
+  function pickLotByAddress(a){
+    for(var i=0;i<lotList.length;i++){
+      var it=lotList[i];
+      if(!it) continue;
+      var line=formatAddressFromParts(it.street||it.address||'',it.city||'',it.state||'',it.zip||'').trim();
+      if(line&&line===a) return it;
+      if((it.label||'').trim()===a) return it;
+    }
+    return null;
+  }
+  var lot=null;
+  if(raw&&raw!=='__default__') lot=pickLotByAddress(raw);
+  if(!lot){
+    for(var j=0;j<lotList.length;j++){
+      if(lotList[j]&&lotList[j].isMain){ lot=lotList[j]; break; }
+    }
+  }
+  var fromLot=lot?buildLotFlyerContact(s,lot):null;
+  if(fromLot) return fromLot;
+  return {
+    contactName:(s.contactName||'').trim(),
+    bizPhone:(s.bizPhone||'').trim(),
+    block:((s.contactName||'').trim()?((s.contactName||'').trim()+' — '):'')+normalizePhoneTenDigits(s.bizPhone||'')
+  };
+}
+function formatFlyerContactCallLine(fc){
+  if(!fc) return '';
+  var nm=String(fc.contactName||'').trim();
+  var rawPh=String(fc.bizPhone||'').trim();
+  if(!rawPh && !nm) return '';
+  function oneSeg(seg){
+    seg=String(seg||'').trim();
+    if(!seg) return '';
+    var emIdx=seg.indexOf(' — ');
+    if(emIdx>0){
+      var who=seg.slice(0,emIdx).trim();
+      var rest=seg.slice(emIdx+3).trim();
+      return who+': '+normalizePhoneTenDigits(rest);
+    }
+    return normalizePhoneTenDigits(seg);
+  }
+  if(rawPh.indexOf(' · ')>=0) return rawPh.split(/\s*·\s*/).map(oneSeg).filter(Boolean).join(' · ');
+  if(rawPh.indexOf(' — ')>=0) return oneSeg(rawPh);
+  if(nm&&rawPh) return nm+': '+normalizePhoneTenDigits(rawPh);
+  if(rawPh) return normalizePhoneTenDigits(rawPh);
+  return nm;
+}
+function getSalesSheetFlyerContactDisplay(s){
+  s=s||loadSettings();
+  var sel=document.getElementById('ss_sheetLotContact');
+  var raw=sel?String(sel.value||'').trim():'';
+  return resolveFlyerContactFromLotPick(s, raw);
+}
+function populateLotContactPickSelect(selectId, preserveVal){
+  var sel=document.getElementById(selectId);
+  if(!sel) return;
+  var prev=(preserveVal!==undefined&&preserveVal!==null)?String(preserveVal):String(sel.value||'');
+  var s=loadSettings();
+  sel.innerHTML='';
+  var odef=document.createElement('option');
+  odef.value='__default__';
+  odef.textContent='Main location (auto)';
+  sel.appendChild(odef);
+  (s.lotAddresses||[]).forEach(function(it,idx){
+    if(!it) return;
+    var line=formatAddressFromParts(it.street||it.address||'',it.city||'',it.state||'',it.zip||'').trim();
+    var lab=(it.label||('Lot '+(idx+1))).trim();
+    var opt=document.createElement('option');
+    opt.value=(line||lab);
+    opt.textContent=line?(lab+' — '+line):lab;
+    sel.appendChild(opt);
+  });
+  var ok=false;
+  for(var i=0;i<sel.options.length;i++){
+    if(sel.options[i].value===prev){ ok=true; sel.selectedIndex=i; break; }
+  }
+  if(!ok&&prev&&prev!=='__default__'){
+    var ox=document.createElement('option');
+    ox.value=prev;
+    ox.textContent='Saved: '+(prev.length>48?prev.slice(0,48)+'…':prev);
+    sel.appendChild(ox);
+    sel.value=prev;
+  }
+}
+
 // ── Dynamic list helpers ──────────────────────────────────────────────────────
 var extraInfoTypeOptions='<option value="text">Text</option><option value="phone">Phone</option><option value="email">Email</option><option value="url">URL</option>';
 
@@ -7307,25 +7850,56 @@ function renderSettingsWebsites(items){
   });
 }
 
-function renderSettingsLotAddresses(items){
+function renderSettingsLotAddresses(items,s){
+  s=s||loadSettings()||{};
   var container=document.getElementById('set_lotAddressesList');
   if(!container) return;
+  var contacts=s.businessContacts||[];
+  function contactOptionsHtml(selectedId){
+    var h='<option value="">— None —</option>';
+    contacts.forEach(function(c){
+      if(!c||!c.id) return;
+      var sel=String(c.id)===String(selectedId)?' selected':'';
+      h+='<option value="'+escAttr(String(c.id))+'"'+sel+'>'+escHtml(c.name||'Untitled')+'</option>';
+    });
+    return h;
+  }
   container.innerHTML='';
   items.forEach(function(item,i){
     var div=document.createElement('div');
     div.setAttribute('data-lot-row',String(i));
     div.style.cssText='margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid rgba(232,200,122,0.12);';
-    div.innerHTML='<div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;">'+
+    var ids=Array.isArray(item.contactIds)?item.contactIds.slice():[];
+    if(!ids.length) ids=[''];
+    var slotRows=ids.map(function(cid,si){
+      return '<div style="margin-top:6px;"><label class="field-label" style="font-size:0.65rem;">Contact at this lot</label><select data-lot-contact-sel class="lot-contact-sel" style="width:100%;font-size:0.88rem;box-sizing:border-box;">'+contactOptionsHtml(cid)+'</select></div>';
+    }).join('');
+    var mainChecked=item.isMain?' checked':'';
+    div.innerHTML='<div style="display:flex;gap:8px;align-items:center;margin-bottom:6px;flex-wrap:wrap;">'+
+      '<label style="display:flex;align-items:center;gap:6px;font-size:0.78rem;color:rgba(232,200,122,0.85);cursor:pointer;"><input type="radio" name="gss_lot_main_group" value="'+i+'" data-lot-main'+mainChecked+'> Main location</label></div>'+
+      '<div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;">'+
       '<input data-lot-label="'+i+'" type="text" placeholder="Lot name (optional)" style="flex:1;min-height:42px;font-size:0.9rem;box-sizing:border-box;" value="'+escHtml(item.label||'')+'">'+
-      '<button onclick="removeListItem(this)" style="-webkit-appearance:none;appearance:none;background:none;border:none;color:var(--barn);font-size:1.1rem;cursor:pointer;padding:4px;">✕</button></div>'+
+      '<button type="button" onclick="removeListItem(this)" style="-webkit-appearance:none;appearance:none;background:none;border:none;color:var(--barn);font-size:1.1rem;cursor:pointer;padding:4px;">✕</button></div>'+
       '<div class="field-group" style="margin-bottom:6px;"><input data-lot-street="'+i+'" type="text" placeholder="Street" style="width:100%;min-height:42px;font-size:0.9rem;box-sizing:border-box;" value="'+escHtml(item.street||item.address||'')+'"></div>'+
       '<div style="display:flex;gap:6px;flex-wrap:wrap;">'+
       '<input data-lot-city="'+i+'" type="text" placeholder="City" style="flex:1;min-width:100px;min-height:42px;font-size:0.9rem;box-sizing:border-box;" value="'+escHtml(item.city||'')+'">'+
       '<input data-lot-state="'+i+'" type="text" placeholder="ST" maxlength="2" style="width:56px;min-height:42px;font-size:0.9rem;box-sizing:border-box;text-transform:uppercase;" value="'+escHtml(item.state||'')+'">'+
       '<input data-lot-zip="'+i+'" type="text" placeholder="ZIP" style="flex:1;min-width:90px;min-height:42px;font-size:0.9rem;box-sizing:border-box;" value="'+escHtml(item.zip||'')+'">'+
-      '</div>';
+      '</div>'+slotRows+
+      '<button type="button" onclick="addLotContactSlot(this)" class="btn-secondary" style="margin-top:8px;font-size:0.72rem;padding:5px 10px;">+ Add contact slot</button>';
     container.appendChild(div);
   });
+}
+function addLotContactSlot(btn){
+  var row=btn&&btn.closest&&btn.closest('[data-lot-row]');
+  if(!row) return;
+  var rowIdx=parseInt(row.getAttribute('data-lot-row'),10);
+  if(isNaN(rowIdx)) return;
+  var existing=collectDynamicList('set_lotAddressesList','lot');
+  if(!existing[rowIdx]) return;
+  if(!Array.isArray(existing[rowIdx].contactIds)) existing[rowIdx].contactIds=[];
+  existing[rowIdx].contactIds.push('');
+  renderSettingsLotAddresses(existing,loadSettings());
 }
 
 function renderSettingsRTOLinks(items){
@@ -7360,8 +7934,9 @@ function addLotAddressField(){
   var container=document.getElementById('set_lotAddressesList');
   if(!container) return;
   var existing=collectDynamicList('set_lotAddressesList','lot');
-  existing.push({label:'',street:'',city:'',state:'',zip:''});
-  renderSettingsLotAddresses(existing);
+  var isFirst=!existing.length;
+  existing.push({label:'',street:'',city:'',state:'',zip:'',isMain:isFirst,contactIds:[]});
+  renderSettingsLotAddresses(existing,loadSettings());
 }
 function addRTOLink(){
   var container=document.getElementById('set_rtoLinksList');
@@ -7411,8 +7986,13 @@ function collectDynamicList(containerId,prefix){
       var city=ci?ci.value.trim():'';
       var state=stt?stt.value.trim():'';
       var zip=zp?zp.value.trim():'';
+      var cids=[];
+      row.querySelectorAll('select[data-lot-contact-sel],select.lot-contact-sel').forEach(function(sel){
+        var v=sel.value.trim();
+        if(v) cids.push(v);
+      });
       if(street||city||state||zip){
-        items.push({label:ll?ll.value.trim():'',street:street,city:city,state:state,zip:zip});
+        items.push({label:ll?ll.value.trim():'',street:street,city:city,state:state,zip:zip,contactIds:cids});
       }
     } else if(prefix==='rto'){
       var n=row.querySelector('[data-rto-name]');
@@ -7638,14 +8218,14 @@ function appBottomNavPrimaryAction(){
   if(sid==='screenRTO'){ submitIntake('rto'); return; }
   if(sid==='screenInterest'){ submitIntake('interest'); return; }
   if(sid==='screenIntakeSuccess'){ goTo('screenIntakeSelector'); return; }
-  if(sid==='screenSettings'){
+  if(isSettingsSaveSubScreen(sid)){
     void (async function(){
       try{
-        var r=await saveSettingsForm({ suppressCloudFailureToast:true });
-        showToast((r&&r.cloudOk)?'Settings saved':'Settings saved locally');
-        goTo('screenHome');
+        var r=await saveSettingsSection(sid,{ suppressCloudFailureToast:true });
+        showToast((r&&r.cloudOk)?'Saved':'Saved locally');
+        goTo('screenSettings');
       }catch(_e){
-        showToast('Could not save settings');
+        showToast('Could not save');
       }
     })();
     return;
@@ -7721,8 +8301,8 @@ function updateAppBottomNav(){
   if(sid==='screenRTO'){ primBtn.setAttribute('aria-label','Submit application'); return; }
   if(sid==='screenInterest'){ primBtn.setAttribute('aria-label','Submit'); return; }
   if(sid==='screenIntakeSuccess'){ primBtn.setAttribute('aria-label','Start another'); return; }
-  if(sid==='screenSettings'){
-    primBtn.setAttribute('aria-label','Save settings');
+  if(isSettingsSaveSubScreen(sid)){
+    primBtn.setAttribute('aria-label','Save section');
     appBottomNavSetPrimaryVisual({mode:'text', text:'SAVE'});
     return;
   }
@@ -7737,12 +8317,80 @@ function updateAppBottomNav(){
   primBtn.setAttribute('aria-label','Done');
 }
 
+var SETTINGS_PIN_CODE='7004';
+var _gssSettingsPinBypassOnce=false;
+function isSettingsAreaScreen(id){
+  if(!id||typeof id!=='string') return false;
+  if(id==='screenSettings'||id==='screenDocsAdmin') return true;
+  return id.indexOf('screenSettings')===0;
+}
+function insideSettingsTree(currentId){
+  if(!currentId) return false;
+  if(currentId==='screenSettings') return true;
+  if(currentId.indexOf('screenSettings')===0 && currentId!=='screenSettings') return true;
+  return false;
+}
+function settingsEntryRequiresPin(screenId, currentId){
+  if(!isSettingsAreaScreen(screenId)) return false;
+  if(screenId==='screenSettings') return true;
+  if(screenId==='screenDocsAdmin') return !insideSettingsTree(currentId);
+  return !insideSettingsTree(currentId);
+}
+var _gssPendingSettingsScreen=null;
+function showSettingsPinGate(pendingId){
+  _gssPendingSettingsScreen=pendingId||'screenSettings';
+  var ov=document.getElementById('settingsPinOverlay');
+  if(!ov) return;
+  ov.style.display='flex';
+  ov.setAttribute('aria-hidden','false');
+  var inp=document.getElementById('settingsPinInput');
+  if(inp){
+    inp.value='';
+    setTimeout(function(){ try{ inp.focus(); }catch(_e2){} }, 80);
+  }
+  var err=document.getElementById('settingsPinErr');
+  if(err) err.textContent='';
+}
+function hideSettingsPinGate(){
+  var ov=document.getElementById('settingsPinOverlay');
+  if(ov){
+    ov.style.display='none';
+    ov.setAttribute('aria-hidden','true');
+  }
+  _gssPendingSettingsScreen=null;
+}
+function submitSettingsPin(){
+  var inp=document.getElementById('settingsPinInput');
+  var v=inp?String(inp.value||'').trim():'';
+  var err=document.getElementById('settingsPinErr');
+  if(v===SETTINGS_PIN_CODE){
+    var tgt=_gssPendingSettingsScreen||'screenSettings';
+    hideSettingsPinGate();
+    _gssSettingsPinBypassOnce=true;
+    goTo(tgt);
+  }else{
+    if(err) err.textContent='Incorrect PIN';
+    showToast('Incorrect PIN');
+  }
+}
+function cancelSettingsPin(){
+  hideSettingsPinGate();
+}
+
 function goTo(screenId){
   if(!screenId||!document.getElementById(screenId)) return;
+  var bypass=_gssSettingsPinBypassOnce;
+  if(bypass) _gssSettingsPinBypassOnce=false;
+  var preCurrent=document.querySelector('.screen.active');
+  var preCurrentId=preCurrent?preCurrent.id:'';
+  if(!bypass && settingsEntryRequiresPin(screenId, preCurrentId)){
+    showSettingsPinGate(screenId);
+    return;
+  }
   var skip=appNavSkipHistoryPush;
   appNavSkipHistoryPush=false;
-  var current=document.querySelector('.screen.active');
-  var currentId=current?current.id:'';
+  var current=preCurrent;
+  var currentId=preCurrentId;
   if(!skip && currentId && currentId!==screenId){
     appNavHistory.push(currentId);
     if(appNavHistory.length>APP_NAV_HISTORY_MAX) appNavHistory.shift();
@@ -7756,8 +8404,13 @@ function goTo(screenId){
   document.getElementById(screenId).classList.add('active');
   window.scrollTo(0,0);
   if(screenId==='screenSettings') loadSettingsForm();
+  if(isSettingsSaveSubScreen(screenId)){
+    renderSettingsFormForScreen(screenId);
+    if(screenId==='screenSettingsPricing') try{ syncStyleDataEditorField(); }catch(_eSdP){}
+  }
   if(screenId==='screenAd'){
     adPopulateLocation();
+    try{ populateLotContactPickSelect('adLotContact'); }catch(_eAdLc){}
     try{ renderOptsSummary(); }catch(_eAd){}
     try{ ssUpdateSsColorTrigger('adColorTrim',TRIM_COLOR_DATA); }catch(_eTrim){}
   }
@@ -7927,6 +8580,25 @@ function homeHeroNewQuoteClick(){
   goTo('screenCalc');
 }
 
+var HOME_QUICK_SCREEN_LABELS={
+  screenWebsites:'Websites',
+  screenCalc:'Price calculator',
+  screenPhotos:'Photo library',
+  screenSettings:'Settings',
+  screenMileage:'Mileage',
+  screenAd:'Marketplace ad',
+  screenInventory:'Inventory',
+  screenCRM:'CRM',
+  screenContacts:'Contacts',
+  screenFollowups:'Follow-ups',
+  screenIntakeSelector:'Forms',
+  screenSalesSheet:'Sales sheet',
+  screenLandlordForm:'Landlord form',
+  screenPurchase:'Purchase form',
+  screenRTO:'RTO application',
+  screenInterest:'Interest form',
+  screenDocs:'Docs & facts'
+};
 var HOME_QUICK_TOOL_SCREEN_IDS=[
   'screenWebsites','screenCalc','screenPhotos','screenSettings','screenMileage','screenAd','screenInventory','screenCRM','screenContacts','screenFollowups','screenIntakeSelector','screenSalesSheet','screenLandlordForm','screenPurchase','screenRTO','screenInterest','screenDocs'
 ];
@@ -7938,6 +8610,26 @@ var HOME_QUICK_ACTION_PRESETS=[
 ];
 function isHomeQuickActionTarget(t){
   return /^__qa_/.test(String(t||''));
+}
+function homeQuickToolDisplayLabel(action,target){
+  action=String(action||'screen').toLowerCase();
+  var t=String(target||'').trim();
+  if(action==='designer') return 'Designer';
+  if(action==='url'){
+    if(!t) return 'External link';
+    try{
+      var u=t.indexOf('://')<0?'https://'+t:t;
+      var h=new URL(u).hostname;
+      if(h) return h;
+    }catch(_e){}
+    return 'External link';
+  }
+  if(isHomeQuickActionTarget(t)){
+    for(var i=0;i<HOME_QUICK_ACTION_PRESETS.length;i++){
+      if(HOME_QUICK_ACTION_PRESETS[i].id===t) return HOME_QUICK_ACTION_PRESETS[i].label;
+    }
+  }
+  return HOME_QUICK_SCREEN_LABELS[t]||t||'Shortcut';
 }
 function isValidHomeQuickToolScreenTarget(t){
   if(!t) return false;
@@ -7980,12 +8672,21 @@ function parseHomeQuickItems(raw){
   var out=[];
   (raw||[]).forEach(function(it){
     if(!it) return;
-    var label=String(it.label||'').trim();
-    if(!label) return;
     var action=String(it.action||'screen').toLowerCase();
     if(action!=='screen'&&action!=='url'&&action!=='designer') action='screen';
-    var target=String(it.target||'').trim();
-    out.push({label:label,action:action,target:target});
+    var target=String(it.target!=null?it.target:'').trim();
+    if(action==='url') target=String(it.target||it.url||'').trim();
+    if(action==='designer') target='';
+    if(action==='screen'){
+      if(!target||!isValidHomeQuickToolScreenTarget(target)) target='screenWebsites';
+    }
+    if(action==='url'){
+      var u=normalizeExternalUrl(target);
+      if(!u) return;
+      target=u;
+    }
+    var lab=homeQuickToolDisplayLabel(action,target);
+    out.push({label:lab,action:action,target:target});
   });
   return out;
 }
@@ -8025,7 +8726,8 @@ function homeQuickToolScreenSelectHtml(selected){
   var sel=selected||'screenWebsites';
   if(!isValidHomeQuickToolScreenTarget(sel)) sel='screenWebsites';
   var head=HOME_QUICK_TOOL_SCREEN_IDS.map(function(id){
-    return '<option value="'+id+'"'+(id===sel?' selected':'')+'>'+id+'</option>';
+    var lab=HOME_QUICK_SCREEN_LABELS[id]||id;
+    return '<option value="'+id+'"'+(id===sel?' selected':'')+'>'+escHtml(lab)+'</option>';
   }).join('');
   var tail=HOME_QUICK_ACTION_PRESETS.map(function(p){
     return '<option value="'+p.id+'"'+(p.id===sel?' selected':'')+'">'+p.label+'</option>';
@@ -8035,24 +8737,7 @@ function homeQuickToolScreenSelectHtml(selected){
 function onHomeQuickToolListActionChange(containerId, sel){
   var container=document.getElementById(containerId);
   if(!container) return;
-  var items=[].map.call(container.querySelectorAll('[data-qt-row]'),function(r){
-    var lab=r.querySelector('[data-qt-label]');
-    var actEl=r.querySelector('[data-qt-action]');
-    var tgtEl=r.querySelector('[data-qt-target]');
-    var label=lab?lab.value:'';
-    var action=actEl?actEl.value:'screen';
-    var target='';
-    if(action==='designer') target='';
-    else if(tgtEl){
-      if(tgtEl.tagName==='SELECT') target=tgtEl.value.trim();
-      else target=tgtEl.value.trim();
-    }
-    if(action==='url'&&target&&!/^https?:/i.test(target)) target='';
-    if(action==='screen'){
-      if(!target||!isValidHomeQuickToolScreenTarget(target)) target='screenWebsites';
-    }
-    return {label:label,action:action,target:target};
-  });
+  var items=collectHomeQuickListFromForm(containerId);
   renderSettingsHomeQuickList(containerId, items);
 }
 function renderSettingsHomeQuickList(containerId, items){
@@ -8068,6 +8753,7 @@ function renderSettingsHomeQuickList(containerId, items){
     var div=document.createElement('div');
     div.setAttribute('data-qt-row','1');
     div.style.cssText='display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:8px;padding:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(232,200,122,0.15);border-radius:8px;';
+    var disp=homeQuickToolDisplayLabel(act,tgt);
     var tgtField;
     if(act==='screen'){
       tgtField='<select data-qt-target style="flex:1;min-width:160px;font-size:0.75rem;padding:6px;box-sizing:border-box;">'+homeQuickToolScreenSelectHtml(tgt)+'</select>';
@@ -8076,7 +8762,7 @@ function renderSettingsHomeQuickList(containerId, items){
     }else{
       tgtField='<input data-qt-target type="text" disabled placeholder="Uses Designer URL in Settings" style="flex:1;min-width:140px;font-size:0.85rem;padding:8px;box-sizing:border-box;opacity:0.65;" value="">';
     }
-    div.innerHTML='<input data-qt-label type="text" placeholder="Button label" style="flex:1;min-width:120px;font-size:0.85rem;padding:8px;box-sizing:border-box;" value="'+escAttr(item.label||'')+'">'+
+    div.innerHTML='<span data-qt-disp style="flex:1;min-width:100px;font-size:0.78rem;font-weight:700;color:rgba(232,200,122,0.95);letter-spacing:0.5px;">'+escHtml(disp)+'</span>'+
       '<select data-qt-action style="width:138px;font-size:0.75rem;padding:6px;box-sizing:border-box;" '+oc+'>'+
       '<option value="screen"'+(act==='screen'?' selected':'')+'>Open screen</option>'+
       '<option value="url"'+(act==='url'?' selected':'')+'>External URL</option>'+
@@ -8089,7 +8775,7 @@ function addHomeQuickListItem(containerId){
   var container=document.getElementById(containerId);
   if(!container) return;
   var existing=collectHomeQuickListFromForm(containerId);
-  existing.push({label:'',action:'screen',target:'screenWebsites'});
+  existing.push({action:'screen',target:'screenWebsites'});
   renderSettingsHomeQuickList(containerId, existing);
 }
 function collectHomeQuickListFromForm(containerId){
@@ -8097,11 +8783,8 @@ function collectHomeQuickListFromForm(containerId){
   if(!container) return[];
   var items=[];
   container.querySelectorAll('[data-qt-row]').forEach(function(row){
-    var lab=row.querySelector('[data-qt-label]');
     var act=row.querySelector('[data-qt-action]');
     var tgtEl=row.querySelector('[data-qt-target]');
-    var label=lab?lab.value.trim():'';
-    if(!label) return;
     var action=act?act.value:'screen';
     var target='';
     if(action==='designer') target='';
@@ -8112,16 +8795,16 @@ function collectHomeQuickListFromForm(containerId){
     if(action==='url'){
       var u=normalizeExternalUrl(target);
       if(!u) return;
-      items.push({label:label,action:'url',target:u});
+      items.push({action:'url',target:u});
     }else if(action==='designer'){
-      items.push({label:label,action:'designer',target:''});
+      items.push({action:'designer',target:''});
     }else{
       if(!target) return;
       if(isHomeQuickActionTarget(target))
-        items.push({label:label,action:'screen',target:target});
+        items.push({action:'screen',target:target});
       else if(!document.getElementById(target)) return;
       else
-        items.push({label:label,action:'screen',target:target});
+        items.push({action:'screen',target:target});
     }
   });
   return items;
@@ -8155,7 +8838,7 @@ function renderHomeQuickTools(){
     var btn=document.createElement('button');
     btn.type='button';
     btn.className='cc-tool-chip';
-    btn.setAttribute('aria-label',tool.label);
+    btn.setAttribute('aria-label',tool.label||homeQuickToolDisplayLabel(tool.action,tool.target));
     btn.innerHTML=homeQuickToolSvgForItem(tool)+'<span></span>';
     var span=btn.querySelector('span');
     if(span) span.textContent=tool.label;
@@ -8732,6 +9415,25 @@ function getFormattedAddressLine(s,prefix){
   if(prefix==='shop'&&s.shopAddress) return String(s.shopAddress).trim();
   return '';
 }
+function getMainLotAddressLine(s){
+  if(!s||!Array.isArray(s.lotAddresses)) return '';
+  var line='';
+  s.lotAddresses.forEach(function(it){
+    if(!it||!it.isMain) return;
+    line=formatAddressFromParts(it.street||it.address||'',it.city||'',it.state||'',it.zip||'');
+  });
+  return (line||'').trim();
+}
+function migrateHomeQuickStoredItem(it){
+  if(!it||typeof it!=='object') return it;
+  var act=String(it.action||'screen').toLowerCase();
+  if(act!=='screen'&&act!=='url'&&act!=='designer') act='screen';
+  var tgt=String(it.target!=null?it.target:'').trim();
+  if(act==='url') tgt=String(it.target||it.url||'').trim();
+  if(act==='screen'&&!tgt) tgt='screenWebsites';
+  if(act==='designer') tgt='';
+  return {action:act,target:tgt};
+}
 function migrateSettingsAddresses(s){
   if(!s||typeof s!=='object') return s;
   var hasBizNew=s.bizStreet||s.bizCity||s.bizState||s.bizZip;
@@ -8757,16 +9459,38 @@ function migrateSettingsAddresses(s){
   }
   if(Array.isArray(s.lotAddresses)){
     s.lotAddresses=s.lotAddresses.map(function(it){
-      if(!it) return {label:'',street:'',city:'',state:'',zip:''};
+      if(!it) return {label:'',street:'',city:'',state:'',zip:'',isMain:false,contactIds:[]};
+      var base;
       if(it.street||it.city||it.state||it.zip){
-        return {label:it.label||'',street:(it.street||'').trim(),city:(it.city||'').trim(),state:(it.state||'').trim(),zip:(it.zip||'').trim()};
+        base={label:it.label||'',street:(it.street||'').trim(),city:(it.city||'').trim(),state:(it.state||'').trim(),zip:(it.zip||'').trim()};
+      }else if(it.address&&String(it.address).trim()){
+        base={label:it.label||'',street:String(it.address).trim(),city:'',state:'',zip:''};
+      }else{
+        base={label:it.label||'',street:'',city:'',state:'',zip:''};
       }
-      if(it.address&&String(it.address).trim()){
-        return {label:it.label||'',street:String(it.address).trim(),city:'',state:'',zip:''};
-      }
-      return {label:it.label||'',street:'',city:'',state:'',zip:''};
+      base.isMain=!!it.isMain;
+      base.contactIds=Array.isArray(it.contactIds)?it.contactIds.filter(Boolean):[];
+      return base;
     });
   }
+  var hasMainLot=Array.isArray(s.lotAddresses)&&s.lotAddresses.some(function(it){return it&&it.isMain;});
+  var legacyMain=(s.mainStreet||s.mainCity||s.mainState||s.mainZip||'').trim();
+  if(legacyMain&&!hasMainLot){
+    if(!Array.isArray(s.lotAddresses)) s.lotAddresses=[];
+    s.lotAddresses.push({
+      label:'Main (migrated)',
+      street:(s.mainStreet||'').trim(),
+      city:(s.mainCity||'').trim(),
+      state:(s.mainState||'').trim(),
+      zip:(s.mainZip||'').trim(),
+      isMain:true,
+      contactIds:[]
+    });
+  }
+  if(!Array.isArray(s.businessContacts)) s.businessContacts=[];
+  ['homeQuickTools','homeQuickActions'].forEach(function(k){
+    if(Array.isArray(s[k])) s[k]=s[k].map(migrateHomeQuickStoredItem);
+  });
   return s;
 }
 function loadSettings(){
@@ -9346,8 +10070,10 @@ function getSettingsAddressOptions(s){
     seen[a]=true;
     out.push({label:label?label+' — '+a:a,address:a});
   }
-  var mainLine=getFormattedAddressLine(s,'main');
-  add('Main',mainLine||combineBizAddressFromSettings(s));
+  var mainLine=getMainLotAddressLine(s);
+  if(!mainLine) mainLine=getFormattedAddressLine(s,'main');
+  if(!mainLine) mainLine=combineBizAddressFromSettings(s);
+  add('Main',mainLine);
   var shopLine=getFormattedAddressLine(s,'shop');
   add('Shop',shopLine||combineBizAddressFromSettings(s));
   if(Array.isArray(s.lotAddresses)){
@@ -11781,7 +12507,15 @@ function buildCalcQuoteText(q){
 
 // ── RTO HELPERS ─────────────────────────────────────────────────────────
 
-var RTO_DIV={36:19.8,48:22.56,60:27};
+function getRtoDivisorMap(){
+  var s={};
+  try{ s=loadSettings()||{}; }catch(_e){}
+  function pick(key, def){
+    var v=parseFloat(s[key]);
+    return isFinite(v)&&v>0?v:def;
+  }
+  return {36:pick('rtoMonthlyDiv36',19.8),48:pick('rtoMonthlyDiv48',22.56),60:pick('rtoMonthlyDiv60',27)};
+}
 
 function getNonRtoOptions(){
   try{ return loadSettings().nonRtoOptions||{}; }catch(e){ return {}; }
@@ -11839,7 +12573,8 @@ function calcRTOData(subtotal, width, taxRate, assurancePlan, costReductionEnter
   }
 
   var rtoAmount = Math.round((subtotal - preTaxCR) * 100) / 100;
-  var div = RTO_DIV[calcState.rtoMonths] || 22.56;
+  var map=getRtoDivisorMap();
+  var div = map[calcState.rtoMonths] || map[48] || 22.56;
   var monthly = Math.round((rtoAmount / div) * 100) / 100;
   var monthlyTax = taxRate > 0 ? Math.round(monthly * (taxRate/100) * 100) / 100 : 0;
   var totalMonthly = Math.round((monthly + monthlyTax) * 100) / 100;
@@ -12258,6 +12993,7 @@ function adPopulateLocation(){
       sel.appendChild(opt);
     });
   }
+  try{ populateLotContactPickSelect('adLotContact'); }catch(_eAdL){}
 }
 
 function adBuildOptionsSummarySentence(){
@@ -12313,7 +13049,7 @@ var DA_TAG_SUGGESTIONS={
   'Photo Gallery':['photo','delivery','crane','all-styles']
 };
 
-function openDocsAdmin(){ goTo('screenDocsAdmin'); daLoadManage(); }
+function openDocsAdmin(){ goTo('screenDocsAdmin'); }
 
 function daShowTab(tab){
   ['upload','manage'].forEach(function(t){
@@ -13493,7 +14229,10 @@ function printQuoteAdResult(){
 function buildAdListingText(opts){
   opts=opts||{};
   var _adS=opts.settings||loadSettings();
-  var _adPhone=_adS.bizPhone||'(call for pricing)';
+  var lotPickEl=document.getElementById('adLotContact');
+  var lotPick=lotPickEl?String(lotPickEl.value||'').trim():'';
+  var fcAd=resolveFlyerContactFromLotPick(_adS, lotPick);
+  var _adPhone=formatFlyerContactCallLine(fcAd)||_adS.bizPhone||'(call for pricing)';
   var _adUrl=_adS.designerUrl||_adS.bizEmail||'';
   var typeCode=opts.typeCode||'';
   var type=opts.type||typeCode;
@@ -15130,7 +15869,6 @@ initEmailJS();
 // SALES SHEET GENERATOR
 // ============================================================
 var SS_LENGTHS=[8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60];
-var SS_RTO_DIV={36:19.8,48:22.56,60:27};
 var ssAddons={};
 var ssStdRemoved={};
 
@@ -15489,6 +16227,7 @@ function ssGoStep(n){
   if(n===2){ ssFillReviewSheetPreview(); }
   window.scrollTo(0,0);
   try{ updateAppBottomNav(); }catch(_e){}
+  if(n===0) try{ populateLotContactPickSelect('ss_sheetLotContact'); }catch(_eSsLc){}
 }
 
 /** Shared HTML for Review step and confirm modal (requires valid type/size in DOM). */
@@ -16280,11 +17019,9 @@ function ssBuildSalesSheetPrintHtml(imgId1, imgId2, opts){
 
   var s=loadSettings();
   var bizName=s.bizName||'Your Business';
-  var bizPhone=s.bizPhone||'';
-  var bizPhoneDisp=bizPhone?normalizePhoneTenDigits(bizPhone):'';
+  var fcFlyer=getSalesSheetFlyerContactDisplay(s);
   var bizAddr=combineBizAddressFromSettings(s)||'';
   var bizUrl=s.designerUrl||'';
-  var contactName=s.contactName||'';
 
   var baseRaw=PRICING[w][l][t];
   var stdCredit=ssGetStdCredit(t);
@@ -16300,7 +17037,8 @@ function ssBuildSalesSheetPrintHtml(imgId1, imgId2, opts){
   var hasSale=pct>0;
   var rtoDown=RTO_DOWN[w]||100;
   var rto={};
-  [36,48,60].forEach(function(mo){rto[mo]=Math.ceil(salePrice/SS_RTO_DIV[mo]);});
+  var rtoDivMap=getRtoDivisorMap();
+  [36,48,60].forEach(function(mo){rto[mo]=Math.ceil(salePrice/rtoDivMap[mo]);});
 
   var optLabels=addonLines.map(function(li){return li.label.replace(/ \([^)]+\)/,'');});
 
@@ -16376,10 +17114,19 @@ function ssBuildSalesSheetPrintHtml(imgId1, imgId2, opts){
     }
   }
 
-  if(bizPhoneDisp||contactName){
+  var flyLine=formatFlyerContactCallLine(fcFlyer);
+  var multiBlock=(fcFlyer.block&&fcFlyer.block.indexOf('<br>')>=0);
+  if(multiBlock||flyLine||fcFlyer.contactName||fcFlyer.bizPhone){
     h+='<div style="text-align:center;margin-bottom:12px;">';
     h+='<div style="font-size:1.05rem;font-weight:700;font-family:Arial,sans-serif;color:#000;margin-bottom:4px;">Call/Text us with any questions you may have.</div>';
-    h+='<div class="ss-flyer-accent" style="font-size:1.3rem;font-weight:900;font-family:Arial Black,Arial,sans-serif;">'+(contactName?(contactName+': '):'')+(bizPhoneDisp||'')+'</div>';
+    if(multiBlock){
+      h+='<div class="ss-flyer-accent" style="font-size:1.15rem;font-weight:900;font-family:Arial Black,Arial,sans-serif;line-height:1.35;">'+
+        fcFlyer.block.split('<br>').map(function(part){return String(part||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');}).join('<br>')+
+      '</div>';
+    }else{
+      var oneLine=flyLine||String(fcFlyer.contactName||'').trim();
+      h+='<div class="ss-flyer-accent" style="font-size:1.3rem;font-weight:900;font-family:Arial Black,Arial,sans-serif;">'+String(oneLine).replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</div>';
+    }
     h+='</div>';
   }
 
