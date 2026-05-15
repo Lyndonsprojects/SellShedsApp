@@ -126,6 +126,17 @@ h2{font-size:1.1rem;font-weight:800;margin-bottom:4px;color:#0B1A39;}
 .status-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:.72rem;font-weight:700;}
 .status-badge.pending{background:#fef3c7;color:#92400e;}
 .status-badge.done{background:#dcfce7;color:#166534;}
+.choice-btn{display:block;width:100%;background:#fff;border:2px solid #D1D3D4;border-radius:12px;padding:18px 20px;margin-bottom:12px;cursor:pointer;text-align:left;font-family:inherit;transition:border-color .15s,box-shadow .15s;}
+.choice-btn:active{border-color:#0B1A39;box-shadow:0 0 0 3px rgba(11,26,57,.1);}
+.cb-title{font-size:1rem;font-weight:800;color:#0B1A39;margin-bottom:4px;}
+.cb-sub{font-size:.8rem;color:#898B8D;line-height:1.45;}
+.upload-area{border:1.5px dashed #D1D3D4;border-radius:8px;padding:20px;text-align:center;cursor:pointer;background:#fff;margin-bottom:8px;}
+.upload-area:active{border-color:#8E1B23;}
+.ua-icon{margin-bottom:6px;}
+.ua-text{font-size:.82rem;color:#898B8D;}
+.upload-preview-img{max-width:100%;border-radius:8px;margin-top:10px;display:none;}
+.two-tone-row{display:flex;align-items:center;justify-content:space-between;background:#F4F5F6;border:1.5px solid #D1D3D4;border-radius:8px;padding:12px 14px;margin-bottom:10px;}
+
 /* Floating contact button */
 .fab{position:fixed;bottom:24px;right:18px;z-index:999;width:54px;height:54px;border-radius:50%;background:#8E1B23;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(142,27,35,.45);display:flex;align-items:center;justify-content:center;transition:transform .15s;}
 .fab:active{transform:scale(.93);}
@@ -231,6 +242,109 @@ var DEALER={name:'Gem State Sheds',location:'Emmett, ID',phone:'(208) 000-0000',
   <div class="brand-footer">GEM STATE SHEDS · EMMETT, ID</div>
 </div>
 
+
+<!-- S_B: Building Type Selection -->
+<div class="screen" id="sb">
+  <div style="height:20px"></div>
+  <div class="step-badge" id="sbbadge">Step 1</div>
+  <h2>What building are you interested in?</h2>
+  <p class="subtitle">Choose an existing building on our lot, or configure a custom order.</p>
+  <button class="choice-btn" onclick="selectBuildingType('lot')">
+    <div class="cb-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>Building on the Lot</div>
+    <div class="cb-sub">I know which building I want — it's already on the lot</div>
+  </button>
+  <button class="choice-btn" onclick="selectBuildingType('custom')">
+    <div class="cb-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>Custom Order</div>
+    <div class="cb-sub">I'd like to configure my own style, size, and colors</div>
+  </button>
+  <button class="btn-secondary" style="margin-top:6px" onclick="goScreen('s0')">← Back</button>
+</div>
+
+<!-- S_BA: Lot Building Info -->
+<div class="screen" id="sba">
+  <div style="height:20px"></div>
+  <div class="progress" id="progsba"></div>
+  <div class="step-badge">Step 2 — Lot Building</div>
+  <h2>Identify the Building</h2>
+  <p class="subtitle">Help us find the exact building. Upload the serial number plate photo (inside, above the door) or a photo of the building — or skip and describe it below.</p>
+  <div class="field">
+    <label>Serial Number Plate Photo <span style="font-size:.65rem;color:#898B8D;text-transform:none">(optional)</span></label>
+    <div class="upload-area" onclick="document.getElementById('f_serial').click()">
+      <input type="file" id="f_serial" accept="image/*" capture="environment" onchange="previewLotPhoto(this,'prev_serial')">
+      <div class="ua-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#8E1B23" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg></div>
+      <div class="ua-text">Tap to photograph serial plate (inside, above door)</div>
+    </div>
+    <img id="prev_serial" class="upload-preview-img">
+  </div>
+  <div class="field">
+    <label>Building Photo <span style="font-size:.65rem;color:#898B8D;text-transform:none">(optional)</span></label>
+    <div class="upload-area" onclick="document.getElementById('f_bldgphoto').click()">
+      <input type="file" id="f_bldgphoto" accept="image/*" capture="environment" onchange="previewLotPhoto(this,'prev_bldgphoto')">
+      <div class="ua-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#8E1B23" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+      <div class="ua-text">Tap to photograph the building</div>
+    </div>
+    <img id="prev_bldgphoto" class="upload-preview-img">
+  </div>
+  <div class="field">
+    <label>Notes / Description <span style="font-size:.65rem;color:#898B8D;text-transform:none">(optional)</span></label>
+    <textarea id="lot_notes" placeholder="Describe the building — size, color, any details you remember..."></textarea>
+  </div>
+  <button class="btn-primary" onclick="nextFromSba()">Next →</button>
+  <button class="btn-secondary" onclick="goScreen('sb')">← Back</button>
+</div>
+
+<!-- S_BB: Custom Order Config -->
+<div class="screen" id="sbb">
+  <div style="height:20px"></div>
+  <div class="progress" id="progsbb"></div>
+  <div class="step-badge">Step 2 — Custom Order</div>
+  <h2>Configure Your Building</h2>
+  <p class="subtitle">Select the style, size, and colors you'd like. All color fields are optional.</p>
+  <span class="section-head">Style &amp; Size</span>
+  <div class="field">
+    <label>Building Style <span class="req">*</span></label>
+    <select id="co_style"><option value="">Select style...</option><option>Utility</option><option>Side Utility</option><option>Cabin</option><option>Center Cabin</option><option>Side Cabin</option><option>Premier Cabin</option><option>Garage</option><option>Garden Shed</option><option>Cottage Shed</option><option>Lofted Barn</option><option>Side Lofted Barn</option><option>Lofted Barn Cabin</option><option>Center Lofted Barn Cabin</option><option>Side Lofted Barn Cabin</option><option>Premier Lofted Barn Cabin</option><option>Lofted Garage</option></select>
+    <div class="err-msg" id="err_co_style">Please select a building style.</div>
+  </div>
+  <div class="row2">
+    <div class="field">
+      <label>Width <span class="req">*</span></label>
+      <select id="co_width"><option value="">—</option><option>8'</option><option>10'</option><option>12'</option><option>14'</option><option>16'</option></select>
+      <div class="err-msg" id="err_co_width">Required.</div>
+    </div>
+    <div class="field">
+      <label>Length <span class="req">*</span></label>
+      <select id="co_length"><option value="">—</option><option>8'</option><option>10'</option><option>12'</option><option>14'</option><option>16'</option><option>18'</option><option>20'</option><option>22'</option><option>24'</option><option>26'</option><option>28'</option><option>30'</option><option>32'</option><option>34'</option><option>36'</option><option>38'</option><option>40'</option></select>
+      <div class="err-msg" id="err_co_length">Required.</div>
+    </div>
+  </div>
+  <span class="section-head">Colors <span style="font-size:.65rem;font-weight:600;color:#898B8D;text-transform:none;letter-spacing:0">— optional</span></span>
+  <div class="field"><label>Roof Color</label><select id="co_roof"><option value="">Select...</option><option>Black</option><option>Blue</option><option>Brown</option><option>Burgundy</option><option>Charcoal</option><option>Clay</option><option>Galvalume</option><option>Grey</option><option>Light Stone</option><option>Radiant Red</option><option>Rustic Red</option><option>Tan</option><option>Burnished Slate</option><option>Green</option><option>White</option></select></div>
+  <div class="field">
+    <div class="two-tone-row">
+      <span style="font-weight:700;font-size:.88rem">Two-Tone Siding</span>
+      <div class="toggle" id="co_ttToggle" onclick="toggleTT()"><div class="toggle-dot"></div></div>
+    </div>
+    <label>Siding Color</label>
+    <select id="co_siding" onchange="chkCustomSiding()"><option value="">Select...</option><option>Chestnut Brown</option><option>Dark Ebony</option><option>Mahogany</option><option>Cactus</option><option>Scarlet Red</option><option>Driftwood</option><option>Navy</option><option>Olive</option><option>Natural Clay</option><option>Sandstone</option><option>Slate Blue</option><option>Grey</option><option>White</option><option>Custom Color</option></select>
+    <input type="text" id="co_sidingCustom" placeholder="Describe custom color..." style="display:none;margin-top:6px">
+    <div id="co_ttFields" style="display:none;margin-top:8px">
+      <label style="display:block;font-size:.78rem;font-weight:700;color:#898B8D;margin-bottom:5px;text-transform:uppercase;letter-spacing:.03em">Bottom Siding Color</label>
+      <select id="co_bottomColor" onchange="chkCustomSiding2()"><option value="">Select...</option><option>Chestnut Brown</option><option>Dark Ebony</option><option>Mahogany</option><option>Cactus</option><option>Scarlet Red</option><option>Driftwood</option><option>Navy</option><option>Olive</option><option>Natural Clay</option><option>Sandstone</option><option>Slate Blue</option><option>Grey</option><option>White</option><option>Custom Color</option></select>
+      <input type="text" id="co_bottomCustom" placeholder="Describe custom color..." style="display:none;margin-top:6px">
+    </div>
+  </div>
+  <div class="field">
+    <label>Trim Color</label>
+    <select id="co_trim" onchange="chkCustomTrim()"><option value="">Select...</option><option>Black</option><option>Blue</option><option>Brown</option><option>Burgundy</option><option>Charcoal</option><option>Clay</option><option>Galvalume</option><option>Grey</option><option>Light Stone</option><option>Radiant Red</option><option>Rustic Red</option><option>Tan</option><option>Burnished Slate</option><option>Green</option><option>White</option><option>Same as Siding</option><option>Custom Paint Color</option></select>
+    <input type="text" id="co_customTrim" placeholder="Describe custom trim color..." style="display:none;margin-top:6px">
+  </div>
+  <span class="section-head">Notes / Add-Ons</span>
+  <div class="field"><textarea id="co_notes" placeholder="Windows, garage door, insulation, extra doors, loft, special requests..."></textarea></div>
+  <button class="btn-primary" onclick="nextFromSbb()">Next →</button>
+  <button class="btn-secondary" onclick="goScreen('sb')">← Back</button>
+</div>
+
 <!-- S1 Personal Info -->
 <div class="screen" id="s1">
   <div style="height:20px"></div>
@@ -246,7 +360,7 @@ var DEALER={name:'Gem State Sheds',location:'Emmett, ID',phone:'(208) 000-0000',
     <div class="field"><label>Home Phone</label><input type="tel" id="p_home" placeholder="(208) 555-0000" maxlength="14" inputmode="numeric"><div class="err-msg" id="err_p_home">Enter a valid phone number.</div></div>
     <div class="field"><label>Work Phone</label><input type="tel" id="p_work" placeholder="(208) 555-0000" maxlength="14" inputmode="numeric"><div class="err-msg" id="err_p_work">Enter a valid phone number.</div></div>
   </div>
-  <div class="field"><label>Email Address</label><input type="email" id="p_email" placeholder="you@email.com" autocomplete="email"><div class="err-msg" id="err_p_email">Please enter a valid email address.</div></div>
+  <div class="field"><label>Email Address <span class="req">*</span></label><input type="email" id="p_email" placeholder="you@email.com" autocomplete="email"><div class="err-msg" id="err_p_email">Please enter a valid email address.</div></div>
   <span class="section-head">Current Address</span>
   <div class="field"><label>Street Address <span class="req">*</span></label><input type="text" id="p_street" placeholder="123 Main St" autocomplete="street-address"><div class="err-msg" id="err_p_street">Please enter a complete street address (include number and street name).</div></div>
   <div class="row3">
@@ -402,16 +516,7 @@ var DEALER={name:'Gem State Sheds',location:'Emmett, ID',phone:'(208) 000-0000',
   <div class="step-badge" id="s4badge">Final Step</div>
   <h2>Building Interest</h2>
   <p class="subtitle">All fields on this screen are optional — skip anything you're unsure about.</p>
-  <span class="section-head">Building Details <span style="font-size:.65rem;font-weight:600;color:#898B8D;text-transform:none;letter-spacing:0">— optional</span></span>
-  <div class="field"><label>Building Style</label><select id="b_style"><option value="">Select style...</option><option>Utility</option><option>Side Utility</option><option>Cabin</option><option>Center Cabin</option><option>Side Cabin</option><option>Premier Cabin</option><option>Garage</option><option>Garden Shed</option><option>Cottage Shed</option><option>Lofted Barn</option><option>Side Lofted Barn</option><option>Lofted Barn Cabin</option><option>Center Lofted Barn Cabin</option><option>Side Lofted Barn Cabin</option><option>Premier Lofted Barn Cabin</option><option>Lofted Garage</option></select></div>
-  <div class="row2">
-    <div class="field"><label>Width</label><select id="b_width"><option value="">—</option><option>8'</option><option>10'</option><option>12'</option><option>14'</option><option>16'</option></select></div>
-    <div class="field"><label>Length</label><select id="b_length"><option value="">—</option><option>8'</option><option>10'</option><option>12'</option><option>14'</option><option>16'</option><option>18'</option><option>20'</option><option>22'</option><option>24'</option><option>26'</option><option>28'</option><option>30'</option><option>32'</option><option>34'</option><option>36'</option><option>38'</option><option>40'</option></select></div>
-  </div>
-  <span class="section-head">Colors <span style="font-size:.65rem;font-weight:600;color:#898B8D;text-transform:none;letter-spacing:0">— optional</span></span>
-  <div class="field"><label>Roof Color</label><select id="b_roof"><option value="">Select...</option><option>Black</option><option>Blue</option><option>Brown</option><option>Burgundy</option><option>Charcoal</option><option>Clay</option><option>Galvalume</option><option>Grey</option><option>Light Stone</option><option>Radiant Red</option><option>Rustic Red</option><option>Tan</option><option>Burnished Slate</option><option>Green</option><option>White</option></select></div>
-  <div class="field"><label>Siding Color</label><select id="b_siding"><option value="">Select...</option><option>Chestnut Brown</option><option>Dark Ebony</option><option>Mahogany</option><option>Cactus</option><option>Scarlet Red</option><option>Driftwood</option><option>Navy</option><option>Olive</option><option>Natural Clay</option><option>Sandstone</option><option>Slate Blue</option><option>Grey</option><option>White</option><option>Custom Color</option></select></div>
-  <div class="field"><label>Trim Color</label><select id="b_trim"><option value="">Select...</option><option>Black</option><option>Blue</option><option>Brown</option><option>Burgundy</option><option>Charcoal</option><option>Clay</option><option>Galvalume</option><option>Grey</option><option>Light Stone</option><option>Radiant Red</option><option>Rustic Red</option><option>Tan</option><option>Burnished Slate</option><option>Green</option><option>White</option><option>Same as Siding</option><option>Custom Color</option></select></div>
+  <!-- Building config moved to lot/custom screens (sba/sbb) -->
   <span class="section-head">How Would You Like to Complete Your Contract?</span>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
     <button type="button" class="contract-opt" id="cpInPerson" onclick="selectContractPref('in-person')">
@@ -450,7 +555,7 @@ var DEALER={name:'Gem State Sheds',location:'Emmett, ID',phone:'(208) 000-0000',
 
 <script>
 // STATE
-var purchaseType='',rentOwn='',selfEmployed=false,sameDelivery=false,contractPref='',llUploadFile=null;
+var purchaseType='',rentOwn='',selfEmployed=false,sameDelivery=false,contractPref='',llUploadFile=null,buildingType='',lotPhotoFile=null;
 
 // INIT
 window.addEventListener('load',function(){
@@ -586,12 +691,14 @@ function selectType(t){
   goScreen('s1');
 }
 function updateProgress(){
-  var isRTO=purchaseType==='rto',total=isRTO?4:3;
-  renderProgress('prog1',1,total);renderProgress('prog2',2,total);
-  renderProgress('prog3',3,total);renderProgress('prog4',isRTO?4:3,total);
-  document.getElementById('s1badge').textContent='Step 1 of '+total;
-  document.getElementById('s2badge').textContent='Step 2 of '+total;
-  document.getElementById('s4badge').textContent='Step '+(isRTO?4:3)+' of '+total;
+  var isRTO=purchaseType==='rto',total=isRTO?5:4;
+  renderProgress('progsba',2,total);renderProgress('progsbb',2,total);
+  renderProgress('prog1',3,total);renderProgress('prog2',4,total);
+  renderProgress('prog3',4,total);renderProgress('prog4',isRTO?5:4,total);
+  document.getElementById('sbbadge').textContent='Step 1 of '+total;
+  document.getElementById('s1badge').textContent='Step 3 of '+total;
+  document.getElementById('s2badge').textContent='Step 4 of '+total;
+  document.getElementById('s4badge').textContent='Step '+(isRTO?5:4)+' of '+total;
 }
 function renderProgress(cid,cur,total){
   var c=document.getElementById(cid);if(!c)return;
@@ -614,7 +721,7 @@ function nextFromS1(){
   if(home) ok=showErr('p_home',!isValidPhone(home))&&ok; else showErr('p_home',false);
   if(work) ok=showErr('p_work',!isValidPhone(work))&&ok; else showErr('p_work',false);
   var email=gv('p_email');
-  if(email) ok=showErr('p_email',!isValidEmail(email))&&ok; else showErr('p_email',false);
+  ok=showErr('p_email',!email||!isValidEmail(email))&&ok;
   ok=showErr('p_street',!isValidStreet(gv('p_street')))&&ok;
   ok=showErr('p_city',gv('p_city').trim().length<2)&&ok;
   ok=showErr('p_state',!isValidState(gv('p_state')))&&ok;
@@ -926,12 +1033,93 @@ function buildText(){
   } else {
     lines.push('');
   }
-  lines.push('--- BUILDING INTEREST ---');
-  lines.push('Style: '+(gv('b_style')||'—'));
-  lines.push('Size: '+(gv('b_width')||'—')+' x '+(gv('b_length')||'—'));
-  lines.push('Roof/Siding/Trim: '+(gv('b_roof')||'—')+' / '+(gv('b_siding')||'—')+' / '+(gv('b_trim')||'—'));
+  lines.push(buildBuildingSection());
   lines.push('Contract Pref: '+(contractPref||'—'));
   lines.push('Notes: '+(gv('b_notes')||'—'));
+  return lines.join('\n');
+}
+
+
+// BUILDING TYPE SELECTION
+function selectBuildingType(type){
+  buildingType=type;
+  updateProgress();
+  goScreen(type==='lot'?'sba':'sbb');
+}
+
+function previewLotPhoto(input, previewId){
+  var preview=document.getElementById(previewId);
+  if(input.files&&input.files[0]){
+    var reader=new FileReader();
+    reader.onload=function(e){ preview.src=e.target.result; preview.style.display='block'; };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+function nextFromSba(){
+  // Lot path — no required fields, just advance
+  goScreen('s1');
+}
+
+function nextFromSbb(){
+  var ok=true;
+  ok=showErr('co_style', !gv('co_style'))&&ok;
+  ok=showErr('co_width', !gv('co_width'))&&ok;
+  ok=showErr('co_length',!gv('co_length'))&&ok;
+  if(!ok){ document.querySelector('.err-field').scrollIntoView({behavior:'smooth',block:'center'}); return; }
+  goScreen('s1');
+}
+
+function toggleTT(){
+  var t=document.getElementById('co_ttToggle');
+  var fields=document.getElementById('co_ttFields');
+  var on=t.classList.contains('on');
+  t.classList.toggle('on',!on);
+  fields.style.display=on?'none':'block';
+}
+
+function chkCustomSiding(){
+  var sel=document.getElementById('co_siding');
+  var wrap=document.getElementById('co_sidingCustom');
+  if(wrap) wrap.style.display=(sel&&sel.value==='Custom Color')?'block':'none';
+}
+
+function chkCustomSiding2(){
+  var sel=document.getElementById('co_bottomColor');
+  var wrap=document.getElementById('co_bottomCustom');
+  if(wrap) wrap.style.display=(sel&&sel.value==='Custom Color')?'block':'none';
+}
+
+function chkCustomTrim(){
+  var sel=document.getElementById('co_trim');
+  var wrap=document.getElementById('co_customTrim');
+  if(wrap) wrap.style.display=(sel&&sel.value==='Custom Paint Color')?'block':'none';
+}
+
+function buildBuildingSection(){
+  var lines=[];
+  lines.push('--- BUILDING ---');
+  lines.push('Type: '+(buildingType==='lot'?'Building on Lot':'Custom Order'));
+  if(buildingType==='lot'){
+    var serial=document.getElementById('f_serial');
+    var bldg=document.getElementById('f_bldgphoto');
+    lines.push('Serial photo: '+(serial&&serial.files&&serial.files.length?serial.files[0].name:'Not provided'));
+    lines.push('Building photo: '+(bldg&&bldg.files&&bldg.files.length?bldg.files[0].name:'Not provided'));
+    lines.push('Notes: '+(gv('lot_notes')||'—'));
+  } else {
+    lines.push('Style: '+(gv('co_style')||'—'));
+    lines.push('Size: '+(gv('co_width')||'—')+' x '+(gv('co_length')||'—'));
+    lines.push('Roof: '+(gv('co_roof')||'—'));
+    var siding=gv('co_siding');
+    if(siding==='Custom Color') siding='Custom ('+gv('co_sidingCustom')+')';
+    lines.push('Siding: '+(siding||'—'));
+    var bottom=gv('co_bottomColor');
+    if(bottom){ if(bottom==='Custom Color') bottom='Custom ('+gv('co_bottomCustom')+')'; lines.push('Bottom Siding: '+bottom); }
+    var trim=gv('co_trim');
+    if(trim==='Custom Paint Color') trim='Custom ('+gv('co_customTrim')+')';
+    lines.push('Trim: '+(trim||'—'));
+    lines.push('Notes: '+(gv('co_notes')||'—'));
+  }
   return lines.join('\n');
 }
 
