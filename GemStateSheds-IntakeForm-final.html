@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Gem State Sheds — Customer Intake</title>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F4F5F6;color:#0B1A39;min-height:100vh;}
+.header{background:#0B1A39;color:#fff;padding:14px 20px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(11,26,57,0.3);}
+.header h1{font-size:1.05rem;font-weight:800;}
+.header p{font-size:0.75rem;margin-top:2px;color:#D1D3D4;}
+.screen{display:none;padding:20px 16px 80px;max-width:520px;margin:0 auto;}
+.screen.active{display:block;}
+h2{font-size:1.1rem;font-weight:800;margin-bottom:4px;color:#0B1A39;}
+.subtitle{font-size:0.8rem;color:#898B8D;margin-bottom:20px;line-height:1.5;}
+.progress{display:flex;align-items:center;margin-bottom:22px;}
+.progress-step{width:26px;height:26px;border-radius:50%;background:#D1D3D4;color:#898B8D;font-size:0.75rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s,color .2s;}
+.progress-step.done{background:#0B1A39;color:#fff;}
+.progress-step.active{background:#8E1B23;color:#fff;}
+.progress-line{flex:1;height:2px;background:#D1D3D4;margin:0 4px;}
+.progress-line.done{background:#0B1A39;}
+.section-head{display:block;font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:#8E1B23;margin:22px 0 10px;padding-bottom:5px;border-bottom:2px solid #D1D3D4;}
+.field{margin-bottom:13px;}
+.field label{display:block;font-size:0.7rem;font-weight:700;color:#898B8D;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em;}
+.field input,.field select,.field textarea{width:100%;padding:12px 14px;border:1.5px solid #D1D3D4;border-radius:8px;font-size:0.95rem;font-family:inherit;background:#fff;color:#0B1A39;transition:border-color .15s,box-shadow .15s;-webkit-appearance:none;appearance:none;min-height:48px;}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23898B8D' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:#8E1B23;box-shadow:0 0 0 3px rgba(142,27,35,.1);}
+.field textarea{resize:vertical;min-height:72px;}
+.field input.err-field,.field select.err-field{border-color:#c0392b!important;}
+.err-msg{color:#c0392b;font-size:0.73rem;margin-top:3px;display:none;font-weight:600;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.row3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;}
+.req{color:#8E1B23;}
+.btn-primary{display:block;width:100%;background:#0B1A39;color:#fff;border:none;border-radius:8px;padding:15px;font-size:1rem;font-weight:700;cursor:pointer;margin-top:8px;font-family:inherit;letter-spacing:.02em;transition:background .15s;}
+.btn-primary:active{background:#061029;}
+.btn-primary:disabled{background:#898B8D;cursor:not-allowed;}
+.btn-primary.red{background:#8E1B23;}
+.btn-primary.red:active{background:#6d141b;}
+.btn-secondary{display:block;width:100%;background:#fff;color:#0B1A39;border:1.5px solid #D1D3D4;border-radius:8px;padding:13px;font-size:.9rem;font-weight:600;cursor:pointer;margin-top:10px;font-family:inherit;transition:background .15s;}
+.purchase-btn{display:block;width:100%;background:#fff;border-radius:12px;padding:20px;margin-bottom:12px;cursor:pointer;text-align:left;font-family:inherit;box-shadow:0 2px 10px rgba(11,26,57,.09);transition:transform .1s;border:2.5px solid transparent;}
+.purchase-btn:active{transform:scale(.99);}
+.purchase-btn.outright{border-color:#0B1A39;}
+.purchase-btn.rto{border-color:#8E1B23;}
+.purchase-btn .pb-icon{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:7px;flex-shrink:0;margin-bottom:10px;}
+.purchase-btn.outright .pb-icon{background:rgba(11,26,57,.08);}
+.purchase-btn.rto .pb-icon{background:rgba(142,27,35,.08);}
+.purchase-btn .pb-title{font-size:1.05rem;font-weight:800;display:block;}
+.purchase-btn.outright .pb-title{color:#0B1A39;}
+.purchase-btn.rto .pb-title{color:#8E1B23;}
+.purchase-btn .pb-sub{font-size:.78rem;color:#898B8D;margin-top:4px;display:block;line-height:1.45;}
+.notice{background:#fff;border:1.5px solid #D1D3D4;border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:.8rem;line-height:1.6;color:#4a5568;}
+.notice.warn{border-color:rgba(142,27,35,.3);background:rgba(142,27,35,.04);}
+.notice.warn strong{color:#8E1B23;}
+.notice.secure{border-color:rgba(11,26,57,.25);background:rgba(11,26,57,.03);}
+.notice.secure strong{color:#0B1A39;}
+.notice.info{border-color:rgba(22,163,74,.3);background:rgba(22,163,74,.04);}
+.notice.info strong{color:#15803d;}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;background:#F4F5F6;border:1.5px solid #D1D3D4;border-radius:8px;padding:12px 14px;margin-bottom:14px;cursor:pointer;}
+.toggle-label{font-weight:700;font-size:.88rem;color:#0B1A39;}
+.toggle{width:42px;height:24px;border-radius:12px;background:#D1D3D4;position:relative;transition:background .2s;flex-shrink:0;}
+.toggle-dot{width:18px;height:18px;border-radius:9px;background:#fff;position:absolute;top:3px;left:3px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.toggle.on{background:#0B1A39;}
+.toggle.on .toggle-dot{left:21px;}
+.radio-group{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px;}
+.radio-chip{padding:9px 18px;border:1.5px solid #D1D3D4;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer;background:#fff;color:#0B1A39;transition:all .15s;}
+.radio-chip.selected{background:#0B1A39;border-color:#0B1A39;color:#fff;}
+.cond-section{background:#F4F5F6;border:1.5px solid #D1D3D4;border-radius:10px;padding:14px;margin-bottom:14px;}
+.facts-grid{display:flex;flex-direction:column;gap:6px;margin-top:4px;}
+.fact-card{background:#F4F5F6;border:1px solid #E8E9EA;border-radius:8px;overflow:hidden;}
+.fact-card.open{border-color:#D1D3D4;background:#fff;}
+.fact-card-header{display:flex;align-items:center;gap:10px;padding:11px 14px;cursor:pointer;user-select:none;-webkit-user-select:none;}
+.fact-card-icon{width:26px;height:26px;border-radius:6px;background:#E8E9EA;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.fact-card.open .fact-card-icon{background:#D1D3D4;}
+.fact-card-title{flex:1;font-size:.8rem;font-weight:600;color:#898B8D;}
+.fact-card.open .fact-card-title{color:#0B1A39;}
+.fact-card-arrow{font-size:.6rem;color:#C0C1C2;transition:transform .2s;}
+.fact-card.open .fact-card-arrow{transform:rotate(180deg);}
+.fact-card-body{display:none;padding:0 14px 14px;border-top:1px solid #E8E9EA;}
+.fact-card.open .fact-card-body{display:block;}
+.fact-row{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid #F4F5F6;}
+.fact-row:last-child{border-bottom:none;}
+.fact-dot{width:5px;height:5px;border-radius:50%;background:#8E1B23;flex-shrink:0;margin-top:6px;}
+.fact-text{font-size:.8rem;color:#4a5568;line-height:1.5;}
+.fact-text strong{font-weight:700;color:#0B1A39;}
+.home-divider{display:flex;align-items:center;gap:10px;margin:20px 0 16px;}
+.home-divider span{font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:#898B8D;white-space:nowrap;}
+.home-divider::before,.home-divider::after{content:'';flex:1;height:1.5px;background:#D1D3D4;}
+.success-box{background:#fff;border:2px solid #D1D3D4;border-radius:12px;padding:32px 24px;text-align:center;margin-top:32px;}
+.success-box h2{color:#0B1A39;margin-top:10px;}
+.success-box p{color:#898B8D;font-size:.88rem;margin-top:10px;line-height:1.6;}
+.brand-footer{text-align:center;padding:20px 0 8px;font-size:.68rem;color:#D1D3D4;letter-spacing:.05em;}
+.secure-field-wrap{position:relative;}
+.secure-field-wrap input{padding-right:52px;}
+.secure-toggle{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#898B8D;font-size:.78rem;font-weight:700;padding:4px;}
+.step-badge{display:inline-block;background:#8E1B23;color:#fff;font-size:.62rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:4px;margin-bottom:8px;}
+.contract-opt{background:#fff;border:1.5px solid #D1D3D4;border-radius:8px;padding:12px 14px;cursor:pointer;text-align:left;font-family:inherit;width:100%;display:flex;align-items:center;gap:10px;min-height:48px;transition:border-color .15s,box-shadow .15s;}
+.contract-opt.selected{border-color:#0B1A39;box-shadow:0 0 0 3px rgba(11,26,57,.08);background:#F8F9FB;}
+.contract-opt-icon{width:26px;height:26px;border-radius:6px;background:#F4F5F6;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.contract-opt.selected .contract-opt-icon{background:#0B1A39;}
+.contract-opt.selected .contract-opt-icon svg{stroke:#fff;}
+.contract-opt-label{font-size:.85rem;font-weight:700;color:#0B1A39;flex:1;}
+.contract-opt-check{display:none;margin-left:auto;}
+.contract-opt.selected .contract-opt-check{display:flex;}
+/* Landlord form */
+.ll-form-card{background:#fff;border:2px solid #0B1A39;border-radius:12px;padding:20px;margin-bottom:16px;}
+.ll-form-header{text-align:center;border-bottom:2px solid #0B1A39;padding-bottom:14px;margin-bottom:16px;}
+.ll-form-header h3{font-size:1rem;font-weight:900;letter-spacing:.03em;color:#0B1A39;}
+.ll-form-header p{font-size:.72rem;color:#898B8D;margin-top:2px;}
+.ll-legal{font-size:.75rem;line-height:1.75;color:#2d3748;background:#F4F5F6;border-radius:8px;padding:12px 14px;margin-bottom:16px;border:1px solid #E8E9EA;}
+.ll-legal p{margin-bottom:8px;}
+.ll-legal p:last-child{margin-bottom:0;}
+/* Upload */
+.upload-zone{border:2px dashed #D1D3D4;border-radius:10px;padding:24px 16px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;background:#fff;margin-bottom:12px;}
+.upload-zone:hover,.upload-zone.drag-over{border-color:#8E1B23;background:rgba(142,27,35,.02);}
+.upload-zone input[type=file]{display:none;}
+.upload-zone .uz-icon{font-size:1.8rem;margin-bottom:6px;}
+.upload-zone .uz-title{font-size:.88rem;font-weight:700;color:#0B1A39;}
+.upload-zone .uz-sub{font-size:.75rem;color:#898B8D;margin-top:3px;}
+.upload-preview{background:#F4F5F6;border:1.5px solid #D1D3D4;border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.upload-preview .up-icon{font-size:1.2rem;flex-shrink:0;}
+.upload-preview .up-name{flex:1;font-size:.82rem;font-weight:600;color:#0B1A39;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.upload-preview .up-remove{background:none;border:none;cursor:pointer;color:#8E1B23;font-size:.8rem;font-weight:700;padding:4px;flex-shrink:0;}
+.status-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:.72rem;font-weight:700;}
+.status-badge.pending{background:#fef3c7;color:#92400e;}
+.status-badge.done{background:#dcfce7;color:#166534;}
+/* Floating contact button */
+.fab{position:fixed;bottom:24px;right:18px;z-index:999;width:54px;height:54px;border-radius:50%;background:#8E1B23;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(142,27,35,.45);display:flex;align-items:center;justify-content:center;transition:transform .15s;}
+.fab:active{transform:scale(.93);}
+.action-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;display:none;align-items:flex-end;justify-content:center;}
+.action-overlay.visible{display:flex;}
+.action-sheet{background:#fff;border-radius:16px 16px 0 0;width:100%;max-width:520px;padding:14px 16px calc(env(safe-area-inset-bottom,0px) + 16px);}
+.action-sheet-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#898B8D;text-align:center;margin-bottom:12px;}
+.action-sheet-title strong{color:#0B1A39;font-size:.88rem;display:block;margin-top:3px;letter-spacing:0;text-transform:none;}
+.action-btn{display:flex;align-items:center;gap:14px;width:100%;background:#F4F5F6;border:none;border-radius:10px;padding:14px 16px;margin-bottom:10px;cursor:pointer;font-family:inherit;font-size:.95rem;font-weight:700;color:#0B1A39;}
+.action-btn:active{background:#E8E9EA;}
+.action-btn .ab-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.action-btn.call-btn .ab-icon{background:#0B1A39;}
+.action-btn.text-btn .ab-icon{background:#16a34a;}
+.action-btn .ab-sub{font-size:.72rem;font-weight:500;color:#898B8D;display:block;margin-top:1px;}
+.action-cancel{display:block;width:100%;background:none;border:1.5px solid #D1D3D4;border-radius:10px;padding:13px;font-family:inherit;font-size:.9rem;font-weight:600;color:#898B8D;cursor:pointer;}
+.confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1100;display:none;align-items:center;justify-content:center;padding:20px;}
+.confirm-overlay.visible{display:flex;}
+.confirm-box{background:#fff;border-radius:14px;padding:24px 20px;width:100%;max-width:320px;text-align:center;}
+.confirm-box h3{font-size:1rem;font-weight:800;color:#0B1A39;margin-bottom:8px;}
+.confirm-box p{font-size:.85rem;color:#4a5568;line-height:1.5;margin-bottom:18px;}
+.confirm-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.confirm-row button{padding:12px;border-radius:8px;font-family:inherit;font-size:.88rem;font-weight:700;cursor:pointer;border:none;}
+.confirm-cancel-btn{background:#F4F5F6;color:#898B8D;}
+.confirm-call-btn{background:#0B1A39;color:#fff;}
+</style>
+</head>
+<body>
+<script>
+var DEALER={name:'Gem State Sheds',location:'Emmett, ID',phone:'(208) 000-0000',email:'gemstatesheds@outlook.com',emailjs:{publicKey:'U7BgdvjHZMWLoxzI-',serviceId:'service_O2ove78',templateId:'template_dpl2k06'}};
+</script>
+
+<div class="header">
+  <h1>Get Started with Gem State Sheds</h1>
+  <p>Customer Information Form</p>
+</div>
+
+<!-- S0 -->
+<div class="screen active" id="s0">
+  <div style="height:10px"></div>
+  <h2>How would you like to purchase?</h2>
+  <p class="subtitle">Choose the option that works best for you.</p>
+  <button class="purchase-btn outright" onclick="selectType('cash')">
+    <div class="pb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0B1A39" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M6 12h.01M18 12h.01"/></svg></div>
+    <span class="pb-title">Purchase Outright</span>
+    <span class="pb-sub">Pay in full or 50% down — balance due at delivery. Shorter form, no credit check.</span>
+  </button>
+  <button class="purchase-btn rto" onclick="selectType('rto')">
+    <div class="pb-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8E1B23" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg></div>
+    <span class="pb-title">Rent-to-Own</span>
+    <span class="pb-sub">No credit check · Flexible monthly payments · No pre-payment penalty.</span>
+  </button>
+  <div class="home-divider"><span>Have Questions?</span></div>
+  <p style="font-size:.75rem;color:#898B8D;text-align:center;margin:-8px 0 14px;line-height:1.5">Drop your questions in the notes field on the final step.</p>
+  <div class="facts-grid">
+    <div class="fact-card" id="fc-process">
+      <div class="fact-card-header" onclick="toggleFact('fc-process')">
+        <div class="fact-card-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0B1A39" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg></div>
+        <div class="fact-card-title">How the Process Works</div><div class="fact-card-arrow">▼</div>
+      </div>
+      <div class="fact-card-body">
+        <div class="fact-row"><div class="fact-dot"></div><div class="fact-text"><strong>Step 1 — Connect.</strong> We'll reach out to discuss the process. Can be done in-person or entirely over the phone.</div></div>
+        <div class="fact-row"><div class="fact-dot"></div><div class="fact-text"><strong>Step 2 — Contract.</strong> Once your info is collected, a contract is written and sent for review and signing. Down payment is processed after your signature.</div></div>
+        <div class="fact-row"><div class="fact-dot"></div><div class="fact-text"><strong>Step 3 — Payment.</strong> We accept cash, check, or card — <strong>no added fees for card transactions.</strong></div></div>
+        <div class="fact-row"><div class="fact-dot"></div><div class="fact-text"><strong>Step 4 — Delivery.</strong> Our team coordinates a delivery window that works for your schedule.</div></div>
+        <div class="fact-row"><div class="fact-dot"></div><div class="fact-text"><strong>Step 5 — Move In.</strong> Our crew sets it on your site. Welcome to the family!</div></div>
+      </div>
+    </div>
+    <div class="fact-card" id="fc-rto">
+      <div class="fact-card-header" onclick="toggleFact('fc-rto')">
+        <div class="fact-card-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0B1A39" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+        <div class="fact-card-title">About Rent-to-Own</div><div class="fact-card-arrow">▼</div>
+      </div>
+      <div class="fact-card-body">
+        <div class="fact-row"><div class="fact-dot"></div><div class="fact-text"><strong>No credit check</strong> — approval is based on identity verification, not credit score.</div></div>
+        <div class="fact-row"><div class="fact-dot"></div><div class="fact-text"><strong>Flexible terms</strong> — 36, 48, or 60 month options. First payment due 30 days from purchase date.</div></div>
+        <div class="fact-row"><div class="fact-dot"></div><div class="fact-text"><strong>No pre-payment penalty</strong> — pay it off early anytime and save on the remaining payments.</div></div>
+        <div class="fact-row"><div class="fact-dot"></div><div class="fact-text"><strong>RTO Assurance</strong> — optional protection plan covers damage, theft, and more.</div></div>
+      </div>
+    </div>
+    <div class="fact-card" id="fc-build">
+      <div class="fact-card-header" onclick="toggleFact('fc-build')">
+        <div class="fact-card-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0B1A39" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg></div>
+        <div class="fact-card-title">What Makes Our Buildings Stand Out</div><div class="fact-card-arrow">▼</div>
+      </div>
+      <div class="fact-card-body">
+        <div class="fact-row"><div class="fact-dot"></div><div class="fact-text"><strong>LP SmartSide siding</strong> — engineered for moisture, impact, and pest resistance. Comes with a 50-year warranty.</div></div>
+        <div class="fact-row"><div class="fact-dot"></div><div class="fact-text"><strong>Treated floor system</strong> — pressure-treated skids and floor joists resist ground moisture and rot.</div></div>
+        <div class="fact-row"><div class="fact-dot"></div><div class="fact-text"><strong>Fully customizable</strong> — windows, doors, colors, insulation, lofts, and more.</div></div>
+      </div>
+    </div>
+    <div class="fact-card" id="fc-delivery">
+      <div class="fact-card-header" onclick="toggleFact('fc-delivery')">
+        <div class="fact-card-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0B1A39" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+        <div class="fact-card-title">Delivery &amp; Site Information</div><div class="fact-card-arrow">▼</div>
+      </div>
+      <div class="fact-card-body">
+        <div class="fact-row"><div class="fact-dot"></div><div class="fact-text"><strong>Site Prep:</strong> No special foundation is required, although gravel pads or concrete slabs are recommended for long-term stability. We deliver and level on treated skids and provide treated wood blocks up to 18″. If you prefer concrete blocks, simply have them on-site before delivery.</div></div>
+        <div class="fact-row"><div class="fact-dot"></div><div class="fact-text"><strong>Fence or Gate Access:</strong> No problem — we offer custom on-site builds in most areas. Contact us for options if your space is tight.</div></div>
+        <div class="fact-row"><div class="fact-dot"></div><div class="fact-text"><strong>Permits:</strong> Requirements vary by location. Customers are responsible for checking zoning, setbacks, and HOA regulations with city or county offices. We can provide building specs if needed for your application.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="brand-footer">GEM STATE SHEDS · EMMETT, ID</div>
+</div>
+
+<!-- S1 Personal Info -->
+<div class="screen" id="s1">
+  <div style="height:20px"></div>
+  <div class="progress" id="prog1"></div>
+  <div class="step-badge" id="s1badge">Step 1</div>
+  <h2>Personal Information</h2>
+  <p class="subtitle">Please use your full legal name and accurate contact information.</p>
+  <span class="section-head">Name &amp; Contact</span>
+  <div class="field"><label>Full Legal Name <span class="req">*</span></label><input type="text" id="p_name" placeholder="First Last" autocomplete="name"><div class="err-msg" id="err_p_name">Please enter your first and last name (no single letters).</div></div>
+  <div class="field"><label>Date of Birth <span class="req">*</span></label><input type="text" id="p_dob" placeholder="MM/DD/YYYY" maxlength="10" inputmode="numeric"><div class="err-msg" id="err_p_dob">Please enter a valid date (must be 18+).</div></div>
+  <div class="field"><label>Cell Phone <span class="req">*</span></label><input type="tel" id="p_cell" placeholder="(208) 555-0000" maxlength="14" inputmode="numeric"><div class="err-msg" id="err_p_cell">Please enter a valid 10-digit phone number.</div></div>
+  <div class="row2">
+    <div class="field"><label>Home Phone</label><input type="tel" id="p_home" placeholder="(208) 555-0000" maxlength="14" inputmode="numeric"><div class="err-msg" id="err_p_home">Enter a valid phone number.</div></div>
+    <div class="field"><label>Work Phone</label><input type="tel" id="p_work" placeholder="(208) 555-0000" maxlength="14" inputmode="numeric"><div class="err-msg" id="err_p_work">Enter a valid phone number.</div></div>
+  </div>
+  <div class="field"><label>Email Address</label><input type="email" id="p_email" placeholder="you@email.com" autocomplete="email"><div class="err-msg" id="err_p_email">Please enter a valid email address.</div></div>
+  <span class="section-head">Current Address</span>
+  <div class="field"><label>Street Address <span class="req">*</span></label><input type="text" id="p_street" placeholder="123 Main St" autocomplete="street-address"><div class="err-msg" id="err_p_street">Please enter a complete street address (include number and street name).</div></div>
+  <div class="row3">
+    <div class="field"><label>City <span class="req">*</span></label><input type="text" id="p_city" placeholder="City" autocomplete="address-level2"><div class="err-msg" id="err_p_city">Required.</div></div>
+    <div class="field"><label>State <span class="req">*</span></label><input type="text" id="p_state" placeholder="ID" maxlength="2" autocomplete="address-level1"><div class="err-msg" id="err_p_state">Enter valid 2-letter state.</div></div>
+    <div class="field"><label>Zip</label><input type="text" id="p_zip" placeholder="83617" maxlength="5" inputmode="numeric"><div class="err-msg" id="err_p_zip">Enter valid 5-digit zip.</div></div>
+  </div>
+  <div class="field">
+    <label>Do You Own or Rent Your Home? <span class="req" id="rentownReq" style="display:none">*</span></label>
+    <div class="radio-group">
+      <div class="radio-chip" id="rc_own" onclick="selectRentOwn('own')">Own</div>
+      <div class="radio-chip" id="rc_rent" onclick="selectRentOwn('rent')">Rent</div>
+    </div>
+    <div class="err-msg" id="err_rentown">Please select Own or Rent.</div>
+  </div>
+
+  <!-- LANDLORD BLOCK -->
+  <div id="landlordBlock" style="display:none">
+    <div class="notice warn">
+      <strong>📋 Landlord Permission Required.</strong> Your landlord must complete and sign a permission form before delivery can be scheduled.<br><br>
+      Fill in the landlord form below, then use <strong>Save &amp; Share</strong> to send it to your landlord for their signature. Once signed, upload it here — or submit your application first and provide it before contract signing.
+      <div style="margin-top:8px"><span id="llFormStatus" class="status-badge pending">⏳ Pending</span></div>
+    </div>
+
+    <div class="ll-form-card">
+      <div class="ll-form-header">
+        <h3>LANDLORD'S PERMISSION</h3>
+        <p>Summit Management Group, Inc. &nbsp;·&nbsp; P.O. Box 487, Milan, TN 38358 &nbsp;·&nbsp; 731-686-0065</p>
+      </div>
+      <div class="ll-legal">
+        <p>I, <strong id="ll_prev_name" style="color:#8E1B23">[Landlord Name]</strong>, the landlord, owner, or property manager of location* stated below, give Summit Management Group, Inc. and their contracted drivers, express permission to place a portable building on the property listed herein.</p>
+        <p>Building ID: <strong id="ll_prev_bid" style="color:#8E1B23">___</strong> &nbsp;&nbsp; Customer Name: <strong id="ll_prev_cust" style="color:#8E1B23">[Customer Name]</strong></p>
+        <p>*Physical location of building: <strong id="ll_prev_addr" style="color:#8E1B23">[Delivery Address]</strong></p>
+        <p>If at any time deemed necessary by Summit Management Group, Inc. and/or any of their contracted drivers or hired representatives need to come onto the property located at the above stated address to do maintenance, repairs, or to pick up/recover the building in case of non-payments, etc, they will not be hindered in performing such duties.</p>
+        <p>In case of late payment, cancellation of contract, and/or breach of contract, I, the landlord, owner, or property manager give Summit Management Group, Inc. and/or any of their contracted representatives, express permission to remove any fence, tree, or any other object which may come in the way of retrieval of the portable building. I also understand by signing this agreement, I release Summit Management Group, Inc. (or any of their contracted drivers/representatives) and hold the residential renter liable and responsible for all recourse of the building being placed or removed at this location.</p>
+      </div>
+
+      <span class="section-head" style="margin-top:0">Landlord Information</span>
+      <div class="field"><label>Landlord Full Name <span class="req">*</span></label><input type="text" id="ll_name" placeholder="First Last" oninput="fmtTitleCase(this);updateLLPreview()"><div class="err-msg" id="err_ll_name">Please enter first and last name.</div></div>
+      <div class="field"><label>Street Address <span class="req">*</span></label><input type="text" id="ll_street" placeholder="123 Main St"><div class="err-msg" id="err_ll_street">Please enter a complete street address.</div></div>
+      <div class="row3">
+        <div class="field"><label>City <span class="req">*</span></label><input type="text" id="ll_city" placeholder="City" oninput="fmtTitleCase(this);updateLLPreview()"><div class="err-msg" id="err_ll_city">Required.</div></div>
+        <div class="field"><label>State <span class="req">*</span></label><input type="text" id="ll_state" placeholder="ID" maxlength="2" oninput="fmtUpperCase(this);updateLLPreview()"><div class="err-msg" id="err_ll_state">Required.</div></div>
+        <div class="field"><label>Zip <span class="req">*</span></label><input type="text" id="ll_zip" placeholder="83617" maxlength="5" inputmode="numeric" oninput="fmtZip(this)"><div class="err-msg" id="err_ll_zip">Enter valid zip.</div></div>
+      </div>
+      <div class="field"><label>Phone Number <span class="req">*</span></label><input type="tel" id="ll_phone" placeholder="(208) 555-0000" maxlength="14" inputmode="numeric"><div class="err-msg" id="err_ll_phone">Please enter a valid 10-digit phone number.</div></div>
+
+      <span class="section-head">Building &amp; Delivery</span>
+      <div class="field"><label>Building ID / Serial Number <span style="font-size:.65rem;color:#898B8D;text-transform:none">(On Lot buildings only — leave blank otherwise)</span></label><input type="text" id="ll_bid" placeholder="Leave blank if not an On Lot building" oninput="updateLLPreview()"></div>
+      <div class="field"><label>Physical Location of Building (Delivery Address) <span class="req">*</span></label><input type="text" id="ll_addr" placeholder="Full delivery address where building will be placed" oninput="updateLLPreview()"><div class="err-msg" id="err_ll_addr">Please enter the delivery address.</div></div>
+
+      <div class="notice info" style="margin-top:4px">
+        <strong>📤 Next Step:</strong> Tap Save &amp; Share below to send this form to your landlord. Once they've signed it, upload the completed form using the upload section below.
+      </div>
+      <button class="btn-primary" onclick="saveLLForm()" type="button" style="display:flex;align-items:center;justify-content:center;gap:8px">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        Save &amp; Share Landlord Form
+      </button>
+    </div>
+
+    <span class="section-head">Upload Signed Landlord Form</span>
+    <p style="font-size:.78rem;color:#898B8D;margin:-4px 0 12px;line-height:1.5">Once your landlord has signed, upload the completed form here. PDF, JPG, or PNG accepted.</p>
+    <div class="upload-zone" id="llUploadZone" onclick="document.getElementById('llFileInput').click()" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="handleLLDrop(event)">
+      <input type="file" id="llFileInput" accept=".pdf,.jpg,.jpeg,.png" onchange="handleLLUpload(this.files)">
+      <div class="uz-icon">📎</div>
+      <div class="uz-title">Tap to upload signed form</div>
+      <div class="uz-sub">PDF, JPG, or PNG · Max 10MB</div>
+    </div>
+    <div id="llUploadPreview" style="display:none"></div>
+  </div>
+
+  <button class="btn-primary" onclick="nextFromS1()">Next →</button>
+  <button class="btn-secondary" onclick="goScreen('s0')">← Back</button>
+</div>
+
+<!-- S2 Delivery -->
+<div class="screen" id="s2">
+  <div style="height:20px"></div>
+  <div class="progress" id="prog2"></div>
+  <div class="step-badge" id="s2badge">Step 2</div>
+  <h2>Delivery Information</h2>
+  <p class="subtitle">Where should we deliver your building?</p>
+  <div class="toggle-row" onclick="toggleSameDelivery()">
+    <div class="toggle-label">Same as current address</div>
+    <div class="toggle" id="sameToggle"><div class="toggle-dot"></div></div>
+  </div>
+  <div id="deliveryFields">
+    <div class="field"><label>Delivery Street Address <span class="req">*</span></label><input type="text" id="d_street" placeholder="123 Main St"><div class="err-msg" id="err_d_street">Please enter a complete street address.</div></div>
+    <div class="row3">
+      <div class="field"><label>City <span class="req">*</span></label><input type="text" id="d_city" placeholder="City"><div class="err-msg" id="err_d_city">Required.</div></div>
+      <div class="field"><label>State <span class="req">*</span></label><input type="text" id="d_state" placeholder="ID" maxlength="2"><div class="err-msg" id="err_d_state">Required.</div></div>
+      <div class="field"><label>Zip</label><input type="text" id="d_zip" placeholder="83617" maxlength="5" inputmode="numeric"><div class="err-msg" id="err_d_zip">Enter valid 5-digit zip.</div></div>
+    </div>
+  </div>
+  <div class="field"><label>Delivery Directions / Notes</label><textarea id="d_directions" placeholder="Gate codes, road conditions, best route, where to set the building..."></textarea></div>
+  <button class="btn-primary" onclick="nextFromS2()">Next →</button>
+  <button class="btn-secondary" onclick="goScreen('s1')">← Back</button>
+</div>
+
+<!-- S3 Employment & References (RTO) -->
+<div class="screen" id="s3">
+  <div style="height:20px"></div>
+  <div class="progress" id="prog3"></div>
+  <div class="step-badge">Step 3</div>
+  <h2>Employment &amp; References</h2>
+  <p class="subtitle">Required for Rent-to-Own applications.</p>
+  <span class="section-head">Employment</span>
+  <div class="toggle-row" onclick="toggleSelfEmployed()">
+    <div class="toggle-label">Self-Employed or Retired</div>
+    <div class="toggle" id="selfEmpToggle"><div class="toggle-dot"></div></div>
+  </div>
+  <div id="employerBlock">
+    <div class="cond-section">
+      <div class="field"><label>Employer Name</label><input type="text" id="e_employer" placeholder="Company name" oninput="fmtTitleCase(this)"></div>
+      <div class="field"><label>Employer Street Address</label><input type="text" id="e_street" placeholder="Street address"></div>
+      <div class="row3">
+        <div class="field"><label>City</label><input type="text" id="e_city" placeholder="City" oninput="fmtTitleCase(this)"></div>
+        <div class="field"><label>State</label><input type="text" id="e_state" placeholder="ID" maxlength="2" oninput="fmtUpperCase(this)"></div>
+        <div class="field"><label>Zip</label><input type="text" id="e_zip" placeholder="83617" maxlength="5" inputmode="numeric" oninput="fmtZip(this)"></div>
+      </div>
+      <div class="field"><label>Employer Phone</label><input type="tel" id="e_phone" placeholder="(208) 555-0000" maxlength="14" inputmode="numeric"></div>
+    </div>
+  </div>
+  <span class="section-head">References</span>
+  <p style="font-size:.78rem;color:#898B8D;margin:-4px 0 12px;line-height:1.5">Please provide two personal references (not family members).</p>
+  <div class="cond-section" style="margin-bottom:10px">
+    <div style="font-weight:700;font-size:.82rem;margin-bottom:10px;color:#0B1A39">Reference 1</div>
+    <div class="field"><label>Full Name <span class="req">*</span></label><input type="text" id="ref1_name" placeholder="First Last" oninput="fmtTitleCase(this)"><div class="err-msg" id="err_ref1_name">Please enter first and last name.</div></div>
+    <div class="field"><label>Phone <span class="req">*</span></label><input type="tel" id="ref1_phone" placeholder="(208) 555-0000" maxlength="14" inputmode="numeric"><div class="err-msg" id="err_ref1_phone">Please enter a valid 10-digit phone number.</div></div>
+  </div>
+  <div class="cond-section">
+    <div style="font-weight:700;font-size:.82rem;margin-bottom:10px;color:#0B1A39">Reference 2</div>
+    <div class="field"><label>Full Name <span class="req">*</span></label><input type="text" id="ref2_name" placeholder="First Last" oninput="fmtTitleCase(this)"><div class="err-msg" id="err_ref2_name">Please enter first and last name.</div></div>
+    <div class="field"><label>Phone <span class="req">*</span></label><input type="tel" id="ref2_phone" placeholder="(208) 555-0000" maxlength="14" inputmode="numeric"><div class="err-msg" id="err_ref2_phone">Please enter a valid 10-digit phone number.</div></div>
+  </div>
+  <span class="section-head">Identity — Optional</span>
+  <div class="notice secure"><strong>🔒 Your data is encrypted.</strong> If you choose to provide your Social Security Number, it is encrypted in your browser before transmission — never stored or transmitted in plain text. This field is completely optional; your rep can collect it at contract signing.</div>
+  <div class="field">
+    <label>Social Security Number <span style="font-size:.65rem;font-weight:600;color:#898B8D;text-transform:none">(optional — encrypted)</span></label>
+    <div class="secure-field-wrap">
+      <input type="password" id="p_ssn" placeholder="XXX-XX-XXXX" maxlength="11" inputmode="numeric" autocomplete="off" oninput="fmtSSN(this)">
+      <button class="secure-toggle" onclick="toggleSSNVis()" type="button" id="ssnToggleBtn">Show</button>
+    </div>
+  </div>
+  <button class="btn-primary" onclick="nextFromS3()">Next →</button>
+  <button class="btn-secondary" onclick="goScreen('s2')">← Back</button>
+</div>
+
+<!-- S4 Building Interest & Submit -->
+<div class="screen" id="s4">
+  <div style="height:20px"></div>
+  <div class="progress" id="prog4"></div>
+  <div class="step-badge" id="s4badge">Final Step</div>
+  <h2>Building Interest</h2>
+  <p class="subtitle">All fields on this screen are optional — skip anything you're unsure about.</p>
+  <span class="section-head">Building Details <span style="font-size:.65rem;font-weight:600;color:#898B8D;text-transform:none;letter-spacing:0">— optional</span></span>
+  <div class="field"><label>Building Style</label><select id="b_style"><option value="">Select style...</option><option>Utility</option><option>Side Utility</option><option>Cabin</option><option>Center Cabin</option><option>Side Cabin</option><option>Premier Cabin</option><option>Garage</option><option>Garden Shed</option><option>Cottage Shed</option><option>Lofted Barn</option><option>Side Lofted Barn</option><option>Lofted Barn Cabin</option><option>Center Lofted Barn Cabin</option><option>Side Lofted Barn Cabin</option><option>Premier Lofted Barn Cabin</option><option>Lofted Garage</option></select></div>
+  <div class="row2">
+    <div class="field"><label>Width</label><select id="b_width"><option value="">—</option><option>8'</option><option>10'</option><option>12'</option><option>14'</option><option>16'</option></select></div>
+    <div class="field"><label>Length</label><select id="b_length"><option value="">—</option><option>8'</option><option>10'</option><option>12'</option><option>14'</option><option>16'</option><option>18'</option><option>20'</option><option>22'</option><option>24'</option><option>26'</option><option>28'</option><option>30'</option><option>32'</option><option>34'</option><option>36'</option><option>38'</option><option>40'</option></select></div>
+  </div>
+  <span class="section-head">Colors <span style="font-size:.65rem;font-weight:600;color:#898B8D;text-transform:none;letter-spacing:0">— optional</span></span>
+  <div class="field"><label>Roof Color</label><select id="b_roof"><option value="">Select...</option><option>Black</option><option>Blue</option><option>Brown</option><option>Burgundy</option><option>Charcoal</option><option>Clay</option><option>Galvalume</option><option>Grey</option><option>Light Stone</option><option>Radiant Red</option><option>Rustic Red</option><option>Tan</option><option>Burnished Slate</option><option>Green</option><option>White</option></select></div>
+  <div class="field"><label>Siding Color</label><select id="b_siding"><option value="">Select...</option><option>Chestnut Brown</option><option>Dark Ebony</option><option>Mahogany</option><option>Cactus</option><option>Scarlet Red</option><option>Driftwood</option><option>Navy</option><option>Olive</option><option>Natural Clay</option><option>Sandstone</option><option>Slate Blue</option><option>Grey</option><option>White</option><option>Custom Color</option></select></div>
+  <div class="field"><label>Trim Color</label><select id="b_trim"><option value="">Select...</option><option>Black</option><option>Blue</option><option>Brown</option><option>Burgundy</option><option>Charcoal</option><option>Clay</option><option>Galvalume</option><option>Grey</option><option>Light Stone</option><option>Radiant Red</option><option>Rustic Red</option><option>Tan</option><option>Burnished Slate</option><option>Green</option><option>White</option><option>Same as Siding</option><option>Custom Color</option></select></div>
+  <span class="section-head">How Would You Like to Complete Your Contract?</span>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+    <button type="button" class="contract-opt" id="cpInPerson" onclick="selectContractPref('in-person')">
+      <div class="contract-opt-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0B1A39" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
+      <div class="contract-opt-label">In-Person</div>
+      <div class="contract-opt-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M7 12.5l3.5 3.5 6.5-7"/></svg></div>
+    </button>
+    <button type="button" class="contract-opt" id="cpPhone" onclick="selectContractPref('phone')">
+      <div class="contract-opt-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0B1A39" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.86 10.5a19.79 19.79 0 01-3.07-8.67A2 2 0 012.77 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.56-1.13a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div>
+      <div class="contract-opt-label">Over the Phone</div>
+      <div class="contract-opt-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M7 12.5l3.5 3.5 6.5-7"/></svg></div>
+    </button>
+  </div>
+  <span class="section-head">Additional Notes</span>
+  <div class="field"><textarea id="b_notes" placeholder="Questions, special requests, anything you'd like us to know..."></textarea></div>
+  <div id="cashSSNBlock" style="display:none">
+    <span class="section-head">Identity — Optional</span>
+    <div class="field"><label>Last 4 Social Security Number <span style="font-size:.65rem;font-weight:600;color:#898B8D;text-transform:none">(optional)</span></label><input type="text" id="p_ssn_last4" placeholder="XXXX" maxlength="4" inputmode="numeric" autocomplete="off"></div>
+  </div>
+  <div id="llReminderBlock" style="display:none">
+    <div class="notice warn" style="margin-top:12px"><strong>⚠️ Reminder:</strong> You haven't uploaded a signed landlord permission form. You can still submit now, but the signed form <strong>must be provided before your contract can be signed.</strong></div>
+  </div>
+  <div style="height:4px"></div>
+  <button class="btn-primary red" onclick="submitForm()" id="submitBtn">Submit My Information ✓</button>
+  <button class="btn-secondary" id="s4backBtn" onclick="goBack4()">← Back</button>
+</div>
+
+<!-- S5 Success -->
+<div class="screen" id="s5">
+  <div class="success-box">
+    <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M7 12.5l3.5 3.5 6.5-7"/></svg>
+    <h2>Information Received!</h2>
+    <p>We'll be in touch shortly to confirm details and next steps. Thank you for choosing Gem State Sheds!</p>
+    <p id="llSuccessReminder" style="display:none;margin-top:14px;color:#92400e;font-size:.82rem;background:#fef3c7;padding:12px 14px;border-radius:8px;line-height:1.6;text-align:left"><strong>📋 Action Required:</strong> Please get your landlord permission form signed and send a copy to your rep as soon as possible — it must be on file before your contract can be finalized.</p>
+    <p style="margin-top:12px;font-size:.8rem;color:#898B8D">Questions? Call or text us at <strong style="color:#0B1A39" id="successPhone"></strong></p>
+  </div>
+  <div class="brand-footer">GEM STATE SHEDS · EMMETT, ID</div>
+</div>
+
+<script>
+// STATE
+var purchaseType='',rentOwn='',selfEmployed=false,sameDelivery=false,contractPref='',llUploadFile=null;
+
+// INIT
+window.addEventListener('load',function(){
+  emailjs.init(DEALER.emailjs.publicKey);
+  document.getElementById('successPhone').textContent=DEALER.phone;
+  ['p_cell','p_home','p_work','ll_phone','e_phone','ref1_phone','ref2_phone'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el) el.addEventListener('input',function(){fmtPhone(this);});
+  });
+  ['p_state','d_state','ll_state','e_state'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el) el.addEventListener('input',function(){fmtUpperCase(this);});
+  });
+  ['p_zip','d_zip','ll_zip','e_zip'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el) el.addEventListener('input',function(){fmtZip(this);});
+  });
+  ['p_city','d_city','ll_city','e_city'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el) el.addEventListener('blur',function(){fmtTitleCase(this);});
+  });
+  ['p_name','ll_name','ref1_name','ref2_name'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el) el.addEventListener('blur',function(){fmtTitleCase(this);});
+  });
+  document.getElementById('p_dob').addEventListener('input',function(){fmtDate(this);});
+  document.getElementById('p_name').addEventListener('blur',updateLLPreview);
+});
+
+// FORMATTERS
+function fmtPhone(el){
+  var d=el.value.replace(/\D/g,'').slice(0,10);
+  if(!d.length){el.value='';return;}
+  if(d.length<=3) el.value='('+d;
+  else if(d.length<=6) el.value='('+d.slice(0,3)+') '+d.slice(3);
+  else el.value='('+d.slice(0,3)+') '+d.slice(3,6)+'-'+d.slice(6);
+}
+function fmtDate(el){
+  var d=el.value.replace(/\D/g,'').slice(0,8),v='';
+  if(d.length>=1) v=d.slice(0,2);
+  if(d.length>=3) v+='/'+d.slice(2,4);
+  if(d.length>=5) v+='/'+d.slice(4,8);
+  el.value=v;
+}
+function fmtSSN(el){
+  var d=el.value.replace(/\D/g,'').slice(0,9);
+  if(d.length<=3) el.value=d;
+  else if(d.length<=5) el.value=d.slice(0,3)+'-'+d.slice(3);
+  else el.value=d.slice(0,3)+'-'+d.slice(3,5)+'-'+d.slice(5);
+}
+function fmtUpperCase(el){
+  var p=el.selectionStart;
+  el.value=el.value.toUpperCase();
+  try{el.setSelectionRange(p,p);}catch(e){}
+}
+function fmtZip(el){el.value=el.value.replace(/\D/g,'').slice(0,5);}
+function fmtTitleCase(el){
+  if(!el.value.trim()) return;
+  el.value=el.value.replace(/\w\S*/g,function(w){return w.charAt(0).toUpperCase()+w.slice(1).toLowerCase();});
+}
+
+// VALIDATION
+var BAD_PHONES=['1234567890','0000000000','1111111111','2222222222','3333333333','4444444444','5555555555','6666666666','7777777777','8888888888','9999999999','1231231234'];
+var BAD_ZIPS=['00000','11111','12345','99999','55555'];
+var BAD_NAMES=['test','asdf','qwerty','aaa','bbb','ccc','xxx','none','na'];
+
+function isValidPhone(v){
+  var d=v.replace(/\D/g,'');
+  if(d.length!==10) return false;
+  if(BAD_PHONES.indexOf(d)!==-1) return false;
+  if(/^(\d)\1{9}$/.test(d)) return false;
+  if(parseInt(d.slice(0,3))<200) return false;
+  return true;
+}
+function isValidName(v){
+  v=v.trim();
+  if(v.length<3) return false;
+  var parts=v.split(/\s+/).filter(function(p){return p.length>0;});
+  if(parts.length<2) return false;
+  for(var i=0;i<parts.length;i++){
+    if(parts[i].replace(/[^a-zA-Z]/g,'').length<1) return false;
+    if(parts[i].length===1 && i===parts.length-1) return false; // last part can't be single letter
+  }
+  var lower=v.toLowerCase().replace(/\s/g,'');
+  if(BAD_NAMES.indexOf(lower)!==-1) return false;
+  if(/^(.)\1+$/.test(lower)) return false;
+  return true;
+}
+function isValidStreet(v){
+  v=v.trim();
+  if(v.length<5) return false;
+  if(!/\d/.test(v)) return false;
+  if(!/[a-zA-Z]/.test(v)) return false;
+  return true;
+}
+function isValidZip(v){
+  v=v.replace(/\D/g,'');
+  if(v.length!==5) return false;
+  if(BAD_ZIPS.indexOf(v)!==-1) return false;
+  if(/^(\d)\1{4}$/.test(v)) return false;
+  return true;
+}
+function isValidDOB(v){
+  if(!/^\d{2}\/\d{2}\/\d{4}$/.test(v)) return false;
+  var p=v.split('/'),m=parseInt(p[0]),d=parseInt(p[1]),y=parseInt(p[2]);
+  if(m<1||m>12||d<1||d>31||y<1900) return false;
+  var dob=new Date(y,m-1,d);
+  if(dob>new Date()) return false;
+  return ((new Date()-dob)/(1000*60*60*24*365.25))>=18;
+}
+function isValidEmail(v){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);}
+var STATES=['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','DC'];
+function isValidState(v){return STATES.indexOf(v.toUpperCase())!==-1;}
+
+function showErr(id,show){
+  var el=document.getElementById('err_'+id),inp=document.getElementById(id);
+  if(el) el.style.display=show?'block':'none';
+  if(inp){if(show)inp.classList.add('err-field');else inp.classList.remove('err-field');}
+  return !show;
+}
+
+// NAVIGATION
+function goScreen(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  var el=document.getElementById(id);
+  if(el){el.classList.add('active');window.scrollTo(0,0);}
+}
+function selectType(t){
+  purchaseType=t;
+  document.getElementById('rentownReq').style.display=t==='rto'?'inline':'none';
+  document.getElementById('cashSSNBlock').style.display=t==='cash'?'block':'none';
+  updateProgress();
+  goScreen('s1');
+}
+function updateProgress(){
+  var isRTO=purchaseType==='rto',total=isRTO?4:3;
+  renderProgress('prog1',1,total);renderProgress('prog2',2,total);
+  renderProgress('prog3',3,total);renderProgress('prog4',isRTO?4:3,total);
+  document.getElementById('s1badge').textContent='Step 1 of '+total;
+  document.getElementById('s2badge').textContent='Step 2 of '+total;
+  document.getElementById('s4badge').textContent='Step '+(isRTO?4:3)+' of '+total;
+}
+function renderProgress(cid,cur,total){
+  var c=document.getElementById(cid);if(!c)return;
+  var h='';
+  for(var i=1;i<=total;i++){
+    var cls=i<cur?'done':(i===cur?'active':'');
+    h+='<div class="progress-step '+cls+'">'+i+'</div>';
+    if(i<total) h+='<div class="progress-line'+(i<cur?' done':'')+'"></div>';
+  }
+  c.innerHTML=h;
+}
+
+// S1 NEXT
+function nextFromS1(){
+  var ok=true;
+  ok=showErr('p_name',!isValidName(gv('p_name')))&&ok;
+  ok=showErr('p_dob',!isValidDOB(gv('p_dob')))&&ok;
+  ok=showErr('p_cell',!isValidPhone(gv('p_cell')))&&ok;
+  var home=gv('p_home'),work=gv('p_work');
+  if(home) ok=showErr('p_home',!isValidPhone(home))&&ok; else showErr('p_home',false);
+  if(work) ok=showErr('p_work',!isValidPhone(work))&&ok; else showErr('p_work',false);
+  var email=gv('p_email');
+  if(email) ok=showErr('p_email',!isValidEmail(email))&&ok; else showErr('p_email',false);
+  ok=showErr('p_street',!isValidStreet(gv('p_street')))&&ok;
+  ok=showErr('p_city',gv('p_city').trim().length<2)&&ok;
+  ok=showErr('p_state',!isValidState(gv('p_state')))&&ok;
+  var zip=gv('p_zip');
+  if(zip) ok=showErr('p_zip',!isValidZip(zip))&&ok; else showErr('p_zip',false);
+  if(purchaseType==='rto'){
+    if(!rentOwn){showErr('rentown',true);ok=false;}
+    else showErr('rentown',false);
+  }
+  if(rentOwn==='rent'){
+    ok=showErr('ll_name',!isValidName(gv('ll_name')))&&ok;
+    ok=showErr('ll_street',!isValidStreet(gv('ll_street')))&&ok;
+    ok=showErr('ll_city',gv('ll_city').trim().length<2)&&ok;
+    ok=showErr('ll_state',!isValidState(gv('ll_state')))&&ok;
+    ok=showErr('ll_zip',!isValidZip(gv('ll_zip')))&&ok;
+    ok=showErr('ll_phone',!isValidPhone(gv('ll_phone')))&&ok;
+    ok=showErr('ll_addr',gv('ll_addr').trim().length<5)&&ok;
+  }
+  if(!ok){document.querySelector('.err-field').scrollIntoView({behavior:'smooth',block:'center'});return;}
+  goScreen('s2');
+}
+
+// S2 NEXT
+function nextFromS2(){
+  if(!sameDelivery){
+    var ok=true;
+    ok=showErr('d_street',!isValidStreet(gv('d_street')))&&ok;
+    ok=showErr('d_city',gv('d_city').trim().length<2)&&ok;
+    ok=showErr('d_state',!isValidState(gv('d_state')))&&ok;
+    var zip=gv('d_zip');
+    if(zip) ok=showErr('d_zip',!isValidZip(zip))&&ok; else showErr('d_zip',false);
+    if(!ok){document.querySelector('.err-field').scrollIntoView({behavior:'smooth',block:'center'});return;}
+  }
+  purchaseType==='rto'?goScreen('s3'):goScreen('s4');
+}
+
+// S3 NEXT
+function nextFromS3(){
+  var ok=true;
+  ok=showErr('ref1_name',!isValidName(gv('ref1_name')))&&ok;
+  ok=showErr('ref1_phone',!isValidPhone(gv('ref1_phone')))&&ok;
+  ok=showErr('ref2_name',!isValidName(gv('ref2_name')))&&ok;
+  ok=showErr('ref2_phone',!isValidPhone(gv('ref2_phone')))&&ok;
+  if(!ok){document.querySelector('.err-field').scrollIntoView({behavior:'smooth',block:'center'});return;}
+  document.getElementById('llReminderBlock').style.display=(rentOwn==='rent'&&!llUploadFile)?'block':'none';
+  goScreen('s4');
+}
+function goBack4(){goScreen(purchaseType==='rto'?'s3':'s2');}
+
+// RENT/OWN
+function selectRentOwn(val){
+  rentOwn=val;
+  document.getElementById('rc_own').classList.toggle('selected',val==='own');
+  document.getElementById('rc_rent').classList.toggle('selected',val==='rent');
+  showErr('rentown',false);
+  var show=(val==='rent'&&purchaseType==='rto');
+  document.getElementById('landlordBlock').style.display=show?'block':'none';
+  if(show) updateLLPreview();
+}
+
+// LL PREVIEW
+function updateLLPreview(){
+  var c=gv('p_name')||'[Customer Name]';
+  var n=gv('ll_name')||'[Landlord Name]';
+  var b=gv('ll_bid')||'___';
+  var a=gv('ll_addr')||'[Delivery Address]';
+  var el;
+  el=document.getElementById('ll_prev_name');if(el)el.textContent=n;
+  el=document.getElementById('ll_prev_cust');if(el)el.textContent=c;
+  el=document.getElementById('ll_prev_bid');if(el)el.textContent=b;
+  el=document.getElementById('ll_prev_addr');if(el)el.textContent=a;
+}
+
+// LL SAVE/SHARE PDF
+function saveLLForm(){
+  var ok=true;
+  ok=showErr('ll_name',!isValidName(gv('ll_name')))&&ok;
+  ok=showErr('ll_street',!isValidStreet(gv('ll_street')))&&ok;
+  ok=showErr('ll_city',gv('ll_city').trim().length<2)&&ok;
+  ok=showErr('ll_state',!isValidState(gv('ll_state')))&&ok;
+  ok=showErr('ll_zip',!isValidZip(gv('ll_zip')))&&ok;
+  ok=showErr('ll_phone',!isValidPhone(gv('ll_phone')))&&ok;
+  ok=showErr('ll_addr',gv('ll_addr').trim().length<5)&&ok;
+  if(!ok){document.querySelector('.err-field').scrollIntoView({behavior:'smooth',block:'center'});return;}
+
+  try{
+    var jsPDF=window.jspdf.jsPDF;
+    var doc=new jsPDF({unit:'pt',format:'letter'});
+    var lm=72,pw=612,cw=612-144,y=72;
+
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(14);
+    doc.text("LANDLORD'S PERMISSION",pw/2,y,{align:'center'});
+    y+=18;
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(9);
+    doc.setTextColor(100);
+    doc.text('Summit Management Group, Inc.  \u00b7  P.O. Box 487, Milan, TN 38358  \u00b7  731-686-0065',pw/2,y,{align:'center'});
+    y+=8;
+    doc.setTextColor(0);
+    doc.setDrawColor(11,26,57);
+    doc.setLineWidth(1.5);
+    doc.line(lm,y,pw-lm,y);
+    y+=20;
+
+    var custName=gv('p_name')||'___________________________';
+    var llName=gv('ll_name');
+    var bid=gv('ll_bid')||'___________________________';
+    var addr=gv('ll_addr');
+
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(10);
+
+    function wrapText(text,width){return doc.splitTextToSize(text,width);}
+    function drawPara(text){var lines=wrapText(text,cw);doc.text(lines,lm,y);y+=lines.length*14+8;}
+
+    drawPara('I, '+llName+', the landlord, owner, or property manager of location* stated below, give Summit Management Group, Inc. and their contracted drivers, express permission to place a portable building on the property listed herein.');
+    doc.text('Building ID: '+bid,lm,y);
+    doc.text('Customer Name: '+custName,lm+240,y);
+    y+=14;
+    doc.text('*Physical location of building: '+addr,lm,y);
+    y+=22;
+    drawPara('If at any time deemed necessary by Summit Management Group, Inc. and/or any of their contracted drivers or hired representatives need to come onto the property located at the above stated address to do maintenance, repairs, or to pick up/recover the building in case of non-payments, etc, they will not be hindered in performing such duties.');
+    drawPara('In case of late payment, cancellation of contract, and/or breach of contract, I, the landlord, owner, or property manager give Summit Management Group, Inc. and/or any of their contracted representatives, express permission to remove any fence, tree, or any other object which may come in the way of retrieval of the portable building. I also understand by signing this agreement, I release Summit Management Group, Inc. (or any of their contracted drivers/representatives) and hold the residential renter liable and responsible for all recourse of the building being placed or removed at this location.');
+    y+=8;
+
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(11);
+    doc.text('LANDLORD INFORMATION:',lm,y);
+    y+=18;
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(10);
+
+    function infoLine(lbl,val){
+      doc.setFont('helvetica','bold');doc.text(lbl,lm,y);
+      doc.setFont('helvetica','normal');doc.text(val,lm+140,y);
+      doc.setDrawColor(180);doc.setLineWidth(0.5);
+      doc.line(lm+140,y+2,pw-lm,y+2);
+      y+=22;
+    }
+    infoLine('Name, Printed:',llName);
+    infoLine('Street Address:',gv('ll_street'));
+    infoLine('City, State, Zip:',gv('ll_city')+', '+gv('ll_state')+' '+gv('ll_zip'));
+    infoLine('Phone # Incl Area Code:',gv('ll_phone'));
+    y+=12;
+
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(10);
+    doc.setDrawColor(0);
+    doc.setLineWidth(0.75);
+
+    doc.text('Landlord Signature:',lm,y);
+    doc.line(lm+130,y+2,lm+310,y+2);
+    doc.text('Date:',lm+325,y);
+    doc.line(lm+350,y+2,pw-lm,y+2);
+    y+=30;
+
+    doc.text('Customer Signature:',lm,y);
+    doc.line(lm+130,y+2,lm+310,y+2);
+    doc.text('Date:',lm+325,y);
+    doc.line(lm+350,y+2,pw-lm,y+2);
+    y+=30;
+
+    doc.setFontSize(8);doc.setTextColor(100);
+    doc.text('Please mail back original within 20 (twenty) days of receipt of this request in the envelope provided.',pw/2,y,{align:'center'});y+=12;
+    doc.text('*Failure to do so may affect your account status with our company.',pw/2,y,{align:'center'});y+=12;
+    doc.setFont('helvetica','bold');
+    doc.text('YOU CAN PAY YOUR BILL ONLINE AT: makeapayment.com',pw/2,y,{align:'center'});
+    doc.setTextColor(0);
+
+    var filename='LandlordPermission_'+llName.replace(/\s+/g,'_')+'.pdf';
+    var pdfBlob=doc.output('blob');
+
+    if(navigator.share){
+      var file=new File([pdfBlob],filename,{type:'application/pdf'});
+      var shareData={title:'Landlord Permission Form',text:'Please sign and return this landlord permission form for our building delivery.',files:[file]};
+      if(navigator.canShare&&navigator.canShare(shareData)){
+        navigator.share(shareData).then(function(){markLLSaved();}).catch(function(){fallbackSave(doc,filename);});
+        return;
+      }
+    }
+    fallbackSave(doc,filename);
+  }catch(err){
+    console.error('PDF error:',err);
+    alert('Could not generate PDF. Please try again.');
+  }
+}
+function fallbackSave(doc,filename){doc.save(filename);markLLSaved();}
+function markLLSaved(){
+  var b=document.getElementById('llFormStatus');
+  if(b){b.className='status-badge done';b.textContent='\u2713 Form Saved/Shared';}
+}
+
+// LL UPLOAD
+function handleLLUpload(files){
+  if(!files||!files[0]) return;
+  var file=files[0];
+  if(file.size>10*1024*1024){alert('File too large. Maximum is 10MB.');return;}
+  var ok=['application/pdf','image/jpeg','image/png'];
+  if(ok.indexOf(file.type)===-1){alert('Please upload a PDF, JPG, or PNG file.');return;}
+  llUploadFile=file;
+  var ext=file.name.split('.').pop().toUpperCase();
+  var prev=document.getElementById('llUploadPreview');
+  prev.innerHTML='<div class="upload-preview"><div class="up-icon">'+(ext==='PDF'?'📄':'🖼️')+'</div><div class="up-name">'+file.name+'</div><button class="up-remove" onclick="removeLLUpload()" type="button">\u2715 Remove</button></div>';
+  prev.style.display='block';
+  document.getElementById('llUploadZone').style.display='none';
+  var b=document.getElementById('llFormStatus');
+  if(b){b.className='status-badge done';b.textContent='\u2713 Signed Form Uploaded';}
+}
+function handleLLDrop(e){
+  e.preventDefault();
+  document.getElementById('llUploadZone').classList.remove('drag-over');
+  handleLLUpload(e.dataTransfer.files);
+}
+function removeLLUpload(){
+  llUploadFile=null;
+  document.getElementById('llUploadPreview').innerHTML='';
+  document.getElementById('llUploadPreview').style.display='none';
+  document.getElementById('llUploadZone').style.display='block';
+  document.getElementById('llFileInput').value='';
+  var b=document.getElementById('llFormStatus');
+  if(b){b.className='status-badge pending';b.textContent='\u23f3 Pending';}
+}
+
+// TOGGLES
+function toggleSameDelivery(){
+  sameDelivery=!sameDelivery;
+  document.getElementById('sameToggle').classList.toggle('on',sameDelivery);
+  document.getElementById('deliveryFields').style.display=sameDelivery?'none':'block';
+}
+function toggleSelfEmployed(){
+  selfEmployed=!selfEmployed;
+  document.getElementById('selfEmpToggle').classList.toggle('on',selfEmployed);
+  document.getElementById('employerBlock').style.display=selfEmployed?'none':'block';
+}
+function toggleSSNVis(){
+  var inp=document.getElementById('p_ssn'),btn=document.getElementById('ssnToggleBtn');
+  inp.type=inp.type==='password'?'text':'password';
+  btn.textContent=inp.type==='password'?'Show':'Hide';
+}
+function selectContractPref(val){
+  contractPref=val;
+  document.getElementById('cpInPerson').classList.toggle('selected',val==='in-person');
+  document.getElementById('cpPhone').classList.toggle('selected',val==='phone');
+}
+function toggleFact(id){
+  var card=document.getElementById(id);if(!card)return;
+  var open=card.classList.contains('open');
+  document.querySelectorAll('.fact-card').forEach(function(c){c.classList.remove('open');});
+  if(!open) card.classList.add('open');
+}
+
+// UTIL
+function gv(id){var el=document.getElementById(id);return el?el.value.trim():'';}
+function obfuscateSSN(ssn){
+  if(!ssn) return '';
+  var key=DEALER.email+'GSS2026',r='';
+  for(var i=0;i<ssn.length;i++) r+=String.fromCharCode(ssn.charCodeAt(i)^key.charCodeAt(i%key.length));
+  return btoa(r)+' [ENCODED]';
+}
+
+// BUILD EMAIL TEXT
+function buildText(){
+  var lines=[],isRTO=purchaseType==='rto';
+  lines.push('==='+(isRTO?'RENT-TO-OWN':'PURCHASE OUTRIGHT')+' INTAKE===');
+  lines.push('Submitted: '+new Date().toLocaleString());
+  lines.push('');
+  lines.push('--- PERSONAL ---');
+  lines.push('Name: '+gv('p_name'));
+  lines.push('DOB: '+gv('p_dob'));
+  lines.push('Cell: '+gv('p_cell'));
+  lines.push('Home: '+(gv('p_home')||'Same as cell'));
+  lines.push('Work: '+(gv('p_work')||'Same as cell'));
+  lines.push('Email: '+(gv('p_email')||'—'));
+  lines.push('Address: '+gv('p_street')+', '+gv('p_city')+', '+gv('p_state')+' '+gv('p_zip'));
+  lines.push('Own/Rent: '+(rentOwn||'—'));
+  lines.push('');
+  if(rentOwn==='rent'){
+    lines.push('--- LANDLORD ---');
+    lines.push('Name: '+gv('ll_name'));
+    lines.push('Phone: '+gv('ll_phone'));
+    lines.push('Address: '+gv('ll_street')+', '+gv('ll_city')+', '+gv('ll_state')+' '+gv('ll_zip'));
+    lines.push('Building ID: '+(gv('ll_bid')||'N/A'));
+    lines.push('Building Location: '+gv('ll_addr'));
+    lines.push('Signed Form: '+(llUploadFile?'YES — '+llUploadFile.name:'NOT YET UPLOADED'));
+    lines.push('');
+  }
+  lines.push('--- DELIVERY ---');
+  if(sameDelivery) lines.push('Same as current address');
+  else lines.push(gv('d_street')+', '+gv('d_city')+', '+gv('d_state')+' '+gv('d_zip'));
+  lines.push('Directions: '+(gv('d_directions')||'—'));
+  lines.push('');
+  if(isRTO){
+    lines.push('--- EMPLOYMENT ---');
+    lines.push('Self-Employed/Retired: '+(selfEmployed?'Yes':'No'));
+    if(!selfEmployed){
+      lines.push('Employer: '+(gv('e_employer')||'—'));
+      lines.push('Emp Address: '+(gv('e_street')||'—')+', '+(gv('e_city')||'—')+', '+(gv('e_state')||'—')+' '+(gv('e_zip')||'—'));
+      lines.push('Emp Phone: '+(gv('e_phone')||'—'));
+    }
+    lines.push('');
+    lines.push('--- REFERENCES ---');
+    lines.push('Ref 1: '+gv('ref1_name')+' | '+gv('ref1_phone'));
+    lines.push('Ref 2: '+gv('ref2_name')+' | '+gv('ref2_phone'));
+    lines.push('');
+    var ssn=gv('p_ssn');
+    lines.push(ssn?'SSN (encoded): '+obfuscateSSN(ssn):'SSN: Not provided');
+    lines.push('');
+  } else {
+    var l4=gv('p_ssn_last4');
+    if(l4) lines.push('SSN Last 4: '+l4);
+    lines.push('');
+  }
+  lines.push('--- BUILDING INTEREST ---');
+  lines.push('Style: '+(gv('b_style')||'—'));
+  lines.push('Size: '+(gv('b_width')||'—')+' x '+(gv('b_length')||'—'));
+  lines.push('Roof/Siding/Trim: '+(gv('b_roof')||'—')+' / '+(gv('b_siding')||'—')+' / '+(gv('b_trim')||'—'));
+  lines.push('Contract Pref: '+(contractPref||'—'));
+  lines.push('Notes: '+(gv('b_notes')||'—'));
+  return lines.join('\n');
+}
+
+// SUBMIT
+function submitForm(){
+  var btn=document.getElementById('submitBtn');
+  btn.textContent='Submitting\u2026';btn.disabled=true;
+  var body=buildText(),isRTO=purchaseType==='rto';
+  if(DEALER.emailjs.publicKey){
+    emailjs.send(DEALER.emailjs.serviceId,DEALER.emailjs.templateId,{
+      to_email:DEALER.email,
+      subject:(isRTO?'[RTO Intake] ':'[Purchase Intake] ')+gv('p_name')+' \u2014 '+new Date().toLocaleDateString(),
+      customer_name:gv('p_name'),
+      purchase_type:isRTO?'Rent-to-Own':'Purchase Outright',
+      message:body
+    }).then(done).catch(done);
+  } else {
+    console.log('INTAKE SUBMISSION:\n'+body);
+    setTimeout(done,600);
+  }
+  function done(){
+    if(rentOwn==='rent'&&!llUploadFile) document.getElementById('llSuccessReminder').style.display='block';
+    goScreen('s5');
+  }
+}
+
+// ═══════════════════════════════════════════════
+// URL PARAMS — read dealer info from QR code link
+// ═══════════════════════════════════════════════
+(function(){
+  try {
+    var params = new URLSearchParams(window.location.search);
+    if(params.get('name'))  DEALER.name     = decodeURIComponent(params.get('name'));
+    if(params.get('phone')) DEALER.phone    = decodeURIComponent(params.get('phone'));
+    if(params.get('addr'))  DEALER.location = decodeURIComponent(params.get('addr'));
+    // Update any elements that show dealer info
+    var h1 = document.querySelector('.header h1');
+    if(h1) h1.textContent = 'Get Started with ' + DEALER.name;
+    var footer = document.querySelector('.brand-footer');
+    if(footer) footer.textContent = DEALER.name.toUpperCase() + ' · ' + DEALER.location.toUpperCase();
+  } catch(e){}
+})();
+
+// ═══════════════════════════════════════════════
+// FLOATING CONTACT BUTTON
+// ═══════════════════════════════════════════════
+function openContactSheet(){
+  var el = document.getElementById('sheetDealerName');
+  if(el) el.textContent = DEALER.name;
+  var p1 = document.getElementById('sheetPhone1');
+  var p2 = document.getElementById('sheetPhone2');
+  if(p1) p1.textContent = DEALER.phone;
+  if(p2) p2.textContent = DEALER.phone;
+  document.getElementById('contactOverlay').classList.add('visible');
+}
+function closeContactSheet(e){
+  if(!e || e.target === document.getElementById('contactOverlay')){
+    document.getElementById('contactOverlay').classList.remove('visible');
+  }
+}
+function initiateCall(){
+  document.getElementById('contactOverlay').classList.remove('visible');
+  var cp = document.getElementById('confirmPhone');
+  if(cp) cp.textContent = DEALER.phone;
+  document.getElementById('callConfirmOverlay').classList.add('visible');
+}
+function closeCallConfirm(){
+  document.getElementById('callConfirmOverlay').classList.remove('visible');
+}
+function doCall(){
+  var digits = DEALER.phone.replace(/\D/g,'');
+  window.location.href = 'tel:+1' + digits;
+  closeCallConfirm();
+}
+function initiateText(){
+  document.getElementById('contactOverlay').classList.remove('visible');
+  var digits = DEALER.phone.replace(/\D/g,'');
+  window.location.href = 'sms:+1' + digits;
+}
+
+</script>
+
+<!-- Floating Contact Button -->
+<button class="fab" onclick="openContactSheet()" aria-label="Contact Us">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.86 10.5a19.79 19.79 0 01-3.07-8.67A2 2 0 012.77 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.56-1.13a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+</button>
+
+<!-- Action Sheet Overlay -->
+<div class="action-overlay" id="contactOverlay" onclick="closeContactSheet(event)">
+  <div class="action-sheet" onclick="event.stopPropagation()">
+    <div class="action-sheet-title">Contact Us<strong id="sheetDealerName">Gem State Sheds</strong></div>
+    <button class="action-btn call-btn" onclick="initiateCall()">
+      <div class="ab-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.86 10.5a19.79 19.79 0 01-3.07-8.67A2 2 0 012.77 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.56-1.13a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div>
+      <div><span>Call Us</span><span class="ab-sub" id="sheetPhone1">(208) 000-0000</span></div>
+    </button>
+    <button class="action-btn text-btn" onclick="initiateText()">
+      <div class="ab-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+      <div><span>Text Us</span><span class="ab-sub" id="sheetPhone2">(208) 000-0000</span></div>
+    </button>
+    <button class="action-cancel" onclick="closeContactSheet()">Cancel</button>
+  </div>
+</div>
+
+<!-- Call Confirm Dialog -->
+<div class="confirm-overlay" id="callConfirmOverlay">
+  <div class="confirm-box">
+    <h3>Call Gem State Sheds?</h3>
+    <p id="confirmCallMsg">This will open your phone app and dial <strong id="confirmPhone">(208) 000-0000</strong>.</p>
+    <div class="confirm-row">
+      <button class="confirm-cancel-btn" onclick="closeCallConfirm()">Cancel</button>
+      <button class="confirm-call-btn" onclick="doCall()">Call Now</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
