@@ -12,7 +12,7 @@
   <link rel="manifest" href="./manifest.json">
   <link rel="icon" type="image/png" href="./icons/icon.png?v=2">
   <link rel="apple-touch-icon" href="./icons/icon.png?v=2">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <meta name="color-scheme" content="light only">
 <meta name="supported-color-schemes" content="light">
 <meta name="theme-color" content="#2C1810">
@@ -22,6 +22,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -5862,8 +5863,7 @@ select:focus {
 <!-- ============================================================
      JAVASCRIPT
      ============================================================ -->
-<script src="./gss-firebase-bootstrap.js"></script>
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ============================================================
 // FIREBASE / FIRESTORE / STORAGE
 // ============================================================
@@ -5883,8 +5883,7 @@ var SETTINGS_CLOUD_COLLECTION='appSettings';
 var SETTINGS_CLOUD_DOC='shared';
 var SETTINGS_CLOUD_MAX_BYTES=850000;
 var settingsCloudSyncInFlight=null;
-/* If ./gss-firebase-bootstrap.js fails to load (e.g. file:// or missing file), use this fallback so settings save still works. */
-var FIREBASE_BOOTSTRAP_FALLBACK={
+var FIREBASE_BOOTSTRAP_CONFIG={
   apiKey:'AIzaSyDEWIBZw_W1rldk52YbxAoZe3cFbtEtUPM',
   authDomain:'gemstatesheds-86f7f.firebaseapp.com',
   projectId:'gemstatesheds-86f7f',
@@ -5905,14 +5904,13 @@ function firebaseConfigFromSettings(){
   };
 }
 function firebaseConfigFromBootstrap(){
-  var b=(typeof FIREBASE_BOOTSTRAP_CONFIG!=='undefined'&&FIREBASE_BOOTSTRAP_CONFIG)?FIREBASE_BOOTSTRAP_CONFIG:FIREBASE_BOOTSTRAP_FALLBACK;
   return {
-    apiKey:(b.apiKey||'').trim(),
-    authDomain:(b.authDomain||'').trim(),
-    projectId:(b.projectId||'').trim(),
-    storageBucket:(b.storageBucket||'').trim(),
-    messagingSenderId:(b.messagingSenderId||'').trim(),
-    appId:(b.appId||'').trim()
+    apiKey:(FIREBASE_BOOTSTRAP_CONFIG.apiKey||'').trim(),
+    authDomain:(FIREBASE_BOOTSTRAP_CONFIG.authDomain||'').trim(),
+    projectId:(FIREBASE_BOOTSTRAP_CONFIG.projectId||'').trim(),
+    storageBucket:(FIREBASE_BOOTSTRAP_CONFIG.storageBucket||'').trim(),
+    messagingSenderId:(FIREBASE_BOOTSTRAP_CONFIG.messagingSenderId||'').trim(),
+    appId:(FIREBASE_BOOTSTRAP_CONFIG.appId||'').trim()
   };
 }
 function firebaseConfigResolved(){
@@ -17336,28 +17334,17 @@ function ssPrint(){
   setTimeout(function(){ try{ w.print(); }catch(e2){} },300);
 }
 
-function ssQrDrawIntoContainer(container,url,width){
-  var errHtml='<span style="font-size:0.7rem;color:rgba(232,200,122,0.4);">QR preview unavailable</span>';
-  if(!container) return;
-  if(!url){ container.style.display='none'; container.innerHTML=''; return; }
-  container.style.display='block';
-  container.innerHTML='';
-  if(typeof QRCode==='undefined'||!QRCode.toCanvas){ container.innerHTML=errHtml; return; }
-  var canvas=document.createElement('canvas');
-  try{
-    QRCode.toCanvas(canvas,url,{width:width||100,margin:1,errorCorrectionLevel:'M'},function(err){
-      if(err){ container.innerHTML=errHtml; return; }
-      container.appendChild(canvas);
-    });
-  }catch(e){ container.innerHTML=errHtml; }
-}
-
 function ssUpdateQR(){
   ssSyncQrHiddenFromCheckboxes();
   var url=((document.getElementById('ss_qrUrl')||{}).value||'').trim();
   var container=document.getElementById('ss_qrContainer');
   if(!container) return;
-  ssQrDrawIntoContainer(container,url,100);
+  if(!url){ container.style.display='none'; container.innerHTML=''; return; }
+  container.style.display='block';
+  container.innerHTML='';
+  try{
+    new QRCode(container,{text:url,width:100,height:100,correctLevel:QRCode.CorrectLevel.M});
+  }catch(e){container.innerHTML='<span style="font-size:0.7rem;color:rgba(232,200,122,0.4);">QR preview unavailable</span>';}
 }
 
 // ── 2nd QR code preview for purchase form URL ─────────────────────────────
@@ -17366,7 +17353,10 @@ function ssUpdateQR2(){
   var url=((document.getElementById('ss_qrPurchaseUrl')||{}).value||'').trim();
   var container=document.getElementById('ss_qrContainer2');
   if(!container) return;
-  ssQrDrawIntoContainer(container,url,80);
+  if(!url){ container.style.display='none'; container.innerHTML=''; return; }
+  container.style.display='block';
+  container.innerHTML='';
+  try{new QRCode(container,{text:url,width:80,height:80,correctLevel:QRCode.CorrectLevel.M});}catch(e){}
 }
 
 function ssUpdateQR3(){
@@ -17374,14 +17364,36 @@ function ssUpdateQR3(){
   var url=((document.getElementById('ss_qrIntakeUrl')||{}).value||'').trim();
   var container=document.getElementById('ss_qrContainer3');
   if(!container) return;
-  ssQrDrawIntoContainer(container,url,80);
+  if(!url){ container.style.display='none'; container.innerHTML=''; return; }
+  container.style.display='block';
+  container.innerHTML='';
+  try{new QRCode(container,{text:url,width:80,height:80,correctLevel:QRCode.CorrectLevel.M});}catch(e){}
 }
 
 function ssGetQRDataUrl(url,cb){
-  if(typeof QRCode==='undefined'||!QRCode.toDataURL){ cb(''); return; }
-  QRCode.toDataURL(url,{width:200,margin:1,errorCorrectionLevel:'M'},function(err,dataUrl){
-    cb(err?'':dataUrl);
-  });
+  // Use qrcode@1.5.3 toDataURL — reliable, no canvas taint issues
+  if(typeof QRCode!=='undefined'&&QRCode.toDataURL){
+    QRCode.toDataURL(url,{width:200,margin:1},function(err,dataUrl){
+      cb(err?'':dataUrl);
+    });
+    return;
+  }
+  // Fallback: qrcodejs canvas method
+  var tmp=document.createElement('div');
+  tmp.style.cssText='position:absolute;left:-9999px;top:-9999px;';
+  document.body.appendChild(tmp);
+  try{
+    new QRCode(tmp,{text:url,width:200,height:200,correctLevel:QRCode.CorrectLevel.M});
+    setTimeout(function(){
+      var c=tmp.querySelector('canvas');
+      var dataUrl=c?c.toDataURL('image/png'):'';
+      document.body.removeChild(tmp);
+      cb(dataUrl);
+    },200);
+  }catch(e){
+    document.body.removeChild(tmp);
+    cb('');
+  }
 }
 
 function ssGetQRImgTag(url,size,imgId){
