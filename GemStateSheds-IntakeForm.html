@@ -254,8 +254,8 @@ var DEALER={name:'Gem State Sheds',location:'Emmett, ID',phone:'(208) 000-0000',
     <div class="field"><label>State <span class="req">*</span></label><input type="text" id="p_state" placeholder="ID" maxlength="2" autocomplete="address-level1"><div class="err-msg" id="err_p_state">Enter valid 2-letter state.</div></div>
     <div class="field"><label>Zip</label><input type="text" id="p_zip" placeholder="83617" maxlength="5" inputmode="numeric"><div class="err-msg" id="err_p_zip">Enter valid 5-digit zip.</div></div>
   </div>
-  <div class="field">
-    <label>Do You Own or Rent Your Home? <span class="req" id="rentownReq" style="display:none">*</span></label>
+  <div class="field" id="rentOwnField" style="display:none">
+    <label>Do You Own or Rent Your Home? <span class="req" id="rentownReq">*</span></label>
     <div class="radio-group">
       <div class="radio-chip" id="rc_own" onclick="selectRentOwn('own')">Own</div>
       <div class="radio-chip" id="rc_rent" onclick="selectRentOwn('rent')">Rent</div>
@@ -427,10 +427,7 @@ var DEALER={name:'Gem State Sheds',location:'Emmett, ID',phone:'(208) 000-0000',
   </div>
   <span class="section-head">Additional Notes</span>
   <div class="field"><textarea id="b_notes" placeholder="Questions, special requests, anything you'd like us to know..."></textarea></div>
-  <div id="cashSSNBlock" style="display:none">
-    <span class="section-head">Identity — Optional</span>
-    <div class="field"><label>Last 4 Social Security Number <span style="font-size:.65rem;font-weight:600;color:#898B8D;text-transform:none">(optional)</span></label><input type="text" id="p_ssn_last4" placeholder="XXXX" maxlength="4" inputmode="numeric" autocomplete="off"></div>
-  </div>
+
   <div id="llReminderBlock" style="display:none">
     <div class="notice warn" style="margin-top:12px"><strong>⚠️ Reminder:</strong> You haven't uploaded a signed landlord permission form. You can still submit now, but the signed form <strong>must be provided before your contract can be signed.</strong></div>
   </div>
@@ -583,8 +580,8 @@ function goScreen(id){
 }
 function selectType(t){
   purchaseType=t;
-  document.getElementById('rentownReq').style.display=t==='rto'?'inline':'none';
-  document.getElementById('cashSSNBlock').style.display=t==='cash'?'block':'none';
+  document.getElementById('rentOwnField').style.display=t==='rto'?'block':'none';
+
   updateProgress();
   goScreen('s1');
 }
@@ -927,8 +924,6 @@ function buildText(){
     lines.push(ssn?'SSN (encoded): '+obfuscateSSN(ssn):'SSN: Not provided');
     lines.push('');
   } else {
-    var l4=gv('p_ssn_last4');
-    if(l4) lines.push('SSN Last 4: '+l4);
     lines.push('');
   }
   lines.push('--- BUILDING INTEREST ---');
@@ -948,6 +943,8 @@ function submitForm(){
   if(DEALER.emailjs.publicKey){
     emailjs.send(DEALER.emailjs.serviceId,DEALER.emailjs.templateId,{
       to_email:DEALER.email,
+      to_name:'Gem State Sheds',
+      from_name:gv('p_name'),
       subject:(isRTO?'[RTO Intake] ':'[Purchase Intake] ')+gv('p_name')+' \u2014 '+new Date().toLocaleDateString(),
       customer_name:gv('p_name'),
       purchase_type:isRTO?'Rent-to-Own':'Purchase Outright',
