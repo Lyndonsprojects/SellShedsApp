@@ -5883,6 +5883,15 @@ var SETTINGS_CLOUD_COLLECTION='appSettings';
 var SETTINGS_CLOUD_DOC='shared';
 var SETTINGS_CLOUD_MAX_BYTES=850000;
 var settingsCloudSyncInFlight=null;
+/* If ./gss-firebase-bootstrap.js fails to load (e.g. file:// or missing file), use this fallback so settings save still works. */
+var FIREBASE_BOOTSTRAP_FALLBACK={
+  apiKey:'AIzaSyDEWIBZw_W1rldk52YbxAoZe3cFbtEtUPM',
+  authDomain:'gemstatesheds-86f7f.firebaseapp.com',
+  projectId:'gemstatesheds-86f7f',
+  storageBucket:'gemstatesheds-86f7f.firebasestorage.app',
+  messagingSenderId:'420230904592',
+  appId:'1:420230904592:web:6c6045cdb1083ecf308395'
+};
 
 function firebaseConfigFromSettings(){
   var s=loadSettings();
@@ -5896,13 +5905,14 @@ function firebaseConfigFromSettings(){
   };
 }
 function firebaseConfigFromBootstrap(){
+  var b=(typeof FIREBASE_BOOTSTRAP_CONFIG!=='undefined'&&FIREBASE_BOOTSTRAP_CONFIG)?FIREBASE_BOOTSTRAP_CONFIG:FIREBASE_BOOTSTRAP_FALLBACK;
   return {
-    apiKey:(FIREBASE_BOOTSTRAP_CONFIG.apiKey||'').trim(),
-    authDomain:(FIREBASE_BOOTSTRAP_CONFIG.authDomain||'').trim(),
-    projectId:(FIREBASE_BOOTSTRAP_CONFIG.projectId||'').trim(),
-    storageBucket:(FIREBASE_BOOTSTRAP_CONFIG.storageBucket||'').trim(),
-    messagingSenderId:(FIREBASE_BOOTSTRAP_CONFIG.messagingSenderId||'').trim(),
-    appId:(FIREBASE_BOOTSTRAP_CONFIG.appId||'').trim()
+    apiKey:(b.apiKey||'').trim(),
+    authDomain:(b.authDomain||'').trim(),
+    projectId:(b.projectId||'').trim(),
+    storageBucket:(b.storageBucket||'').trim(),
+    messagingSenderId:(b.messagingSenderId||'').trim(),
+    appId:(b.appId||'').trim()
   };
 }
 function firebaseConfigResolved(){
