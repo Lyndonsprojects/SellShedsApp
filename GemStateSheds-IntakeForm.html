@@ -686,19 +686,27 @@ function goScreen(id){
 function selectType(t){
   purchaseType=t;
   document.getElementById('rentOwnField').style.display=t==='rto'?'block':'none';
-
   updateProgress();
-  goScreen('s1');
+  goScreen('sb');
 }
 function updateProgress(){
-  var isRTO=purchaseType==='rto',total=isRTO?5:4;
-  renderProgress('progsba',2,total);renderProgress('progsbb',2,total);
-  renderProgress('prog1',3,total);renderProgress('prog2',4,total);
-  renderProgress('prog3',4,total);renderProgress('prog4',isRTO?5:4,total);
-  document.getElementById('sbbadge').textContent='Step 1 of '+total;
-  document.getElementById('s1badge').textContent='Step 3 of '+total;
-  document.getElementById('s2badge').textContent='Step 4 of '+total;
-  document.getElementById('s4badge').textContent='Step '+(isRTO?5:4)+' of '+total;
+  // Steps: 1=Building, 2=Personal, 3=Delivery, [4=RTO extras], final=Submit
+  var isRTO=purchaseType==='rto',total=isRTO?4:3;
+  // Building type screen + lot/custom config both count as Step 1
+  renderProgress('progsba',1,total);
+  renderProgress('progsbb',1,total);
+  renderProgress('prog1',2,total);
+  renderProgress('prog2',3,total);
+  renderProgress('prog3',3,total);
+  renderProgress('prog4',isRTO?4:3,total);
+  var sb=document.getElementById('sbbadge');
+  var s1=document.getElementById('s1badge');
+  var s2=document.getElementById('s2badge');
+  var s4=document.getElementById('s4badge');
+  if(sb) sb.textContent='Step 1 of '+total;
+  if(s1) s1.textContent='Step 2 of '+total;
+  if(s2) s2.textContent='Step 3 of '+total;
+  if(s4) s4.textContent='Step '+(isRTO?4:3)+' of '+total;
 }
 function renderProgress(cid,cur,total){
   var c=document.getElementById(cid);if(!c)return;
