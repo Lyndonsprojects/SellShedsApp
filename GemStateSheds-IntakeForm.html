@@ -165,7 +165,7 @@ h2{font-size:1.1rem;font-weight:800;margin-bottom:4px;color:#0B1A39;}
 </head>
 <body>
 <script>
-var DEALER={name:'Gem State Sheds',location:'Emmett, ID',phone:'(208) 000-0000',email:'gemstatesheds@outlook.com',emailjs:{publicKey:'U7BgdvjHZMWLoxzI-',serviceId:'service_O2ove78',templateId:'template_dpl2k06'}};
+var DEALER={name:'Gem State Sheds',location:'Emmett, ID',phone:'(208) 000-0000',email:'gemstatesheds@outlook.com',emailjs:{publicKey:'U7BgdvjHZMWLoxzI-',serviceId:'service_02ove78',templateId:'template_dpl2k06'}};
 </script>
 
 <div class="header">
@@ -1141,11 +1141,20 @@ function submitForm(){
       to_email:DEALER.email,
       to_name:'Gem State Sheds',
       from_name:gv('p_name'),
-      subject:(isRTO?'[RTO Intake] ':'[Purchase Intake] ')+gv('p_name')+' \u2014 '+new Date().toLocaleDateString(),
+      subject:(isRTO?'[RTO Intake] ':'[Purchase Intake] ')+gv('p_name')+' — '+new Date().toLocaleDateString(),
       customer_name:gv('p_name'),
       purchase_type:isRTO?'Rent-to-Own':'Purchase Outright',
       message:body
-    }).then(done).catch(done);
+    }).then(function(resp){
+      console.log('EmailJS success:', resp.status, resp.text);
+      done();
+    }).catch(function(err){
+      console.error('EmailJS error:', JSON.stringify(err));
+      alert('Submission error: ' + (err.text || err.message || JSON.stringify(err)));
+      var btn=document.getElementById('submitBtn');
+      btn.textContent='Submit My Information ✓';
+      btn.disabled=false;
+    });
   } else {
     console.log('INTAKE SUBMISSION:\n'+body);
     setTimeout(done,600);
