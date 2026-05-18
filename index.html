@@ -429,6 +429,40 @@ select option { background:var(--earth); color:var(--cream); }
 #screenLotPageDetail .inv-status-pill.available { background:rgba(122,158,135,0.28); color:#c8e6d4; }
 #screenLotPageDetail .inv-status-pill.sold { background:rgba(196,81,31,0.25); color:#f0c4a8; }
 #screenLotPageDetail .inv-status-pill.delivered { background:rgba(100,100,120,0.35); color:rgba(232,200,122,0.9); }
+.lot-sales-stats {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;
+}
+.lot-sales-stat {
+  padding: 12px 10px; border-radius: 10px;
+  border: 1.5px solid rgba(232,200,122,0.22);
+  background: rgba(255,255,255,0.05); text-align: center;
+}
+.lot-sales-stat-label {
+  font-size: 0.62rem; letter-spacing: 1.2px; text-transform: uppercase;
+  color: rgba(232,200,122,0.65); margin-bottom: 4px;
+}
+.lot-sales-stat-value {
+  font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+  font-size: 1.35rem; color: var(--wheat); letter-spacing: 1px; line-height: 1.1;
+}
+.lot-sales-stat-sub { font-size: 0.68rem; color: rgba(245,240,232,0.6); margin-top: 3px; }
+.lot-sales-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.lot-sales-row {
+  display: flex; gap: 10px; align-items: flex-start; justify-content: space-between;
+  padding: 10px 12px; border-radius: 10px;
+  border: 1px solid rgba(232,200,122,0.18); background: rgba(255,255,255,0.04);
+}
+.lot-sales-row-main { flex: 1; min-width: 0; }
+.lot-sales-row-title { font-size: 0.86rem; font-weight: 700; color: var(--wheat); line-height: 1.25; }
+.lot-sales-row-meta { font-size: 0.72rem; color: rgba(245,240,232,0.65); margin-top: 3px; line-height: 1.35; }
+.lot-sales-row-amt { font-size: 0.92rem; font-weight: 700; color: var(--wheat); flex-shrink: 0; }
+.lot-sales-row-del {
+  flex-shrink: 0; background: none; border: none; color: var(--rust);
+  font-size: 1rem; cursor: pointer; padding: 4px; line-height: 1;
+  -webkit-appearance: none; appearance: none;
+}
+.lot-sales-add-btn { width: 100%; margin-top: 8px; margin-bottom: 4px; }
+#lotManualSaleModalOverlay { z-index: 112; }
 
 .radio-group,.check-group { display:flex; flex-wrap:wrap; gap:8px; }
 .radio-chip,.check-chip {
@@ -4318,10 +4352,47 @@ select:focus {
       <label class="field-label">Inventory link</label>
       <div id="lotDetailInventoryLinkMount"></div>
     </div>
+    <div class="lot-detail-block">
+      <label class="field-label">Sales</label>
+      <div id="lotDetailSalesMount"></div>
+      <button type="button" class="btn-secondary lot-sales-add-btn" onclick="lotPagesOpenManualSaleModal()">+ Add manual sale</button>
+    </div>
     <label class="field-label" style="margin-top:18px;display:block;">Inventory at this lot</label>
     <div id="lotDetailInvWrap" class="lot-detail-inv-wrap"></div>
     <div class="pb40"></div>
   </div>
+  <div class="photo-modal-overlay" id="lotManualSaleModalOverlay" aria-hidden="true" onclick="if(event.target===this)lotPagesCloseManualSaleModal()">
+    <div class="photo-modal" role="dialog" aria-modal="true" aria-labelledby="lotManualSaleTitle" onclick="event.stopPropagation()">
+      <div class="inv-modal-header-row">
+        <h3 id="lotManualSaleTitle">Add manual sale</h3>
+        <button type="button" class="inv-modal-x-btn" onclick="lotPagesCloseManualSaleModal()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Sale date <span class="req">*</span></label>
+        <input type="date" id="lotManualSaleDate">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Sale amount <span class="req">*</span></label>
+        <input type="number" id="lotManualSaleAmount" min="0" step="0.01" placeholder="0.00">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Building / description</label>
+        <input type="text" id="lotManualSaleDesc" placeholder="e.g. 10x12 Utility">
+      </div>
+      <div class="row2">
+        <div class="field-group">
+          <label class="field-label">Size</label>
+          <input type="text" id="lotManualSaleSize" placeholder="10x12">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Style</label>
+          <input type="text" id="lotManualSaleStyle" placeholder="Utility">
+        </div>
+      </div>
+      <button type="button" class="btn-primary" style="margin-top:8px;width:100%;" onclick="lotPagesSaveManualSale()">Save sale</button>
+    </div>
+  </div>
+
 </div>
 
 <!-- ============================================================
@@ -7236,6 +7307,184 @@ async function watchInventoryCloud(){
 }
 
 var lotPageSelectedAddress='';
+var LOT_SALES_STORAGE_KEY='gss_lot_sales';
+var lotSalesCache=null;
+function lotSalesLoad(){
+  if(lotSalesCache) return lotSalesCache;
+  try{
+    var raw=localStorage.getItem(LOT_SALES_STORAGE_KEY);
+    lotSalesCache=raw?JSON.parse(raw):{};
+  }catch(e){ lotSalesCache={}; }
+  if(!lotSalesCache||typeof lotSalesCache!=='object') lotSalesCache={};
+  return lotSalesCache;
+}
+function lotSalesPersist(){
+  try{
+    localStorage.setItem(LOT_SALES_STORAGE_KEY,JSON.stringify(lotSalesLoad()));
+    lotSalesCache=null;
+    return true;
+  }catch(e){ return false; }
+}
+function lotSalesGetManualOrders(addr){
+  var k=String(addr||'').trim();
+  if(!k) return [];
+  var bag=lotSalesLoad();
+  var row=bag[k];
+  if(!row||!Array.isArray(row.manualOrders)) return [];
+  return row.manualOrders.slice();
+}
+function lotSalesSetManualOrders(addr, orders){
+  var k=String(addr||'').trim();
+  if(!k) return;
+  var bag=lotSalesLoad();
+  if(!bag[k]) bag[k]={manualOrders:[]};
+  bag[k].manualOrders=orders;
+  lotSalesPersist();
+}
+function lotPagesSaleDateParts(isoOrYmd){
+  if(!isoOrYmd) return null;
+  var d=new Date(isoOrYmd);
+  if(!isFinite(d.getTime())){
+    var m=String(isoOrYmd).match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if(m) d=new Date(parseInt(m[1],10),parseInt(m[2],10)-1,parseInt(m[3],10));
+  }
+  if(!isFinite(d.getTime())) return null;
+  return {y:d.getFullYear(),m:d.getMonth(),d:d.getDate(),time:d.getTime()};
+}
+function lotPagesCollectInventorySales(addr){
+  var out=[];
+  (invState.items||[]).forEach(function(it){
+    if(String(it.lotLocation||'').trim()!==addr) return;
+    if(invNormalizeUnitStatus(it.unitStatus)!=='sold') return;
+    var amt=(it.priceData&&it.priceData.finalTotal!=null)?Number(it.priceData.finalTotal):0;
+    if(!isFinite(amt)) amt=0;
+    var title=[it.size,it.style].filter(Boolean).join(' · ')||'Sold unit';
+    if(it.serialNumber) title+=' · '+it.serialNumber;
+    out.push({source:'inventory',id:'inv_'+String(it.id||''),soldDate:it.updatedAt||it.createdAt||'',amount:amt,title:title,style:it.style||'',size:it.size||'',serial:it.serialNumber||'',invId:it.id});
+  });
+  return out;
+}
+function lotPagesCollectAllSales(addr){
+  var manual=lotSalesGetManualOrders(addr).map(function(o){
+    var title=o.description||[o.size,o.style].filter(Boolean).join(' · ')||'Manual sale';
+    return {source:'manual',id:o.id,soldDate:o.soldDate||'',amount:Number(o.amount)||0,title:title,style:o.style||'',size:o.size||'',serial:o.serialNumber||'',manualId:o.id};
+  });
+  var inv=lotPagesCollectInventorySales(addr);
+  return inv.concat(manual).sort(function(a,b){
+    var ta=lotPagesSaleDateParts(a.soldDate),tb=lotPagesSaleDateParts(b.soldDate);
+    return (tb?tb.time:0)-(ta?ta.time:0);
+  });
+}
+function lotPagesSalesTotals(sales, refDate){
+  refDate=refDate||new Date();
+  var y=refDate.getFullYear(),mo=refDate.getMonth();
+  var monthAmt=0,yearAmt=0,monthCnt=0,yearCnt=0;
+  sales.forEach(function(s){
+    var p=lotPagesSaleDateParts(s.soldDate);
+    if(!p) return;
+    var amt=Number(s.amount)||0;
+    if(p.y===y){yearAmt+=amt;yearCnt++;if(p.m===mo){monthAmt+=amt;monthCnt++;}}
+  });
+  return {monthAmt:monthAmt,yearAmt:yearAmt,monthCnt:monthCnt,yearCnt:yearCnt};
+}
+function lotPagesFormatSaleDate(isoOrYmd){
+  var p=lotPagesSaleDateParts(isoOrYmd);
+  if(!p) return '—';
+  var names=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return names[p.m]+' '+p.d+', '+p.y;
+}
+function lotPagesRenderSalesSection(addr){
+  var mount=document.getElementById('lotDetailSalesMount');
+  if(!mount) return;
+  var sales=lotPagesCollectAllSales(addr);
+  var t=lotPagesSalesTotals(sales);
+  var now=new Date();
+  var monthName=now.toLocaleString('en-US',{month:'long'});
+  var html='<div class="lot-sales-stats">'+
+    '<div class="lot-sales-stat"><div class="lot-sales-stat-label">'+invEscapeHtml(monthName)+' sales</div>'+
+    '<div class="lot-sales-stat-value">'+invFmt(t.monthAmt)+'</div>'+
+    '<div class="lot-sales-stat-sub">'+t.monthCnt+' building'+(t.monthCnt===1?'':'s')+'</div></div>'+
+    '<div class="lot-sales-stat"><div class="lot-sales-stat-label">'+now.getFullYear()+' sales</div>'+
+    '<div class="lot-sales-stat-value">'+invFmt(t.yearAmt)+'</div>'+
+    '<div class="lot-sales-stat-sub">'+t.yearCnt+' building'+(t.yearCnt===1?'':'s')+'</div></div></div>';
+  if(!sales.length){
+    html+='<div style="padding:12px;font-size:0.78rem;color:rgba(232,200,122,0.62);border:1px dashed rgba(232,200,122,0.2);border-radius:10px;margin-top:4px;">No sales recorded yet. Mark inventory as sold or add a manual sale.</div>';
+}else{
+    html+='<div class="lot-sales-list">';
+    sales.forEach(function(s){
+      var src=s.source==='manual'?'Manual':'Inventory';
+      var meta=lotPagesFormatSaleDate(s.soldDate)+' · '+src;
+      if(s.size||s.style) meta+=' · '+invEscapeHtml([s.size,s.style].filter(Boolean).join(' '));
+      var del=s.source==='manual'&&s.manualId?'<button type="button" class="lot-sales-row-del" data-manual-id="'+invEscapeAttr(s.manualId)+'" onclick="lotPagesDeleteManualSale(this)" aria-label="Remove sale">&times;</button>':'';
+      html+='<div class="lot-sales-row"><div class="lot-sales-row-main"><div class="lot-sales-row-title">'+invEscapeHtml(s.title)+'</div>'+
+        '<div class="lot-sales-row-meta">'+meta+'</div></div><div class="lot-sales-row-amt">'+invFmt(s.amount)+'</div>'+del+'</div>';
+    });
+    html+='</div>';
+  }
+  mount.innerHTML=html;
+}
+function lotPagesOpenManualSaleModal(){
+  var addr=String(lotPageSelectedAddress||'').trim();
+  if(!addr){ showToast('Select a lot first'); return; }
+  var d=document.getElementById('lotManualSaleDate');
+  var today=new Date();
+  var ymd=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
+  if(d) d.value=ymd;
+  ['lotManualSaleAmount','lotManualSaleDesc','lotManualSaleSize','lotManualSaleStyle'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  var ov=document.getElementById('lotManualSaleModalOverlay');
+  if(ov){ov.classList.add('open');ov.setAttribute('aria-hidden','false');}
+}
+function lotPagesCloseManualSaleModal(){
+  var ov=document.getElementById('lotManualSaleModalOverlay');
+  if(ov){ov.classList.remove('open');ov.setAttribute('aria-hidden','true');}
+}
+function lotPagesSaveManualSale(){
+  var addr=String(lotPageSelectedAddress||'').trim();
+  if(!addr){ showToast('No lot selected'); return; }
+  var dateEl=document.getElementById('lotManualSaleDate');
+  var amtEl=document.getElementById('lotManualSaleAmount');
+  var soldDate=dateEl?String(dateEl.value||'').trim():'';
+  var amount=amtEl?parseFloat(amtEl.value):NaN;
+  if(!soldDate){ showToast('Sale date is required'); return; }
+  if(!isFinite(amount)||amount<0){ showToast('Enter a valid sale amount'); return; }
+  var desc=(document.getElementById('lotManualSaleDesc')||{}).value||'';
+  var size=(document.getElementById('lotManualSaleSize')||{}).value||'';
+  var style=(document.getElementById('lotManualSaleStyle')||{}).value||'';
+  var orders=lotSalesGetManualOrders(addr);
+  orders.unshift({
+    id:'lot_sale_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),
+    soldDate:soldDate,amount:Math.round(amount*100)/100,
+    description:String(desc).trim(),size:String(size).trim(),style:String(style).trim(),serialNumber:''
+  });
+  lotSalesSetManualOrders(addr,orders);
+  lotPagesCloseManualSaleModal();
+  lotPagesRenderDetail();
+  showToast('Sale added');
+}
+function lotPagesDeleteManualSale(btn){
+  var addr=String(lotPageSelectedAddress||'').trim();
+  var mid=btn&&btn.getAttribute('data-manual-id');
+  if(!addr||!mid) return;
+  if(!confirm('Remove this manual sale?')) return;
+  var orders=lotSalesGetManualOrders(addr).filter(function(o){return String(o.id)!==String(mid);});
+  lotSalesSetManualOrders(addr,orders);
+  lotPagesRenderDetail();
+  showToast('Sale removed');
+}
+function lotPagesGetHubRows(){
+  var s=loadSettings()||{};
+  var rows=[];
+  (s.lotAddresses||[]).forEach(function(it,idx){
+    if(!it) return;
+    var line=formatAddressFromParts(it.street||it.address||'',it.city||'',it.state||'',it.zip||'').trim();
+    if(!line) return;
+    var lab=(it.label||'').trim();
+    rows.push({address:line,displayLabel:lab||('Lot '+(idx+1))});
+  });
+  rows.sort(function(a,b){return a.displayLabel.localeCompare(b.displayLabel);});
+  return rows;
+}
+
 function lotPagesOnInventoryDataUpdated(){
   var d=document.getElementById('screenLotPageDetail');
   if(!d||!d.classList.contains('active')) return;
@@ -7327,9 +7576,9 @@ function lotPagesInvReadOnlySection(headerHtml,items,emptyHint){
 function lotPagesRenderHub(){
   var list=document.getElementById('lotHubList');
   if(!list) return;
-  var rows=lotPagesGetMergedAddressRows();
+  var rows=lotPagesGetHubRows();
   if(!rows.length){
-    list.innerHTML='<div style="padding:14px;border:1px solid rgba(232,200,122,0.2);border-radius:10px;background:rgba(255,255,255,0.03);font-size:0.82rem;color:rgba(232,200,122,0.72);">No lot locations yet. Add addresses under Settings → Business, lots &amp; logo, or add inventory with a lot location.</div>';
+    list.innerHTML='<div style="padding:14px;border:1px solid rgba(232,200,122,0.2);border-radius:10px;background:rgba(255,255,255,0.03);font-size:0.82rem;color:rgba(232,200,122,0.72);">No lot locations yet. Add lot addresses under Settings → Business, lots &amp; logo.</div>';
     return;
   }
   list.innerHTML=rows.map(function(r){
@@ -7361,12 +7610,13 @@ function lotPagesRenderDetail(){
     var i0=document.getElementById('lotDetailInventoryLinkMount');
     if(w0) w0.innerHTML='';
     if(i0) i0.innerHTML='';
+    var sm=document.getElementById('lotDetailSalesMount');if(sm)sm.innerHTML='';
     if(invWrap) invWrap.innerHTML='';
     return;
   }
   var label=addr;
   try{
-    lotPagesGetMergedAddressRows().forEach(function(r){
+    lotPagesGetHubRows().forEach(function(r){
       if(r.address===addr) label=r.displayLabel||addr;
     });
   }catch(_e2){}
@@ -7387,18 +7637,14 @@ function lotPagesRenderDetail(){
     lotPagesRenderOneLinkMount('lotDetailWebsiteMount','', emptyNoRow);
     lotPagesRenderOneLinkMount('lotDetailInventoryLinkMount','', emptyNoRow);
   }
+  lotPagesRenderSalesSection(addr);
   if(invWrap){
     var filt=(invState.items||[]).filter(function(it){ return String(it.lotLocation||'').trim()===addr; });
-    if(!filt.length){
-      invWrap.innerHTML='<div style="padding:12px;border:1px solid rgba(232,200,122,0.2);border-radius:10px;background:rgba(255,255,255,0.03);font-size:0.8rem;color:rgba(232,200,122,0.7);">No inventory at this location yet. Add units on the Inventory screen.</div>';
+    var available=invSortItemsByUpdatedDesc(filt.filter(function(it){ return invNormalizeUnitStatus(it.unitStatus)==='available'; }));
+    if(!available.length){
+      invWrap.innerHTML='<div style="padding:12px;border:1px solid rgba(232,200,122,0.2);border-radius:10px;background:rgba(255,255,255,0.03);font-size:0.8rem;color:rgba(232,200,122,0.7);">No available inventory at this lot. Add units on the Inventory screen.</div>';
     }else{
-      var available=invSortItemsByUpdatedDesc(filt.filter(function(it){ return invNormalizeUnitStatus(it.unitStatus)==='available'; }));
-      var sold=invSortItemsByUpdatedDesc(filt.filter(function(it){ return invNormalizeUnitStatus(it.unitStatus)==='sold'; }));
-      var delivered=invSortItemsByUpdatedDesc(filt.filter(function(it){ return invNormalizeUnitStatus(it.unitStatus)==='delivered'; }));
-      invWrap.innerHTML=
-        lotPagesInvReadOnlySection('Available',available,'No available units at this lot.')+
-        lotPagesInvReadOnlySection('Sold',sold,'No sold units at this lot.')+
-        lotPagesInvReadOnlySection('Delivered',delivered,'No delivered units at this lot.');
+      invWrap.innerHTML=lotPagesInvReadOnlySection('Available',available,'No available units at this lot.');
     }
   }
 }
