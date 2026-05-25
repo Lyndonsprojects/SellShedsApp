@@ -2533,14 +2533,46 @@ select:focus {
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #898B8D;
+  color: rgba(232,200,122,0.55);
   padding: 6px 8px;
-  border-bottom: 2px solid #D1D3D4;
+  border-bottom: 2px solid rgba(232,200,122,0.22);
 }
-.style-ref-table td { padding: 8px; border-bottom: 1px solid #F4F5F6; vertical-align: middle; }
+.style-ref-table td { padding: 8px; border-bottom: 1px solid rgba(232,200,122,0.12); vertical-align: middle; }
 .style-ref-table td img { width: 72px; height: 54px; object-fit: cover; border-radius: 4px; display: block; }
-.style-ref-table .src-code { font-size: 0.72rem; font-weight: 700; color: #8E1B23; font-family: monospace; }
-.style-ref-table .src-name { font-size: 0.9rem; font-weight: 600; color: #0B1A39; }
+.style-ref-table .src-code { font-size: 0.72rem; font-weight: 700; color: var(--wheat); font-family: monospace; }
+.style-ref-table .src-name { font-size: 0.9rem; font-weight: 600; color: var(--wheat); }
+.style-ref-table .style-ref-num { color: rgba(232,200,122,0.45); font-size: 0.75rem; }
+.style-ref-photo-cell { min-width: 100px; }
+.style-ref-photo-actions { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.style-ref-photo-btn {
+  -webkit-appearance: none; appearance: none;
+  border: 1px solid rgba(232,200,122,0.3); background: rgba(255,255,255,0.06);
+  color: var(--wheat); border-radius: 6px; padding: 4px 8px; font-size: 0.68rem;
+  font-weight: 600; cursor: pointer; font-family: inherit;
+}
+.style-ref-photo-btn:active { background: rgba(139,46,13,0.35); }
+.style-ref-photo-btn--muted { opacity: 0.75; }
+.style-ref-actions { text-align: right; white-space: nowrap; }
+.style-listing-copy-btn {
+  -webkit-appearance: none; appearance: none;
+  background: rgba(139,46,13,0.45); border: 1px solid rgba(232,200,122,0.35);
+  color: var(--wheat); border-radius: 8px; padding: 8px 10px; font-size: 0.72rem;
+  font-weight: 700; letter-spacing: 0.5px; cursor: pointer; font-family: inherit;
+}
+.style-listing-copy-btn:active { background: var(--barn); }
+.style-listing-spec-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+.style-listing-spec-row .style-listing-spec-input { flex: 1; margin: 0; }
+.style-listing-spec-remove {
+  -webkit-appearance: none; appearance: none; flex-shrink: 0;
+  width: 36px; height: 36px; border-radius: 8px; border: 1px solid rgba(196,81,31,0.4);
+  background: rgba(196,81,31,0.15); color: var(--wheat); font-size: 1rem; cursor: pointer;
+}
+.style-listing-spec-add {
+  -webkit-appearance: none; appearance: none; width: 100%;
+  margin-top: 4px; padding: 10px; border-radius: 8px; cursor: pointer;
+  border: 1.5px dashed rgba(232,200,122,0.35); background: rgba(255,255,255,0.04);
+  color: var(--wheat); font-size: 0.82rem; font-weight: 600; font-family: inherit;
+}
 
 .settings-style-collapse { margin: 16px 0 12px; border: 1.5px solid rgba(232,200,122,0.22); border-radius: 10px; overflow: hidden; background: rgba(255,255,255,0.03); }
 .settings-style-collapse-btn { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 14px; background: rgba(44,24,16,0.65); border: none; color: rgba(232,200,122,0.95); font: inherit; font-weight: 700; font-size: 0.78rem; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; text-align: left; box-sizing: border-box; }
@@ -2819,6 +2851,25 @@ select:focus {
     <div class="cpm-list" id="cpmList"></div>
   </div>
 </div>
+
+<div class="photo-modal-overlay" id="styleListingCopyModal" aria-hidden="true" onclick="if(event.target===this)closeStyleListingCopyModal()">
+  <div class="photo-modal" role="dialog" aria-modal="true" aria-labelledby="styleListingCopyTitle" onclick="event.stopPropagation()">
+    <h3 id="styleListingCopyTitle">Listing copy</h3>
+    <div class="modal-field">
+      <label for="styleListingCopyBlurb">Blurb</label>
+      <textarea id="styleListingCopyBlurb" rows="3" style="width:100%;box-sizing:border-box;resize:vertical;"></textarea>
+    </div>
+    <div class="modal-field">
+      <label>Specs</label>
+      <div id="styleListingCopySpecsList"></div>
+      <button type="button" class="style-listing-spec-add" onclick="addStyleListingSpecRow()">+ Add spec</button>
+    </div>
+    <button type="button" class="modal-save" onclick="saveStyleListingCopyModal()">Save</button>
+    <button type="button" class="modal-cancel" onclick="closeStyleListingCopyModal()">Cancel</button>
+  </div>
+</div>
+<input type="file" id="stylePhotoFileInput" accept="image/*" style="display:none" onchange="handleStylePhotoUpload(this)">
+
 <div class="screen active" id="screenHome">
 
   <!-- COMMAND CENTER HOME -->
@@ -5365,23 +5416,13 @@ select:focus {
         <span class="settings-style-collapse-chevron" id="settingsStyleRefChevron">▼</span>
       </button>
       <div class="settings-style-collapse-body" id="settingsStyleRefBody">
-        <p class="settings-style-collapse-note">Edit the JSON array of <strong>code</strong>, <strong>name</strong>, and <strong>img</strong> (image URL or data URL). Saved only on this device via <strong>Save style data</strong> — not included when you tap Done on main settings.</p>
-        <textarea id="set_styleDataJson" class="set-style-json" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder='[{"code":"ULB","name":"Lofted Barn","img":"https://..."}]'></textarea>
+        <table class="style-ref-table" id="settingsStyleRefTable"></table>
         <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;">
-          <button type="button" class="btn-primary" style="flex:1;min-width:140px;padding:12px;" onclick="saveStyleDataFromEditor()">Save style data</button>
           <button type="button" class="btn-secondary" style="flex:1;min-width:140px;padding:12px;" onclick="resetStyleDataToBaseline()">Restore defaults</button>
         </div>
         <div id="settingsStyleDataMsg" style="display:none;text-align:center;font-size:0.78rem;font-weight:600;margin-top:10px;padding:8px;"></div>
-        <div style="font-size:0.72rem;font-weight:700;color:rgba(232,200,122,0.55);text-transform:uppercase;letter-spacing:1px;margin:14px 0 8px;">Preview table</div>
-        <table class="style-ref-table" id="settingsStyleRefTable"></table>
       </div>
     </div>
-
-    <div class="settings-section-title" style="margin:18px 0 6px;">Marketplace listing copy (per building)</div>
-    <div style="font-size:0.78rem;color:rgba(232,200,122,0.55);margin-bottom:10px;line-height:1.45;">Short blurb and up to 5 specs (one per line) for each style. Used in Marketplace ads with a ✅ before each spec. Saved with style data on this device.</div>
-    <div id="settingsStyleListingCopyList" style="display:flex;flex-direction:column;gap:12px;margin-bottom:12px;"></div>
-    <button type="button" class="btn-primary" style="width:100%;padding:12px;margin-bottom:8px;" onclick="saveStyleListingCopyFromEditor()">Save listing copy</button>
-    <div id="settingsStyleListingCopyMsg" style="display:none;text-align:center;font-size:0.78rem;font-weight:600;margin-bottom:12px;padding:8px;"></div>
 
     
   </div>
@@ -7995,7 +8036,7 @@ function renderSettingsPricingForm(s){
   document.querySelectorAll('#set_nonRtoList .nrto-chk').forEach(function(chk){
     chk.checked=!!nrto[chk.dataset.key];
   });
-  try{ renderStyleListingCopyEditor(); }catch(_eLc){}
+  try{ buildStyleRefTable(); }catch(_eLc){}
 }
 function renderSettingsLinksCloudForm(s){
   s=s||{};
@@ -8079,7 +8120,7 @@ async function loadSettingsForm(){
     try{ renderHomeQuickSheet(); }catch(_q2){}
     updateShareLinks();
   }
-  try{ syncStyleDataEditorField(); renderStyleListingCopyEditor(); }catch(_eSd){}
+  try{ buildStyleRefTable(); }catch(_eSd){}
 }
 
 async function saveSettingsBizLots(opts){
@@ -8126,6 +8167,10 @@ async function saveSettingsPricing(opts){
     if(chk.checked) nrto[chk.dataset.key]=true;
   });
   s.nonRtoOptions=nrto;
+  try{
+    flushStyleListingCopyModalToMemory();
+    persistStyleDataToLocalStorage();
+  }catch(_eStylePersist){}
   saveSettings(s);
   settingsAfterLocalSave(s);
   if(opts&&opts.skipCloud) return { cloudOk: true };
@@ -9043,7 +9088,7 @@ function goTo(screenId){
   if(screenId==='screenSettings') loadSettingsForm();
   if(isSettingsSaveSubScreen(screenId)){
     renderSettingsFormForScreen(screenId);
-    if(screenId==='screenSettingsPricing') try{ syncStyleDataEditorField(); renderStyleListingCopyEditor(); }catch(_eSdP){}
+    if(screenId==='screenSettingsPricing') try{ buildStyleRefTable(); }catch(_eSdP){}
   }
   if(screenId==='screenAd'){
     adPopulateLocation();
@@ -14988,7 +15033,7 @@ function getStyleListingCopy(typeCode){
   if(row&&Array.isArray(row.adSpecs)){
     row.adSpecs.forEach(function(x){
       var t=String(x||'').trim();
-      if(t&&specs.length<5) specs.push(t);
+      if(t) specs.push(t);
     });
   }
   return {blurb:blurb,specs:specs};
@@ -15116,7 +15161,7 @@ function buildAdListingText(opts){
   var dep=RTO_DOWN[widthN];
   if(dep) ad+='Rent-to-own options available with a minimum of $'+dep+' security deposit. No early payoff penalty.\n';
   ad+='\n';
-  var specs=listing.specs.slice(0,5);
+  var specs=listing.specs;
   if(specs.length){
     ad+='Included;\n';
     specs.forEach(function(sp){ ad+='✅ '+sp+'\n'; });
@@ -18516,7 +18561,7 @@ function normalizeStyleDataRow(r){
   if(Array.isArray(r.adSpecs)){
     r.adSpecs.forEach(function(x){
       var t=String(x||'').trim();
-      if(t&&specs.length<5) specs.push(t);
+      if(t) specs.push(t);
     });
   }
   return {
@@ -18715,120 +18760,225 @@ function toggleSettingsStyleRefCollapse(){
   if(btn) btn.setAttribute('aria-expanded',open?'true':'false');
 }
 
-function syncStyleDataEditorField(){
-  var ta=document.getElementById('set_styleDataJson');
-  if(!ta) return;
-  try{ ta.value=JSON.stringify(STYLE_DATA,null,2); }catch(e){ ta.value=''; }
-}
+var _styleListingCopyCode=null;
 
-function saveStyleDataFromEditor(){
-  var ta=document.getElementById('set_styleDataJson');
-  if(!ta) return;
-  if(!confirm('Save custom building style data on this device only? This is separate from main settings and does not sync to the cloud.')) return;
-  var parsed;
-  try{ parsed=JSON.parse(ta.value); }
-  catch(e){ showToast('Invalid JSON — fix syntax and try again'); return; }
-  if(!Array.isArray(parsed)||parsed.length<1){ showToast('JSON must be a non-empty array'); return; }
-  for(var i=0;i<parsed.length;i++){
-    var p=parsed[i];
-    if(!p||typeof p.code!=='string'||!p.code.trim()||typeof p.name!=='string'||!p.name.trim()){
-      showToast('Each item needs non-empty code and name (row '+(i+1)+').');
-      return;
-    }
-  }
+function persistStyleDataToLocalStorage(){
   try{
-    var merged=parsed.map(function(r){
-      var prev=STYLE_DATA.find(function(s){return s&&s.code===r.code.trim();});
-      return normalizeStyleDataRow({
-        code:r.code.trim(),
-        name:r.name.trim(),
-        img:String(r.img||''),
-        adBlurb:(r.adBlurb!=null?r.adBlurb:(prev?prev.adBlurb:'')),
-        adSpecs:(r.adSpecs!=null?r.adSpecs:(prev?prev.adSpecs:[]))
-      });
-    });
-    localStorage.setItem('gss_styleDataJson',JSON.stringify(merged));
-    STYLE_DATA.splice(0,STYLE_DATA.length);
-    merged.forEach(function(r){ STYLE_DATA.push(r); });
+    var payload=STYLE_DATA.map(function(r){ return normalizeStyleDataRow(r); });
+    localStorage.setItem('gss_styleDataJson',JSON.stringify(payload));
     syncStyleLabelMapFromData();
+    return true;
+  }catch(err){
+    if(err&&(err.name==='QuotaExceededError'||err.code===22)){
+      showToast('Could not save — device storage full');
+    }else{
+      showToast('Could not save: '+(err.message||'error'));
+    }
+    return false;
+  }
+}
+
+function collectStyleListingCopySpecsFromModal(){
+  var list=document.getElementById('styleListingCopySpecsList');
+  if(!list) return [];
+  var specs=[];
+  list.querySelectorAll('.style-listing-spec-input').forEach(function(inp){
+    var t=String(inp.value||'').trim();
+    if(t) specs.push(t);
+  });
+  return specs;
+}
+
+function flushStyleListingCopyModalToMemory(){
+  if(!_styleListingCopyCode) return;
+  var row=STYLE_DATA.find(function(s){ return s&&s.code===_styleListingCopyCode; });
+  if(!row) return;
+  var bl=document.getElementById('styleListingCopyBlurb');
+  if(bl) row.adBlurb=String(bl.value||'').trim();
+  row.adSpecs=collectStyleListingCopySpecsFromModal();
+}
+
+async function stylePhotoFileToDataUrl(file){
+  var img=await new Promise(function(resolve,reject){
+    var fr=new FileReader();
+    fr.onload=function(){
+      var im=new Image();
+      im.onload=function(){ resolve(im); };
+      im.onerror=reject;
+      im.src=fr.result;
+    };
+    fr.onerror=reject;
+    fr.readAsDataURL(file);
+  });
+  var maxSide=480;
+  var scale=Math.min(1,maxSide/Math.max(img.width||1,img.height||1));
+  var w=Math.max(1,Math.round((img.width||1)*scale));
+  var h=Math.max(1,Math.round((img.height||1)*scale));
+  var canvas=document.createElement('canvas');
+  canvas.width=w;
+  canvas.height=h;
+  var ctx=canvas.getContext('2d');
+  ctx.drawImage(img,0,0,w,h);
+  try{
+    var webp=canvas.toDataURL('image/webp',0.82);
+    if(webp&&webp.indexOf('data:image/webp')===0) return webp;
+  }catch(_w){}
+  return canvas.toDataURL('image/jpeg',0.84);
+}
+
+function triggerStylePhotoUpload(code){
+  var inp=document.getElementById('stylePhotoFileInput');
+  if(!inp) return;
+  inp.setAttribute('data-upload-code',code);
+  inp.value='';
+  inp.click();
+}
+
+async function handleStylePhotoUpload(input){
+  var file=input.files&&input.files[0];
+  var code=input.getAttribute('data-upload-code')||'';
+  if(!file||!code) return;
+  try{
+    var dataUrl=await stylePhotoFileToDataUrl(file);
+    var row=STYLE_DATA.find(function(s){ return s&&s.code===code; });
+    if(!row){ showToast('Style not found'); return; }
+    row.img=dataUrl;
+    if(persistStyleDataToLocalStorage()){
+      buildStyleRefTable();
+      refreshStylePickerIfOpen();
+      showToast('Photo saved');
+    }
+  }catch(e){
+    showToast('Upload failed: '+(e.message||'error'));
+  }
+}
+
+function resetStylePhoto(code){
+  var base=(_STYLE_DATA_BASELINE||[]).find(function(s){ return s&&s.code===code; });
+  var row=STYLE_DATA.find(function(s){ return s&&s.code===code; });
+  if(!row||!base) return;
+  row.img=base.img||'';
+  if(persistStyleDataToLocalStorage()){
     buildStyleRefTable();
-    renderStyleListingCopyEditor();
-    var msg=document.getElementById('settingsStyleDataMsg');
-    if(msg){ msg.textContent='Style data saved on this device.'; msg.style.display='block'; msg.style.color='var(--sage)'; setTimeout(function(){msg.style.display='none';},2800); }
-    showToast('Building style data saved');
-  }catch(err){ showToast('Could not save: '+(err.message||'error')); }
+    refreshStylePickerIfOpen();
+    showToast('Photo reset');
+  }
 }
 
-function resetStyleDataToBaseline(){
-  if(!confirm('Restore factory building styles (images and codes) on this device? Custom JSON will be cleared from local storage.')) return;
-  try{ localStorage.removeItem('gss_styleDataJson'); }catch(_e){}
-  STYLE_DATA.splice(0,STYLE_DATA.length);
-  (_STYLE_DATA_BASELINE||[]).forEach(function(r){ STYLE_DATA.push(normalizeStyleDataRow(r)); });
-  syncStyleLabelMapFromData();
-  syncStyleDataEditorField();
-  buildStyleRefTable();
-  renderStyleListingCopyEditor();
-  var msg=document.getElementById('settingsStyleDataMsg');
-  if(msg){ msg.textContent='Defaults restored.'; msg.style.display='block'; msg.style.color='var(--sage)'; setTimeout(function(){msg.style.display='none';},2800); }
-  showToast('Style data restored to defaults');
+function refreshStylePickerIfOpen(){
+  var modal=document.getElementById('stylePickerModal');
+  if(modal&&modal.classList.contains('open')&&_activePickerId){
+    openStylePicker(_activePickerId);
+  }
 }
 
-function renderStyleListingCopyEditor(){
-  var list=document.getElementById('settingsStyleListingCopyList');
+function openStyleListingCopyModal(code){
+  var row=STYLE_DATA.find(function(s){ return s&&s.code===code; });
+  if(!row) return;
+  _styleListingCopyCode=code;
+  var title=document.getElementById('styleListingCopyTitle');
+  if(title) title.textContent=(row.name||code)+' ('+code+')';
+  var bl=document.getElementById('styleListingCopyBlurb');
+  if(bl) bl.value=row.adBlurb||'';
+  renderStyleListingCopySpecsList(row.adSpecs||[]);
+  var ov=document.getElementById('styleListingCopyModal');
+  if(ov){
+    ov.classList.add('open');
+    ov.setAttribute('aria-hidden','false');
+    document.body.style.overflow='hidden';
+  }
+}
+
+function closeStyleListingCopyModal(){
+  _styleListingCopyCode=null;
+  var ov=document.getElementById('styleListingCopyModal');
+  if(ov){
+    ov.classList.remove('open');
+    ov.setAttribute('aria-hidden','true');
+  }
+  var spm=document.getElementById('stylePickerModal');
+  if(!spm||!spm.classList.contains('open')) document.body.style.overflow='';
+}
+
+function renderStyleListingCopySpecsList(specs){
+  var list=document.getElementById('styleListingCopySpecsList');
   if(!list) return;
+  if(!specs||!specs.length) specs=[''];
   var html='';
-  STYLE_DATA.forEach(function(s){
-    if(!s||!s.code) return;
-    var specs=(s.adSpecs||[]).join('\n');
-    html+='<div style="background:rgba(255,255,255,0.04);border:1.5px solid rgba(232,200,122,0.2);border-radius:10px;padding:12px 14px;">';
-    html+='<div style="font-family:\'Bebas Neue\',Impact,\'Arial Narrow\',sans-serif;font-size:1rem;letter-spacing:1px;color:var(--wheat);margin-bottom:8px;">'+String(s.name||s.code).replace(/</g,'&lt;')+' <span style="font-size:0.72rem;color:rgba(232,200,122,0.5);">'+s.code+'</span></div>';
-    html+='<label class="field-label">Short blurb (uses &amp; examples)</label>';
-    html+='<textarea data-style-ad-blurb="'+s.code+'" rows="2" style="width:100%;min-height:52px;font-size:0.88rem;box-sizing:border-box;margin-bottom:8px;" placeholder="Storage, workshop, she-shed...">'+String(s.adBlurb||'').replace(/</g,'&lt;')+'</textarea>';
-    html+='<label class="field-label">Specs (one per line, max 5)</label>';
-    html+='<textarea data-style-ad-specs="'+s.code+'" rows="5" style="width:100%;font-size:0.88rem;box-sizing:border-box;" placeholder="5 year craftsmanship warranty.&#10;Two 8ft lofts...">'+specs.replace(/</g,'&lt;')+'</textarea>';
+  specs.forEach(function(sp){
+    html+='<div class="style-listing-spec-row">';
+    html+='<input type="text" class="style-listing-spec-input" value="'+String(sp||'').replace(/"/g,'&quot;').replace(/</g,'&lt;')+'">';
+    html+='<button type="button" class="style-listing-spec-remove" onclick="removeStyleListingSpecRow(this)" aria-label="Remove">✕</button>';
     html+='</div>';
   });
   list.innerHTML=html;
 }
 
-function saveStyleListingCopyFromEditor(){
-  var changed=false;
-  STYLE_DATA.forEach(function(s){
-    if(!s||!s.code) return;
-    var bl=document.querySelector('[data-style-ad-blurb="'+s.code+'"]');
-    var sp=document.querySelector('[data-style-ad-specs="'+s.code+'"]');
-    if(bl) s.adBlurb=String(bl.value||'').trim();
-    if(sp){
-      var lines=String(sp.value||'').split(/\n/).map(function(x){return x.trim();}).filter(Boolean);
-      s.adSpecs=lines.slice(0,5);
-    }
-    changed=true;
-  });
-  if(!changed){ showToast('No styles to save'); return; }
-  try{
-    var payload=STYLE_DATA.map(function(r){return normalizeStyleDataRow(r);});
-    localStorage.setItem('gss_styleDataJson',JSON.stringify(payload));
-    syncStyleDataEditorField();
-    var msg=document.getElementById('settingsStyleListingCopyMsg');
-    if(msg){ msg.textContent='Listing copy saved on this device.'; msg.style.display='block'; msg.style.color='var(--sage)'; setTimeout(function(){msg.style.display='none';},2800); }
-    showToast('Listing copy saved');
-  }catch(err){ showToast('Could not save: '+(err.message||'error')); }
+function addStyleListingSpecRow(){
+  var list=document.getElementById('styleListingCopySpecsList');
+  if(!list) return;
+  var div=document.createElement('div');
+  div.className='style-listing-spec-row';
+  div.innerHTML='<input type="text" class="style-listing-spec-input"><button type="button" class="style-listing-spec-remove" onclick="removeStyleListingSpecRow(this)" aria-label="Remove">✕</button>';
+  list.appendChild(div);
+  var inp=div.querySelector('input');
+  if(inp) inp.focus();
 }
 
-function buildStyleRefTable() {
-  var tbl = document.getElementById('settingsStyleRefTable');
-  if (!tbl) return;
-  var html = '<thead><tr><th>#</th><th>Photo</th><th>Code</th><th>Name</th></tr></thead><tbody>';
-  STYLE_DATA.forEach(function(s, i) {
-    html += '<tr>' +
-      '<td style="color:rgba(232,200,122,0.45);font-size:0.75rem;">' +(i+1)+'</td>' +
-      '<td><img src="'+s.img+'" alt="'+s.name+'"></td>' +
-      '<td class="src-code">'+s.code+'</td>' +
-      '<td class="src-name">'+s.name+'</td>' +
-      '</tr>';
+function removeStyleListingSpecRow(btn){
+  var list=document.getElementById('styleListingCopySpecsList');
+  if(!list||!btn||!btn.parentElement) return;
+  if(list.querySelectorAll('.style-listing-spec-row').length<=1){
+    var inp=list.querySelector('.style-listing-spec-input');
+    if(inp) inp.value='';
+    return;
+  }
+  btn.parentElement.remove();
+}
+
+function saveStyleListingCopyModal(){
+  flushStyleListingCopyModalToMemory();
+  if(persistStyleDataToLocalStorage()){
+    showToast('Listing copy saved');
+    closeStyleListingCopyModal();
+  }
+}
+
+function resetStyleDataToBaseline(){
+  if(!confirm('Restore factory building styles, photos, and listing copy on this device?')) return;
+  try{ localStorage.removeItem('gss_styleDataJson'); }catch(_e){}
+  STYLE_DATA.splice(0,STYLE_DATA.length);
+  (_STYLE_DATA_BASELINE||[]).forEach(function(r){ STYLE_DATA.push(normalizeStyleDataRow(r)); });
+  syncStyleLabelMapFromData();
+  buildStyleRefTable();
+  refreshStylePickerIfOpen();
+  var msg=document.getElementById('settingsStyleDataMsg');
+  if(msg){ msg.textContent='Defaults restored.'; msg.style.display='block'; msg.style.color='var(--sage)'; setTimeout(function(){ msg.style.display='none'; },2800); }
+  showToast('Style data restored to defaults');
+}
+
+function buildStyleRefTable(){
+  var tbl=document.getElementById('settingsStyleRefTable');
+  if(!tbl) return;
+  var html='<thead><tr><th>#</th><th>Photo</th><th>Code</th><th>Name</th><th></th></tr></thead><tbody>';
+  STYLE_DATA.forEach(function(s,i){
+    if(!s||!s.code) return;
+    var codeAttr=String(s.code).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+    var nameEsc=String(s.name||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+    var imgEsc=String(s.img||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+    html+='<tr>';
+    html+='<td class="style-ref-num">'+(i+1)+'</td>';
+    html+='<td class="style-ref-photo-cell"><img src="'+imgEsc+'" alt="'+nameEsc+'"><div class="style-ref-photo-actions">';
+    html+='<button type="button" class="style-ref-photo-btn" data-style-code="'+codeAttr+'" onclick="triggerStylePhotoUpload(this.getAttribute(\'data-style-code\'))">Upload</button>';
+    html+='<button type="button" class="style-ref-photo-btn style-ref-photo-btn--muted" data-style-code="'+codeAttr+'" onclick="resetStylePhoto(this.getAttribute(\'data-style-code\'))">Reset</button>';
+    html+='</div></td>';
+    html+='<td class="src-code">'+s.code+'</td>';
+    html+='<td class="src-name">'+nameEsc+'</td>';
+    html+='<td class="style-ref-actions"><button type="button" class="style-listing-copy-btn" data-style-code="'+codeAttr+'" onclick="openStyleListingCopyModal(this.getAttribute(\'data-style-code\'))">Listing copy</button></td>';
+    html+='</tr>';
   });
-  html += '</tbody>';
-  tbl.innerHTML = html;
+  html+='</tbody>';
+  tbl.innerHTML=html;
 }
 
 
