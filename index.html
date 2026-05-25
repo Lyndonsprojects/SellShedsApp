@@ -4058,10 +4058,16 @@ select:focus {
     <div class="field-group"><label class="field-label">Tone</label>
       <select id="adTone"><option value="friendly">Friendly &amp; Conversational</option><option value="quality">Quality &amp; Craftsmanship</option><option value="sale">Limited Time Sale</option><option value="repo">Repo / As-Is Special</option><option value="inventory">Limited Inventory</option><option value="value">Value-Focused</option></select>
     </div>
-    <div class="result-box" id="adResultBox">
+    <div class="result-box" id="adResultBox" style="display:none;">
       <div class="result-title">Your Marketplace Listing</div>
-      <div class="ad-text" id="adText"></div>
-      <button class="btn-copy" onclick="copyAd()">📋 Copy Listing</button>
+      <div class="field-group" style="margin-bottom:10px;"><label class="field-label">Suggested listing title</label>
+        <div id="adListingTitle" class="ad-text" style="min-height:44px;font-weight:600;"></div>
+        <button type="button" class="btn-secondary" style="margin-top:6px;width:100%;padding:10px;" onclick="copyAdTitle()">Copy title</button>
+      </div>
+      <div class="field-group" style="margin-bottom:10px;"><label class="field-label">Listing description</label>
+        <div class="ad-text" id="adText"></div>
+      </div>
+      <button class="btn-copy" onclick="copyAd()">📋 Copy listing</button>
     </div>
     <div class="pb40"></div>
   </div>
@@ -5491,6 +5497,11 @@ select:focus {
     <div class="field-group"><label class="field-label">Template ID</label><input type="text" id="set_ejsTemplateId" placeholder="template_..."></div>
     <div class="field-group"><label class="field-label">Formspree Endpoint</label><input type="url" id="set_formspreeEndpoint" placeholder="https://formspree.io/f/..."></div>
 
+    <div class="settings-section-title" style="margin:18px 0 6px;">Marketplace ad generator (AI)</div>
+    <div style="font-size:0.76rem;color:rgba(232,200,122,0.55);margin-bottom:10px;line-height:1.45;">For PWA use, set a Cloudflare Worker URL (recommended). Optional OpenAI API key is a dev fallback only; direct browser calls may be blocked by CORS.</div>
+    <div class="field-group"><label class="field-label">Ad generator Worker URL</label><input type="url" id="set_openaiAdWorkerUrl" placeholder="https://your-worker.workers.dev/ad-generate"></div>
+    <div class="field-group"><label class="field-label">OpenAI API key (optional fallback)</label><input type="password" id="set_openaiApiKey" placeholder="sk-..."></div>
+
     <!-- Quote Disclaimer -->
     <div class="field-group" style="margin-top:16px;">
       <label class="field-label">Quote Disclaimer</label>
@@ -5853,6 +5864,9 @@ select:focus {
 <div id="quoteAdResultModal" onclick="if(event.target===this)closeQuoteAdResultModal()">
   <div class="quote-from-sheet" onclick="event.stopPropagation()">
     <div style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:1.2rem;letter-spacing:2px;color:var(--wheat);margin-bottom:10px;">Listing</div>
+    <div class="field-label" style="margin-bottom:4px;">Suggested listing title</div>
+    <div id="quoteAdResultTitle" style="white-space:pre-wrap;font-size:0.9rem;font-weight:600;line-height:1.4;color:var(--wheat);margin-bottom:12px;padding:8px;background:rgba(0,0,0,0.2);border-radius:8px;"></div>
+    <div class="field-label" style="margin-bottom:4px;">Listing description</div>
     <div id="quoteAdResultBody"></div>
     <div style="display:flex;gap:10px;margin-top:14px;">
       <button type="button" class="btn-secondary" style="flex:1;" onclick="closeQuoteAdResultModal()">Close</button>
@@ -8058,7 +8072,7 @@ function renderSettingsLinksCloudForm(s){
 }
 function renderSettingsCommsForm(s){
   s=s||{};
-  ['ejsPublicKey','ejsServiceId','ejsTemplateId','formspreeEndpoint'].forEach(function(k){
+  ['ejsPublicKey','ejsServiceId','ejsTemplateId','formspreeEndpoint','openaiAdWorkerUrl','openaiApiKey'].forEach(function(k){
     var el=document.getElementById('set_'+k);
     if(el) el.value=s[k]||'';
   });
@@ -8194,7 +8208,7 @@ async function saveSettingsLinksCloud(opts){
 }
 async function saveSettingsComms(opts){
   var s=loadSettings();
-  ['ejsPublicKey','ejsServiceId','ejsTemplateId','formspreeEndpoint'].forEach(function(k){
+  ['ejsPublicKey','ejsServiceId','ejsTemplateId','formspreeEndpoint','openaiAdWorkerUrl','openaiApiKey'].forEach(function(k){
     var el=document.getElementById('set_'+k);
     if(el) s[k]=el.value.trim();
   });
@@ -14960,7 +14974,7 @@ function _quoteSnowloadParagraph(){
   return 'Snow load upgrade package: rated for Idaho loads — about $'+rate+'/linear foot on the '+linFt+'-foot building length (~$'+total.toLocaleString()+' for this size). Confirm final engineering with your dealer.';
 }
 
-function confirmQuoteAdWizardAndGenerate(){
+async function confirmQuoteAdWizardAndGenerate(){
   var toneEl=document.getElementById('quoteAdToneSel');
   var tone=toneEl?toneEl.value:'friendly';
   closeQuoteAdWizardModal();
@@ -14989,40 +15003,44 @@ function confirmQuoteAdWizardAndGenerate(){
   }
   var features=adFeaturesFromCalcAddonLabels();
   var optionsSummary=adBuildOptionsSummarySentence();
-  var ad=buildAdListingText({
-    settings:loadSettings(),
-    typeCode:typeCode,
-    type:type,
-    width:width,
-    length:length,
-    widthNum:widthN,
-    price:price,
-    listPrice:q.base,
-    saleAmount:q.saleAmount||0,
-    rto:rtoLine,
-    rtoFormatted:true,
-    siding:_qSkin(siding),
-    bottom:_qSkin(bottom),
-    trim:_qTrim(trim),
-    roof:_qRoof(roof),
-    location:location,
-    tone:tone,
-    features:features,
-    optionsSummary:optionsSummary
-  });
-  window._quoteAdResultText=ad;
-  var body=document.getElementById('quoteAdResultBody');
-  if(body) body.textContent=ad;
-  var rm=document.getElementById('quoteAdResultModal');
-  if(rm) rm.style.display='flex';
+  showToast('Generating listing…');
+  try{
+    var result=await generateAdListingHybrid({
+      settings:loadSettings(),
+      typeCode:typeCode,
+      type:type,
+      width:width,
+      length:length,
+      widthNum:widthN,
+      price:price,
+      listPrice:q.base,
+      saleAmount:q.saleAmount||0,
+      rto:rtoLine,
+      rtoFormatted:true,
+      siding:_qSkin(siding),
+      bottom:_qSkin(bottom),
+      trim:_qTrim(trim),
+      roof:_qRoof(roof),
+      location:location,
+      tone:tone,
+      features:features,
+      optionsSummary:optionsSummary
+    });
+    applyAdListingResult(result,'quote');
+  }catch(e){
+    showToast('Could not generate listing');
+    console.error(e);
+  }
 }
 
 function copyQuoteAdResult(){
-  var t=window._quoteAdResultText||'';
-  if(!t) return;
+  var title=(window._quoteAdResultTitle||'').trim();
+  var body=(window._quoteAdResultText||'').trim();
+  if(!body&&!title) return;
+  var text=title?(title+'\n\n'+body):body;
   try{
-    navigator.clipboard.writeText(t).then(function(){ showToast('Listing copied'); });
-  }catch(e){ legacyCopy(t); }
+    navigator.clipboard.writeText(text).then(function(){ showToast(title?'Title and listing copied':'Listing copied'); });
+  }catch(e){ legacyCopy(text); }
 }
 
 function getStyleListingCopy(typeCode){
@@ -15069,9 +15087,29 @@ function _parseLotAddressForPin(addr){
   return {street:String(addr||'').trim(),cityState:''};
 }
 
+function resolveAdLotPickKey(location, lotPick){
+  location=String(location||'').trim();
+  lotPick=String(lotPick||'').trim();
+  if(location==='Available by order') return '__default__';
+  if(location) return location;
+  if(lotPick&&lotPick!=='__default__') return lotPick;
+  return '__default__';
+}
+
+function appendAdSingleContactBlock(settings, pickKey){
+  settings=settings||loadSettings();
+  var out='Call or message me for more info\n';
+  if(settings.bizName) out+=settings.bizName+'\n';
+  var fc=resolveFlyerContactFromLotPick(settings,pickKey);
+  var ph=formatFlyerContactCallLine(fc)||settings.bizPhone||'';
+  if(ph) out+=ph+'\n';
+  return out.trim();
+}
+
 function formatAdLocationContactBlock(settings,location,lotPick){
   settings=settings||loadSettings();
   location=String(location||'').trim();
+  var pickKey=resolveAdLotPickKey(location,lotPick);
   var out='';
   if(location==='Available by order'){
     out+='Order your building — available by order!\n\n';
@@ -15082,11 +15120,9 @@ function formatAdLocationContactBlock(settings,location,lotPick){
       if(line) out+='📍 '+line+'\n';
     });
     var site=(settings.designerUrl||'').trim()||(settings.bizEmail||'').trim();
-    if(site) out+='\nWebsite: '+site+'\n';
-    var fc=resolveFlyerContactFromLotPick(settings,'__default__');
-    var ph=formatFlyerContactCallLine(fc)||settings.bizPhone||'';
-    if(ph) out+='Call: '+ph+'\n';
-    if(settings.bizName) out+=settings.bizName+'\n';
+    if(site) out+='\nWebsite: '+site+'\n\n';
+    else out+='\n';
+    out+=appendAdSingleContactBlock(settings,'__default__');
     return out.trim();
   }
   var pin=_parseLotAddressForPin(location);
@@ -15094,10 +15130,7 @@ function formatAdLocationContactBlock(settings,location,lotPick){
   if(pin.street) out+='📍 '+pin.street+'\n';
   if(pin.cityState) out+='       '+pin.cityState+'\n';
   else if(location&&!pin.street) out+='📍 '+location+'\n';
-  var pickLot=lotPick||location;
-  var fcLot=resolveFlyerContactFromLotPick(settings,pickLot);
-  var line=formatFlyerContactCallLine(fcLot);
-  if(line) out+='\n'+line+'\n';
+  out+='\n'+appendAdSingleContactBlock(settings,pickKey);
   return out.trim();
 }
 
@@ -15112,11 +15145,25 @@ function formatAdKeywordFooter(type,sizeW,sizeL,settings){
   return bits.filter(Boolean).slice(0,14).join(', ');
 }
 
+function buildAdListingTitle(opts){
+  var type=opts.type||opts.typeCode||'';
+  var widthN=opts.widthNum||parseInt(String(opts.width||'').replace(/[^0-9]/g,''),10)||0;
+  var lengthN=parseInt(String(opts.length||'').replace(/[^0-9]/g,''),10)||0;
+  var sizeLabel=(widthN&&lengthN)?(widthN+'x'+lengthN):'';
+  var tone=normalizeAdTone(opts.tone||'friendly');
+  var title=(sizeLabel+' '+type+adToneHeadlineHook(tone)).trim();
+  if(title.length>100) title=title.slice(0,97)+'...';
+  return title;
+}
+
 function buildAdListingText(opts){
   opts=opts||{};
   var _adS=opts.settings||loadSettings();
-  var lotPickEl=document.getElementById('adLotContact');
-  var lotPick=lotPickEl?String(lotPickEl.value||'').trim():'';
+  var lotPick=opts.lotPick!=null?String(opts.lotPick||'').trim():'';
+  if(!lotPick){
+    var lotPickEl=document.getElementById('adLotContact');
+    lotPick=lotPickEl?String(lotPickEl.value||'').trim():'';
+  }
   var typeCode=opts.typeCode||'';
   var type=opts.type||typeCode;
   var width=opts.width||'';
@@ -15127,10 +15174,9 @@ function buildAdListingText(opts){
   var tone=normalizeAdTone(opts.tone||'friendly');
   var location=opts.location||(combineBizAddressFromSettings(_adS)||'on the lot');
   var listing=getStyleListingCopy(typeCode);
+  var title=buildAdListingTitle({type:type,typeCode:typeCode,width:width,length:length,widthNum:widthN,tone:tone});
   var ad='';
-  ad+=sizeLabel+' '+type+adToneHeadlineHook(tone)+'\n\n';
   if(listing.blurb) ad+=listing.blurb+'\n\n';
-  var colorNote='';
   var siding=opts.siding||'';
   var bottom=opts.bottom||'';
   var trim=opts.trim||'';
@@ -15141,20 +15187,18 @@ function buildAdListingText(opts){
     else if(siding) cp.push(siding+' siding');
     if(trim) cp.push(trim+' trim');
     if(roof) cp.push(roof+' roof');
-    colorNote=cp.join(', ');
+    var colorNote=cp.join(', ');
     if(colorNote) ad+='Colors: '+colorNote+'\n\n';
   }
   var price=String(opts.price||'').trim();
   var saleAmt=parseFloat(opts.saleAmount)||0;
   var listPrice=parseFloat(opts.listPrice)||0;
-  if(price){
+  if(price||listPrice>0){
     var pClean=price.replace(/^\$/,'').replace(/\s*cash\s*/i,'').trim();
-    if(saleAmt>0&&listPrice>0){
-      ad+=sizeLabel+' in this style are on sale, discounted off the Regular price of $'+Math.round(listPrice).toLocaleString()+'!\n\n';
-      ad+='Sale price: $'+pClean+' cash\n';
-    }else{
-      ad+='Cash price: $'+pClean+'\n';
-    }
+    var listShown=listPrice>0?Math.round(listPrice):parseFloat(pClean.replace(/,/g,''))||0;
+    if(listShown>0) ad+='Before Sale List Price: $'+listShown.toLocaleString()+'\n';
+    if(saleAmt>0&&pClean) ad+='Sale Price: $'+pClean+'\n';
+    else if(!listShown&&pClean) ad+='Before Sale List Price: $'+pClean+'\n';
   }
   var rtoRaw=String(opts.rto||'').trim();
   if(rtoRaw) ad+=(opts.rtoFormatted===true?rtoRaw:'Rent-to-own: '+rtoRaw)+'\n';
@@ -15168,23 +15212,171 @@ function buildAdListingText(opts){
     ad+='\n';
   }
   var features=Array.isArray(opts.features)?opts.features:[];
-  if(features.length){
-    ad+='Options on this unit: '+features.join(', ')+'\n\n';
-  }
+  if(features.length) ad+='Options on this unit: '+features.join(', ')+'\n\n';
   var optionsSummary=opts.optionsSummary||'';
   if(optionsSummary) ad+=optionsSummary+'\n\n';
   if(widthN) ad+='Other sizes also available by order, 8x16 up to 16x48\n\n';
   ad+=formatAdLocationContactBlock(_adS,location,lotPick)+'\n\n';
-  ad+='Call or message me for more info\n';
-  ad+=(_adS.bizName||'Gem State Sheds')+'\n';
-  var fcAd=resolveFlyerContactFromLotPick(_adS,location==='Available by order'?'__default__':lotPick);
-  var ph=formatFlyerContactCallLine(fcAd)||_adS.bizPhone||'';
-  if(ph) ad+=ph+'\n';
-  ad+='\n'+formatAdKeywordFooter(type,widthN,lengthN,_adS);
-  return ad.trim();
+  ad+=formatAdKeywordFooter(type,widthN,lengthN,_adS);
+  return {title:title,body:ad.trim()};
 }
 
-function generateAd(){
+function ensureSpecsInAdBody(body, specs){
+  var out=String(body||'');
+  (specs||[]).forEach(function(sp){
+    var t=String(sp||'').trim();
+    if(t&&out.indexOf(t)===-1) out+='\n✅ '+t;
+  });
+  return out.trim();
+}
+
+function parseAdAiResponse(raw, packet){
+  var parsed;
+  try{
+    var t=String(raw||'').trim();
+    var m=t.match(/\{[\s\S]*\}/);
+    parsed=JSON.parse(m?m[0]:t);
+  }catch(_e){ return null; }
+  var title=String(parsed.title||'').trim();
+  var body=String(parsed.body||parsed.listing||'').trim();
+  if(!title||!body) return null;
+  if(title.length>100) title=title.slice(0,100);
+  if(packet&&packet.specs) body=ensureSpecsInAdBody(body,packet.specs);
+  return {title:title,body:body};
+}
+
+function adAiConfigFromSettings(){
+  var s=loadSettings();
+  return {
+    workerUrl:(s.openaiAdWorkerUrl||'').trim(),
+    apiKey:(s.openaiApiKey||'').trim(),
+    token:(s.cfR2UploadToken||'').trim()
+  };
+}
+
+function buildAdAiSystemPrompt(){
+  return 'You write Facebook Marketplace shed listings for Gem State Sheds in Idaho. Return JSON only: {"title":"...","body":"..."}. Title max 100 characters, compelling and local. Body: strong first line, scannable paragraphs, local keywords (Idaho, shed, rent-to-own, delivery). Use exact labels "Before Sale List Price" and "Sale Price" when prices are provided. Include EVERY spec from the packet exactly once as a line starting with ✅ — do not invent specs. One contact block only (use packet contact). No hashtags, no duplicate phone blocks.';
+}
+
+function buildAdContextPacket(opts){
+  opts=opts||{};
+  var s=opts.settings||loadSettings();
+  var typeCode=opts.typeCode||'';
+  var listing=getStyleListingCopy(typeCode);
+  var widthN=opts.widthNum||parseInt(String(opts.width||'').replace(/[^0-9]/g,''),10)||0;
+  var lengthN=parseInt(String(opts.length||'').replace(/[^0-9]/g,''),10)||0;
+  var location=opts.location||(combineBizAddressFromSettings(s)||'on the lot');
+  var pickKey=resolveAdLotPickKey(location,opts.lotPick||'');
+  var fc=resolveFlyerContactFromLotPick(s,pickKey);
+  var listPrice=parseFloat(opts.listPrice)||0;
+  var saleAmt=parseFloat(opts.saleAmount)||0;
+  var price=String(opts.price||'').trim();
+  var pClean=price.replace(/^\$/,'').replace(/\s*cash\s*/i,'').trim();
+  return {
+    sizeLabel:(widthN&&lengthN)?(widthN+'x'+lengthN):'',
+    type:opts.type||typeCode,
+    typeCode:typeCode,
+    tone:normalizeAdTone(opts.tone||'friendly'),
+    blurb:listing.blurb,
+    specs:listing.specs.slice(),
+    colors:{siding:opts.siding||'',bottom:opts.bottom||'',trim:opts.trim||'',roof:opts.roof||''},
+    beforeSaleListPrice:listPrice>0?Math.round(listPrice):(pClean?parseFloat(pClean.replace(/,/g,'')):null),
+    salePrice:saleAmt>0&&pClean?pClean:null,
+    saleAmount:saleAmt,
+    rto:opts.rto||'',
+    deposit:RTO_DOWN[widthN]||null,
+    location:location,
+    locationBlock:formatAdLocationContactBlock(s,location,opts.lotPick||''),
+    contact:{bizName:s.bizName||'',phone:formatFlyerContactCallLine(fc)||s.bizPhone||'',line:formatFlyerContactCallLine(fc)||''},
+    features:Array.isArray(opts.features)?opts.features:[],
+    optionsSummary:opts.optionsSummary||'',
+    keywords:formatAdKeywordFooter(opts.type||typeCode,widthN,lengthN,s)
+  };
+}
+
+async function generateAdListingViaWorker(packet, cfg){
+  var resp=await fetch(cfg.workerUrl,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({token:cfg.token||'',packet:packet})
+  });
+  if(!resp.ok) throw new Error('Worker error '+resp.status);
+  var data=await resp.json().catch(function(){return {};});
+  if(data.title&&data.body) return {title:String(data.title).trim(),body:ensureSpecsInAdBody(String(data.body).trim(),packet.specs)};
+  if(data.raw) return parseAdAiResponse(data.raw,packet);
+  if(data.choices&&data.choices[0]) return parseAdAiResponse(data.choices[0].message&&data.choices[0].message.content,packet);
+  throw new Error('Invalid worker response');
+}
+
+async function generateAdListingDirectOpenAI(packet, apiKey){
+  var userMsg='Write a Facebook Marketplace listing from this JSON context. Output JSON only with title and body.\n\n'+JSON.stringify(packet);
+  var resp=await fetch('https://api.openai.com/v1/chat/completions',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},
+    body:JSON.stringify({
+      model:'gpt-4o-mini',
+      temperature:0.85,
+      response_format:{type:'json_object'},
+      messages:[
+        {role:'system',content:buildAdAiSystemPrompt()},
+        {role:'user',content:userMsg}
+      ]
+    })
+  });
+  if(!resp.ok) throw new Error('OpenAI error '+resp.status);
+  var data=await resp.json();
+  var content=data.choices&&data.choices[0]&&data.choices[0].message?data.choices[0].message.content:'';
+  var parsed=parseAdAiResponse(content,packet);
+  if(!parsed) throw new Error('Could not parse AI response');
+  return parsed;
+}
+
+async function generateAdListingWithAI(packet){
+  var cfg=adAiConfigFromSettings();
+  if(cfg.workerUrl) return await generateAdListingViaWorker(packet,cfg);
+  if(cfg.apiKey) return await generateAdListingDirectOpenAI(packet,cfg.apiKey);
+  return null;
+}
+
+async function generateAdListingHybrid(opts){
+  var listing=getStyleListingCopy(opts.typeCode||'');
+  if(!listing.specs.length) showToast('Add listing specs in Settings → Pricing & Style for this building.');
+  var packet=buildAdContextPacket(opts);
+  try{
+    var ai=await generateAdListingWithAI(packet);
+    if(ai) return ai;
+  }catch(err){ console.warn('AI ad generation failed',err); }
+  var fb=buildAdListingText(opts);
+  showToast('Using template ad (AI unavailable)');
+  return fb;
+}
+
+function applyAdListingResult(result, mode){
+  result=result||{};
+  var title=String(result.title||'').trim();
+  var body=String(result.body||'').trim();
+  if(mode==='quote'){
+    window._quoteAdResultTitle=title;
+    window._quoteAdResultText=body;
+    var te=document.getElementById('quoteAdResultTitle');
+    var be=document.getElementById('quoteAdResultBody');
+    if(te) te.textContent=title;
+    if(be) be.textContent=body;
+    var rm=document.getElementById('quoteAdResultModal');
+    if(rm) rm.style.display='flex';
+    return;
+  }
+  window._adListingTitle=title;
+  window._adListingBody=body;
+  var tEl=document.getElementById('adListingTitle');
+  var bEl=document.getElementById('adText');
+  if(tEl) tEl.textContent=title;
+  if(bEl) bEl.textContent=body;
+  var box=document.getElementById('adResultBox');
+  if(box){ box.style.display='block'; box.scrollIntoView({behavior:'smooth'}); }
+}
+
+async function generateAd(){
   var _adS=loadSettings();
   var typeCode=document.getElementById('adType').value;
   var type=AD_TYPE_NAMES[typeCode]||typeCode;
@@ -15219,38 +15411,71 @@ function generateAd(){
     var lengthN=parseInt(String(length).replace(/[^0-9]/g,''),10)||0;
     if(PRICING[widthN][lengthN]&&PRICING[widthN][lengthN][typeCode]) listBase=PRICING[widthN][lengthN][typeCode];
   }
-  var ad=buildAdListingText({
-    settings:_adS,
-    typeCode:typeCode,
-    type:type,
-    width:width,
-    length:length,
-    widthNum:widthN,
-    price:price,
-    listPrice:listBase,
-    saleAmount:0,
-    rto:rto,
-    siding:_adSkin(siding),
-    bottom:_adSkin(bottom),
-    trim:_adTrimLab(trim),
-    roof:_adRoofLab(roof),
-    location:location,
-    tone:tone,
-    features:features,
-    optionsSummary:optionsSummary
-  });
-  document.getElementById('adText').textContent=ad;
-  document.getElementById('adResultBox').style.display='block';
-  document.getElementById('adResultBox').scrollIntoView({behavior:'smooth'});
+  var lotPickEl=document.getElementById('adLotContact');
+  var lotPick=lotPickEl?String(lotPickEl.value||'').trim():'';
+  showToast('Generating listing…');
+  try{
+    var result=await generateAdListingHybrid({
+      settings:_adS,
+      typeCode:typeCode,
+      type:type,
+      width:width,
+      length:length,
+      widthNum:widthN,
+      price:price,
+      listPrice:listBase,
+      saleAmount:0,
+      rto:rto,
+      siding:_adSkin(siding),
+      bottom:_adSkin(bottom),
+      trim:_adTrimLab(trim),
+      roof:_adRoofLab(roof),
+      location:location,
+      lotPick:lotPick,
+      tone:tone,
+      features:features,
+      optionsSummary:optionsSummary
+    });
+    applyAdListingResult(result,'ad');
+  }catch(e){
+    showToast('Could not generate listing');
+    console.error(e);
+  }
+}
+
+function copyAdTitle(){
+  var title=(window._adListingTitle||'').trim();
+  if(!title){
+    var el=document.getElementById('adListingTitle');
+    title=el?String(el.textContent||'').trim():'';
+  }
+  if(!title){ showToast('Generate a listing first'); return; }
+  navigator.clipboard.writeText(title).then(function(){
+    showToast('Title copied');
+  }).catch(function(){ legacyCopy(title); });
 }
 
 function copyAd(){
-  navigator.clipboard.writeText(document.getElementById('adText').textContent).then(()=>{
-    showToast('✅ Copied!');
-    const btn=document.querySelector('#screenAd .btn-copy');
-    btn.textContent='✅ Copied!';
-    setTimeout(()=>btn.textContent='📋 Copy Listing',2000);
-  });
+  var title=(window._adListingTitle||'').trim();
+  var body=(window._adListingBody||'').trim();
+  if(!title){
+    var tEl=document.getElementById('adListingTitle');
+    title=tEl?String(tEl.textContent||'').trim():'';
+  }
+  if(!body){
+    var bEl=document.getElementById('adText');
+    body=bEl?String(bEl.textContent||'').trim():'';
+  }
+  if(!body&&!title){ showToast('Generate a listing first'); return; }
+  var text=title?(title+'\n\n'+body):body;
+  navigator.clipboard.writeText(text).then(function(){
+    showToast(title?'Title and listing copied':'Listing copied');
+    var btn=document.querySelector('#screenAd .btn-copy');
+    if(btn){
+      btn.textContent='✅ Copied!';
+      setTimeout(function(){ btn.textContent='📋 Copy listing'; },2000);
+    }
+  }).catch(function(){ legacyCopy(text); });
 }
 
 // ============================================================
@@ -16436,7 +16661,7 @@ function invPromoChooseSalesSheet(){
   }
 }
 
-function invPromoChooseMarketplace(){
+async function invPromoChooseMarketplace(){
   var it=invState.promoPendingItem;
   invClosePromoModal();
   if(!it) return;
@@ -16445,17 +16670,23 @@ function invPromoChooseMarketplace(){
     invHydrateAdFromInventoryItem(it);
     goTo('screenAd');
     try{ adPopulateLocation(); }catch(_a){}
-    generateAd();
-    window.setTimeout(function(){
-      try{
-        var t=document.getElementById('adText');
-        if(t&&t.textContent){
-          if(navigator.clipboard&&navigator.clipboard.writeText){
-            navigator.clipboard.writeText(t.textContent).then(function(){ showToast('Listing copied — paste into Marketplace'); },function(){ legacyCopy(t.textContent); });
-          }else legacyCopy(t.textContent);
-        }
-      }catch(_c){}
-    },250);
+    await generateAd();
+    var title=(window._adListingTitle||'').trim();
+    var body=(window._adListingBody||'').trim();
+    if(!body){
+      var tEl=document.getElementById('adText');
+      body=tEl?String(tEl.textContent||'').trim():'';
+    }
+    if(!title){
+      var tiEl=document.getElementById('adListingTitle');
+      title=tiEl?String(tiEl.textContent||'').trim():'';
+    }
+    var text=title?(title+'\n\n'+body):body;
+    if(text){
+      if(navigator.clipboard&&navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(function(){ showToast('Title and listing copied — paste into Marketplace'); },function(){ legacyCopy(text); });
+      }else legacyCopy(text);
+    }
   }catch(e){
     try{ goTo('screenAd'); }catch(_g){}
     showToast('Open Marketplace Ad to review fields');
