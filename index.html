@@ -710,13 +710,13 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
 .quick-price-extras input, .quick-price-extras select { width:100%; box-sizing:border-box; padding:8px 10px; font-size:0.85rem; border-radius:8px; border:1.5px solid rgba(232,200,122,0.22); background:rgba(255,255,255,0.08); color:var(--cream); }
 
 /* Quick Price / Detailed View deck */
-#calcPriceDeck { display:none; overflow:hidden; margin:12px 0 4px; border-radius:10px; position:relative; }
-#calcPriceDeck.is-visible { display:block; }
-#calcPriceDeckTrack { display:flex; flex-direction:column; transition:transform 0.32s ease; will-change:transform; touch-action:pan-y; }
-#calcPriceDeckTrack.view-detailed { transform:translateY(var(--calc-deck-shift, -50%)); }
-#quickPriceWrap { display:block !important; background:var(--earth); border-radius:10px; padding:14px 16px; margin:0; flex-shrink:0; }
-#rtoStreamlineCalcCard { display:block !important; background:rgba(255,255,255,0.05); border:1.5px solid rgba(232,200,122,0.25); border-radius:10px; padding:12px 14px; margin:0; flex-shrink:0; }
-.calc-price-swipe-hint { display:flex; align-items:center; justify-content:center; gap:4px; margin-top:10px; padding-top:8px; border-top:1px solid rgba(232,200,122,0.12); font-size:0.62rem; letter-spacing:1px; text-transform:uppercase; color:rgba(232,200,122,0.45); user-select:none; }
+#calcPriceDeck { display:none; overflow-x:hidden; overflow-y:visible; margin:12px 0 4px; border-radius:10px; position:relative; }
+#calcPriceDeck.is-visible { display:block; padding-left:22px; }
+#calcPriceDeckTrack { display:flex; flex-direction:row; width:200%; transition:transform 0.32s ease; will-change:transform; touch-action:pan-y; overflow:hidden; border-radius:10px; }
+#calcPriceDeckTrack.view-detailed { transform:translateX(-50%); }
+#quickPriceWrap { display:block !important; background:var(--earth); border-radius:10px; padding:14px 16px; margin:0; flex:0 0 50%; width:50%; box-sizing:border-box; }
+#rtoStreamlineCalcCard { display:block !important; background:rgba(255,255,255,0.05); border:1.5px solid rgba(232,200,122,0.25); border-radius:10px; padding:12px 14px; margin:0; flex:0 0 50%; width:50%; box-sizing:border-box; }
+.calc-price-swipe-hint { display:flex; align-items:center; justify-content:center; gap:4px; margin-top:10px; padding-top:8px; border-top:1px solid rgba(232,200,122,0.12); font-size:0.62rem; letter-spacing:1px; text-transform:uppercase; color:rgba(232,200,122,0.45); user-select:none; cursor:pointer; }
 .calc-price-swipe-hint svg { opacity:0.55; }
 .calc-price-swipe-down { display:flex; align-items:center; justify-content:center; gap:4px; margin-bottom:6px; font-size:0.62rem; letter-spacing:1px; text-transform:uppercase; color:rgba(232,200,122,0.45); user-select:none; cursor:pointer; }
 
@@ -746,7 +746,7 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
 }
 #revCalcShell.is-dragging { transition:none !important; }
 #revCalcTab {
-  display:none; position:fixed; left:0; right:auto; top:50%;
+  display:none; position:absolute; left:0; right:auto; top:50%;
   transform:translateY(-50%); z-index:45;
   writing-mode:vertical-rl; text-orientation:mixed;
   width:26px; box-sizing:border-box;
@@ -754,11 +754,12 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
   border-radius:0 8px 8px 0; padding:12px 5px; cursor:grab; touch-action:none; user-select:none;
   font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:0.62rem; letter-spacing:1.5px; color:rgba(232,200,122,0.75);
   box-shadow:2px 0 8px rgba(0,0,0,0.2);
-  margin-left:calc(max(0px, (100vw - 480px) / 2)); margin-right:0;
+  margin-left:0; margin-right:0;
   transition:left 0.25s ease, right 0.25s ease, margin 0.25s ease, top 0.2s ease, color 0.15s, border-color 0.15s, background 0.15s, box-shadow 0.15s;
 }
 #revCalcTab:hover, #revCalcTab:focus-visible { color:var(--wheat); border-color:rgba(232,200,122,0.45); outline:none; }
 #revCalcTab.rev-tab--open {
+  position:fixed; top:50%;
   left:auto; right:0; z-index:10031; cursor:grab;
   background:rgba(44,24,16,0.98); color:var(--wheat); border-color:rgba(232,200,122,0.4);
   border-left:1px solid rgba(232,200,122,0.4); border-right:none;
@@ -783,12 +784,12 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
 #revCalcShell .rev-entry-budget input { font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:2rem; letter-spacing:1px; padding:12px 14px; text-align:center; }
 #revCalcShell .rev-entry-row { display:flex; align-items:flex-end; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
 #revCalcShell .rev-entry-row .field-group { flex:1; min-width:100px; margin-bottom:0; }
-#revCalcShell .rev-sale-row { align-items:center; margin-bottom:8px; }
-#revCalcShell .rev-sale-input-wrap,
-#revCalcShell .rev-tax-input-wrap { display:none; margin-bottom:10px; }
-#revCalcShell .rev-sale-input-wrap.visible,
-#revCalcShell .rev-tax-input-wrap.visible { display:block; }
-#revCalcShell .rev-tax-row { align-items:center; margin-bottom:8px; }
+#revCalcShell .rev-sale-row,
+#revCalcShell .rev-tax-row { align-items:center; flex-wrap:nowrap; margin-bottom:10px; }
+#revCalcShell .rev-inline-input { display:none; flex:1; min-width:0; align-items:center; gap:8px; }
+#revCalcShell .rev-inline-input.visible { display:flex; }
+#revCalcShell .rev-inline-input select { flex:1; min-width:0; padding:8px 10px; font-size:0.9rem; border-radius:8px; border:1.5px solid rgba(232,200,122,0.25); background:rgba(255,255,255,0.1); color:var(--cream); }
+#revCalcShell .rev-inline-input input[type="number"] { width:76px; flex-shrink:0; margin-top:0; padding:8px 10px; font-size:0.9rem; border-radius:8px; border:1.5px solid rgba(232,200,122,0.25); background:rgba(255,255,255,0.1); color:var(--cream); }
 #revCalcShell .rev-refine-zone { display:none; border-top:1px solid rgba(232,200,122,0.15); padding-top:14px; margin-top:4px; }
 #revCalcShell .rev-refine-zone.visible { display:block; }
 #revCalcShell .rev-filter-row { display:flex; flex-wrap:wrap; gap:8px; align-items:stretch; margin-bottom:12px; }
@@ -3382,6 +3383,10 @@ select:focus {
 
       <!-- Live Price Preview + Detailed View deck -->
       <div id="calcPriceDeck">
+      <button type="button" id="revCalcTab" aria-label="Open Reverse Price Calculator">
+        <span class="rev-tab-grip" aria-hidden="true"></span>
+        <span id="revCalcTabLabel">Reverse Price Calculator</span>
+      </button>
       <div id="calcPriceDeckTrack">
       <div id="quickPriceWrap">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
@@ -3427,16 +3432,16 @@ select:focus {
             </select>
           </div>
         </div>
-        <div class="calc-price-swipe-hint" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7-7 7 7"/></svg>
+        <div class="calc-price-swipe-hint" onclick="setCalcPriceDeckView('detailed')" role="button" tabindex="0" aria-label="Swipe for details">
           Swipe for details
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </div>
       </div>
 
       <div id="rtoStreamlineCalcCard">
         <div class="calc-price-swipe-down" onclick="setCalcPriceDeckView('quick')" role="button" tabindex="0" aria-label="Back to Quick Price">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7 7 7-7"/></svg>
-          Swipe down for quick price
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Swipe for quick price
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:10px;">
           <div style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:0.95rem;letter-spacing:2px;color:var(--wheat);">DETAILED VIEW</div>
@@ -3567,14 +3572,8 @@ select:focus {
               </div>
             </div>
             <div class="opt-detail" id="detail_paintupgrade" style="display:none;">
-              <div class="opt-field-row">
-                <label>Type</label>
-                <select id="c_paintType" onchange="onPaintTypeChange();renderCalcQuote();updateQuickPrice()">
-                  <option value="">Select type</option>
-                  <option value="twotone">Two-Tone Paint</option>
-                  <option value="custpaint">Custom Paint</option>
-                </select>
-              </div>
+              <div id="c_paintRows"></div>
+              <button type="button" onclick="calcAddRow('paint')" style="-webkit-appearance:none;appearance:none;margin-top:6px;width:100%;padding:7px;background:rgba(196,81,31,0.12);border:1.5px dashed rgba(196,81,31,0.4);border-radius:8px;color:var(--wheat);font-size:0.82rem;letter-spacing:1px;cursor:pointer;">+ Add Paint Option</button>
               <div class="opt-calc-preview" id="prev_paintupgrade"></div>
             </div>
           </div>
@@ -3642,18 +3641,9 @@ select:focus {
               </div>
             </div>
             <div class="opt-detail" id="detail_2x6" style="display:none;">
-              <div class="opt-auto-note">💡 Auto-calculated from building length ($35/lin ft)</div>
-              <div class="opt-field-row">
-                <label>Apply to</label>
-                <select id="c_2x6type" onchange="updateAutoWidthPrices();renderCalcQuote();updateQuickPrice()">
-                  <option value="">Select</option>
-                  <option value="1">Wall Studs — $35/ft</option>
-                  <option value="1t">Trusses — $35/ft</option>
-                  <option value="2">Both — $35/ft each</option>
-                  <option value="130psf">130 PSF Snow Load Pkg — $100/ft</option>
-                  <option value="150psf">150 PSF Snow Pkg — $120/ft</option>
-                </select>
-              </div>
+              <div class="opt-auto-note">💡 Default linear feet from building length</div>
+              <div id="c_2x6Rows"></div>
+              <button type="button" onclick="calcAddRow('x6')" style="-webkit-appearance:none;appearance:none;margin-top:6px;width:100%;padding:7px;background:rgba(196,81,31,0.12);border:1.5px dashed rgba(196,81,31,0.4);border-radius:8px;color:var(--wheat);font-size:0.82rem;letter-spacing:1px;cursor:pointer;">+ Add 2×6 Option</button>
               <div class="opt-calc-preview" id="prev_2x6"></div>
             </div>
           </div>
@@ -3837,21 +3827,8 @@ select:focus {
               </div>
             </div>
             <div class="opt-detail" id="detail_intwall" style="display:none;">
-              <div class="opt-field-row">
-                <label>Type</label>
-                <select id="c_intwallType" onchange="renderCalcQuote();updateQuickPrice()">
-                  <option value="">Select type</option>
-                  <option value="25">Studs Only — $25/ft</option>
-                  <option value="35">Studs + 1 Side OSB — $35/ft</option>
-                  <option value="40s">Studs + 1 Side Smartside — $40/ft</option>
-                  <option value="40b">Studs + Both OSB — $40/ft</option>
-                  <option value="45">Studs + Both Smartside — $45/ft</option>
-                </select>
-              </div>
-              <div class="opt-field-row">
-                <label>Lin ft</label>
-                <input type="number" id="c_intwallFt" placeholder="Enter feet" min="1" oninput="renderCalcQuote();updateQuickPrice()">
-              </div>
+              <div id="c_intwallRows"></div>
+              <button type="button" onclick="calcAddRow('intwall')" style="-webkit-appearance:none;appearance:none;margin-top:6px;width:100%;padding:7px;background:rgba(196,81,31,0.12);border:1.5px dashed rgba(196,81,31,0.4);border-radius:8px;color:var(--wheat);font-size:0.82rem;letter-spacing:1px;cursor:pointer;">+ Add Interior Wall</button>
               <div class="opt-calc-preview" id="prev_intwall"></div>
             </div>
           </div>
@@ -5408,7 +5385,7 @@ select:focus {
       <input type="number" id="ss_c_rooffeltFt" value="">
       <input type="number" id="ss_c_housewrapFt" value="">
       <select id="ss_c_paintType"><option value="">Select type</option><option value="twotone">Two-Tone Paint</option><option value="custpaint">Custom Paint</option></select>
-      <select id="ss_c_2x6type"><option value="">Select</option><option value="1">Wall Studs — $35/ft</option><option value="1t">Trusses — $35/ft</option><option value="2">Both — $35/ft each</option><option value="130psf">130 PSF Snow Load Pkg — $100/ft</option><option value="150psf">150 PSF Snow Pkg — $120/ft</option></select>
+      <select id="ss_c_2x6type"><option value="">Select</option><option value="1">Wall Studs — $35/ft</option><option value="1t">Trusses — $35/ft</option><option value="2">Both — $70/ft</option><option value="130psf">130 PSF Snow Load Pkg — $100/ft</option><option value="150psf">150 PSF Snow Pkg — $120/ft</option></select>
       <input type="number" id="ss_c_2x6ft" value="">
       <input type="number" id="ss_c_rooftrussft" value="">
       <input type="number" id="ss_c_floorjoistFt" value="">
@@ -5427,6 +5404,9 @@ select:focus {
       <div id="ss_windowRows"></div>
       <div id="ss_garageRows"></div>
       <div id="ss_cutoutRows"></div>
+      <div id="ss_2x6Rows"></div>
+      <div id="ss_intwallRows"></div>
+      <div id="ss_paintRows"></div>
     </div>
 
   </div><!-- end sspage0 -->
@@ -6282,20 +6262,20 @@ select:focus {
           <div class="tog-track" id="revSaleTrack"><div class="tog-thumb"></div></div>
           <span class="tog-label">Sale %</span>
         </div>
-      </div>
-      <div id="rev_saleInputWrap" class="rev-sale-input-wrap">
-        <select id="rev_salePctSel" onchange="onRevSaleSelectChange(this)" style="width:100%;padding:8px 10px;font-size:0.9rem;border-radius:8px;border:1.5px solid rgba(232,200,122,0.25);background:rgba(255,255,255,0.1);color:var(--cream);"></select>
-        <input type="number" id="rev_salePct" min="0" max="100" step="0.1" placeholder="%" style="display:none;width:100%;margin-top:6px;padding:8px 10px;font-size:0.9rem;border-radius:8px;border:1.5px solid rgba(232,200,122,0.25);background:rgba(255,255,255,0.1);color:var(--cream);" oninput="onRevSaleInput(this)">
+        <div id="rev_saleInputWrap" class="rev-inline-input">
+          <select id="rev_salePctSel" onchange="onRevSaleSelectChange(this)"></select>
+          <input type="number" id="rev_salePct" min="0" max="100" step="0.1" placeholder="%" oninput="onRevSaleInput(this)">
+        </div>
       </div>
       <div class="rev-entry-row rev-tax-row">
         <div class="tog-wrap" onclick="toggleRevIncludeTax()">
           <div class="tog-track" id="revTaxTrack"><div class="tog-thumb"></div></div>
           <span class="tog-label">Include tax</span>
         </div>
-      </div>
-      <div id="rev_taxInputWrap" class="rev-tax-input-wrap">
-        <select id="rev_taxPctSel" onchange="onRevTaxSelectChange(this)" style="width:100%;padding:8px 10px;font-size:0.9rem;border-radius:8px;border:1.5px solid rgba(232,200,122,0.25);background:rgba(255,255,255,0.1);color:var(--cream);"></select>
-        <input type="number" id="rev_taxRate" min="0" step="0.01" placeholder="Custom %" style="display:none;width:100%;margin-top:6px;padding:8px 10px;font-size:0.9rem;border-radius:8px;border:1.5px solid rgba(232,200,122,0.25);background:rgba(255,255,255,0.1);color:var(--cream);" oninput="onRevTaxRateInput(this)">
+        <div id="rev_taxInputWrap" class="rev-inline-input">
+          <select id="rev_taxPctSel" onchange="onRevTaxSelectChange(this)"></select>
+          <input type="number" id="rev_taxRate" min="0" step="0.01" placeholder="Custom %" oninput="onRevTaxRateInput(this)">
+        </div>
       </div>
       <button type="button" id="rev_showResultsBtn" class="btn-primary" style="margin-top:0;padding:12px;width:100%;" onclick="showReverseResults()" disabled>Show Results</button>
     </div>
@@ -6319,10 +6299,6 @@ select:focus {
     <div id="rev_results" style="margin-top:8px;font-size:0.78rem;line-height:1.5;color:rgba(232,200,122,0.82);">Enter a budget and tap Show Results.</div>
   </div>
 </div>
-<button type="button" id="revCalcTab" aria-label="Open Reverse Price Calculator">
-  <span class="rev-tab-grip" aria-hidden="true"></span>
-  <span id="revCalcTabLabel">Reverse Price Calculator</span>
-</button>
 
 <nav id="appBottomNav" class="app-bottom-nav" aria-label="Screen navigation" aria-hidden="true" style="display:none;">
   <button type="button" class="app-bottom-nav__btn app-bottom-nav__btn--back" id="appBottomNavBack" aria-label="Back">
@@ -11313,7 +11289,7 @@ function getSettingVal(key,def){
 // ============================================================
 // CALCULATOR
 // ============================================================
-let calcState={type:null,width:null,length:null,payType:'cash',rtoMonths:36,addons:{},addonQty:{},saleActive:false,salePercent:0,dealerDiscount:0,taxMode:'standard',taxRate:0,bosActive:false,assurancePlan:2,costReduction:0,qpvShowTax:true,multiDoors:[],multiWindows:[],multiGarage:[],multiCutouts:[],multiCustom:[],osbIntwallFtManual:false};
+let calcState={type:null,width:null,length:null,payType:'cash',rtoMonths:36,addons:{},addonQty:{},saleActive:false,salePercent:0,dealerDiscount:0,taxMode:'standard',taxRate:0,bosActive:false,assurancePlan:2,costReduction:0,qpvShowTax:true,multiDoors:[],multiWindows:[],multiGarage:[],multiCutouts:[],multiCustom:[],multi2x6:[],multiIntwall:[],multiPaint:[],osbIntwallFtManual:false};
 let calcCurrentPage=0;
 const CALC_HISTORY_KEY='gss_calc_quote_history_v1';
 const CALC_HISTORY_MAX=4;
@@ -11323,7 +11299,7 @@ function getDefaultCalcState(){
     type:null,width:null,length:null,payType:'cash',rtoMonths:36,addons:{},addonQty:{},
     saleActive:false,salePercent:0,dealerDiscount:0,taxMode:'standard',taxRate:0,
     bosActive:false,assurancePlan:2,costReduction:0,multiDoors:[],multiWindows:[],
-    multiGarage:[],multiCutouts:[],multiCustom:[],osbIntwallFtManual:false,stdRemoved:{},_stdType:null
+    multiGarage:[],multiCutouts:[],multiCustom:[],multi2x6:[],multiIntwall:[],multiPaint:[],osbIntwallFtManual:false,stdRemoved:{},_stdType:null
   };
 }
 
@@ -11454,6 +11430,9 @@ function clearCalcForNewQuote(){
   calcRenderRows('windows');
   calcRenderRows('garage');
   calcRenderRows('cutouts');
+  calcRenderRows('x6');
+  calcRenderRows('intwall');
+  calcRenderRows('paint');
   saveSaleState();
   syncSaleUIFromState();
   calcGoTo(0);
@@ -11488,6 +11467,9 @@ function resetPriceCalculator(){
   calcRenderRows('windows');
   calcRenderRows('garage');
   calcRenderRows('cutouts');
+  calcRenderRows('x6');
+  calcRenderRows('intwall');
+  calcRenderRows('paint');
   try{ buildRemoveStdPanel(); }catch(_b){}
   var qpvPanel=document.getElementById('qpvSettingsPanel');
   var qpvBtn=document.getElementById('qpvSettingsBtn');
@@ -11547,9 +11529,21 @@ function restoreCalcSession(entry){
   calcState.multiGarage=Array.isArray(savedState.multiGarage)?savedState.multiGarage:[];
   calcState.multiCutouts=Array.isArray(savedState.multiCutouts)?savedState.multiCutouts:[];
   calcState.multiCustom=Array.isArray(savedState.multiCustom)?savedState.multiCustom:[];
+  calcState.multi2x6=Array.isArray(savedState.multi2x6)?savedState.multi2x6:[];
+  calcState.multiIntwall=Array.isArray(savedState.multiIntwall)?savedState.multiIntwall:[];
+  calcState.multiPaint=Array.isArray(savedState.multiPaint)?savedState.multiPaint:[];
   calcState.osbIntwallFtManual=!!savedState.osbIntwallFtManual;
 
   var controls=entry.controls||{};
+  if(calcState.addons['2x6']&&!calcState.multi2x6.length&&controls.c_2x6type){
+    calcState.multi2x6=[{type:controls.c_2x6type,linft:parseFloat(controls.c_2x6ft)||savedState.length||0}];
+  }
+  if(calcState.addons['intwall']&&!calcState.multiIntwall.length&&controls.c_intwallType){
+    calcState.multiIntwall=[{type:controls.c_intwallType,linft:parseFloat(controls.c_intwallFt)||0}];
+  }
+  if(calcState.addons['paintupgrade']&&!calcState.multiPaint.length&&controls.c_paintType){
+    calcState.multiPaint=[{type:controls.c_paintType}];
+  }
   Object.keys(controls).forEach(function(id){
     var el=document.getElementById(id);
     if(!el) return;
@@ -11568,6 +11562,9 @@ function restoreCalcSession(entry){
   calcRenderRows('windows');
   calcRenderRows('garage');
   calcRenderRows('cutouts');
+  calcRenderRows('x6');
+  calcRenderRows('intwall');
+  calcRenderRows('paint');
   syncSaleUIFromState();
   saveSaleState();
   if(calcState.payType==='rto') setCalcPay('rto'); else setCalcPay('cash');
@@ -11641,6 +11638,30 @@ function saveSaleState(){
   try{localStorage.setItem('gss_sale',JSON.stringify({active:calcState.saleActive,pct:calcState.salePercent}));}catch(e){}
 }
 
+var _saleSyncGuard=false;
+function syncSaleBidirectional(from){
+  if(_saleSyncGuard) return;
+  _saleSyncGuard=true;
+  try{
+    if(from==='calc'){
+      revSaleActive=!!calcState.saleActive;
+      revSalePercent=calcState.saleActive?(parseFloat(calcState.salePercent)||0):0;
+      syncRevSaleUi();
+      saveRevSessionPrefs();
+      if(revSearchActive) refreshReverseResultsLive();
+    }else{
+      calcState.saleActive=!!revSaleActive;
+      calcState.salePercent=revSaleActive?(parseFloat(revSalePercent)||0):0;
+      syncSaleUIFromState();
+      saveSaleState();
+      updateQuickPrice();
+      renderCalcQuote();
+    }
+  }finally{
+    _saleSyncGuard=false;
+  }
+}
+
 var GSS_QPV_SHOW_TAX_KEY='gss_qpv_show_tax_v1';
 function loadQpvTaxPref(){
   try{
@@ -11709,6 +11730,7 @@ function onQuickSaleSelectChange(el){
   saveSaleState();
   updateQuickPrice();
   renderCalcQuote();
+  syncSaleBidirectional('calc');
 }
 
 function syncSaleUIFromState(){
@@ -11796,6 +11818,7 @@ function toggleQuickSale(){
   saveSaleState();
   updateQuickPrice();
   renderCalcQuote();
+  syncSaleBidirectional('calc');
 }
 
 
@@ -11812,6 +11835,7 @@ function onQuickSaleInput(el){
   saveSaleState();
   updateQuickPrice();
   renderCalcQuote();
+  syncSaleBidirectional('calc');
 }
 
 function updateQuickPrice(){
@@ -12073,47 +12097,88 @@ function setCalcPriceDeckView(view){
   var track=document.getElementById('calcPriceDeckTrack');
   if(track) track.classList.toggle('view-detailed',calcPriceDeckView==='detailed');
   syncCalcPriceDeckHeight();
+  requestAnimationFrame(function(){ try{ syncCalcPriceDeckHeight(); }catch(_e){} });
 }
 
 function syncCalcPriceDeckHeight(){
   var deck=document.getElementById('calcPriceDeck');
   var quick=document.getElementById('quickPriceWrap');
   var detail=document.getElementById('rtoStreamlineCalcCard');
-  var track=document.getElementById('calcPriceDeckTrack');
-  if(!deck||!quick||!track) return;
+  if(!deck||!quick) return;
   var qh=quick.offsetHeight||0;
   var dh=detail?detail.offsetHeight:qh;
-  track.style.setProperty('--calc-deck-shift','-'+qh+'px');
-  deck.style.height=(calcPriceDeckView==='detailed'?dh:qh)+'px';
+  var nextH=calcPriceDeckView==='detailed'?dh:qh;
+  if(nextH<=0&&deck.classList.contains('is-visible')){
+    requestAnimationFrame(function(){ try{ syncCalcPriceDeckHeight(); }catch(_e){} });
+    return;
+  }
+  deck.style.height=nextH+'px';
   try{ positionRevCalcTab(); }catch(_eRvTabPos){}
 }
 
+function calcPriceDeckSwipeTarget(el){
+  return el&&el.closest('input,select,textarea,button,a,label,.tog-wrap,.tog-track,.qpv-tax-toggle,.qpv-gear-btn,.calc-price-swipe-hint,.calc-price-swipe-down');
+}
+
+function handleCalcPriceDeckSwipe(dx,dy,viewAtStart){
+  if(Math.abs(dx)<40||Math.abs(dx)<Math.abs(dy)) return false;
+  if(viewAtStart==='quick'){
+    if(dx<-40){ setCalcPriceDeckView('detailed'); return true; }
+    if(dx>40){ openRevCalcPage(); return true; }
+  }else if(viewAtStart==='detailed'&&dx>40){
+    setCalcPriceDeckView('quick');
+    return true;
+  }
+  return false;
+}
+
 function initCalcPriceDeckGestures(){
-  var quick=document.getElementById('quickPriceWrap');
-  var detail=document.getElementById('rtoStreamlineCalcCard');
-  if(!quick||quick._deckGesturesInit) return;
-  quick._deckGesturesInit=true;
-  var touchStart=null;
-  function onStart(e){
-    var t=e.touches?e.touches[0]:e;
-    touchStart={x:t.clientX,y:t.clientY};
+  var track=document.getElementById('calcPriceDeckTrack');
+  if(!track||track._deckGesturesInit) return;
+  track._deckGesturesInit=true;
+  var drag={active:false,startX:0,startY:0,viewAtStart:'quick'};
+  function onStart(clientX,clientY,target){
+    if(calcPriceDeckSwipeTarget(target)) return false;
+    drag.active=true;
+    drag.startX=clientX;
+    drag.startY=clientY;
+    drag.viewAtStart=calcPriceDeckView;
+    return true;
   }
-  function onEnd(e,wantDir){
-    if(!touchStart) return;
-    var t=e.changedTouches?e.changedTouches[0]:e;
-    var dy=t.clientY-touchStart.y;
-    var dx=t.clientX-touchStart.x;
-    touchStart=null;
-    if(Math.abs(dy)<40||Math.abs(dy)<Math.abs(dx)) return;
-    if(wantDir==='up'&&dy<-40) setCalcPriceDeckView('detailed');
-    if(wantDir==='down'&&dy>40) setCalcPriceDeckView('quick');
+  function onEnd(clientX,clientY){
+    if(!drag.active) return;
+    drag.active=false;
+    var dx=clientX-drag.startX;
+    var dy=clientY-drag.startY;
+    handleCalcPriceDeckSwipe(dx,dy,drag.viewAtStart);
   }
-  quick.addEventListener('touchstart',onStart,{passive:true});
-  quick.addEventListener('touchend',function(e){onEnd(e,'up');},{passive:true});
-  if(detail){
-    detail.addEventListener('touchstart',onStart,{passive:true});
-    detail.addEventListener('touchend',function(e){onEnd(e,'down');},{passive:true});
-  }
+  track.addEventListener('touchstart',function(e){
+    if(e.touches.length!==1) return;
+    onStart(e.touches[0].clientX,e.touches[0].clientY,e.target);
+  },{passive:true});
+  track.addEventListener('touchend',function(e){
+    if(!drag.active||!e.changedTouches.length) return;
+    onEnd(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
+  },{passive:true});
+  track.addEventListener('touchcancel',function(){ drag.active=false; },{passive:true});
+  track.addEventListener('mousedown',function(e){
+    if(e.button!==0) return;
+    if(!onStart(e.clientX,e.clientY,e.target)) return;
+    e.preventDefault();
+    function onMove(ev){
+      if(!drag.active) return;
+      var dx=ev.clientX-drag.startX;
+      var dy=ev.clientY-drag.startY;
+      if(Math.abs(dx)>8&&Math.abs(dx)>Math.abs(dy)) ev.preventDefault();
+    }
+    function onUp(ev){
+      onEnd(ev.clientX,ev.clientY);
+      document.removeEventListener('mousemove',onMove);
+      document.removeEventListener('mouseup',onUp);
+    }
+    document.addEventListener('mousemove',onMove);
+    document.addEventListener('mouseup',onUp);
+  });
   window.addEventListener('resize',function(){ try{ syncCalcPriceDeckHeight(); }catch(_e){} });
 }
 
@@ -12168,17 +12233,7 @@ function clearRevTabDragOffset(){
 function positionRevCalcTab(){
   var tab=document.getElementById('revCalcTab');
   if(!tab||tab.style.display==='none') return;
-  var quick=document.getElementById('quickPriceWrap');
-  var deck=document.getElementById('calcPriceDeck');
-  var anchor=(deck&&deck.classList.contains('is-visible')&&quick)?quick:null;
-  if(anchor){
-    var r=anchor.getBoundingClientRect();
-    if(r.height>0){
-      tab.style.top=Math.round(r.top+r.height/2)+'px';
-      if(!tab.classList.contains('is-dragging')) tab.style.transform='translateY(-50%)';
-      return;
-    }
-  }
+  if(tab.classList.contains('rev-tab--open')) return;
   tab.style.top='50%';
   if(!tab.classList.contains('is-dragging')) tab.style.transform='translateY(-50%)';
 }
@@ -12187,6 +12242,7 @@ function openRevCalcPage(){
   var shell=document.getElementById('revCalcShell');
   var backdrop=document.getElementById('revCalcBackdrop');
   if(!shell) return;
+  syncSaleBidirectional('calc');
   revCalcPageOpen=true;
   clearRevTabDragOffset();
   setRevShellSlide(0,true);
@@ -12394,10 +12450,10 @@ var revRtoTolerance=20;
 var revSortMode='closest';
 var revTaxRateDebounce=null;
 var _calcStateSavedForRev=null;
-var revCalcOptsState={addons:{},multiDoors:[],multiWindows:[],multiGarage:[],multiCutouts:[],multiCustom:[],osbIntwallFtManual:false,stdRemoved:{}};
+var revCalcOptsState={addons:{},multiDoors:[],multiWindows:[],multiGarage:[],multiCutouts:[],multiCustom:[],multi2x6:[],multiIntwall:[],multiPaint:[],osbIntwallFtManual:false,stdRemoved:{}};
 
 function createEmptyRevCalcOptsState(){
-  return {addons:{},multiDoors:[],multiWindows:[],multiGarage:[],multiCutouts:[],multiCustom:[],osbIntwallFtManual:false,stdRemoved:{}};
+  return {addons:{},multiDoors:[],multiWindows:[],multiGarage:[],multiCutouts:[],multiCustom:[],multi2x6:[],multiIntwall:[],multiPaint:[],osbIntwallFtManual:false,stdRemoved:{}};
 }
 
 function initRevCalcUi(){
@@ -12438,7 +12494,7 @@ function ensureRevTaxSelectOptions(){
   sel.innerHTML='';
   var settingsOpt=document.createElement('option');
   settingsOpt.value='settings';
-  settingsOpt.textContent='From settings ('+(settingsRate%1===0?settingsRate.toFixed(0):settingsRate.toFixed(2))+'%)';
+  settingsOpt.textContent=(settingsRate%1===0?settingsRate.toFixed(0):settingsRate.toFixed(2))+'%';
   sel.appendChild(settingsOpt);
   for(var v=0;v<=12.0001;v+=0.5){
     var rounded=Math.round(v*10)/10;
@@ -12574,6 +12630,7 @@ function toggleRevSale(){
   revSaleActive=!revSaleActive;
   syncRevSaleUi();
   saveRevSessionPrefs();
+  syncSaleBidirectional('rev');
   if(revSearchActive) refreshReverseResultsLive();
 }
 
@@ -12597,6 +12654,7 @@ function onRevSaleSelectChange(el){
   revSaleActive=true;
   syncRevSaleUi();
   saveRevSessionPrefs();
+  syncSaleBidirectional('rev');
   if(revSearchActive) refreshReverseResultsLive();
 }
 
@@ -12611,6 +12669,7 @@ function onRevSaleInput(el){
   }
   syncRevSaleUi();
   saveRevSessionPrefs();
+  syncSaleBidirectional('rev');
   if(revSearchActive) refreshReverseResultsLive();
 }
 
@@ -12701,6 +12760,9 @@ function copyRevOptsFromCalcState(){
   revCalcOptsState.multiGarage=JSON.parse(JSON.stringify(calcState.multiGarage||[]));
   revCalcOptsState.multiCutouts=JSON.parse(JSON.stringify(calcState.multiCutouts||[]));
   revCalcOptsState.multiCustom=JSON.parse(JSON.stringify(calcState.multiCustom||[]));
+  revCalcOptsState.multi2x6=JSON.parse(JSON.stringify(calcState.multi2x6||[]));
+  revCalcOptsState.multiIntwall=JSON.parse(JSON.stringify(calcState.multiIntwall||[]));
+  revCalcOptsState.multiPaint=JSON.parse(JSON.stringify(calcState.multiPaint||[]));
   revCalcOptsState.osbIntwallFtManual=!!calcState.osbIntwallFtManual;
   revCalcOptsState.stdRemoved=JSON.parse(JSON.stringify(calcState.stdRemoved||{}));
 }
@@ -12712,6 +12774,9 @@ function applyRevCalcOptsToCalcState(){
   calcState.multiGarage=JSON.parse(JSON.stringify(revCalcOptsState.multiGarage||[]));
   calcState.multiCutouts=JSON.parse(JSON.stringify(revCalcOptsState.multiCutouts||[]));
   calcState.multiCustom=JSON.parse(JSON.stringify(revCalcOptsState.multiCustom||[]));
+  calcState.multi2x6=JSON.parse(JSON.stringify(revCalcOptsState.multi2x6||[]));
+  calcState.multiIntwall=JSON.parse(JSON.stringify(revCalcOptsState.multiIntwall||[]));
+  calcState.multiPaint=JSON.parse(JSON.stringify(revCalcOptsState.multiPaint||[]));
   calcState.osbIntwallFtManual=!!revCalcOptsState.osbIntwallFtManual;
   calcState.stdRemoved=JSON.parse(JSON.stringify(revCalcOptsState.stdRemoved||{}));
 }
@@ -13526,7 +13591,7 @@ function applyReverseMatch(match){
     if(chk) chk.classList.toggle('on',!!calcState.addons[k]);
     if(detail) detail.style.display=calcState.addons[k]?'block':'none';
   });
-  ['doors','windows','garage','cutouts'].forEach(function(t){ calcRenderRows(t); });
+  ['doors','windows','garage','cutouts','x6','intwall','paint'].forEach(function(t){ calcRenderRows(t); });
   syncCalcQuickControlsFromState();
   updateCatCounts();
   updateAutoWidthPrices();
@@ -13955,7 +14020,7 @@ var _optWizSuppressBlur=false;
 var optSheetStaging=null;
 
 function createEmptyOptSheetStaging(){
-  return {addons:{},addonQty:{},fields:{},multiDoors:[],multiWindows:[],multiGarage:[],multiCutouts:[],multiCustom:[],osbIntwallFtManual:false};
+  return {addons:{},addonQty:{},fields:{},multiDoors:[],multiWindows:[],multiGarage:[],multiCutouts:[],multiCustom:[],multi2x6:[],multiIntwall:[],multiPaint:[],osbIntwallFtManual:false};
 }
 function clearOptSheetStaging(){
   optSheetStaging=createEmptyOptSheetStaging();
@@ -14071,6 +14136,9 @@ function _stagingMultiKey(key){
   if(key==='window') return 'multiWindows';
   if(key==='garagedoor') return 'multiGarage';
   if(key==='cutouts') return 'multiCutouts';
+  if(key==='2x6') return 'multi2x6';
+  if(key==='intwall') return 'multiIntwall';
+  if(key==='paintupgrade') return 'multiPaint';
   return null;
 }
 
@@ -14098,10 +14166,7 @@ function optStagingClearKey(key,stopPropagation,skipRender){
   if(key==='osb_intwall'){ delete optSheetStaging.fields.c_osbIntwallFt; optSheetStaging.osbIntwallFtManual=false; }
   var entry=getOptCatalogEntry(key);
   if(entry&&entry.fieldId) delete optSheetStaging.fields[entry.fieldId];
-  if(key==='2x6'){ delete optSheetStaging.fields.c_2x6type; delete optSheetStaging.fields.c_2x6ft; }
-  else if(key==='intwall'){ delete optSheetStaging.fields.c_intwallType; delete optSheetStaging.fields.c_intwallFt; }
-  else if(key==='paintupgrade') delete optSheetStaging.fields.c_paintType;
-  else if(key==='rooffelt') delete optSheetStaging.fields.c_rooffeltFt;
+  if(key==='rooffelt') delete optSheetStaging.fields.c_rooffeltFt;
   else if(key==='housewrap') delete optSheetStaging.fields.c_housewrapFt;
   else if(key==='ins_roof') delete optSheetStaging.fields.c_manual_ins_roof;
   else if(key==='ins_wallsroof') delete optSheetStaging.fields.c_manual_ins_wallsroof;
@@ -14115,6 +14180,14 @@ function optStagingMultiQty(key,idx,val,stopPropagation){
   var mk=_stagingMultiKey(key);
   if(!mk||!optSheetStaging[mk]||!optSheetStaging[mk][idx]) return;
   optSheetStaging[mk][idx].qty=Math.max(1,parseInt(val)||1);
+  optWizardRender();
+}
+
+function optStagingMultiLinft(key,idx,val,stopPropagation){
+  if(stopPropagation) stopPropagation.stopPropagation();
+  var mk=_stagingMultiKey(key);
+  if(!mk||!optSheetStaging[mk]||!optSheetStaging[mk][idx]) return;
+  optSheetStaging[mk][idx].linft=val;
   optWizardRender();
 }
 
@@ -14152,14 +14225,14 @@ function _optLabelFromOpts(opts,val){
 function _stagingSubOptionLabel(key){
   var d=optSheetStaging&&optSheetStaging.fields||{};
   if(key==='paintupgrade'){
-    if(d.c_paintType==='twotone') return 'Two-Tone Paint';
-    if(d.c_paintType==='custpaint') return 'Custom Paint';
+    var pt=d.c_paintType||d.paintType||'';
+    if(pt==='twotone') return 'Two-Tone Paint';
+    if(pt==='custpaint') return 'Custom Paint';
     return '';
   }
-  if(key==='intwall') return _optLabelFromOpts([{v:'25',t:'Studs Only'},{v:'35',t:'Studs + 1 Side OSB'},{v:'40s',t:'Studs + 1 Side Smartside'},{v:'40b',t:'Studs + Both OSB'},{v:'45',t:'Studs + Both Smartside'}],d.c_intwallType);
+  if(key==='intwall') return _optLabelFromOpts(_INTWALL_TYPE_OPTS,d.c_intwallType||d.intwallType);
   if(key==='2x6'){
-    var e2=getOptCatalogEntry('2x6');
-    return e2&&e2.subSteps&&e2.subSteps[0]?_optLabelFromOpts(e2.subSteps[0].options,d.c_2x6type):'';
+    return _optLabelFromOpts(_X6_TYPE_OPTS,d.c_2x6type||d.x6type);
   }
   return '';
 }
@@ -14220,6 +14293,20 @@ function _stagingRowLabelPrice(key,row){
     var lbl={'50':'Window/AC Cutout','75':'Walk Thru Cutout','125':'Garage/Double Cutout'}[row.type]||'Cutout';
     return {label:lbl,price:p*q};
   }
+  if(key==='2x6'){
+    var ft=parseFloat(row.linft)||calcState.length||0;
+    var r=_x6LinFtRate(row.type);
+    return {label:_x6LineLabel(row.type,ft),price:r&&ft?r*ft:0};
+  }
+  if(key==='intwall'){
+    var ft2=parseFloat(row.linft)||0;
+    var r2=_intwallLinFtRate(row.type);
+    return {label:_intwallLineLabel(row.type,ft2),price:r2&&ft2?r2*ft2:0};
+  }
+  if(key==='paintupgrade'){
+    var w=calcState.width||0;
+    return {label:_paintLineLabel(row.type,w),price:_paintRowPrice(row.type,w)};
+  }
   if(key==='custom'){
     var val=row.mode==='linft'?(parseFloat(row.price)||0)*(parseFloat(row.linFt)||0):(parseFloat(row.price)||0)*Math.max(1,parseInt(row.qty)||1);
     return {label:row.name||'Custom Option',price:val};
@@ -14247,9 +14334,30 @@ function _stagingFieldPrice(key){
     return oft>0?fmt(oft*OSB_INTWALL_RATE*q):'';
   }
   if(key==='intwall'){
-    var r={'25':25,'35':35,'40s':40,'40b':40,'45':45}[d.c_intwallType]||0;
-    var ft2=parseFloat(d.c_intwallFt)||0;
-    return r&&ft2?fmt(r*ft2*q):'';
+    var iwTotal=0;
+    ((optSheetStaging&&optSheetStaging.multiIntwall)||[]).forEach(function(row){
+      if(!row.type) return;
+      var ft=parseFloat(row.linft)||0;
+      var r=_intwallLinFtRate(row.type);
+      if(r&&ft) iwTotal+=r*ft;
+    });
+    return iwTotal>0?fmt(iwTotal):'';
+  }
+  if(key==='2x6'){
+    var x6Total=0;
+    ((optSheetStaging&&optSheetStaging.multi2x6)||[]).forEach(function(row){
+      if(!row.type) return;
+      var ft=parseFloat(row.linft)||ctx.l||0;
+      x6Total+=_x6LinFtRate(row.type)*ft;
+    });
+    return x6Total>0?fmt(x6Total):'';
+  }
+  if(key==='paintupgrade'){
+    var pTotal=0;
+    ((optSheetStaging&&optSheetStaging.multiPaint)||[]).forEach(function(row){
+      if(row.type) pTotal+=_paintRowPrice(row.type,ctx.w);
+    });
+    return pTotal>0?fmt(pTotal):'';
   }
   if(key==='flooring'){
     var sq=parseFloat(d.c_flooringSqFt)||0;
@@ -14264,11 +14372,6 @@ function _stagingFieldPrice(key){
   if(key==='rooftrusses'||key==='floorjoists'){
     var ft4=parseFloat(d[entry.fieldId])||ctx.l||0;
     return ft4>0?fmt(ft4*25*q):'';
-  }
-  if(key==='2x6'){
-    var x6t=d.c_2x6type,ft5=parseFloat(d.c_2x6ft)||ctx.l||0;
-    var m=x6t==='2'?2:1,r=(x6t==='130psf'?100:(x6t==='150psf'?120:35));
-    return x6t&&ft5?fmt(r*ft5*m*q):'';
   }
   var simple=_stagingSimplePrice(key);
   if(simple){
@@ -14479,22 +14582,23 @@ function _applyDraftToStaging(key,d){
   };
   if(key==='rooffelt'){ optSheetStaging.fields.c_rooffeltFt=d.linft||''; setQty(); return; }
   if(key==='housewrap'){ optSheetStaging.fields.c_housewrapFt=d.linft||''; setQty(); return; }
-  if(key==='paintupgrade'){ optSheetStaging.fields.c_paintType=d.paintType||''; setQty(); return; }
   if(key==='2x6'){
-    optSheetStaging.fields.c_2x6type=d.x6type||'';
-    optSheetStaging.fields.c_2x6ft=d.linft||'';
-    setQty(); return;
+    optSheetStaging.multi2x6.push({type:d.x6type||'',linft:d.linft||String(calcState.length||'')});
+    return;
+  }
+  if(key==='intwall'){
+    optSheetStaging.multiIntwall.push({type:d.intwallType||'',linft:d.linft||''});
+    return;
+  }
+  if(key==='paintupgrade'){
+    optSheetStaging.multiPaint.push({type:d.paintType||''});
+    return;
   }
   if(key==='rooftrusses'){ optSheetStaging.fields.c_rooftrussft=d.linft||''; setQty(); return; }
   if(key==='floorjoists'){ optSheetStaging.fields.c_floorjoistFt=d.linft||''; setQty(); return; }
   if(key==='porch'){ optSheetStaging.fields.c_porchFt=d.linft||''; setQty(); return; }
   if(key==='flooring'){ optSheetStaging.fields.c_flooringSqFt=d.sqft||''; setQty(); return; }
   if(key==='shelves'){ optSheetStaging.fields.c_shelvesLinFt=d.linft||''; setQty(); return; }
-  if(key==='intwall'){
-    optSheetStaging.fields.c_intwallType=d.intwallType||'';
-    optSheetStaging.fields.c_intwallFt=d.linft||'';
-    setQty(); return;
-  }
   if(key==='osb_intwall'){
     optSheetStaging.fields.c_osbIntwallFt=d.linft||'';
     optSheetStaging.osbIntwallFtManual=!!d._osbManual;
@@ -14744,8 +14848,8 @@ function commitOptSheetStaging(){
     }
   });
   if(optSheetStaging.osbIntwallFtManual) calcState.osbIntwallFtManual=true;
-  var multiMap={multiDoors:'doors',multiWindows:'windows',multiGarage:'garage',multiCutouts:'cutouts'};
-  ['multiDoors','multiWindows','multiGarage','multiCutouts'].forEach(function(mk){
+  var multiMap={multiDoors:'doors',multiWindows:'windows',multiGarage:'garage',multiCutouts:'cutouts',multi2x6:'x6',multiIntwall:'intwall',multiPaint:'paint'};
+  ['multiDoors','multiWindows','multiGarage','multiCutouts','multi2x6','multiIntwall','multiPaint'].forEach(function(mk){
     var rows=optSheetStaging[mk];
     if(!rows||!rows.length) return;
     if(!calcState[mk]) calcState[mk]=[];
@@ -14844,7 +14948,13 @@ function _wizPickerTileHtml(e){
           var lp=_stagingRowLabelPrice(key,row);
           html+='<div class="owp-staged-line">';
           html+='<span class="owp-sl-name">'+lp.label+'</span>';
-          html+='<input type="number" class="owp-sl-qty" min="1" value="'+(row.qty||1)+'" onclick="event.stopPropagation()" onchange="optStagingMultiQty(\''+key+'\','+idx+',this.value,event)">';
+          if(key==='2x6'||key==='intwall'){
+            html+='<input type="number" class="owp-sl-qty" min="0" step="0.01" value="'+(row.linft!==undefined&&row.linft!==''?row.linft:'')+'" onclick="event.stopPropagation()" onchange="optStagingMultiLinft(\''+key+'\','+idx+',this.value,event)">';
+          } else if(key!=='paintupgrade'){
+            html+='<input type="number" class="owp-sl-qty" min="1" value="'+(row.qty||1)+'" onclick="event.stopPropagation()" onchange="optStagingMultiQty(\''+key+'\','+idx+',this.value,event)">';
+          } else {
+            html+='<span class="owp-sl-qty-ph" style="width:52px;flex-shrink:0;"></span>';
+          }
           html+='<span class="owp-sl-price">'+fmt(lp.price)+'</span>';
           html+='</div>';
         });
@@ -14994,7 +15104,7 @@ function optWizardUpdateSlidePreview(){
     if(entry.key==='rooffelt'||entry.key==='housewrap') rate=17;
     if(entry.key==='doubletopplate') rate=5;
     if(entry.key==='rooftrusses'||entry.key==='floorjoists') rate=25;
-    if(entry.key==='2x6') rate=(d.x6type==='130psf'?100:(d.x6type==='150psf'?120:35));
+    if(entry.key==='2x6') rate=_x6LinFtRate(d.x6type);
     var ft=parseFloat(d.linft)||0;
     if(rate&&ft) txt='→ '+fmt(rate*ft)+(entry.autoOnly?' (auto from length)':'');
   } else if(entry.qtyStep==='sqft'){
@@ -15010,6 +15120,9 @@ function optWizardUpdateSlidePreview(){
     if(pr>0) txt='→ '+fmt(pr*q);
   } else if(entry.qtyStep==='none'&&key==='garagedoor'&&d.garSize){
     txt='→ '+fmt((parseInt(d.garSize)||0)*Math.max(1,parseInt(d.qty)||1));
+  } else if(key==='paintupgrade'&&d.paintType){
+    var pPaint=_paintRowPrice(d.paintType,calcState.width||0);
+    if(pPaint>0) txt='→ '+fmt(pPaint);
   } else if(/^ins_/.test(key)){
     var unit=d._insAutoPrice||parseFloat(d.manual)||0;
     var iq=Math.max(1,parseInt(d.qty)||1);
@@ -15121,18 +15234,17 @@ function toggleOpt(key){
   var detail=document.getElementById('detail_'+key);
   if(chk) chk.classList.toggle('on',calcState.addons[key]);
   if(detail) detail.style.display=calcState.addons[key]?'block':'none';
-  var multiMap={door36:'doors',window:'windows',garagedoor:'garage',cutouts:'cutouts'};
+  var multiMap={door36:'doors',window:'windows',garagedoor:'garage',cutouts:'cutouts','2x6':'x6',intwall:'intwall',paintupgrade:'paint'};
   var mKey=multiMap[key];
   if(mKey){
     if(calcState.addons[key]){
-      // Turning ON — seed one blank row if array is empty
-      var multiArrMap={doors:calcState.multiDoors,windows:calcState.multiWindows,garage:calcState.multiGarage,cutouts:calcState.multiCutouts};
-      if(multiArrMap[mKey].length===0){
+      var stateKey=_CALC_MULTI_KEY[mKey];
+      if(!calcState[stateKey]) calcState[stateKey]=[];
+      if(calcState[stateKey].length===0){
         calcAddRow(mKey);
-        return; // calcAddRow handles updateCatCounts etc.
+        return;
       }
     } else {
-      // Turning OFF — clear the array and wipe the rendered rows
       calcState[_CALC_MULTI_KEY[mKey]]=[];
       calcRenderRows(mKey);
     }
@@ -15153,11 +15265,65 @@ function toggleOpt(key){
   try{ renderOptsSummary(); }catch(_e){}
 }
 
-// ── MULTI-ROW: door/window/garage/cutout option rows (Calc) ─────────────
-// type = 'doors' | 'windows' | 'garage' | 'cutouts'
-var _CALC_MULTI_KEY={doors:'multiDoors',windows:'multiWindows',garage:'multiGarage',cutouts:'multiCutouts'};
-var _CALC_MULTI_CONTAINER={doors:'c_doorRows',windows:'c_windowRows',garage:'c_garageRows',cutouts:'c_cutoutRows'};
+// ── MULTI-ROW: door/window/garage/cutout/subselect option rows (Calc) ───
+// type = 'doors' | 'windows' | 'garage' | 'cutouts' | 'x6' | 'intwall' | 'paint'
+var _CALC_MULTI_KEY={doors:'multiDoors',windows:'multiWindows',garage:'multiGarage',cutouts:'multiCutouts',x6:'multi2x6',intwall:'multiIntwall',paint:'multiPaint'};
+var _CALC_MULTI_CONTAINER={doors:'c_doorRows',windows:'c_windowRows',garage:'c_garageRows',cutouts:'c_cutoutRows',x6:'c_2x6Rows',intwall:'c_intwallRows',paint:'c_paintRows'};
+var _CALC_MULTI_ADDON={doors:'door36',windows:'window',garage:'garagedoor',cutouts:'cutouts',x6:'2x6',intwall:'intwall',paint:'paintupgrade'};
+var _SS_MULTI_KEY={doors:'doors',windows:'windows',garage:'garage',cutouts:'cutouts',x6:'x6',intwall:'intwall',paint:'paint'};
 
+var _X6_TYPE_OPTS=[
+  {v:'1',t:'Wall Studs \u2014 $35/ft'},
+  {v:'1t',t:'Trusses \u2014 $35/ft'},
+  {v:'2',t:'Both \u2014 $70/ft'},
+  {v:'130psf',t:'130 PSF Snow Load Pkg \u2014 $100/ft'},
+  {v:'150psf',t:'150 PSF Snow Pkg \u2014 $120/ft'}
+];
+var _INTWALL_TYPE_OPTS=[
+  {v:'25',t:'Studs Only \u2014 $25/ft'},
+  {v:'35',t:'Studs + 1 Side OSB \u2014 $35/ft'},
+  {v:'40s',t:'Studs + 1 Side Smartside \u2014 $40/ft'},
+  {v:'40b',t:'Studs + Both OSB \u2014 $40/ft'},
+  {v:'45',t:'Studs + Both Smartside \u2014 $45/ft'}
+];
+var _PAINT_TYPE_OPTS=[
+  {v:'twotone',t:'Two-Tone Paint'},
+  {v:'custpaint',t:'Custom Paint'}
+];
+function _x6LinFtRate(type){
+  if(type==='130psf') return 100;
+  if(type==='150psf') return 120;
+  if(type==='2') return 70;
+  return 35;
+}
+function _x6LineLabel(type,ft){
+  var labels={'1':'2\u00d76 Wall Studs','1t':'2\u00d76 Trusses','2':'2\u00d76 Upgrade \u2014 Both','130psf':'130 PSF Snow Load Pkg','150psf':'150 PSF Snow Pkg'};
+  return (labels[type]||'2\u00d76 Upgrade')+' ('+ft+' lin ft)';
+}
+function _intwallLinFtRate(type){
+  return {'25':25,'35':35,'40s':40,'40b':40,'45':45}[type]||0;
+}
+function _intwallLineLabel(type,ft){
+  var lbl=_optLabelFromOpts(_INTWALL_TYPE_OPTS,type)||'Interior Walls';
+  return lbl+' ('+ft+' lin ft)';
+}
+function _paintRowPrice(type,w){
+  w=parseInt(w,10)||0;
+  if(type==='twotone') return {8:100,10:200,12:300,14:400,16:500}[w]||0;
+  if(type==='custpaint') return 200;
+  return 0;
+}
+function _paintLineLabel(type,w){
+  if(type==='twotone') return 'Two-Tone Paint ('+w+"\' wide)";
+  if(type==='custpaint') return 'Custom Paint';
+  return 'Paint Upgrade';
+}
+function _newMultiRow(type){
+  var l=calcState.length||'';
+  if(type==='x6'||type==='intwall') return {type:'',linft:l};
+  if(type==='paint') return {type:''};
+  return {type:'',qty:1,customSize:'',customPrice:''};
+}
 var _DOOR_OPTS=[
   {v:'150',t:'70\u2033 Double Door \u2014 $150'},
   {v:'300',t:'Fiberglass French Door \u2014 $300'},
@@ -15206,9 +15372,14 @@ var OPT_ADD_CATALOG=[
   {key:'housewrap',label:'House Wrap',category:'Siding & Exterior',hint:'$17/lin ft',qtyStep:'linft',fieldId:'c_housewrapFt',
    defaultQty:function(c){return c.l||0;},
    commit:function(d){calcState.addons.housewrap=true;var el=document.getElementById('c_housewrapFt');if(el)el.value=d.linft||'';}},
-  {key:'paintupgrade',label:'Paint Upgrade',category:'Siding & Exterior',hint:'$200+',qtyStep:'none',
-   subSteps:[{id:'paintType',label:'Type',type:'select',options:[{v:'twotone',t:'Two-Tone Paint'},{v:'custpaint',t:'Custom Paint'}]}],
-   commit:function(d){calcState.addons.paintupgrade=true;var el=document.getElementById('c_paintType');if(el)el.value=d.paintType||'';}},
+  {key:'paintupgrade',label:'Paint Upgrade',category:'Siding & Exterior',hint:'$200+',qtyStep:'none',multiType:'paint',
+   subSteps:[{id:'paintType',label:'Type',type:'select',options:_PAINT_TYPE_OPTS}],
+   commit:function(d){
+     calcState.addons.paintupgrade=true;
+     if(!calcState.multiPaint) calcState.multiPaint=[];
+     calcState.multiPaint.push({type:d.paintType||''});
+     calcRenderRows('paint');
+   }},
   {key:'doubletopplate',label:'Double Top Plate',category:'Structure',hint:'$5/lin ft',qtyStep:'linft',autoOnly:true,
    defaultQty:function(c){return c.l||0;},
    commit:function(d){calcState.addons.doubletopplate=true;}},
@@ -15217,10 +15388,15 @@ var OPT_ADD_CATALOG=[
   {key:'tallwall',label:'Tall Wall',category:'Structure',hint:'$500–$1,000',qtyStep:'none',
    isAvailable:function(){return LOFTED_TYPES.indexOf(calcState.type)>=0;},
    commit:function(){calcState.addons.tallwall=true;}},
-  {key:'2x6',label:'2×6 Upgrade',category:'Structure',hint:'$35–$120/lin ft',qtyStep:'linft',fieldId:'c_2x6ft',
-   subSteps:[{id:'x6type',label:'Apply to',type:'select',options:[{v:'1',t:'Wall Studs — $35/ft'},{v:'1t',t:'Trusses — $35/ft'},{v:'2',t:'Both — $35/ft each'},{v:'130psf',t:'130 PSF Snow Load Pkg — $100/ft'},{v:'150psf',t:'150 PSF Snow Pkg — $120/ft'}]}],
+  {key:'2x6',label:'2×6 Upgrade',category:'Structure',hint:'$35–$120/lin ft',qtyStep:'linft',multiType:'x6',
+   subSteps:[{id:'x6type',label:'Apply to',type:'select',options:_X6_TYPE_OPTS}],
    defaultQty:function(c){return c.l||0;},
-   commit:function(d){calcState.addons['2x6']=true;var t=document.getElementById('c_2x6type');if(t)t.value=d.x6type||'';var f=document.getElementById('c_2x6ft');if(f)f.value=d.linft||'';}},
+   commit:function(d){
+     calcState.addons['2x6']=true;
+     if(!calcState.multi2x6) calcState.multi2x6=[];
+     calcState.multi2x6.push({type:d.x6type||'',linft:d.linft||calcState.length||''});
+     calcRenderRows('x6');
+   }},
   {key:'rooftrusses',label:'16" OC Roof Trusses',category:'Structure',hint:'$25/lin ft',qtyStep:'linft',fieldId:'c_rooftrussft',
    isAvailable:function(){var w=calcState.width||0;return w>=8&&w<=12;},
    defaultQty:function(c){return c.l||0;},
@@ -15264,9 +15440,14 @@ var OPT_ADD_CATALOG=[
    commit:function(d){calcState.addons.flooring=true;var el=document.getElementById('c_flooringSqFt');if(el)el.value=d.sqft||'';}},
   {key:'shelves',label:'Shelves / Workbench',category:'Interior',hint:'$25/lin ft',qtyStep:'linft',fieldId:'c_shelvesLinFt',
    commit:function(d){calcState.addons.shelves=true;var el=document.getElementById('c_shelvesLinFt');if(el)el.value=d.linft||'';}},
-  {key:'intwall',label:'Interior Walls',category:'Interior',hint:'$25–$45/lin ft',qtyStep:'linft',fieldId:'c_intwallFt',
-   subSteps:[{id:'intwallType',label:'Type',type:'select',options:[{v:'25',t:'Studs Only — $25/ft'},{v:'35',t:'Studs + 1 Side OSB — $35/ft'},{v:'40s',t:'Studs + 1 Side Smartside — $40/ft'},{v:'40b',t:'Studs + Both OSB — $40/ft'},{v:'45',t:'Studs + Both Smartside — $45/ft'}]}],
-   commit:function(d){calcState.addons.intwall=true;var t=document.getElementById('c_intwallType');if(t)t.value=d.intwallType||'';var f=document.getElementById('c_intwallFt');if(f)f.value=d.linft||'';}},
+  {key:'intwall',label:'Interior Walls',category:'Interior',hint:'$25–$45/lin ft',qtyStep:'linft',multiType:'intwall',
+   subSteps:[{id:'intwallType',label:'Type',type:'select',options:_INTWALL_TYPE_OPTS}],
+   commit:function(d){
+     calcState.addons.intwall=true;
+     if(!calcState.multiIntwall) calcState.multiIntwall=[];
+     calcState.multiIntwall.push({type:d.intwallType||'',linft:d.linft||''});
+     calcRenderRows('intwall');
+   }},
   {key:'osb_intwall',label:'OSB Interior Walls',category:'Interior',hint:'$20/lin ft',qtyStep:'linft',fieldId:'c_osbIntwallFt',osbDefault:true,
    defaultQty:function(){return computeOsbInteriorWallLinFt(calcState);},
    commit:function(d){
@@ -15345,11 +15526,20 @@ function calcRenderRows(type){
       html+='<select style="flex:1;" onchange="calcRowChange(\'garage\','+idx+',\'type\',this.value)">'+_buildSelectHTML(_GARAGE_TYPE_OPTS,item.type,'Select type')+'</select>';
     } else if(type==='cutouts'){
       html+='<select style="flex:1;" onchange="calcRowChange(\'cutouts\','+idx+',\'type\',this.value)">'+_buildSelectHTML(_CUTOUT_OPTS,item.type,'Select type')+'</select>';
+    } else if(type==='x6'){
+      html+='<select style="flex:1;" onchange="calcRowChange(\'x6\','+idx+',\'type\',this.value)">'+_buildSelectHTML(_X6_TYPE_OPTS,item.type,'Select apply to')+'</select>';
+    } else if(type==='intwall'){
+      html+='<select style="flex:1;" onchange="calcRowChange(\'intwall\','+idx+',\'type\',this.value)">'+_buildSelectHTML(_INTWALL_TYPE_OPTS,item.type,'Select type')+'</select>';
+    } else if(type==='paint'){
+      html+='<select style="flex:1;" onchange="calcRowChange(\'paint\','+idx+',\'type\',this.value)">'+_buildSelectHTML(_PAINT_TYPE_OPTS,item.type,'Select type')+'</select>';
     }
     html+='<button type="button" onclick="calcRemoveRow(\''+type+'\','+idx+')" style="-webkit-appearance:none;appearance:none;background:rgba(196,81,31,0.2);border:none;border-radius:6px;color:var(--wheat);width:28px;height:28px;font-size:1rem;cursor:pointer;flex-shrink:0;">\u00d7</button>';
     html+='</div>';
-    // Qty (not for garage — garage is 1 door per row)
-    if(type!=='garage'){
+    if(type==='x6'||type==='intwall'){
+      html+='<div class="opt-field-row" style="margin-top:6px;"><label>Lin ft</label>';
+      html+='<input type="number" value="'+(item.linft!==undefined&&item.linft!==''?item.linft:(calcState.length||''))+'" min="0" step="0.01" style="width:90px;" onchange="calcRowChange(\''+type+'\','+idx+',\'linft\',this.value)" oninput="calcRowChange(\''+type+'\','+idx+',\'linft\',this.value)">';
+      html+='</div>';
+    } else if(type!=='garage'&&type!=='paint'){
       html+='<div class="opt-field-row" style="margin-top:6px;"><label>Qty</label>';
       html+='<input type="number" value="'+(item.qty||1)+'" min="1" style="width:70px;" onchange="calcRowChange(\''+type+'\','+idx+',\'qty\',this.value)">';
       html+='</div>';
@@ -15404,9 +15594,10 @@ function calcRowChange(type,idx,field,val){
 }
 
 function calcAddRow(type){
-  var arr=calcState[_CALC_MULTI_KEY[type]];
-  if(!arr) return;
-  arr.push({type:'',qty:1,customSize:'',customPrice:''});
+  var stateKey=_CALC_MULTI_KEY[type];
+  if(!stateKey) return;
+  if(!calcState[stateKey]) calcState[stateKey]=[];
+  calcState[stateKey].push(_newMultiRow(type));
   calcRenderRows(type);
   updateCatCounts();
   refreshOsbIntwallFtDefault(false);
@@ -15421,8 +15612,7 @@ function calcRemoveRow(type,idx){
   arr.splice(idx,1);
   // If all rows removed, uncheck the parent option
   if(arr.length===0){
-    var keyMap={doors:'door36',windows:'window',garage:'garagedoor',cutouts:'cutouts'};
-    var addonKey=keyMap[type];
+    var addonKey=_CALC_MULTI_ADDON[type];
     if(addonKey&&calcState.addons[addonKey]){
       calcState.addons[addonKey]=false;
       var chk=document.getElementById('chk_'+addonKey);
@@ -15439,11 +15629,12 @@ function calcRemoveRow(type,idx){
   if(calcCurrentPage===2) renderCalcQuote();
 }
 
-// ── MULTI-ROW: door/window/garage/cutout option rows (Sales Sheet) ───────
-var _SS_MULTI_CONTAINER={doors:'ss_doorRows',windows:'ss_windowRows',garage:'ss_garageRows',cutouts:'ss_cutoutRows'};
+// ── MULTI-ROW: door/window/garage/cutout/subselect option rows (Sales Sheet) ─
+var _SS_MULTI_CONTAINER={doors:'ss_doorRows',windows:'ss_windowRows',garage:'ss_garageRows',cutouts:'ss_cutoutRows',x6:'ss_2x6Rows',intwall:'ss_intwallRows',paint:'ss_paintRows'};
 
 function ssRenderRows(type){
-  var arr=ssMulti[type];
+  var ssKey=_SS_MULTI_KEY[type]||type;
+  var arr=ssMulti[ssKey];
   var container=document.getElementById(_SS_MULTI_CONTAINER[type]);
   if(!container) return;
   if(!arr||arr.length===0){container.innerHTML='';return;}
@@ -15459,10 +15650,21 @@ function ssRenderRows(type){
       html+='<select style="flex:1;" onchange="ssRowChange(\'garage\','+idx+',\'type\',this.value)">'+_buildSelectHTML(_GARAGE_TYPE_OPTS,item.type,'Select type')+'</select>';
     } else if(type==='cutouts'){
       html+='<select style="flex:1;" onchange="ssRowChange(\'cutouts\','+idx+',\'type\',this.value)">'+_buildSelectHTML(_CUTOUT_OPTS,item.type,'Select type')+'</select>';
+    } else if(type==='x6'){
+      html+='<select style="flex:1;" onchange="ssRowChange(\'x6\','+idx+',\'type\',this.value)">'+_buildSelectHTML(_X6_TYPE_OPTS,item.type,'Select apply to')+'</select>';
+    } else if(type==='intwall'){
+      html+='<select style="flex:1;" onchange="ssRowChange(\'intwall\','+idx+',\'type\',this.value)">'+_buildSelectHTML(_INTWALL_TYPE_OPTS,item.type,'Select type')+'</select>';
+    } else if(type==='paint'){
+      html+='<select style="flex:1;" onchange="ssRowChange(\'paint\','+idx+',\'type\',this.value)">'+_buildSelectHTML(_PAINT_TYPE_OPTS,item.type,'Select type')+'</select>';
     }
     html+='<button type="button" onclick="ssRemoveRow(\''+type+'\','+idx+')" style="-webkit-appearance:none;appearance:none;background:rgba(139,46,13,0.15);border:none;border-radius:6px;color:#6B3020;width:28px;height:28px;font-size:1rem;cursor:pointer;flex-shrink:0;">\u00d7</button>';
     html+='</div>';
-    if(type!=='garage'){
+    if(type==='x6'||type==='intwall'){
+      var ssL=parseInt((document.getElementById('ss_length')||{}).value,10)||0;
+      html+='<div class="opt-field-row" style="margin-top:6px;"><label>Lin ft</label>';
+      html+='<input type="number" value="'+(item.linft!==undefined&&item.linft!==''?item.linft:ssL)+'" min="0" step="0.01" style="width:90px;" onchange="ssRowChange(\''+type+'\','+idx+',\'linft\',this.value)" oninput="ssRowChange(\''+type+'\','+idx+',\'linft\',this.value)">';
+      html+='</div>';
+    } else if(type!=='garage'&&type!=='paint'){
       html+='<div class="opt-field-row" style="margin-top:6px;"><label>Qty</label>';
       html+='<input type="number" value="'+(item.qty||1)+'" min="1" style="width:70px;" onchange="ssRowChange(\''+type+'\','+idx+',\'qty\',this.value)">';
       html+='</div>';
@@ -15489,27 +15691,36 @@ function ssRenderRows(type){
 }
 
 function ssRowChange(type,idx,field,val){
-  if(!ssMulti[type]||!ssMulti[type][idx]) return;
+  var ssKey=_SS_MULTI_KEY[type]||type;
+  if(!ssMulti[ssKey]||!ssMulti[ssKey][idx]) return;
   if(field==='qty') val=Math.max(1,parseInt(val)||1);
-  ssMulti[type][idx][field]=val;
-  if(type==='garage'&&field==='type') ssMulti[type][idx].customSize='';
+  ssMulti[ssKey][idx][field]=val;
+  if(type==='garage'&&field==='type') ssMulti[ssKey][idx].customSize='';
   ssRenderRows(type);
   ssSyncCatCounts();
   ssCalcPrice();
 }
 
 function ssAddRow(type){
-  ssMulti[type].push({type:'',qty:1,customSize:'',customPrice:''});
+  var ssKey=_SS_MULTI_KEY[type]||type;
+  if(!ssMulti[ssKey]) ssMulti[ssKey]=[];
+  var row=_newMultiRow(type);
+  if(type==='x6'||type==='intwall'){
+    var ssL=parseInt((document.getElementById('ss_length')||{}).value,10)||0;
+    if(ssL) row.linft=ssL;
+  }
+  ssMulti[ssKey].push(row);
   ssRenderRows(type);
   ssSyncCatCounts();
   ssCalcPrice();
 }
 
 function ssRemoveRow(type,idx){
-  ssMulti[type].splice(idx,1);
-  if(ssMulti[type].length===0){
-    var keyMap={doors:'door36',windows:'window',garage:'garagedoor',cutouts:'cutouts'};
-    var addonKey=keyMap[type];
+  var ssKey=_SS_MULTI_KEY[type]||type;
+  if(!ssMulti[ssKey]) return;
+  ssMulti[ssKey].splice(idx,1);
+  if(ssMulti[ssKey].length===0){
+    var addonKey=_CALC_MULTI_ADDON[type];
     if(addonKey&&ssAddons[addonKey]){
       ssAddons[addonKey]=false;
       var chk=document.getElementById('ss_chk_'+addonKey);
@@ -15767,7 +15978,7 @@ function ensureCalcOptsSheetDetails(){
     var chk=document.getElementById('chk_'+k);
     if(chk) chk.classList.add('on');
   });
-  ['doors','windows','garage','cutouts'].forEach(function(t){ calcRenderRows(t); });
+  ['doors','windows','garage','cutouts','x6','intwall','paint'].forEach(function(t){ calcRenderRows(t); });
   updateCatCounts();
   updateAutoWidthPrices();
 }
@@ -15801,7 +16012,13 @@ function _summaryMultiTypeForKey(sk){
   if(sk==='garagedoor'||sk==='rollupdoor') return 'garage';
   if(sk==='cutouts') return 'cutouts';
   if(sk==='custom') return 'custom';
+  if(sk==='2x6') return 'x6';
+  if(sk==='intwall') return 'intwall';
+  if(sk==='twotone'||sk==='custompaint') return 'paint';
   return null;
+}
+function _summaryUsesLinft(mt){
+  return mt==='x6'||mt==='intwall';
 }
 
 function withRevOptsProbe(fn){
@@ -15891,6 +16108,29 @@ function _renderOptsSummaryInto(hostId){
           row.appendChild(phC);
         }
       }else if(mt!==null&&l.multiIdx!==null){
+        if(_summaryUsesLinft(mt)){
+          var lfv=document.createElement('input');
+          lfv.type='number';
+          lfv.className='os-qty';
+          lfv.min='0';
+          lfv.step='0.01';
+          var larr=calcState[_CALC_MULTI_KEY[mt]];
+          var curLin=larr&&larr[l.multiIdx]?larr[l.multiIdx].linft:'';
+          lfv.value=String(curLin!==undefined&&curLin!==''?curLin:'');
+          lfv.onchange=function(){
+            if(isRev){
+              withRevOptsProbe(function(){ calcRowChange(mt,l.multiIdx,'linft',lfv.value); });
+            }else{
+              calcRowChange(mt,l.multiIdx,'linft',this.value);
+            }
+            _afterOptsSummaryHostChange(hostId);
+          };
+          row.appendChild(lfv);
+        } else if(mt==='paint'){
+          var phP=document.createElement('div');
+          phP.style.width='52px'; phP.style.flexShrink='0';
+          row.appendChild(phP);
+        } else {
         var qv=document.createElement('input');
         qv.type='number';
         qv.className='os-qty';
@@ -15908,6 +16148,7 @@ function _renderOptsSummaryInto(hostId){
           _afterOptsSummaryHostChange(hostId);
         };
         row.appendChild(qv);
+        }
       }else{
         var ph=document.createElement('div');
         ph.style.width='52px';
@@ -15930,7 +16171,6 @@ function _renderOptsSummaryInto(hostId){
         var mt2=_summaryMultiTypeForKey(sk);
         var doRemove=function(){
           if(sk==='shopSurcharge'||sk==='metal'){ toggleOpt('metal'); }
-          else if(sk==='twotone'||sk==='custompaint'){ toggleOpt('paintupgrade'); }
           else if(mt2!==null&&l.multiIdx!==null){
             if(mt2==='custom'){
               if(calcState.multiCustom) calcState.multiCustom.splice(l.multiIdx,1);
@@ -15938,6 +16178,7 @@ function _renderOptsSummaryInto(hostId){
               calcRemoveRow(mt2,l.multiIdx);
             }
           }
+          else if(sk==='twotone'||sk==='custompaint'){ toggleOpt('paintupgrade'); }
           else if(sk&&calcState.addons[sk]){ toggleOpt(sk); }
           else if(sk&&sk.indexOf('ins_')===0){ toggleOpt(sk); }
         };
@@ -16048,12 +16289,33 @@ function renderSsOptsSummary(){
           row.appendChild(phC);
         }
       }else if(mt!==null&&l.multiIdx!==null){
+        if(_summaryUsesLinft(mt)){
+          var lfv=document.createElement('input');
+          lfv.type='number';
+          lfv.className='os-qty';
+          lfv.min='0';
+          lfv.step='0.01';
+          var ssKey=_SS_MULTI_KEY[mt]||mt;
+          var larr=ssMulti[ssKey];
+          var curLin=larr&&larr[l.multiIdx]?larr[l.multiIdx].linft:'';
+          lfv.value=String(curLin!==undefined&&curLin!==''?curLin:'');
+          lfv.onchange=function(){
+            ssRowChange(mt,l.multiIdx,'linft',this.value);
+            renderSsOptsSummary();
+          };
+          row.appendChild(lfv);
+        } else if(mt==='paint'){
+          var phP=document.createElement('div');
+          phP.style.width='52px'; phP.style.flexShrink='0';
+          row.appendChild(phP);
+        } else {
         var qv=document.createElement('input');
         qv.type='number';
         qv.className='os-qty';
         qv.min='1';
         qv.step='1';
-        var arr=ssMulti[mt];
+        var ssKey2=_SS_MULTI_KEY[mt]||mt;
+        var arr=ssMulti[ssKey2];
         var cur=arr&&arr[l.multiIdx]?Math.max(1,parseInt(arr[l.multiIdx].qty)||1):1;
         qv.value=String(cur);
         qv.onchange=function(){
@@ -16061,6 +16323,7 @@ function renderSsOptsSummary(){
           renderSsOptsSummary();
         };
         row.appendChild(qv);
+        }
       }else{
         var ph=document.createElement('div');
         ph.style.width='52px';
@@ -16080,12 +16343,15 @@ function renderSsOptsSummary(){
         var sk=l.sourceKey;
         var mt2=_summaryMultiTypeForKey(sk);
         if(sk==='shopSurcharge'||sk==='metal'){ ssToggle('metal'); }
-        else if(sk==='twotone'||sk==='custompaint'){ ssToggle('paintupgrade'); }
-        else if(mt2==='custom'&&l.multiIdx!==null){
-          if(ssMulti.custom) ssMulti.custom.splice(l.multiIdx,1);
-          calcState.multiCustom=JSON.parse(JSON.stringify(ssMulti.custom||[]));
+        else if(mt2!==null&&l.multiIdx!==null){
+          if(mt2==='custom'){
+            if(ssMulti.custom) ssMulti.custom.splice(l.multiIdx,1);
+            calcState.multiCustom=JSON.parse(JSON.stringify(ssMulti.custom||[]));
+          } else {
+            ssRemoveRow(mt2,l.multiIdx);
+          }
         }
-        else if(mt2!==null&&l.multiIdx!==null){ ssRemoveRow(mt2,l.multiIdx); }
+        else if(sk==='twotone'||sk==='custompaint'){ ssToggle('paintupgrade'); }
         else if(sk==='vinylwindow'||sk==='window'){ ssToggle('window'); }
         else if(sk==='rollupdoor'||sk==='garagedoor'){ ssToggle('garagedoor'); }
         else if(sk&&ssAddons.hasOwnProperty(sk)){ ssToggle(sk); }
@@ -16203,7 +16469,11 @@ function updateAutoWidthPrices(){
   var pcpEl=document.getElementById('price_custpaint');
   if(pcpEl) pcpEl.textContent='$200';
   var ppuEl=document.getElementById('price_paintupgrade');
-  if(ppuEl) ppuEl.textContent='$200';
+  var paintTotal=0;
+  (calcState.multiPaint||[]).forEach(function(row){ if(row.type) paintTotal+=_paintRowPrice(row.type,w); });
+  if(ppuEl) ppuEl.textContent=paintTotal?fmt(paintTotal):'$200+';
+  var prevPU=document.getElementById('prev_paintupgrade');
+  if(prevPU) prevPU.textContent=paintTotal&&calcState.addons['paintupgrade']?'→ '+fmt(paintTotal):'';
   var sqFt=gn('c_flooringSqFt',0)||((w&&l)?w*l:0);
   var flP=sqFt*2;
   var pfEl=document.getElementById('price_flooring');
@@ -16240,23 +16510,28 @@ function updateAutoWidthPrices(){
   if(prfEl) prfEl.textContent=rfFt?fmt(rfP)+' ('+rfFt+' lin ft)':'$17/lin ft';
   var prevRF=document.getElementById('prev_rooffelt');
   if(prevRF) prevRF.textContent=rfP&&calcState.addons['rooffelt']?'→ '+fmt(rfP):'';
-  var iwr={'25':25,'35':35,'40s':40,'40b':40,'45':45}[gv('c_intwallType')]||0;
-  var iwf=gn('c_intwallFt',0);
+  var intwallTotal=0;
+  (calcState.multiIntwall||[]).forEach(function(row){
+    if(!row.type) return;
+    var ft=parseFloat(row.linft)||0;
+    var rate=_intwallLinFtRate(row.type);
+    if(rate&&ft) intwallTotal+=rate*ft;
+  });
   var prevIW=document.getElementById('prev_intwall');
-  if(prevIW) prevIW.textContent=iwr&&iwf&&calcState.addons['intwall']?'→ '+fmt(iwr*iwf):'';
+  if(prevIW) prevIW.textContent=intwallTotal&&calcState.addons['intwall']?'→ '+fmt(intwallTotal):'';
   var osbFt=gn('c_osbIntwallFt',0);
   var prevOsb=document.getElementById('prev_osb_intwall');
   if(prevOsb) prevOsb.textContent=osbFt&&calcState.addons['osb_intwall']?'→ '+fmt(osbFt*OSB_INTWALL_RATE)+' ('+osbFt+' lin ft)':'';
-  var x6t=gv('c_2x6type');
-  var x6f=gn('c_2x6ft',0)||l;
-  var x6m=x6t==='2'?2:1;
-  var x6rate=(x6t==='130psf'?100:(x6t==='150psf'?120:35));
-  var x6ratelabel=(x6t==='130psf'?'$100/ft':(x6t==='150psf'?'$120/ft':'$35/ft'));
-  var x6P=x6t&&x6f?x6rate*x6f*x6m:0;
+  var x6Total=0;
+  (calcState.multi2x6||[]).forEach(function(row){
+    if(!row.type) return;
+    var ft=parseFloat(row.linft)||l||0;
+    x6Total+=_x6LinFtRate(row.type)*ft;
+  });
   var p2x6El=document.getElementById('price_2x6');
-  if(p2x6El) p2x6El.textContent=x6t&&l?(fmt(x6P)+' ('+x6f+' lin ft @ '+x6ratelabel+')'):(x6t==='130psf'?'$100/lin ft':(x6t==='150psf'?'$120/lin ft':'$35/lin ft'));
+  if(p2x6El) p2x6El.textContent=x6Total?fmt(x6Total):'$35–$120/lin ft';
   var prevX6=document.getElementById('prev_2x6');
-  if(prevX6) prevX6.textContent=x6P&&calcState.addons['2x6']?'→ '+fmt(x6P):'';
+  if(prevX6) prevX6.textContent=x6Total&&calcState.addons['2x6']?'→ '+fmt(x6Total):'';
   var lft=gn('c_loftFt',0);
   var prevL=document.getElementById('prev_loft');
   if(prevL) prevL.textContent=lft&&calcState.addons['loft']?'→ '+fmt(lft*30):'';
@@ -16302,13 +16577,19 @@ function updateCatCounts(){
   };
   // Multi-type keys: sum actual quantities across configured rows
   function _sumQty(arr){ return arr.reduce(function(acc,r){ return r.type?acc+Math.max(1,parseInt(r.qty)||1):acc; },0); }
+  function _sumLinftRows(arr){
+    return (arr||[]).reduce(function(acc,r){ return r.type?acc+1:acc; },0);
+  }
   var _multiQtys={
     door36:   _sumQty(calcState.multiDoors),
     window:   _sumQty(calcState.multiWindows),
     garagedoor: calcState.multiGarage.reduce(function(acc,r){ return acc+(r.type&&r.customSize?Math.max(1,parseInt(r.qty)||1):0); },0),
-    cutouts:  _sumQty(calcState.multiCutouts)
+    cutouts:  _sumQty(calcState.multiCutouts),
+    '2x6':    _sumLinftRows(calcState.multi2x6),
+    intwall:  _sumLinftRows(calcState.multiIntwall),
+    paintupgrade: _sumLinftRows(calcState.multiPaint)
   };
-  var _multiKeys=['door36','window','garagedoor','cutouts'];
+  var _multiKeys=['door36','window','garagedoor','cutouts','2x6','intwall','paintupgrade'];
   var _customCount=(calcState.multiCustom||[]).length;
   Object.keys(cats).forEach(function(id){
     var n=cats[id].reduce(function(acc,k){
@@ -16323,7 +16604,7 @@ function updateCatCounts(){
 
 // Wire all option inputs to live-update
 document.addEventListener('input',function(e){
-  var optIds=['c_shelvesLinFt','c_housewrapFt','c_rooftrussft','c_floorjoistFt','c_rooffeltFt','c_flooringSqFt','c_intwallFt','c_osbIntwallFt','c_2x6ft','c_loftFt','c_porchFt','c_salePercent','c_taxCustom','c_manual_ins_roof','c_manual_ins_wallsroof','c_manual_ins_floor_foamboard','c_manual_ins_floor_sprayfoam'];
+  var optIds=['c_shelvesLinFt','c_housewrapFt','c_rooftrussft','c_floorjoistFt','c_rooffeltFt','c_flooringSqFt','c_osbIntwallFt','c_loftFt','c_porchFt','c_salePercent','c_taxCustom','c_manual_ins_roof','c_manual_ins_wallsroof','c_manual_ins_floor_foamboard','c_manual_ins_floor_sprayfoam'];
   if(optIds.indexOf(e.target.id)>=0){
     if(e.target.id==='c_osbIntwallFt') calcState.osbIntwallFtManual=true;
     if(e.target.id==='c_salePercent'){
@@ -16340,13 +16621,7 @@ document.addEventListener('input',function(e){
     if(calcCurrentPage===2) renderCalcQuote();
   }
 });
-document.addEventListener('change',function(e){
-  var optSelIds=['c_intwallType','c_2x6type'];
-  if(optSelIds.indexOf(e.target.id)>=0){
-    updateAutoWidthPrices();
-    if(calcCurrentPage===2) renderCalcQuote();
-  }
-});
+// Multi-row subselect options update via calcRowChange handlers
 
 function calcAddons(){
   var w=calcState.width||0;
@@ -16426,13 +16701,27 @@ function calcAddons(){
       if(p>0) add(lbl+(q>1?' ('+q+'x)':''),p*q,'cutouts',idx);
     });
   }
-  if(calcState.addons['intwall']){var r={'25':25,'35':35,'40s':40,'40b':40,'45':45}[gv('c_intwallType')]||0;var ft=gn('c_intwallFt',0);add('Interior Walls ('+ft+' ft)',r*ft*_aq('intwall'),'intwall');}
+  if(calcState.addons['intwall']){
+    (calcState.multiIntwall||[]).forEach(function(row,idx){
+      if(!row.type) return;
+      var ft=parseFloat(row.linft)||0;
+      var r=_intwallLinFtRate(row.type);
+      if(r&&ft) add(_intwallLineLabel(row.type,ft),r*ft,'intwall',idx);
+    });
+  }
   if(calcState.addons['osb_intwall']){var osbFt=gn('c_osbIntwallFt',0);add('OSB Interior Walls ('+osbFt+' lin ft)',osbFt*OSB_INTWALL_RATE*_aq('osb_intwall'),'osb_intwall');}
   (calcState.multiCustom||[]).forEach(function(row,idx){
     var val=row.mode==='linft'?(parseFloat(row.price)||0)*(parseFloat(row.linFt)||0):(parseFloat(row.price)||0)*Math.max(1,parseInt(row.qty)||1);
     if(val>0) add(row.name||'Custom Option',val,'custom',idx);
   });
-  if(calcState.addons['2x6']){var t=gv('c_2x6type');var ft=gn('c_2x6ft',0)||l;var m=t==='2'?2:1;var r=(t==='130psf'?100:(t==='150psf'?120:35));add('2×6 Upgrade ('+ft+' ft)',r*ft*m*_aq('2x6'),'2x6');}
+  if(calcState.addons['2x6']){
+    (calcState.multi2x6||[]).forEach(function(row,idx){
+      if(!row.type) return;
+      var ft=parseFloat(row.linft)||l||0;
+      var r=_x6LinFtRate(row.type);
+      if(r&&ft) add(_x6LineLabel(row.type,ft),r*ft,'2x6',idx);
+    });
+  }
   if(calcState.addons['flooring']){var sq=gn('c_flooringSqFt',0)||((w&&l)?w*l:0);add('¾" Flooring ('+sq+' sqft)',sq*2*_aq('flooring'),'flooring');}
   if(calcState.addons['rooftrusses']){var ft=gn('c_rooftrussft',0)||l;add('16" OC Trusses ('+ft+' ft)',ft*25*_aq('rooftrusses'),'rooftrusses');}
   if(calcState.addons['floorjoists']){var ft=gn('c_floorjoistFt',0)||l;add('12" OC Floor Joists ('+ft+' ft)',ft*25*_aq('floorjoists'),'floorjoists');}
@@ -16450,9 +16739,14 @@ function calcAddons(){
     if(resolved.price>0) add(getInsOptionLabel(k)+( _aq(k)>1?' ×'+_aq(k):''),resolved.price*_aq(k),k);
   });
   if(calcState.addons['paintupgrade']){
-    var _pt=gv('c_paintType');
-    if(_pt==='twotone'){var p={8:100,10:200,12:300,14:400,16:500}[w]||0;if(p>0)add('Two-Tone Paint ('+w+"\' wide)"+(_aq('paintupgrade')>1?' ×'+_aq('paintupgrade'):''),p*_aq('paintupgrade'),'twotone');}
-    else if(_pt==='custpaint'){add('Custom Paint'+(_aq('paintupgrade')>1?' ×'+_aq('paintupgrade'):''),200*_aq('paintupgrade'),'custompaint');}
+    (calcState.multiPaint||[]).forEach(function(row,idx){
+      if(!row.type) return;
+      var p=_paintRowPrice(row.type,w);
+      if(p>0){
+        var sk=row.type==='twotone'?'twotone':'custompaint';
+        add(_paintLineLabel(row.type,w),p,sk,idx);
+      }
+    });
   }
   // Split into RTO and Non-RTO totals
   var nonRtoTotal=lines.filter(function(l){return l.nonRto;}).reduce(function(a,b){return a+b.val;},0);
@@ -17971,7 +18265,7 @@ function _copyInputById(fromId,toId){
 
 /** Calc option-field IDs (c_*) paired with sales sheet hidden fields (ss_c_*) */
 var _SS_CALC_FIELD_PAIRS=[
-  ['c_rooffeltFt','ss_c_rooffeltFt'],['c_housewrapFt','ss_c_housewrapFt'],['c_paintType','ss_c_paintType'],['c_2x6type','ss_c_2x6type'],['c_2x6ft','ss_c_2x6ft'],['c_rooftrussft','ss_c_rooftrussft'],['c_floorjoistFt','ss_c_floorjoistFt'],['c_porchFt','ss_c_porchFt'],['c_flooringSqFt','ss_c_flooringSqFt'],['c_shelvesLinFt','ss_c_shelvesLinFt'],['c_intwallType','ss_c_intwallType'],['c_intwallFt','ss_c_intwallFt'],['c_osbIntwallFt','ss_c_osbIntwallFt'],['c_loftFt','ss_c_loftFt'],['c_manual_ins_roof','ss_c_manual_ins_roof'],['c_manual_ins_wallsroof','ss_c_manual_ins_wallsroof'],['c_manual_ins_floor_foamboard','ss_c_manual_ins_floor_foamboard'],['c_manual_ins_floor_sprayfoam','ss_c_manual_ins_floor_sprayfoam']
+  ['c_rooffeltFt','ss_c_rooffeltFt'],['c_housewrapFt','ss_c_housewrapFt'],['c_rooftrussft','ss_c_rooftrussft'],['c_floorjoistFt','ss_c_floorjoistFt'],['c_porchFt','ss_c_porchFt'],['c_flooringSqFt','ss_c_flooringSqFt'],['c_shelvesLinFt','ss_c_shelvesLinFt'],['c_osbIntwallFt','ss_c_osbIntwallFt'],['c_loftFt','ss_c_loftFt'],['c_manual_ins_roof','ss_c_manual_ins_roof'],['c_manual_ins_wallsroof','ss_c_manual_ins_wallsroof'],['c_manual_ins_floor_foamboard','ss_c_manual_ins_floor_foamboard'],['c_manual_ins_floor_sprayfoam','ss_c_manual_ins_floor_sprayfoam']
 ];
 
 var _SS_ALL_ADDON_KEYS=['metal','rooffelt','housewrap','paintupgrade','tallwall','flooring','2x6','rooftrusses','floorjoists','doubletopplate','4ineves','porch','door36','window','garagedoor','cutouts','shelves','intwall','osb_intwall','loft','droploft','ins_roof','ins_wallsroof','ins_floor_foamboard','ins_floor_sprayfoam'];
@@ -18109,6 +18403,9 @@ function syncCalcFromSsOptions(){
   calcState.multiGarage=JSON.parse(JSON.stringify(ssMulti.garage||[]));
   calcState.multiCutouts=JSON.parse(JSON.stringify(ssMulti.cutouts||[]));
   calcState.multiCustom=JSON.parse(JSON.stringify(ssMulti.custom||[]));
+  calcState.multi2x6=JSON.parse(JSON.stringify(ssMulti.x6||[]));
+  calcState.multiIntwall=JSON.parse(JSON.stringify(ssMulti.intwall||[]));
+  calcState.multiPaint=JSON.parse(JSON.stringify(ssMulti.paint||[]));
   _SS_CALC_FIELD_PAIRS.forEach(function(pair){ _copyInputById(pair[1],pair[0]); });
   if(!calcState.stdRemoved) calcState.stdRemoved={};
   calcState.stdRemoved={};
@@ -18119,6 +18416,7 @@ function syncCalcFromSsOptions(){
     if(rq>0) calcState.stdRemoved[item.id]=rq;
   });
   calcState._stdType=t;
+  ['doors','windows','garage','cutouts','x6','intwall','paint'].forEach(function(t){ try{ calcRenderRows(t); }catch(_eR){} });
   try{ updateAutoWidthPrices(); }catch(_eA){}
   try{ updateCatCounts(); }catch(_eC){}
   try{ updateQuickPrice(); }catch(_eQ){}
@@ -18144,9 +18442,12 @@ function syncSsOptionsFromCalc(){
   ssMulti.cutouts=JSON.parse(JSON.stringify(calcState.multiCutouts||[]));
   if(!ssMulti.custom) ssMulti.custom=[];
   ssMulti.custom=JSON.parse(JSON.stringify(calcState.multiCustom||[]));
+  ssMulti.x6=JSON.parse(JSON.stringify(calcState.multi2x6||[]));
+  ssMulti.intwall=JSON.parse(JSON.stringify(calcState.multiIntwall||[]));
+  ssMulti.paint=JSON.parse(JSON.stringify(calcState.multiPaint||[]));
   ssApplyStdRemovedFromCalc();
   ssRebuildStdPanel();
-  ['doors','windows','garage','cutouts'].forEach(function(ty){ try{ ssRenderRows(ty); }catch(_e){} });
+  ['doors','windows','garage','cutouts','x6','intwall','paint'].forEach(function(ty){ try{ ssRenderRows(ty); }catch(_e){} });
   try{ ssSyncCatCounts(); }catch(_e2){}
   try{
     var hp=document.getElementById('ss_salePct');
@@ -18192,7 +18493,10 @@ function syncSalesSheetFromCalcForQuote(){
   ssMulti.garage=JSON.parse(JSON.stringify(calcState.multiGarage||[]));
   ssMulti.cutouts=JSON.parse(JSON.stringify(calcState.multiCutouts||[]));
   ssMulti.custom=JSON.parse(JSON.stringify(calcState.multiCustom||[]));
-  ['doors','windows','garage','cutouts'].forEach(function(ty){ try{ ssRenderRows(ty); }catch(e){} });
+  ssMulti.x6=JSON.parse(JSON.stringify(calcState.multi2x6||[]));
+  ssMulti.intwall=JSON.parse(JSON.stringify(calcState.multiIntwall||[]));
+  ssMulti.paint=JSON.parse(JSON.stringify(calcState.multiPaint||[]));
+  ['doors','windows','garage','cutouts','x6','intwall','paint'].forEach(function(ty){ try{ ssRenderRows(ty); }catch(e){} });
   try{ ssSyncCatCounts(); }catch(e){}
   ssApplyStdRemovedFromCalc();
   ssRebuildStdPanel();
@@ -20846,7 +21150,7 @@ function ssConfirmAndGenerate(){
   ssGenerate();
 }
 
-var ssMulti={doors:[],windows:[],garage:[],cutouts:[],custom:[]};
+var ssMulti={doors:[],windows:[],garage:[],cutouts:[],custom:[],x6:[],intwall:[],paint:[]};
 
 function ssSetType(t){
   ssCalcPrice();
@@ -20929,15 +21233,15 @@ function ssToggle(key){
   if(chk) chk.classList.toggle('on', ssAddons[key]);
   if(row) row.classList.toggle('active', ssAddons[key]);
   if(detail) detail.style.display=ssAddons[key]?'block':'none';
-  var multiMap={door36:'doors',window:'windows',garagedoor:'garage',cutouts:'cutouts'};
+  var multiMap={door36:'doors',window:'windows',garagedoor:'garage',cutouts:'cutouts','2x6':'x6',intwall:'intwall',paintupgrade:'paint'};
   var mKey=multiMap[key];
   if(mKey){
+    var ssKey=_SS_MULTI_KEY[mKey]||mKey;
+    if(!ssMulti[ssKey]) ssMulti[ssKey]=[];
     if(ssAddons[key]){
-      // Turning ON — seed one blank row if array is empty
-      if(ssMulti[mKey].length===0){ ssAddRow(mKey); return; }
+      if(ssMulti[ssKey].length===0){ ssAddRow(mKey); return; }
     } else {
-      // Turning OFF — clear the array and wipe rendered rows
-      ssMulti[mKey]=[];
+      ssMulti[ssKey]=[];
       ssRenderRows(mKey);
     }
   }
@@ -20958,9 +21262,12 @@ function ssSyncCatCounts(){
     door36:   _sumQty(ssMulti.doors),
     window:   _sumQty(ssMulti.windows),
     garagedoor: ssMulti.garage.filter(function(r){return r.type&&r.customSize;}).length,
-    cutouts:  _sumQty(ssMulti.cutouts)
+    cutouts:  _sumQty(ssMulti.cutouts),
+    '2x6':    (ssMulti.x6||[]).reduce(function(acc,r){ return r.type?acc+1:acc; },0),
+    intwall:  (ssMulti.intwall||[]).reduce(function(acc,r){ return r.type?acc+1:acc; },0),
+    paintupgrade: (ssMulti.paint||[]).reduce(function(acc,r){ return r.type?acc+1:acc; },0)
   };
-  var _multiKeys=['door36','window','garagedoor','cutouts'];
+  var _multiKeys=['door36','window','garagedoor','cutouts','2x6','intwall','paintupgrade'];
   var _customSsCount=(ssMulti.custom||[]).length;
   Object.keys(cats).forEach(function(cat){
     var n=cats[cat].reduce(function(acc,k){
@@ -20998,18 +21305,24 @@ function ssGetAddonLines(w,l,t){
   if(ssAddons['rooffelt']){var ft=gi('ss_c_rooffeltFt')||l;if(ft)add('Roof Felt ('+ft+' lin ft)',Math.ceil(ft*17),'rooffelt');}
   if(ssAddons['housewrap']){var ft=gi('ss_c_housewrapFt')||l;if(ft)add('House Wrap ('+ft+' lin ft)',Math.ceil(ft*17),'housewrap');}
   if(ssAddons['paintupgrade']){
-    var pt=gv('ss_c_paintType');
-    if(pt==='twotone'){var p={8:100,10:200,12:300,14:400,16:500}[w]||0;if(p)add("Two-Tone Paint ("+w+"' wide)",p,'twotone');}
-    else if(pt==='custpaint') add('Custom Paint',200,'custompaint');
+    (ssMulti.paint||[]).forEach(function(row,idx){
+      if(!row.type) return;
+      var p=_paintRowPrice(row.type,w);
+      if(p>0){
+        var sk=row.type==='twotone'?'twotone':'custompaint';
+        add(_paintLineLabel(row.type,w),p,sk,idx);
+      }
+    });
   }
   if(ssAddons['tallwall']){var p=w>=14?1000:(l>40?750:500);add('Tall Wall',p,'tallwall');}
   if(ssAddons['flooring']){var sq=gi('ss_c_flooringSqFt')||(w&&l?w*l:0);if(sq)add('3/4" Flooring ('+sq+' sqft)',sq*2,'flooring');}
   if(ssAddons['2x6']){
-    var tp=gv('ss_c_2x6type');
-    var ft=gi('ss_c_2x6ft')||l;
-    var mult=tp==='2'?2:1;
-    var srate=(tp==='130psf'?100:(tp==='150psf'?120:35));
-    if(tp&&ft) add('2x6 Upgrade ('+ft+' ft'+(mult>1?' x2':'')+')',ft*srate*mult,'2x6');
+    (ssMulti.x6||[]).forEach(function(row,idx){
+      if(!row.type) return;
+      var ft=parseFloat(row.linft)||l||0;
+      var r=_x6LinFtRate(row.type);
+      if(r&&ft) add(_x6LineLabel(row.type,ft),Math.ceil(r*ft),'2x6',idx);
+    });
   }
   if(ssAddons['rooftrusses']){var ft=gi('ss_c_rooftrussft')||l;if(w<=12&&ft)add('16" OC Roof Trusses ('+ft+' lin ft)',ft*25,'rooftrusses');}
   if(ssAddons['floorjoists']){var ft=gi('ss_c_floorjoistFt')||l;if(ft)add('12" OC Floor Joists ('+ft+' lin ft)',ft*25,'floorjoists');}
@@ -21058,9 +21371,12 @@ function ssGetAddonLines(w,l,t){
   }
   if(ssAddons['shelves']){var ft=gi('ss_c_shelvesLinFt');if(ft)add('Shelves/Workbench ('+ft+' lin ft)',ft*25,'shelves');}
   if(ssAddons['intwall']){
-    var r={'25':25,'35':35,'40s':40,'40b':40,'45':45}[gv('ss_c_intwallType')]||0;
-    var ft=gi('ss_c_intwallFt');
-    if(r&&ft) add('Interior Walls ('+ft+' ft)',r*ft,'intwall');
+    (ssMulti.intwall||[]).forEach(function(row,idx){
+      if(!row.type) return;
+      var ft=parseFloat(row.linft)||0;
+      var r=_intwallLinFtRate(row.type);
+      if(r&&ft) add(_intwallLineLabel(row.type,ft),r*ft,'intwall',idx);
+    });
   }
   if(ssAddons['osb_intwall']){
     var osbFt=gi('ss_c_osbIntwallFt');
@@ -21109,8 +21425,13 @@ function ssUpdateOptionPrices(){
   var sqFt=(w&&l)?w*l:0;
   set('flooring', sqFt ? '$'+(sqFt*2).toLocaleString()+' ('+sqFt+' sq ft)' : '$2/sq ft');
 
-  var x6t=gv('ss_c_2x6type'); var x6m=x6t==='2'?2:1; var x6rate=(x6t==='130psf'?100:(x6t==='150psf'?120:35)); var x6P=x6t&&l?l*x6rate*x6m:0;
-  set('2x6', x6P ? '$'+x6P.toLocaleString()+' ('+l+' lin ft'+(x6m>1?' \xd72':'')+')' : (x6t==='130psf'?'$100/lin ft':(x6t==='150psf'?'$120/lin ft':'$35/lin ft')));
+  var x6Total=0;
+  (ssMulti.x6||[]).forEach(function(row){
+    if(!row.type) return;
+    var ft=parseFloat(row.linft)||l||0;
+    x6Total+=_x6LinFtRate(row.type)*ft;
+  });
+  set('2x6', x6Total ? '$'+x6Total.toLocaleString() : '$35\u2013$120/lin ft');
 
   var rtP=l*25;
   set('rooftrusses', l ? '$'+rtP.toLocaleString()+' ('+l+' lin ft)' : '$25/lin ft');
@@ -21118,10 +21439,9 @@ function ssUpdateOptionPrices(){
   var fjP=l*25;
   set('floorjoists', l ? '$'+fjP.toLocaleString()+' ('+l+' lin ft)' : '$25/lin ft');
 
-  var pt=gv('ss_c_paintType');
-  if(pt==='custpaint'){ set('paintupgrade','$200'); }
-  else if(pt==='twotone'){ var tp={8:100,10:200,12:300,14:400,16:500}[w]||0; set('paintupgrade', tp ? '$'+tp+" ("+w+"' wide)" : '$100\u2013$500'); }
-  else { set('paintupgrade','$100\u2013$500'); }
+  var paintTotal=0;
+  (ssMulti.paint||[]).forEach(function(row){ if(row.type) paintTotal+=_paintRowPrice(row.type,w); });
+  set('paintupgrade', paintTotal ? '$'+paintTotal.toLocaleString() : '$100\u2013$500');
 
   var pft=gi('ss_c_porchFt');
   set('porch', pft ? '$'+(pft*75).toLocaleString()+' ('+pft+' lin ft)' : '$75/lin ft');
