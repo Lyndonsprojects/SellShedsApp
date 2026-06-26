@@ -14143,7 +14143,7 @@ function renderReviewSummary(){
   }
   function buildLineItems(){
     var html='';
-    html+=buildLine('Base price', fmt(q.base));
+    html+=buildLine('List Price', fmt(q.base));
     if(q.saleAmount>0) html+=buildLine('Sale ('+q.salePct+'% off list)','-'+fmt(q.saleAmount));
     if(q.bosAmt>0) html+=buildLine('Build-on-Site (30%)','+'+fmt(q.bosAmt));
     if(q.dealerAmount>0){
@@ -14157,6 +14157,7 @@ function renderReviewSummary(){
         if(rq>0) html+=buildLine('Removed: '+(rq>1?rq+'× ':'')+it.label,'-'+fmt(rq*it.credit));
       });
     }
+    if(q.saleAmount>0||q.bosAmt>0||q.stdCredit>0||q.dealerAmount>0) html+=buildLine('Your Sale Price', fmt(q.saleBase));
     if(q.addonLines&&q.addonLines.length){
       q.addonLines.forEach(function(l){ html+=buildLine('+ '+l.label, fmt(l.val)); });
     }
@@ -14532,7 +14533,7 @@ function buildQPVStreamlineHtml(forceNoTax){
   if(!q||!q.base) return '';
   function line(l,r,cls){return '<div class="qpv-line'+(cls||'')+'"><span class="qpv-l">'+l+'</span><span class="qpv-r">'+r+'</span></div>';}
   var htmlL='';
-  htmlL+=line('Base price', fmtCents(q.base));
+  htmlL+=line('List Price', fmtCents(q.base));
   if(q.saleAmount>0) htmlL+=line('Sale ('+q.salePct+'% off list)','-'+fmtCents(q.saleAmount));
   if(q.bosAmt>0) htmlL+=line('Build-on-Site (30%)','+'+fmtCents(q.bosAmt));
   if(q.dealerAmount>0) htmlL+=line('Dealer discount ('+q.dealerPct+'%)','-'+fmtCents(q.dealerAmount));
