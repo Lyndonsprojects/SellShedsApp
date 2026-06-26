@@ -709,14 +709,55 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
 .quick-price-extras .field-label { font-size:0.65rem; margin-bottom:4px; }
 .quick-price-extras input, .quick-price-extras select { width:100%; box-sizing:border-box; padding:8px 10px; font-size:0.85rem; border-radius:8px; border:1.5px solid rgba(232,200,122,0.22); background:rgba(255,255,255,0.08); color:var(--cream); }
 
+/* Quick Price empty state (no building selected) */
+.quick-price-empty {
+  display:none; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+  min-height:92px; padding:18px 14px; border-radius:8px;
+  background:rgba(0,0,0,0.18); border:1.5px dashed rgba(232,200,122,0.22);
+}
+.quick-price-empty-msg {
+  font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:1.05rem; letter-spacing:2px;
+  color:rgba(232,200,122,0.52); line-height:1.2;
+}
+.quick-price-empty-sub {
+  margin-top:6px; font-size:0.68rem; line-height:1.4; color:rgba(232,200,122,0.35); max-width:220px;
+}
+#quickPriceWrap.is-empty .quick-price-empty {
+  display:flex;
+  margin:0; border:none; border-radius:0; background:transparent;
+  min-height:0; padding:10px 4px;
+}
+#quickPriceWrap.is-empty .quick-price-active { display:none; }
+#rtoStreamlineCalcCard.is-empty .quick-price-empty { display:flex; min-height:120px; }
+#rtoStreamlineCalcCard.is-empty .rto-detail-active { display:none; }
+
 /* Quick Price / Detailed View deck */
-#calcPriceDeck { display:none; overflow-x:hidden; overflow-y:visible; margin:12px 0 4px; border-radius:10px; position:relative; }
-#calcPriceDeck.is-visible { display:block; padding-left:30px; }
-#calcPriceDeckTrack { display:flex; flex-direction:row; width:200%; transition:transform 0.38s cubic-bezier(0.32, 0.72, 0, 1); will-change:transform; touch-action:pan-y; overflow:hidden; border-radius:10px; }
+#calcPriceDeck {
+  display:none; overflow:hidden; margin:12px 0 4px; border-radius:10px; position:relative;
+  width:100%; max-width:100%; box-sizing:border-box;
+}
+#calcPriceDeck.is-visible {
+  display:grid; grid-template-columns:30px minmax(0,1fr); gap:0; align-items:stretch;
+  padding-left:0;
+}
+#calcPriceDeck.rev-tab-open.is-visible { grid-template-columns:minmax(0,1fr); }
+#calcPriceDeckTrack {
+  display:flex; flex-direction:row; width:100%; min-width:0; max-width:100%;
+  transition:transform 0.38s cubic-bezier(0.32, 0.72, 0, 1); will-change:transform;
+  touch-action:pan-y; overflow:hidden;
+  border:1.5px solid rgba(232,200,122,0.25); border-left:none;
+  border-radius:0 10px 10px 0; box-sizing:border-box;
+}
 #calcPriceDeckTrack.is-dragging { transition:none !important; }
-#calcPriceDeckTrack.view-detailed { transform:translateX(-50%); }
-#quickPriceWrap { display:block !important; background:var(--earth); border:1.5px solid rgba(232,200,122,0.25); border-left:none; border-radius:0 10px 10px 0; padding:14px 16px; margin:0; flex:0 0 50%; width:50%; box-sizing:border-box; }
-#rtoStreamlineCalcCard { display:block !important; background:rgba(255,255,255,0.05); border:1.5px solid rgba(232,200,122,0.25); border-radius:10px; padding:12px 14px; margin:0; flex:0 0 50%; width:50%; box-sizing:border-box; }
+#calcPriceDeckTrack.view-detailed { transform:translateX(-100%); }
+#quickPriceWrap {
+  display:block !important; background:var(--earth); border:none; border-radius:0;
+  padding:14px 16px; margin:0; flex:0 0 100%; width:100%; min-width:0; box-sizing:border-box;
+}
+#rtoStreamlineCalcCard {
+  display:block !important; background:rgba(255,255,255,0.05); border:none; border-radius:0;
+  padding:12px 14px; margin:0; flex:0 0 100%; width:100%; min-width:0; box-sizing:border-box;
+}
 .calc-price-swipe-hint { display:flex; align-items:center; justify-content:center; gap:4px; margin-top:10px; padding-top:8px; border-top:1px solid rgba(232,200,122,0.12); font-size:0.62rem; letter-spacing:1px; text-transform:uppercase; color:rgba(232,200,122,0.45); user-select:none; cursor:pointer; }
 .calc-price-swipe-hint svg { opacity:0.55; }
 .calc-price-swipe-down { display:flex; align-items:center; justify-content:center; gap:4px; margin-bottom:6px; font-size:0.62rem; letter-spacing:1px; text-transform:uppercase; color:rgba(232,200,122,0.45); user-select:none; cursor:pointer; }
@@ -745,18 +786,22 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
   pointer-events:auto; visibility:visible;
   transition:transform 0.38s cubic-bezier(0.32, 0.72, 0, 1), visibility 0s;
 }
-#revCalcShell.is-dragging { transition:none !important; }
+#revCalcShell.is-dragging {
+  transition:none !important;
+  visibility:visible !important;
+  pointer-events:auto !important;
+}
 #revCalcTab {
-  display:none; position:absolute; left:0; right:auto; top:0;
-  transform:none; z-index:45;
+  display:none; position:relative; left:auto; top:auto; right:auto;
+  transform:none; z-index:2; align-self:stretch; justify-self:stretch;
   writing-mode:vertical-rl; text-orientation:mixed;
-  width:30px; min-height:80px; box-sizing:border-box;
+  width:30px; max-width:30px; min-width:30px; min-height:80px; height:auto; box-sizing:border-box;
   align-items:center; justify-content:center;
   background:var(--earth); border:1.5px solid rgba(232,200,122,0.25); border-right:none;
   border-radius:10px 0 0 10px; padding:10px 4px; cursor:grab; touch-action:none; user-select:none;
   font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:0.58rem; letter-spacing:1.2px; color:rgba(232,200,122,0.7);
   box-shadow:none;
-  margin-left:0; margin-right:0;
+  margin:0;
   transition:left 0.25s ease, right 0.25s ease, margin 0.25s ease, top 0.2s ease, height 0.2s ease, color 0.15s, border-color 0.15s, background 0.15s, box-shadow 0.15s, transform 0.38s cubic-bezier(0.32, 0.72, 0, 1);
 }
 #revCalcTab:hover, #revCalcTab:focus-visible { color:var(--wheat); border-color:rgba(232,200,122,0.4); outline:none; }
@@ -769,6 +814,14 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
   box-shadow:-2px 0 8px rgba(0,0,0,0.2);
   margin-left:0; margin-right:calc(max(0px, (100vw - 480px) / 2));
   width:26px; padding:12px 5px; font-size:0.62rem;
+}
+#revCalcTab.rev-tab--attached {
+  position:fixed; z-index:10031; cursor:grabbing;
+  margin:0; right:auto;
+  background:var(--earth); color:rgba(232,200,122,0.85); border:1.5px solid rgba(232,200,122,0.3);
+  border-right:none; border-radius:10px 0 0 10px;
+  box-shadow:2px 0 12px rgba(0,0,0,0.25);
+  width:30px; padding:10px 4px; font-size:0.58rem;
 }
 #revCalcTab.is-dragging { transition:none !important; }
 #revCalcTab:active { opacity:0.85; cursor:grabbing; }
@@ -3431,6 +3484,11 @@ select:focus {
       </button>
       <div id="calcPriceDeckTrack">
       <div id="quickPriceWrap">
+        <div class="quick-price-empty" aria-hidden="true">
+          <div class="quick-price-empty-msg">Choose Building Style And Size</div>
+          <div class="quick-price-empty-sub">Pricing appears here — or pull the tab for Reverse Price Calculator</div>
+        </div>
+        <div class="quick-price-active">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
           <div style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:0.85rem;letter-spacing:2px;color:var(--wheat);opacity:0.7;">QUICK PRICE</div>
           <div style="display:flex;align-items:center;gap:8px;">
@@ -3478,9 +3536,15 @@ select:focus {
           Swipe for details
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </div>
+        </div><!-- /quick-price-active -->
       </div>
 
       <div id="rtoStreamlineCalcCard">
+        <div class="quick-price-empty" aria-hidden="true">
+          <div class="quick-price-empty-msg">Choose Building Style And Size</div>
+          <div class="quick-price-empty-sub">Detailed breakdown appears after you select a building</div>
+        </div>
+        <div class="rto-detail-active">
         <div class="calc-price-swipe-down" onclick="setCalcPriceDeckView('quick')" role="button" tabindex="0" aria-label="Back to Quick Price">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
           Swipe for quick price
@@ -3521,6 +3585,7 @@ select:focus {
             <div id="crBreakdown" style="display:none;padding:8px 10px;background:rgba(0,0,0,0.2);border-radius:8px;font-size:0.72rem;line-height:1.7;margin-top:6px;color:rgba(245,240,232,0.85);"></div>
           </div>
         </div>
+        </div><!-- /rto-detail-active -->
       </div>
       </div><!-- /calcPriceDeckTrack -->
       </div><!-- /calcPriceDeck -->
@@ -3584,7 +3649,7 @@ select:focus {
               </div>
             </div>
             <div class="opt-detail" id="detail_rooffelt" style="display:none;">
-              <div class="opt-auto-note">💡 Auto-calculated from building length ($17/lin ft)</div>
+              <div class="opt-auto-note" id="note_rooffelt">💡 Auto-calculated from building length</div>
               <div class="opt-calc-preview" id="prev_rooffelt"></div>
             </div>
           </div>
@@ -3599,7 +3664,7 @@ select:focus {
               </div>
             </div>
             <div class="opt-detail" id="detail_housewrap" style="display:none;">
-              <div class="opt-auto-note">💡 Auto-calculated from building length ($17/lin ft)</div>
+              <div class="opt-auto-note" id="note_housewrap">💡 Auto-calculated from building length</div>
               <div class="opt-calc-preview" id="prev_housewrap"></div>
             </div>
           </div>
@@ -3642,7 +3707,7 @@ select:focus {
               </div>
             </div>
             <div class="opt-detail" id="detail_doubletopplate" style="display:none;">
-              <div class="opt-auto-note">💡 Auto-calculated from building length ($5/lin ft)</div>
+              <div class="opt-auto-note" id="note_doubletopplate">💡 Auto-calculated from building length</div>
               <div class="opt-calc-preview" id="prev_doubletopplate"></div>
             </div>
           </div>
@@ -3700,7 +3765,7 @@ select:focus {
               </div>
             </div>
             <div class="opt-detail" id="detail_rooftrusses" style="display:none;">
-              <div class="opt-auto-note">💡 Auto-calculated from building length ($25/lin ft · 8–12' wide)</div>
+              <div class="opt-auto-note" id="note_rooftrusses">💡 Auto-calculated from building length (8–12' wide)</div>
               <div class="opt-calc-preview" id="prev_rooftrusses"></div>
             </div>
           </div>
@@ -3715,7 +3780,7 @@ select:focus {
               </div>
             </div>
             <div class="opt-detail" id="detail_floorjoists" style="display:none;">
-              <div class="opt-auto-note">💡 Auto-calculated from building length ($25/lin ft)</div>
+              <div class="opt-auto-note" id="note_floorjoists">💡 Auto-calculated from building length</div>
               <div class="opt-calc-preview" id="prev_floorjoists"></div>
             </div>
           </div>
@@ -3726,7 +3791,7 @@ select:focus {
               <div class="opt-check" id="chk_porch"></div>
               <div class="opt-info">
                 <div class="opt-name">Extra Porch</div>
-                <div class="opt-desc" id="porch_desc">$75/lin ft</div>
+                <div class="opt-desc" id="price_porch">$75/lin ft</div>
               </div>
             </div>
             <div class="opt-detail" id="detail_porch" style="display:none;">
@@ -3756,7 +3821,7 @@ select:focus {
               <div class="opt-check" id="chk_door36"></div>
               <div class="opt-info">
                 <div class="opt-name">Door Options</div>
-                <div class="opt-desc">$150–$475</div>
+                <div class="opt-desc" id="price_door36">$150–$475</div>
               </div>
             </div>
             <div class="opt-detail" id="detail_door36" style="display:none;">
@@ -3771,7 +3836,7 @@ select:focus {
               <div class="opt-check" id="chk_window"></div>
               <div class="opt-info">
                 <div class="opt-name">Windows</div>
-                <div class="opt-desc">$115–$400 each</div>
+                <div class="opt-desc" id="price_window">$115–$400 each</div>
               </div>
             </div>
             <div class="opt-detail" id="detail_window" style="display:none;">
@@ -3786,7 +3851,7 @@ select:focus {
               <div class="opt-check" id="chk_garagedoor"></div>
               <div class="opt-info">
                 <div class="opt-name">Garage / Rollup Door</div>
-                <div class="opt-desc">$525–$1,890</div>
+                <div class="opt-desc" id="price_garagedoor">$525–$1,890</div>
               </div>
             </div>
             <div class="opt-detail" id="detail_garagedoor" style="display:none;">
@@ -3801,7 +3866,7 @@ select:focus {
               <div class="opt-check" id="chk_cutouts"></div>
               <div class="opt-info">
                 <div class="opt-name">Cutouts</div>
-                <div class="opt-desc">$50–$125 each</div>
+                <div class="opt-desc" id="price_cutouts">$50–$125 each</div>
               </div>
             </div>
             <div class="opt-detail" id="detail_cutouts" style="display:none;">
@@ -3832,7 +3897,7 @@ select:focus {
               </div>
             </div>
             <div class="opt-detail" id="detail_flooring" style="display:none;">
-              <div class="opt-auto-note">💡 Sq ft auto-calculated from building size ($2/sq ft)</div>
+              <div class="opt-auto-note" id="note_flooring">💡 Sq ft auto-calculated from building size</div>
               <div class="opt-field-row">
                 <label>Sq ft <span class="opt-override">(override)</span></label>
                 <input type="number" id="c_flooringSqFt" placeholder="Auto" min="1" oninput="renderCalcQuote();updateQuickPrice()">
@@ -3847,7 +3912,7 @@ select:focus {
               <div class="opt-check" id="chk_shelves"></div>
               <div class="opt-info">
                 <div class="opt-name">Shelves / Workbench</div>
-                <div class="opt-desc">$25/lin ft</div>
+                <div class="opt-desc" id="price_shelves">$25/lin ft</div>
               </div>
             </div>
             <div class="opt-detail" id="detail_shelves" style="display:none;">
@@ -3865,7 +3930,7 @@ select:focus {
               <div class="opt-check" id="chk_intwall"></div>
               <div class="opt-info">
                 <div class="opt-name">Interior Walls</div>
-                <div class="opt-desc">$25–$45/lin ft</div>
+                <div class="opt-desc" id="price_intwall">$25–$45/lin ft</div>
               </div>
             </div>
             <div class="opt-detail" id="detail_intwall" style="display:none;">
@@ -3884,7 +3949,7 @@ select:focus {
               <div class="opt-check" id="chk_loft"></div>
               <div class="opt-info">
                 <div class="opt-name">Extra Loft</div>
-                <div class="opt-desc">$30/lin ft</div>
+                <div class="opt-desc" id="price_loft">$30/lin ft</div>
               </div>
             </div>
             <div class="opt-detail" id="detail_loft" style="display:none;">
@@ -3902,7 +3967,7 @@ select:focus {
               <div class="opt-check" id="chk_droploft"></div>
               <div class="opt-info">
                 <div class="opt-name">Drop Loft</div>
-                <div class="opt-desc">$200</div>
+                <div class="opt-desc" id="price_droploft">$200</div>
               </div>
             </div>
           </div>
@@ -5641,7 +5706,7 @@ select:focus {
     <div class="field-group"><label class="field-label">Tax Rate %</label><input type="number" id="set_taxRate" placeholder="e.g. 6" step="0.01"></div>
 
     <div class="settings-section-title" style="margin:18px 0 6px;">Options catalog</div>
-    <p class="opt-settings-note">Hidden options stay in this list — they are not removed. Use <strong>Show / Hide</strong> on each built-in row to control calculator menus. Custom options added with <strong>+ Add option</strong> can be deleted with <strong>✕</strong>. <strong>Non-RTO</strong> marks an option paid upfront (cost reduction) instead of financed in RTO.</p>
+    <p class="opt-settings-note">Hidden options stay in this list — they are not removed. Use <strong>Show / Hide</strong> on each built-in row to control calculator menus. Custom options added with <strong>+ Add option</strong> can be deleted with <strong>✕</strong>. Price changes apply to calculators automatically. <strong>Non-RTO</strong> marks an option paid upfront (cost reduction) instead of financed in RTO.</p>
     <div id="set_optionsCatalogList" class="opt-settings-catalog" style="margin-bottom:8px;"></div>
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;margin-bottom:16px;">
       <button type="button" onclick="addSettingsOptionRow()" class="btn-secondary" style="font-size:0.8rem;padding:7px 14px;">+ Add option</button>
@@ -9011,7 +9076,7 @@ function settingsAfterLocalSave(s){
   try{ renderHomeQuickSheet(); }catch(_qt2){}
   updateShareLinks();
   initCalcAdvancedTools();
-  updateAutoWidthPrices();
+  try{ refreshOptionsCatalogUI(); }catch(_eCat){}
   initEmailJS();
   fbApp=null; fbDb=null; fbAuth=null; fbReady=false;
   try{ populateLotContactPickSelect('ss_sheetLotContact'); }catch(_eSsPop){}
@@ -9313,6 +9378,40 @@ function renderSettingsOptionsCatalog(s,nrto){
     });
     container.appendChild(wrap);
   });
+  bindOptionsCatalogAutosave();
+}
+
+var _optCatalogAutosaveTimer=null;
+function scheduleOptionsCatalogAutosave(){
+  if(_optCatalogAutosaveTimer) clearTimeout(_optCatalogAutosaveTimer);
+  _optCatalogAutosaveTimer=setTimeout(function(){
+    _optCatalogAutosaveTimer=null;
+    persistOptionsCatalogFromForm();
+  },500);
+}
+function persistOptionsCatalogFromForm(){
+  var container=document.getElementById('set_optionsCatalogList');
+  if(!container) return;
+  var s=loadSettings();
+  s.optionsCatalog=collectOptionsCatalogFromForm();
+  s.nonRtoOptions=collectNonRtoFromOptionsForm();
+  saveSettings(s);
+  try{ refreshOptionsCatalogUI(); }catch(_eCat){}
+}
+function bindOptionsCatalogAutosave(){
+  var container=document.getElementById('set_optionsCatalogList');
+  if(!container||container._optCatalogAutosaveBound) return;
+  container._optCatalogAutosaveBound=true;
+  container.addEventListener('input',function(e){
+    var t=e.target;
+    if(!t) return;
+    if(t.matches('[data-opt-label],[data-opt-price],[data-opt-var],[data-opt-tier],[data-opt-tall]'))
+      scheduleOptionsCatalogAutosave();
+  });
+  container.addEventListener('change',function(e){
+    var t=e.target;
+    if(t&&t.matches('[data-opt-cat],.opt-set-nrto')) scheduleOptionsCatalogAutosave();
+  });
 }
 
 function optSettingsSetMode(btn,key,mode){
@@ -9320,6 +9419,7 @@ function optSettingsSetMode(btn,key,mode){
   if(!row) return;
   row.querySelectorAll('.opt-settings-mode button').forEach(function(b){ b.classList.toggle('on',b===btn); });
   row.setAttribute('data-opt-mode',mode);
+  scheduleOptionsCatalogAutosave();
 }
 
 function addSettingsOptionRow(){
@@ -9374,6 +9474,7 @@ function restoreDefaultOptionsCatalog(){
   invalidateOptionsCatalogCache();
   renderSettingsOptionsCatalog(s,s.nonRtoOptions);
   showToast('Options catalog restored');
+  try{ refreshOptionsCatalogUI(); }catch(_eCat){}
 }
 
 function collectOptionsCatalogFromForm(){
@@ -9463,8 +9564,9 @@ async function loadSettingsForm(){
     if(!isSettingsSaveSubScreen(activeId)){
       renderSettingsFormFromSettings(cloudResult.settings);
     }
-    invalidateOptionsCatalogCache();
-    applyBizInfoToHome();
+  invalidateOptionsCatalogCache();
+  try{ refreshOptionsCatalogUI(); }catch(_eCat){}
+  applyBizInfoToHome();
     try{ renderHomeQuickTools(); }catch(_q){}
     try{ renderHomeQuickSheet(); }catch(_q2){}
     updateShareLinks();
@@ -9532,7 +9634,6 @@ async function saveSettingsPricing(opts){
   }catch(_eStylePersist){}
   saveSettings(s);
   settingsAfterLocalSave(s);
-  refreshOptionsCatalogUI();
   if(opts&&opts.skipCloud) return { cloudOk: true };
   return settingsSaveToCloudAndToast(s,opts);
 }
@@ -10486,7 +10587,10 @@ function goTo(screenId){
     try{ renderOptsSummary(); }catch(_eAd){}
     try{ ssUpdateSsColorTrigger('adColorTrim',TRIM_COLOR_DATA); }catch(_eTrim){}
   }
-  if(screenId==='screenCalc') initCalcAdvancedTools();
+  if(screenId==='screenCalc'){
+    initCalcAdvancedTools();
+    try{ refreshOptionsCatalogUI(); }catch(_eCat){}
+  }
   else try{ updateRevCalcTabVisibility(); }catch(_eRvTab){}
   if(screenId==='screenMileage') initMileageScreen();
   if(screenId==='screenInventory') invInit();
@@ -12154,23 +12258,58 @@ function onQuickSaleInput(el){
   syncSaleBidirectional('calc');
 }
 
+function calcHasPricedBuilding(){
+  if(!calcState.type||!calcState.width||!calcState.length) return false;
+  var row=PRICING[calcState.width]&&PRICING[calcState.width][calcState.length];
+  return !!(row&&row[calcState.type]);
+}
+
+function setCalcPriceDeckEmptyState(isEmpty){
+  var quick=document.getElementById('quickPriceWrap');
+  var detail=document.getElementById('rtoStreamlineCalcCard');
+  if(quick){
+    quick.classList.toggle('is-empty',!!isEmpty);
+    quick.querySelectorAll('.quick-price-empty').forEach(function(el){ el.setAttribute('aria-hidden',isEmpty?'false':'true'); });
+  }
+  if(detail){
+    detail.classList.toggle('is-empty',!!isEmpty);
+    detail.querySelectorAll('.quick-price-empty').forEach(function(el){ el.setAttribute('aria-hidden',isEmpty?'false':'true'); });
+  }
+  if(isEmpty&&calcPriceDeckView==='detailed') setCalcPriceDeckView('quick');
+}
+
+function renderCalcRTOStreamlineBlank(){
+  var body=document.getElementById('rtoStreamlineCalcBody');
+  if(body) body.innerHTML='';
+  syncCalcPriceDeckHeight();
+}
+
+function showBlankCalcPriceDeck(){
+  var deck=document.getElementById('calcPriceDeck');
+  if(deck) deck.classList.add('is-visible');
+  setCalcPriceDeckEmptyState(true);
+  renderCalcRTOStreamlineBlank();
+  syncCalcPriceDeckHeight();
+  try{ renderOptsSummary(); }catch(_e2){}
+  try{ renderReviewSummary(); }catch(_eR){}
+  try{ updateRevCalcTabVisibility(); }catch(_eRv){}
+  try{ positionRevCalcTab(); }catch(_eRv2){}
+}
+
 function updateQuickPrice(){
   var deck=document.getElementById('calcPriceDeck');
   var baseEl=document.getElementById('quickBasePrice');
   var priceEl=document.getElementById('quickSalePrice');
   var bosLine=document.getElementById('quickBosLine');
-  if(!calcState.type||!calcState.width||!calcState.length){
-    if(deck) deck.classList.remove('is-visible');
-    renderCalcRTOStreamlineFromState();
-    try{ renderOptsSummary(); }catch(_e){}
-    try{ renderReviewSummary(); }catch(_eR){}
-    try{ positionRevCalcTab(); }catch(_eRvTab){}
+  if(!calcHasPricedBuilding()){
+    showBlankCalcPriceDeck();
     return;
   }
   var row=PRICING[calcState.width]&&PRICING[calcState.width][calcState.length];
   var base=row&&row[calcState.type]?row[calcState.type]:null;
-  if(!base){if(deck) deck.classList.remove('is-visible'); renderCalcRTOStreamlineFromState(); try{ renderOptsSummary(); }catch(_e2){} try{ renderReviewSummary(); }catch(_eR2){} try{ positionRevCalcTab(); }catch(_eRvTab2){} return;}
+  if(!base){ showBlankCalcPriceDeck(); return; }
   if(deck) deck.classList.add('is-visible');
+  setCalcPriceDeckEmptyState(false);
   syncCalcQuickControlsFromState();
   // Sale discount and BOS fee both calculated off raw base independently
   var salePct=calcState.saleActive?calcState.salePercent:0;
@@ -12409,6 +12548,7 @@ var calcPriceDeckView='quick';
 var revCalcPageOpen=false;
 
 function setCalcPriceDeckView(view){
+  if(view==='detailed'&&!calcHasPricedBuilding()) view='quick';
   calcPriceDeckView=view==='detailed'?'detailed':'quick';
   var track=document.getElementById('calcPriceDeckTrack');
   if(track){
@@ -12421,8 +12561,8 @@ function setCalcPriceDeckView(view){
 }
 
 function getCalcPriceDeckWidth(){
-  var deck=document.getElementById('calcPriceDeck');
-  return deck?Math.max(deck.offsetWidth||0,1):1;
+  var track=document.getElementById('calcPriceDeckTrack');
+  return track?Math.max(track.offsetWidth||0,1):1;
 }
 
 function setCalcPriceDeckDragPx(px,animate){
@@ -12447,6 +12587,7 @@ function syncCalcPriceDeckHeight(){
   var deck=document.getElementById('calcPriceDeck');
   var quick=document.getElementById('quickPriceWrap');
   var detail=document.getElementById('rtoStreamlineCalcCard');
+  var track=document.getElementById('calcPriceDeckTrack');
   if(!deck||!quick) return;
   var qh=quick.offsetHeight||0;
   var dh=detail?detail.offsetHeight:qh;
@@ -12455,7 +12596,10 @@ function syncCalcPriceDeckHeight(){
     requestAnimationFrame(function(){ try{ syncCalcPriceDeckHeight(); }catch(_e){} });
     return;
   }
-  deck.style.height=nextH+'px';
+  if(quick) quick.style.minHeight=nextH+'px';
+  if(detail) detail.style.minHeight=nextH+'px';
+  if(track) track.style.minHeight=nextH+'px';
+  deck.style.height='';
   try{ positionRevCalcTab(); }catch(_eRvTabPos){}
 }
 
@@ -12472,7 +12616,6 @@ function handleCalcPriceDeckSwipeRelease(dx,dy,velocityX,viewAtStart){
   var flick=Math.abs(velocityX)>0.35;
   if(viewAtStart==='quick'){
     if(dx<-threshold||(flick&&velocityX<0)){ setCalcPriceDeckView('detailed'); return true; }
-    if(dx>threshold||(flick&&velocityX>0)){ snapBack(); openRevCalcPage(); return true; }
   }else if(viewAtStart==='detailed'){
     if(dx>threshold||(flick&&velocityX>0)){ setCalcPriceDeckView('quick'); return true; }
   }
@@ -12563,13 +12706,18 @@ function initCalcPriceDeckGestures(){
 function updateRevCalcTabVisibility(){
   var tab=document.getElementById('revCalcTab');
   var lbl=document.getElementById('revCalcTabLabel');
+  var deck=document.getElementById('calcPriceDeck');
   if(!tab) return;
   var calcScreen=document.getElementById('screenCalc');
   var calcActive=calcScreen&&calcScreen.classList.contains('active');
   var onStep0=typeof calcCurrentPage==='number'&&calcCurrentPage===0;
   var show=(calcActive&&onStep0)||revCalcPageOpen;
   tab.style.display=show?'flex':'none';
-  tab.classList.toggle('rev-tab--open',!!revCalcPageOpen);
+  if(deck) deck.classList.toggle('rev-tab-open',!!revCalcPageOpen);
+  if(!tab.classList.contains('is-dragging')){
+    tab.classList.remove('rev-tab--attached');
+    tab.classList.toggle('rev-tab--open',!!revCalcPageOpen);
+  }
   var openLabel='Open Reverse Price Calculator';
   var backLabel='Back to Price Calculator';
   tab.setAttribute('aria-label',revCalcPageOpen?backLabel:openLabel);
@@ -12595,40 +12743,93 @@ function getRevShellClosedOffset(){
   return -(appLeft+w);
 }
 
-function setRevTabDragOffset(px){
+function getRevTabAnchorRect(){
+  var quick=document.getElementById('quickPriceWrap');
+  if(quick&&quick.offsetParent){
+    var deck=document.getElementById('calcPriceDeck');
+    if(deck&&deck.classList.contains('is-visible')){
+      return {top:quick.getBoundingClientRect().top,height:quick.offsetHeight||quick.getBoundingClientRect().height};
+    }
+  }
+  return {top:Math.max(120,window.innerHeight*0.28),height:120};
+}
+
+function syncRevTabToShell(){
   var tab=document.getElementById('revCalcTab');
-  if(!tab) return;
-  if(tab.classList.contains('rev-tab--open')){
-    tab.style.transform='translateY(-50%) translateX('+(px||0)+'px)';
+  var shell=document.getElementById('revCalcShell');
+  if(!tab||!shell||tab.style.display==='none') return;
+  if(!shell.classList.contains('is-dragging')) return;
+  var shellRect=shell.getBoundingClientRect();
+  var tabW=tab.offsetWidth||30;
+  var anchor=getRevTabAnchorRect();
+  if(!revCalcPageOpen){
+    var deck=document.getElementById('calcPriceDeck');
+    var deckLeft=deck?deck.getBoundingClientRect().left:0;
+    if(shellRect.right<deckLeft+tabW-4){
+      tab.classList.remove('rev-tab--attached','rev-tab--open');
+      tab.style.position='absolute';
+      tab.style.left='0';
+      tab.style.right='auto';
+      tab.style.marginRight='0';
+      if(deck&&document.getElementById('quickPriceWrap')){
+        var quick=document.getElementById('quickPriceWrap');
+        tab.style.top=(quick.offsetTop||0)+'px';
+        tab.style.height=(quick.offsetHeight||0)+'px';
+      }
+      tab.style.transform='none';
+      return;
+    }
+  }
+  tab.classList.remove('rev-tab--open');
+  tab.classList.add('rev-tab--attached');
+  tab.style.position='fixed';
+  tab.style.left=Math.max(0,Math.min(shellRect.right-tabW,window.innerWidth-tabW))+'px';
+  tab.style.right='auto';
+  tab.style.marginRight='0';
+  tab.style.marginLeft='0';
+  if(revCalcPageOpen){
+    tab.style.top='50%';
+    tab.style.height='auto';
+    tab.style.minHeight='0';
+    tab.style.transform='translateY(-50%)';
   }else{
-    tab.style.transform='translateX('+(px||0)+'px)';
+    tab.style.top=anchor.top+'px';
+    tab.style.height=anchor.height+'px';
+    tab.style.minHeight='0';
+    tab.style.transform='none';
   }
 }
 
-function clearRevTabDragOffset(){
+function resetRevTabDragStyles(){
   var tab=document.getElementById('revCalcTab');
   if(!tab) return;
-  if(tab.classList.contains('rev-tab--open')){
-    tab.style.transform='translateY(-50%)';
-  }else{
-    tab.style.transform='none';
-  }
-  tab.classList.remove('is-dragging');
+  tab.classList.remove('rev-tab--attached','is-dragging');
+  tab.style.position='';
+  tab.style.left='';
+  tab.style.right='';
+  tab.style.marginRight='';
+  tab.style.marginLeft='';
+  tab.style.transform='';
+  tab.style.top='';
+  tab.style.height='';
+  tab.style.minHeight='';
+}
+
+function clearRevTabDragOffset(){
+  resetRevTabDragStyles();
 }
 
 function positionRevCalcTab(){
   var tab=document.getElementById('revCalcTab');
-  var deck=document.getElementById('calcPriceDeck');
-  var quick=document.getElementById('quickPriceWrap');
   if(!tab||tab.style.display==='none') return;
-  if(tab.classList.contains('rev-tab--open')) return;
-  if(deck&&quick&&deck.classList.contains('is-visible')){
-    tab.style.top=(quick.offsetTop||0)+'px';
-    tab.style.height=(quick.offsetHeight||0)+'px';
-  }else{
-    tab.style.top='0';
-    tab.style.height='';
-  }
+  if(tab.classList.contains('rev-tab--attached')||tab.classList.contains('rev-tab--open')) return;
+  tab.style.position='';
+  tab.style.left='';
+  tab.style.right='';
+  tab.style.top='';
+  tab.style.height='';
+  tab.style.minHeight='';
+  tab.style.margin='';
   if(!tab.classList.contains('is-dragging')) tab.style.transform='none';
 }
 
@@ -12638,13 +12839,17 @@ function openRevCalcPage(){
   if(!shell) return;
   syncSaleBidirectional('calc');
   revCalcPageOpen=true;
-  clearRevTabDragOffset();
+  resetRevTabDragStyles();
+  shell.classList.remove('is-dragging');
   setRevShellSlide(0,true);
   shell.classList.add('open');
   shell.setAttribute('aria-hidden','false');
   if(backdrop){
     backdrop.classList.add('open');
     backdrop.setAttribute('aria-hidden','false');
+    backdrop.style.visibility='';
+    backdrop.style.pointerEvents='';
+    backdrop.style.background='';
   }
   document.body.style.overflow='hidden';
   onRevBudgetInput();
@@ -12657,14 +12862,17 @@ function closeRevCalcPage(){
   var backdrop=document.getElementById('revCalcBackdrop');
   if(!shell) return;
   revCalcPageOpen=false;
+  shell.classList.remove('is-dragging');
   setRevShellSlide(getRevShellClosedOffset(),true);
   shell.classList.remove('open');
-  shell.classList.remove('is-dragging');
   shell.setAttribute('aria-hidden','true');
-  clearRevTabDragOffset();
+  resetRevTabDragStyles();
   if(backdrop){
     backdrop.classList.remove('open');
     backdrop.setAttribute('aria-hidden','true');
+    backdrop.style.visibility='';
+    backdrop.style.pointerEvents='';
+    backdrop.style.background='';
   }
   if(!document.querySelector('.opt-sheet.open')) document.body.style.overflow='';
   updateRevCalcTabVisibility();
@@ -12698,6 +12906,7 @@ function initRevCalcGestures(){
     drag.startSlide=revCalcPageOpen?0:getRevShellClosedOffset();
     if(shell) shell.classList.add('is-dragging');
     tab.classList.add('is-dragging');
+    syncRevTabToShell();
   }
 
   function moveDrag(clientX){
@@ -12712,23 +12921,30 @@ function initRevCalcGestures(){
     var next=drag.startSlide+dx;
     if(next>0) next=0;
     var closed=getRevShellClosedOffset();
-    if(next<closed) next=closed+(next-closed)*0.18;
+    if(next<closed) next=closed+(next-closed)*0.15;
     setRevShellSlide(next,false);
-    setRevTabDragOffset(dx);
+    syncRevTabToShell();
+    var backdrop=document.getElementById('revCalcBackdrop');
+    if(backdrop){
+      var progress=Math.max(0,Math.min(1,(next-closed)/(-closed*0.85)));
+      backdrop.style.visibility='visible';
+      backdrop.style.pointerEvents=progress>0.02?'auto':'none';
+      backdrop.style.background='rgba(0,0,0,'+(progress*0.4).toFixed(3)+')';
+    }
   }
 
   function resolveRevShellSnap(next,velocityX){
     var closed=getRevShellClosedOffset();
     if(next>0) next=0;
     if(next<closed) next=closed;
-    var openThreshold=closed*0.25;
-    var closeThreshold=closed*0.55;
+    var openThreshold=closed*0.22;
+    var closeThreshold=closed*0.5;
     if(revCalcPageOpen){
-      if(next<closeThreshold||velocityX<-0.35) closeRevCalcPage();
+      if(next<closeThreshold||velocityX<-0.3) closeRevCalcPage();
       else openRevCalcPage();
       return;
     }
-    if(next>openThreshold||velocityX>0.35) openRevCalcPage();
+    if(next>openThreshold||velocityX>0.3) openRevCalcPage();
     else closeRevCalcPage();
   }
 
@@ -12737,10 +12953,18 @@ function initRevCalcGestures(){
     drag.active=false;
     if(shell) shell.classList.remove('is-dragging');
     tab.classList.remove('is-dragging');
-    clearRevTabDragOffset();
     var dx=clientX-drag.startX;
     var next=drag.startSlide+dx;
+    var closed=getRevShellClosedOffset();
+    if(next>0) next=0;
+    if(next<closed) next=closed+(next-closed)*0.15;
     resolveRevShellSnap(next,drag.velocityX);
+    var backdrop=document.getElementById('revCalcBackdrop');
+    if(backdrop&&!revCalcPageOpen){
+      backdrop.style.visibility='';
+      backdrop.style.pointerEvents='';
+      backdrop.style.background='';
+    }
   }
 
   tab.addEventListener('touchstart',function(e){
@@ -12781,6 +13005,7 @@ function initRevCalcGestures(){
       pageDrag.startSlide=0;
       shell.classList.add('is-dragging');
       tab.classList.add('is-dragging');
+      syncRevTabToShell();
     },{passive:true});
     shell.addEventListener('touchmove',function(e){
       if(!pageDrag.active) return;
@@ -12794,19 +13019,26 @@ function initRevCalcGestures(){
       if(dx>0) dx=0;
       var next=pageDrag.startSlide+dx;
       var closed=getRevShellClosedOffset();
-      if(next<closed) next=closed+(next-closed)*0.18;
+      if(next<closed) next=closed+(next-closed)*0.15;
       setRevShellSlide(next,false);
-      setRevTabDragOffset(dx);
+      syncRevTabToShell();
+      var backdrop=document.getElementById('revCalcBackdrop');
+      if(backdrop){
+        var progress=Math.max(0,Math.min(1,(next-closed)/(-closed*0.85)));
+        backdrop.style.background='rgba(0,0,0,'+(progress*0.4).toFixed(3)+')';
+      }
     },{passive:true});
     shell.addEventListener('touchend',function(e){
       if(!pageDrag.active) return;
       pageDrag.active=false;
       shell.classList.remove('is-dragging');
       tab.classList.remove('is-dragging');
-      clearRevTabDragOffset();
       var t=e.changedTouches[0];
       var dx=t.clientX-pageDrag.startX;
       var next=pageDrag.startSlide+dx;
+      if(next>0) next=0;
+      var closed=getRevShellClosedOffset();
+      if(next<closed) next=closed+(next-closed)*0.15;
       resolveRevShellSnap(next,pageDrag.velocityX);
     },{passive:true});
   }
@@ -12834,8 +13066,7 @@ function initCalcAdvancedTools(){
   initRevCalcUi();
   initCalcPriceDeckGestures();
   initRevCalcGestures();
-  updateRevCalcTabVisibility();
-  renderCalcRTOStreamlineFromState();
+  updateQuickPrice();
 }
 
 function setReverseTaxFromSettings(force){
@@ -13859,8 +14090,7 @@ function renderCalcRTOStreamline(){
   if(!body) return;
   var q=getCalcQuoteSnapshot();
   if(!q||!q.base){
-    if(deck) deck.classList.remove('is-visible');
-    body.innerHTML='';
+    renderCalcRTOStreamlineBlank();
     return;
   }
   if(deck) deck.classList.add('is-visible');
@@ -14576,6 +14806,18 @@ function _insulationWizardPages(key,entry,draft,ctx){
   return _appendQtyPageIfNeeded(key,entry,draft,pages);
 }
 
+function _wizSlideSelectOpts(stepId,optKey){
+  syncRuntimeOptionArrays();
+  if(stepId==='doorType'||optKey==='door36') return _DOOR_OPTS;
+  if(stepId==='winType'||optKey==='window') return _WIN_OPTS;
+  if(stepId==='cutType'||optKey==='cutouts') return _CUTOUT_OPTS;
+  if(stepId==='x6type'||optKey==='2x6') return _X6_TYPE_OPTS;
+  if(stepId==='intwallType'||optKey==='intwall') return _INTWALL_TYPE_OPTS;
+  if(stepId==='paintType'||optKey==='paintupgrade') return _PAINT_TYPE_OPTS;
+  if(stepId==='garType'||optKey==='garagedoor') return _GARAGE_TYPE_OPTS;
+  return null;
+}
+
 function buildSlidePages(key,entry,draft){
   var ctx=_wizCtx();
   var pages=[];
@@ -14591,7 +14833,7 @@ function buildSlidePages(key,entry,draft){
     entry.subSteps.forEach(function(s){
       if(s.showIf&&!s.showIf(draft)) return;
       if(s.type==='garageSize') return;
-      pages.push({id:s.id,label:s.label,type:s.type,options:s.options});
+      pages.push({id:s.id,label:s.label,type:s.type,options:_wizSlideSelectOpts(s.id,key)||s.options});
     });
     if(key==='garagedoor'){
       pages.push({id:'garSize',label:'Size',type:'garageSize'});
@@ -14607,7 +14849,8 @@ function buildSlidePages(key,entry,draft){
     pages.push({id:'sqft',label:'Sq ft',type:'number',defaultVal:sqDef});
   }else if(entry.qtyStep==='count'){
     if(!(entry.subSteps&&entry.subSteps.length)){
-      pages.push({id:key==='door36'?'doorType':key==='window'?'winType':'cutType',label:'Select type',type:'select',options:key==='door36'?_DOOR_OPTS:key==='window'?_WIN_OPTS:_CUTOUT_OPTS});
+      var typeStepId=key==='door36'?'doorType':key==='window'?'winType':'cutType';
+      pages.push({id:typeStepId,label:'Select type',type:'select',options:_wizSlideSelectOpts(typeStepId,key)||[]});
       if(key==='window'&&draft.winType==='custom_vinyl'){
         pages.push({id:'customSize',label:'Size',type:'text'});
         pages.push({id:'customPrice',label:'Price',type:'number'});
@@ -16346,8 +16589,16 @@ function refreshOptionsCatalogUI(){
   syncRuntimeOptionArrays();
   try{ optWizardRender(); }catch(_e1){}
   try{ updateAutoWidthPrices(); }catch(_e2){}
+  ['doors','windows','garage','cutouts','x6','intwall','paint'].forEach(function(t){
+    try{
+      var arr=calcState[_CALC_MULTI_KEY[t]];
+      if(arr&&arr.length) calcRenderRows(t);
+    }catch(_eMr){}
+  });
   try{ updateQuickPrice(); }catch(_e3){}
   try{ ssCalcPrice(); }catch(_e4){}
+  try{ renderOptsSummary(); }catch(_e5){}
+  try{ renderSsOptsSummary(); }catch(_e6){}
 }
 
 function _buildSelectHTML(opts,selectedVal,placeholder){
@@ -16791,6 +17042,7 @@ function openOptionsSheet(){
   sh.classList.add('open');
   ov.setAttribute('aria-hidden','false');
   document.body.style.overflow='hidden';
+  try{ refreshOptionsCatalogUI(); }catch(_eCat){}
   buildRemoveStdPanel();
   ensureCalcOptsSheetDetails();
   clearOptSheetStaging();
@@ -17312,6 +17564,19 @@ function toggleRemoveStd(){
 function gv(id){var el=document.getElementById(id);return el?el.value:'';}
 function gn(id,def){var v=parseFloat(gv(id));return isNaN(v)||v<=0?def:v;}
 
+function _setOptHintEl(elId,cfgKey,fallback){
+  var el=document.getElementById(elId);
+  if(!el) return;
+  var hint=formatOptionHintFromCfg(getOptionConfig(cfgKey));
+  el.textContent=hint||fallback||'';
+}
+function _setOptLinFtNoteEl(elId,cfgKey){
+  var el=document.getElementById(elId);
+  if(!el) return;
+  var rate=_fmtOptMoney(getOptionLinFtRate(cfgKey));
+  el.textContent='💡 Auto-calculated from building length'+(rate?' ('+rate+'/lin ft)':'');
+}
+
 function updateAutoWidthPrices(){
   syncRuntimeOptionArrays();
   var w=calcState.width||0;
@@ -17415,6 +17680,33 @@ function updateAutoWidthPrices(){
   var porchRate=getOptionLinFtRate('porch');
   var prevP=document.getElementById('prev_porch');
   if(prevP) prevP.textContent=pft&&calcState.addons['porch']?'→ '+fmt(pft*porchRate):'';
+  var porchEl=document.getElementById('price_porch');
+  if(porchEl) porchEl.textContent=pft?fmt(pft*porchRate)+' ('+pft+' lin ft)':(_fmtOptMoney(porchRate)+'/lin ft');
+  var plftEl=document.getElementById('price_loft');
+  if(plftEl) plftEl.textContent=lft?fmt(lft*loftRate)+' ('+lft+' lin ft)':(_fmtOptMoney(loftRate)+'/lin ft');
+  var p4e=document.getElementById('price_4ineves');
+  if(p4e&&!calcState.addons['4ineves']) p4e.textContent=formatOptionHintFromCfg(getOptionConfig('4ineves'))||'$1,000';
+  _setOptHintEl('price_shelves','shelves','$25/lin ft');
+  _setOptHintEl('price_intwall','intwall','$25–$45/lin ft');
+  _setOptHintEl('price_door36','door36','$150–$475');
+  _setOptHintEl('price_window','window','$115–$400 each');
+  _setOptHintEl('price_garagedoor','garagedoor','$525–$1,890');
+  _setOptHintEl('price_cutouts','cutouts','$50–$125 each');
+  _setOptHintEl('price_droploft','droploft','$200');
+  _setOptLinFtNoteEl('note_rooffelt','rooffelt');
+  _setOptLinFtNoteEl('note_housewrap','housewrap');
+  _setOptLinFtNoteEl('note_doubletopplate','doubletopplate');
+  _setOptLinFtNoteEl('note_floorjoists','floorjoists');
+  var noteRt=document.getElementById('note_rooftrusses');
+  if(noteRt){
+    var rtNoteRate=_fmtOptMoney(getOptionLinFtRate('rooftrusses'));
+    noteRt.textContent='💡 Auto-calculated from building length'+(rtNoteRate?' ('+rtNoteRate+'/lin ft · 8–12\' wide)':' (8–12\' wide)');
+  }
+  var noteFl=document.getElementById('note_flooring');
+  if(noteFl){
+    var flNoteRate=_fmtOptMoney(getOptionSqFtRate('flooring'));
+    noteFl.textContent='💡 Sq ft auto-calculated from building size'+(flNoteRate?' ('+flNoteRate+'/sq ft)':'');
+  }
 
   // Update insulation preview prices on step 0
   var w2=calcState.width||0, l2=calcState.length||0;
