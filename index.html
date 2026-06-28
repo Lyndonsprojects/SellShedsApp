@@ -710,111 +710,123 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
 .quick-price-extras input, .quick-price-extras select { width:100%; box-sizing:border-box; padding:8px 10px; font-size:0.85rem; border-radius:8px; border:1.5px solid rgba(232,200,122,0.22); background:rgba(255,255,255,0.08); color:var(--cream); }
 
 #quickPriceWrap .quick-price-active {
-  display:flex; flex-direction:column; min-height:0; gap:0;
+  display:flex; flex-direction:column; min-height:0; gap:0; flex:1;
+}
+.quick-price-layout {
+  display:flex; flex-direction:column; flex:1; min-height:0; gap:0;
+}
+.quick-price-top-row {
+  display:flex; align-items:flex-end; justify-content:space-between; gap:12px;
+  min-width:0; flex-shrink:0; padding-bottom:6px;
+}
+.quick-price-body-row {
+  display:flex; align-items:stretch; gap:12px; flex:1; min-height:0; min-width:0;
+}
+.quick-price-price-center {
+  flex:1; min-width:0; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; text-align:center;
+  padding:4px 0 8px; gap:14px;
+}
+.quick-price-main-row {
+  display:flex; align-items:stretch; gap:12px; min-width:0;
 }
 .quick-price-hero {
-  display:flex; align-items:baseline; justify-content:space-between; gap:10px;
-  margin-top:2px; margin-bottom:4px; min-width:0;
+  display:flex; flex-direction:column; align-items:flex-start; justify-content:center;
+  gap:4px; flex:1; min-width:0;
 }
 .quick-price-hero-left {
-  display:flex; align-items:baseline; gap:8px; flex:1; min-width:0; flex-wrap:wrap;
+  display:flex; flex-direction:column; align-items:flex-start; gap:4px; min-width:0;
+}
+#calcPriceDeckViewport .quick-price-base {
+  color:#fff;
+}
+#calcPriceDeckViewport .quick-price-amount {
+  color:var(--barn);
+}
+#calcPriceDeckViewport .quick-price-title {
+  color:var(--wheat) !important;
+}
+.quick-price-title-wrap {
+  flex:1; min-width:0; display:flex; justify-content:center; align-items:flex-end;
+  padding-bottom:2px;
 }
 .quick-price-title {
-  flex-shrink:0;
-  font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:1.15rem;
-  letter-spacing:2px; color:var(--wheat); line-height:1.05;
+  flex-shrink:0; text-align:center;
+  font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:1.85rem;
+  letter-spacing:2px; line-height:1.05; color:var(--wheat);
 }
 .quick-price-base {
-  font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:0.9rem;
-  color:var(--wheat); letter-spacing:1px; line-height:1.05;
-  text-decoration:line-through; text-decoration-color:rgba(232,200,122,0.55);
+  font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:1.05rem;
+  letter-spacing:1px; line-height:1.05;
+  text-decoration:line-through; text-decoration-color:rgba(255,255,255,0.45);
   min-height:0; white-space:nowrap;
 }
 .quick-price-bos {
-  display:none; font-size:0.72rem; color:rgba(232,200,122,0.85); margin-top:4px; line-height:1.35;
+  display:none; font-size:0.72rem; color:rgba(255,255,255,0.85); margin-top:4px; line-height:1.35;
 }
 .quick-price-bos.is-visible { display:block; }
 .quick-price-amount {
-  flex-shrink:0; text-align:right;
-  font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:3rem;
-  color:var(--wheat); letter-spacing:1px; line-height:0.92;
+  flex-shrink:0; text-align:center;
+  font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:3.25rem;
+  letter-spacing:1px; line-height:0.92; margin-top:0;
 }
 .quick-price-controls {
-  display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px;
+  flex:0 0 42%; max-width:42%; display:flex; flex-direction:column;
+  justify-content:center; gap:8px; min-width:0;
 }
-.quick-price-ctrl {
-  display:flex; flex-direction:column; gap:4px; min-width:0;
+#quickBosCtrl.qp-pill-row--header {
+  flex:0 0 42%; max-width:42%; min-width:0;
 }
-.quick-price-ctrl-label {
+/* Rolling pill toggles */
+.qp-pill-row {
+  display:flex; flex-direction:column; gap:3px; min-width:0;
+}
+.qp-pill-label {
   font-size:0.58rem; font-weight:600; letter-spacing:1.2px; text-transform:uppercase;
-  color:rgba(232,200,122,0.62); line-height:1.1;
+  color:var(--wheat); line-height:1.1;
 }
-.quick-price-ctrl-body {
-  display:flex; align-items:center; min-height:36px; height:36px; min-width:0;
+.qp-pill {
+  position:relative; display:flex; align-items:center; width:100%; height:36px;
+  border-radius:999px; border:1.5px solid rgba(232,200,122,0.25);
+  background:rgba(255,255,255,0.08); padding:0 34px 0 10px;
+  overflow:hidden; cursor:pointer; box-sizing:border-box;
+  -webkit-appearance:none; appearance:none; font:inherit; text-align:left;
+  transition:background 0.2s ease, border-color 0.2s ease;
 }
-.quick-price-ctrl--tog .quick-price-ctrl-body {
-  gap:6px; justify-content:flex-start;
-  border:1.5px solid rgba(232,200,122,0.28); border-radius:8px;
-  background:rgba(255,255,255,0.08); box-sizing:border-box; padding:0 8px;
+.qp-pill[aria-pressed="true"] {
+  background:rgba(74,138,74,0.88); border-color:rgba(120,190,120,0.55);
 }
-.quick-price-ctrl--tog .tog-wrap { gap:6px; flex-shrink:0; min-width:0; }
-.quick-price-ctrl--tog .tog-label { display:none; }
-.quick-price-ctrl--tog .tog-track { width:40px; height:22px; flex-shrink:0; }
-.quick-price-ctrl--tog .tog-thumb { width:16px; height:16px; top:3px; left:3px; }
-.quick-price-ctrl--tog .tog-track.on .tog-thumb { left:21px; }
-.quick-price-tile-amt {
-  display:none; flex:1; min-width:0;
-  align-items:center; justify-content:center;
-  font-size:0.78rem; font-weight:500;
-  font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;
-  color:var(--cream); text-align:center;
-  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+.qp-pill-ball {
+  position:absolute; top:2px; bottom:2px; left:2px; width:auto; aspect-ratio:1;
+  height:calc(100% - 4px); border-radius:50%; background:#fff;
+  box-shadow:0 1px 4px rgba(0,0,0,0.25);
+  transition:left 1.3s cubic-bezier(0.34,1,0.64,1), right 1.3s cubic-bezier(0.34,1,0.64,1);
+  pointer-events:auto; cursor:pointer; z-index:2;
 }
-.quick-price-ctrl.is-bos-on .quick-price-tile-amt { display:flex; }
-.quick-price-ctrl-inline {
-  display:none; flex:1; min-width:0; align-items:center; justify-content:center;
+.qp-pill[aria-pressed="true"] .qp-pill-ball { left:auto; right:2px; }
+.qp-pill-fill {
+  flex:1; min-width:0; opacity:0; pointer-events:none;
+  display:flex; align-items:center; justify-content:center;
+  transition:opacity 0.18s ease;
+  font-size:0.78rem; font-weight:600; color:#fff;
 }
-.quick-price-ctrl--tog.is-ctrl-on .quick-price-ctrl-inline,
-.quick-price-ctrl--sale-tog.is-sale-on .quick-price-sale-inline {
-  display:flex; flex:1; min-width:0; align-items:center; justify-content:center;
+.qp-pill[aria-pressed="true"] .qp-pill-fill {
+  opacity:1; pointer-events:auto;
 }
-.quick-price-ctrl-inline .gss-list-wrap,
-.quick-price-ctrl--sale-tog.is-sale-on .quick-price-sale-inline .gss-list-wrap {
-  width:auto; max-width:100%; flex:0 1 auto;
+.qp-pill-fill .gss-list-wrap { width:100%; max-width:100%; }
+.qp-pill-fill .gss-list-trigger {
+  border:none !important; background:transparent !important;
+  padding:0 4px !important; min-height:30px !important; height:30px !important;
+  font-size:0.76rem !important; color:#fff !important; text-align:center;
+  justify-content:center;
 }
-.quick-price-ctrl-inline .gss-list-trigger,
-.quick-price-ctrl--sale-tog.is-sale-on .quick-price-sale-inline .gss-list-trigger {
-  border:none; background:transparent; padding:0 6px; min-height:34px; height:34px;
-  text-align:center; justify-content:center; width:auto; min-width:0;
+.qp-pill-fill .gss-list-trigger::after { display:none !important; }
+.qp-pill-value {
+  font-size:0.78rem; font-weight:600; color:#fff; white-space:nowrap;
 }
-.quick-price-sale-inline { display:none; flex:1; min-width:0; }
-.quick-price-ctrl--field .gss-list-wrap { width:100%; }
-#quickPriceWrap .quick-price-ctrl .gss-list-trigger {
-  padding:0 8px; font-size:0.78rem; min-height:36px; height:36px; line-height:1.2;
-  border-color:rgba(232,200,122,0.28); background:rgba(255,255,255,0.08);
-  display:flex; align-items:center;
-}
-#quickPriceWrap .quick-price-ctrl .gss-list-trigger:not(.is-placeholder),
-#quickPriceWrap .quick-price-ctrl .gss-list-wrap.is-open .gss-list-trigger {
-  border-color:rgba(232,200,122,0.38); background:rgba(255,255,255,0.1);
-}
-#quickPriceWrap .quick-price-ctrl-inline .gss-list-trigger:not(.is-placeholder),
-#quickPriceWrap .quick-price-ctrl-inline .gss-list-wrap.is-open .gss-list-trigger,
-#quickPriceWrap .quick-price-sale-inline .gss-list-trigger:not(.is-placeholder),
-#quickPriceWrap .quick-price-sale-inline .gss-list-wrap.is-open .gss-list-trigger {
-  border:none; background:transparent;
-}
-#quickPriceWrap .quick-price-ctrl .gss-list-trigger::after { display:none !important; }
-#quickPriceWrap select:focus,
-#quickPriceWrap .gss-list-trigger:focus {
-  border-color:rgba(232,200,122,0.45); box-shadow:none; outline:none;
-}
-#quickPriceWrap .quick-price-sale-inline .gss-list-trigger:focus { border:none; }
-#quickPriceWrap #calcQuickTaxPct { display:none !important; }
-.quick-price-controls-row2 {
-  display:grid; grid-template-columns:1fr 1fr; gap:8px; grid-column:1 / -1;
-}
-#quickPriceWrap .calc-price-swipe-hint { margin-top:4px; }
+.qp-pill-row.is-bos-on .qp-pill-value:empty { display:none; }
+#quickPriceWrap #calcQuickTaxPct,
+#quickPriceWrap .quick-sale-pct-custom { display:none !important; }
 
 /* Quick Price empty state (no building selected) */
 .quick-price-empty {
@@ -824,14 +836,15 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
 }
 .quick-price-empty-msg {
   font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:1.05rem; letter-spacing:2px;
-  color:rgba(232,200,122,0.52); line-height:1.2;
+  color:rgba(255,255,255,0.55); line-height:1.2;
 }
 .quick-price-empty-sub {
-  margin-top:6px; font-size:0.68rem; line-height:1.4; color:rgba(232,200,122,0.35); max-width:220px;
+  margin-top:6px; font-size:0.68rem; line-height:1.4; color:rgba(255,255,255,0.38); max-width:220px;
 }
 #quickPriceWrap.is-empty {
   display:flex !important; flex-direction:column; justify-content:center; align-items:stretch;
   box-sizing:border-box; min-height:0; align-self:stretch !important; height:100%;
+  padding:14px 16px;
 }
 #quickPriceWrap.is-empty .quick-price-empty {
   display:flex; flex-direction:column; align-items:center; justify-content:center;
@@ -841,29 +854,11 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
   background:rgba(255,255,255,0.04);
   border:1.5px dashed rgba(232,200,122,0.22);
 }
-#quickPriceWrap.is-empty .quick-price-active { display:none; }
-#quickPriceWrap.is-empty ~ #rtoStreamlineCalcCard.is-empty {
-  height:0; min-height:0 !important; overflow:hidden; visibility:hidden;
-  padding:0; margin:0; pointer-events:none; border:none;
-}
-#quickPriceWrap.is-empty ~ #rtoStreamlineCalcCard.is-empty .quick-price-empty {
-  display:none !important; min-height:0 !important;
-}
-#calcPriceDeck.deck-view-quick #calcPriceDeckViewport,
-#calcPriceDeck.deck-view-quick #calcPriceDeckTrack,
-#calcPriceDeckViewport:has(#quickPriceWrap.is-empty),
-#calcPriceDeckTrack:has(#quickPriceWrap.is-empty) {
-  background:var(--earth);
-}
-#calcPriceDeck.deck-view-quick #quickPriceWrap {
-  align-self:stretch !important; min-height:100%; box-sizing:border-box;
-}
-#rtoStreamlineCalcCard.is-empty .quick-price-empty { display:flex; min-height:120px; }
-#rtoStreamlineCalcCard.is-empty .rto-detail-active { display:none; }
-
-/* Quick Price / Detailed View deck */
+#quickPriceWrap.is-empty .quick-price-active,
+#quickPriceWrap.is-empty .calc-price-panel-active { display:none; }
 #calcPriceDeck {
-  display:none; overflow:hidden; margin:12px 0 4px; border-radius:10px; position:relative;
+  --calc-panel-bg: #251a15;
+  display:none; overflow:visible; margin:12px 0 4px; border-radius:10px; position:relative;
   width:100%; max-width:100%; box-sizing:border-box;
 }
 #calcPriceDeck.is-visible {
@@ -871,41 +866,98 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
   padding-left:0;
 }
 #calcPriceDeck.rev-tab-open.is-visible { grid-template-columns:minmax(0,1fr); }
+.calc-price-deck-body {
+  grid-column:2; min-width:0; display:flex; flex-direction:column;
+}
+#calcPriceDeck.rev-tab-open .calc-price-deck-body { grid-column:1; }
 #calcPriceDeckViewport {
   min-width:0; width:100%; max-width:100%; overflow:hidden;
   border:1.5px solid rgba(232,200,122,0.25); border-left:none;
   border-radius:0 10px 10px 0; box-sizing:border-box;
+  background:var(--calc-panel-bg);
+  display:flex; flex-direction:column;
+  color:#fff;
+}
+#quickPriceWrap {
+  display:flex !important; flex-direction:column; background:var(--calc-panel-bg); border:none; border-radius:0;
+  padding:14px 16px 12px; margin:0; flex:1; width:100%; min-width:0; box-sizing:border-box;
+  align-self:stretch; min-height:0; color:#fff;
+}
+.calc-price-panel-active {
+  display:flex; flex-direction:column; min-height:0; flex:1;
+}
+.calc-price-content {
+  overflow:hidden; min-width:0; width:100%; touch-action:pan-y;
+  flex:1; display:flex; flex-direction:column; min-height:0;
 }
 #calcPriceDeckTrack {
-  display:flex; flex-direction:row; align-items:flex-start; width:200%; min-width:0;
+  display:flex; flex-direction:row; align-items:stretch; width:200%; min-width:0;
   transition:transform 0.38s cubic-bezier(0.32, 0.72, 0, 1); will-change:transform;
   touch-action:pan-y; overflow:visible;
   border:none; border-radius:0; box-sizing:border-box;
+  flex:1; min-height:0;
 }
 #calcPriceDeckTrack.is-dragging { transition:none !important; }
 #calcPriceDeckTrack.view-detailed { transform:translateX(-50%); }
-#quickPriceWrap {
-  display:block !important; background:var(--earth); border:none; border-radius:0;
-  padding:14px 16px; margin:0; flex:0 0 50%; width:50%; min-width:0; box-sizing:border-box;
-  align-self:flex-start; height:auto;
+.calc-price-pane {
+  flex:0 0 50%; width:50%; min-width:0; box-sizing:border-box; align-self:stretch;
+  background:var(--calc-panel-bg); padding:0 0 10px; color:#fff;
 }
-#rtoStreamlineCalcCard {
-  display:block !important; background:rgba(255,255,255,0.05); border:none; border-radius:0;
-  padding:12px 14px; margin:0; flex:0 0 50%; width:50%; min-width:0; box-sizing:border-box;
-  align-self:flex-start; height:auto;
+.calc-price-pane--quick {
+  display:flex; flex-direction:column; min-height:100%;
+}
+.calc-price-pane--quick .quick-price-active,
+.calc-price-pane--quick .quick-price-layout {
+  flex:1; min-height:0;
 }
 #quickPriceWrap .quick-price-active,
 #rtoStreamlineCalcCard .rto-detail-active {
   display:flex; flex-direction:column; min-height:0;
 }
-.calc-price-swipe-hint {
-  display:flex; align-items:center; justify-content:center; gap:4px;
-  margin-top:8px; padding-top:8px; border-top:1px solid rgba(232,200,122,0.12);
-  font-size:0.62rem; letter-spacing:1px; text-transform:uppercase;
-  color:rgba(232,200,122,0.45); user-select:none; cursor:pointer;
+#rtoStreamlineCalcCard {
+  display:block !important; background:var(--calc-panel-bg); border:none; border-radius:0;
+  padding:0; margin:0; color:#fff;
 }
-.calc-price-swipe-hint svg { opacity:0.55; flex-shrink:0; }
-.calc-price-swipe-down { display:flex; align-items:center; justify-content:center; gap:4px; margin-top:8px; padding-top:8px; border-top:1px solid rgba(232,200,122,0.12); font-size:0.62rem; letter-spacing:1px; text-transform:uppercase; color:rgba(232,200,122,0.45); user-select:none; cursor:pointer; }
+#calcPriceDeckViewport .qpv-l,
+#calcPriceDeckViewport .qpv-r,
+#calcPriceDeckViewport .qpv-rto-mo,
+#calcPriceDeckViewport .qpv-rto-val,
+#calcPriceDeckViewport .qpv-tt-label,
+#calcPriceDeckViewport .qpv-settings-label,
+#calcPriceDeckViewport .qpv-settings-prefix {
+  color:#fff !important;
+}
+#calcPriceDeckViewport .qpv-line .qpv-l,
+#calcPriceDeckViewport .qpv-line .qpv-r { color:rgba(255,255,255,0.92); }
+#calcPriceDeckViewport .qpv-line.qpv-total .qpv-l,
+#calcPriceDeckViewport .qpv-line.qpv-total .qpv-r {
+  color:var(--barn) !important;
+}
+.calc-detail-view-title {
+  font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;
+  font-size:0.95rem; letter-spacing:2px; color:var(--wheat);
+}
+.calc-price-tabs {
+  display:flex; gap:4px; justify-content:stretch; align-items:stretch;
+  padding:4px; margin:8px 12px 10px; flex-shrink:0;
+  background:rgba(0,0,0,0.22); border-radius:10px;
+  border:1.5px solid rgba(232,200,122,0.25);
+}
+.calc-price-tab {
+  -webkit-appearance:none; appearance:none; cursor:pointer;
+  border:1.5px solid transparent;
+  font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;
+  font-size:0.74rem; letter-spacing:1.5px; text-transform:uppercase;
+  padding:9px 12px; flex:1 1 0; min-width:0;
+  border-radius:7px;
+  background:transparent; color:rgba(255,255,255,0.55);
+  transition:background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+.calc-price-tab.is-active {
+  background:rgba(232,200,122,0.12); color:var(--wheat);
+  border-color:rgba(232,200,122,0.25);
+}
+.calc-price-tab:focus-visible { outline:2px solid rgba(255,255,255,0.6); outline-offset:2px; }
 
 /* ── Inline list selector (iOS-style expandable option list) ── */
 .gss-list-wrap { position:relative; width:100%; }
@@ -998,7 +1050,7 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
   --rev-slide:calc(-1 * (max(0px, (100vw - 480px) / 2) + min(480px, 100vw)));
   transform:translateX(var(--rev-slide));
   transition:transform 0.38s cubic-bezier(0.32, 0.72, 0, 1), visibility 0s linear 0.38s;
-  background:var(--earth); display:flex; flex-direction:column;
+  background:var(--calc-panel-bg); display:flex; flex-direction:column;
   padding-top:var(--safe-top-offset);
   pointer-events:none; visibility:hidden; overflow:hidden;
   will-change:transform;
@@ -1019,40 +1071,48 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
   writing-mode:vertical-rl; text-orientation:mixed;
   width:30px; max-width:30px; min-width:30px; min-height:80px; height:auto; box-sizing:border-box;
   align-items:center; justify-content:center;
-  background:var(--earth); border:1.5px solid rgba(232,200,122,0.25); border-right:none;
+  background:var(--calc-panel-bg); border:1.5px solid rgba(232,200,122,0.25); border-right:none;
   border-radius:10px 0 0 10px; padding:10px 4px; cursor:grab; touch-action:none; user-select:none;
   font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:0.58rem; letter-spacing:1.2px; color:rgba(232,200,122,0.7);
   box-shadow:none;
   margin:0;
-  transition:left 0.25s ease, right 0.25s ease, margin 0.25s ease, top 0.2s ease, height 0.2s ease, color 0.15s, border-color 0.15s, background 0.15s, box-shadow 0.15s, transform 0.38s cubic-bezier(0.32, 0.72, 0, 1);
+  transition:color 0.15s, border-color 0.15s, background 0.15s, box-shadow 0.15s;
 }
 #revCalcTab:hover, #revCalcTab:focus-visible { color:var(--wheat); border-color:rgba(232,200,122,0.4); outline:none; }
 #revCalcTab.rev-tab--open {
-  position:fixed; top:50%; height:auto; min-height:0;
-  transform:translateY(-50%); left:auto; right:0; z-index:10031; cursor:grab;
-  background:rgba(44,24,16,0.98); color:var(--wheat); border:1px solid rgba(232,200,122,0.4);
-  border-left:1px solid rgba(232,200,122,0.4); border-right:none;
-  border-radius:8px 0 0 8px;
-  box-shadow:-2px 0 8px rgba(0,0,0,0.2);
-  margin-left:0; margin-right:calc(max(0px, (100vw - 480px) / 2));
-  width:26px; padding:12px 5px; font-size:0.62rem;
+  position:relative; writing-mode:horizontal-tb; text-orientation:mixed;
+  width:auto; max-width:min(280px,90%); min-width:0; min-height:0; height:auto;
+  transform:none; left:auto; right:auto; top:auto; z-index:2; cursor:grab;
+  background:var(--calc-panel-bg); color:var(--wheat);
+  border:1.5px solid rgba(232,200,122,0.35); border-bottom:none;
+  border-radius:8px 8px 0 0;
+  box-shadow:none;
+  margin:10px auto 0; padding:8px 16px; font-size:0.62rem;
+  display:inline-flex; flex-direction:row; gap:8px; align-self:center;
 }
+#revCalcTab.rev-tab--open .rev-tab-grip {
+  width:16px; height:3px; margin:0; flex-shrink:0; align-self:center;
+}
+#revCalcTab.rev-tab--open #revCalcTabLabel { white-space:nowrap; }
 #revCalcTab.rev-tab--attached {
   position:fixed; z-index:10031; cursor:grabbing;
   margin:0; right:auto;
-  background:var(--earth); color:rgba(232,200,122,0.85); border:1.5px solid rgba(232,200,122,0.3);
+  background:var(--calc-panel-bg); color:rgba(232,200,122,0.85); border:1.5px solid rgba(232,200,122,0.3);
   border-right:none; border-radius:10px 0 0 10px;
   box-shadow:2px 0 12px rgba(0,0,0,0.25);
   width:30px; padding:10px 4px; font-size:0.58rem;
+  writing-mode:vertical-rl; text-orientation:mixed;
 }
 #revCalcTab.is-dragging { transition:none !important; }
 #revCalcTab:active { opacity:0.85; cursor:grabbing; }
 #revCalcTab .rev-tab-grip { display:block; width:3px; height:16px; background:rgba(232,200,122,0.28); border-radius:2px; margin:0 auto 4px; flex-shrink:0; }
-#revCalcShell.open .rev-page-head { padding-right:38px; }
-#revCalcShell.open .rev-page-body { padding-right:38px; }
 #revCalcShell .rev-page-head {
-  display:flex; align-items:center; justify-content:center; padding:14px 16px;
-  border-bottom:3px solid var(--barn); background:var(--earth); flex-shrink:0;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:14px 16px 0; border-bottom:3px solid var(--barn);
+  background:var(--calc-panel-bg); flex-shrink:0;
+}
+#revCalcShell .rev-page-tab-slot {
+  display:flex; justify-content:center; width:100%; flex-shrink:0;
 }
 #revCalcShell .rev-page-title {
   font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:1.2rem;
@@ -1255,29 +1315,16 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
 /* ============================================================
    SCREEN: CALCULATOR
    ============================================================ */
-.calc-steps { display:flex; background:var(--earth); padding:8px 16px 14px; gap:10px; justify-content:flex-start; }
-.step-dot {
-  width: 34px; height: 34px; border-radius: 50%;
-  background: rgba(255,255,255,0.12); color: rgba(232,200,122,0.45);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.82rem; font-weight: 700;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
-  border: 2px solid rgba(255,255,255,0.15);
-  cursor: pointer; user-select: none;
-}
-.step-dot.active {
-  background: var(--barn);
-  color: var(--wheat);
-  border-color: var(--barn);
-  box-shadow: 0 2px 8px rgba(139,46,13,0.4);
-}
-.step-dot.done {
-  background: var(--sage);
-  color: white;
-  border-color: var(--sage);
-}
-
 .calc-page { display:none; padding:16px; }
+.calc-reset-btn {
+  flex:0 0 auto; width:auto; box-sizing:border-box; margin-top:0; align-self:center;
+  background:var(--barn); color:var(--wheat); border:none; border-radius:10px;
+  padding:8px 16px; min-height:36px;
+  font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;
+  font-size:0.82rem; letter-spacing:1.5px; line-height:1.2;
+  cursor:pointer; -webkit-appearance:none; appearance:none;
+}
+.calc-reset-btn:active { opacity:0.85; }
 .calc-page.active { display:block; }
 .page-title { font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:1.6rem; color:var(--wheat); letter-spacing:2px; margin-bottom:4px; }
 .page-sub { font-size:0.78rem; color:rgba(232,200,122,0.55); margin-bottom:20px; }
@@ -2701,12 +2748,26 @@ select:focus {
   color: var(--earth);
 }
 
-/* Calculator width/length list triggers: subtle border when chosen */
-#screenCalc #calcWidth:not([value=""]) + .gss-list-trigger,
-#screenCalc #calcLength:not([value=""]) + .gss-list-trigger,
-#screenCalc .gss-list-wrap:has(select[id="calcWidth"]:not([value=""])) .gss-list-trigger,
-#screenCalc .gss-list-wrap:has(select[id="calcLength"]:not([value=""])) .gss-list-trigger {
-  border-color: rgba(232,200,122,0.42);
+/* Calculator width/length — match building style picker */
+#screenCalc .gss-list-wrap:has(#calcWidth) .gss-list-trigger,
+#screenCalc .gss-list-wrap:has(#calcLength) .gss-list-trigger {
+  background:#fff;
+  border:1.5px solid #D1D3D4;
+  border-radius:8px;
+  color:var(--earth);
+  font-weight:600;
+}
+#screenCalc .gss-list-wrap:has(#calcWidth) .gss-list-trigger.is-placeholder,
+#screenCalc .gss-list-wrap:has(#calcLength) .gss-list-trigger.is-placeholder {
+  color:#999; font-weight:500;
+}
+#screenCalc .gss-list-wrap:has(#calcWidth) .gss-list-trigger:focus,
+#screenCalc .gss-list-wrap:has(#calcLength) .gss-list-trigger:focus,
+#screenCalc .gss-list-wrap:has(#calcWidth).is-open .gss-list-trigger,
+#screenCalc .gss-list-wrap:has(#calcLength).is-open .gss-list-trigger {
+  border-color:#8E1B23;
+  box-shadow:0 0 0 3px rgba(142,27,35,0.10);
+  background:#fff;
 }
 .opt-field-row select,
 .opt-field-row input[type="number"],
@@ -3361,8 +3422,10 @@ select:focus {
 /* Quote-from flows (above bottom nav / share sheets) */
 #quoteSheetCondModal,#quoteAdWizardModal,#quoteAdResultModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:10001;align-items:flex-end;justify-content:center;}
 .quote-from-sheet{background:var(--earth);border:1.5px solid rgba(232,200,122,0.3);border-radius:16px 16px 0 0;padding:22px 18px 32px;width:100%;max-width:480px;max-height:88vh;overflow-y:auto;}
-.quote-export-row{display:flex;gap:8px;align-items:stretch;flex-wrap:wrap;margin-top:4px;}
+.quote-export-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:nowrap;margin-top:4px;}
+.quote-export-select-wrap{flex:1;min-width:0;}
 .quote-export-row select{flex:1;min-width:0;width:100%;padding:10px 12px;border-radius:8px;border:1.5px solid rgba(232,200,122,0.25);background:rgba(255,255,255,0.06);color:var(--cream);font-size:0.9rem;}
+.quote-export-row .calc-quote-copy-btn{flex:0 0 auto;white-space:nowrap;margin:0;padding:10px 14px;font-size:0.78rem;font-weight:700;letter-spacing:0.5px;}
 #quoteAdResultBody{white-space:pre-wrap;font-size:0.88rem;line-height:1.5;color:rgba(245,240,232,0.92);max-height:42vh;overflow-y:auto;padding:10px;background:rgba(0,0,0,0.2);border-radius:8px;margin-top:10px;}
 </style>
 </head>
@@ -3673,20 +3736,14 @@ select:focus {
     <div class="header-title">Price Calculator</div>
     <div class="header-spacer" aria-hidden="true"></div>
   </div>
-  <div class="calc-steps">
-    <div class="step-dot active" id="cdot0">1</div>
-    <div class="step-dot" id="cdot1">2</div>
-    <div class="step-dot" id="cdot2">3</div>
-  </div>
 
   <!-- Step 0: Building + Options -->
   <div class="calc-page active" id="cpage0">
     <div style="padding:16px;">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px;flex-wrap:nowrap;">
         <div class="page-title" style="margin-bottom:0;line-height:1.05;flex:1;min-width:0;">Building &amp; Options</div>
-        <button type="button" class="btn-secondary" style="flex:0 0 auto;width:auto;max-width:min(25vw,6.25rem);box-sizing:border-box;padding:3px 8px;font-size:0.62rem;line-height:1.2;letter-spacing:0.6px;min-height:0;height:auto;margin-top:0;align-self:center;" onclick="resetPriceCalculator()" aria-label="Reset calculator">Reset</button>
+        <button type="button" class="calc-reset-btn" onclick="resetPriceCalculator()" aria-label="Reset calculator">Reset</button>
       </div>
-      <div class="page-sub">Select style, size, and any upgrades</div>
 
       <!-- Building Type dropdown -->
       <div class="field-group">
@@ -3743,91 +3800,83 @@ select:focus {
         <span class="rev-tab-grip" aria-hidden="true"></span>
         <span id="revCalcTabLabel">Reverse Price Calculator</span>
       </button>
+      <div class="calc-price-deck-body">
       <div id="calcPriceDeckViewport" class="calc-price-deck-viewport">
-      <div id="calcPriceDeckTrack">
       <div id="quickPriceWrap">
         <div class="quick-price-empty" aria-hidden="true">
           <div class="quick-price-empty-msg">Choose Building Style And Size</div>
           <div class="quick-price-empty-sub">Pricing appears here — or pull the tab for Reverse Price Calculator</div>
         </div>
+        <div class="calc-price-panel-active">
+        <div class="calc-price-content">
+        <div id="calcPriceDeckTrack">
+        <div class="calc-price-pane calc-price-pane--quick">
         <div class="quick-price-active">
-        <div class="quick-price-controls">
-          <div id="quickBosCtrl" class="quick-price-ctrl quick-price-ctrl--tog">
-            <span class="quick-price-ctrl-label">BOS</span>
-            <div class="quick-price-ctrl-body">
-              <div class="tog-wrap" onclick="toggleBOS()">
-                <div class="tog-track" id="bosTrack"><div class="tog-thumb"></div></div>
-              </div>
-              <span id="quickBosTileAmt" class="quick-price-tile-amt"></span>
-            </div>
+        <div class="quick-price-layout">
+        <div class="quick-price-top-row">
+          <div class="quick-price-title-wrap">
+            <span class="quick-price-title">QUICK PRICE</span>
           </div>
-          <div class="quick-price-ctrl quick-price-ctrl--tog quick-price-ctrl--sale-tog">
-            <span class="quick-price-ctrl-label">Sale</span>
-            <div class="quick-price-ctrl-body">
-              <div class="tog-wrap" onclick="toggleQuickSale()">
-                <div class="tog-track" id="saleTrack"><div class="tog-thumb"></div></div>
-              </div>
-              <div id="quickSaleInputWrap" class="quick-price-sale-inline">
-                <select id="c_quickSalePctSel" onchange="onQuickSaleSelectChange(this)"></select>
-                <input type="number" id="c_quickSalePct" class="quick-sale-pct-custom" min="0" max="100" step="0.1" placeholder="%" title="Custom % off list" oninput="onQuickSaleInput(this)">
-              </div>
-            </div>
-          </div>
-          <div class="quick-price-controls-row2">
-            <div class="quick-price-ctrl quick-price-ctrl--tog quick-price-ctrl--tax-tog">
-              <span class="quick-price-ctrl-label">Tax %</span>
-              <div class="quick-price-ctrl-body">
-                <div class="tog-wrap" onclick="toggleQuickTax()">
-                  <div class="tog-track" id="quickTaxTrack"><div class="tog-thumb"></div></div>
-                </div>
-                <div id="quickTaxInputWrap" class="quick-price-ctrl-inline">
-                  <select id="calcQuickTaxSelect" onchange="calcQuickTaxSelectChange(this)"></select>
-                  <input type="number" id="calcQuickTaxPct" min="0" max="20" step="0.1" placeholder="Custom %" oninput="calcQuickTaxInput(this)">
-                </div>
-              </div>
-            </div>
-            <div class="quick-price-ctrl quick-price-ctrl--tog quick-price-ctrl--dealer-tog">
-              <span class="quick-price-ctrl-label">Dealer discount</span>
-              <div class="quick-price-ctrl-body">
-                <div class="tog-wrap" onclick="toggleQuickDealer()">
-                  <div class="tog-track" id="quickDealerTrack"><div class="tog-thumb"></div></div>
-                </div>
-                <div id="quickDealerInputWrap" class="quick-price-ctrl-inline">
-                  <select id="calcQuickDealer" onchange="calcQuickDealerChange(this)">
-                    <option value="0">None</option>
-                    <option value="1">1% off base</option>
-                    <option value="2">2% off base</option>
-                    <option value="3">3% off base</option>
-                    <option value="4">4% off base</option>
-                    <option value="5">5% off base</option>
-                  </select>
-                </div>
-              </div>
-            </div>
+          <div id="quickBosCtrl" class="qp-pill-row qp-pill-row--header">
+            <span class="qp-pill-label">BOS</span>
+            <button type="button" class="qp-pill" id="quickBosPill" aria-pressed="false">
+              <span class="qp-pill-fill"><span id="quickBosTileAmt" class="qp-pill-value"></span></span>
+              <span class="qp-pill-ball" aria-hidden="true"></span>
+            </button>
           </div>
         </div>
-        <div class="quick-price-hero">
-          <div class="quick-price-hero-left">
-            <span class="quick-price-title">QUICK PRICE</span>
-            <span id="quickBasePrice" class="quick-price-base"></span>
-          </div>
+        <div class="quick-price-body-row">
+        <div class="quick-price-price-center">
+          <span id="quickBasePrice" class="quick-price-base"></span>
           <div id="quickSalePrice" class="quick-price-amount">—</div>
         </div>
-        <div class="calc-price-swipe-hint" onclick="setCalcPriceDeckView('detailed')" role="button" tabindex="0" aria-label="Swipe for details">
-          Swipe for details
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        <div class="quick-price-controls">
+          <div class="qp-pill-row quick-price-ctrl--sale-tog">
+            <span class="qp-pill-label">Sale</span>
+            <button type="button" class="qp-pill" id="quickSalePill" aria-pressed="false">
+              <span class="qp-pill-fill quick-price-sale-inline" id="quickSaleInputWrap">
+                <select id="c_quickSalePctSel" onchange="onQuickSaleSelectChange(this)"></select>
+                <input type="number" id="c_quickSalePct" class="quick-sale-pct-custom" min="0" max="100" step="0.1" placeholder="%" title="Custom % off list" oninput="onQuickSaleInput(this)">
+              </span>
+              <span class="qp-pill-ball" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div class="qp-pill-row quick-price-ctrl--tax-tog">
+            <span class="qp-pill-label">Tax %</span>
+            <button type="button" class="qp-pill" id="quickTaxPill" aria-pressed="false">
+              <span class="qp-pill-fill quick-price-ctrl-inline" id="quickTaxInputWrap">
+                <select id="calcQuickTaxSelect" onchange="calcQuickTaxSelectChange(this)"></select>
+                <input type="number" id="calcQuickTaxPct" min="0" max="20" step="0.1" placeholder="Custom %" oninput="calcQuickTaxInput(this)">
+              </span>
+              <span class="qp-pill-ball" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div class="qp-pill-row quick-price-ctrl--dealer-tog">
+            <span class="qp-pill-label">Dealer discount</span>
+            <button type="button" class="qp-pill" id="quickDealerPill" aria-pressed="false">
+              <span class="qp-pill-fill quick-price-ctrl-inline" id="quickDealerInputWrap">
+                <select id="calcQuickDealer" onchange="calcQuickDealerChange(this)">
+                  <option value="0">None</option>
+                  <option value="1">1% off base</option>
+                  <option value="2">2% off base</option>
+                  <option value="3">3% off base</option>
+                  <option value="4">4% off base</option>
+                  <option value="5">5% off base</option>
+                </select>
+              </span>
+              <span class="qp-pill-ball" aria-hidden="true"></span>
+            </button>
+          </div>
         </div>
+        </div><!-- /quick-price-body-row -->
+        </div><!-- /quick-price-layout -->
         </div><!-- /quick-price-active -->
-      </div>
+        </div><!-- /calc-price-pane--quick -->
 
-      <div id="rtoStreamlineCalcCard">
-        <div class="quick-price-empty" aria-hidden="true">
-          <div class="quick-price-empty-msg">Choose Building Style And Size</div>
-          <div class="quick-price-empty-sub">Detailed breakdown appears after you select a building</div>
-        </div>
+      <div id="rtoStreamlineCalcCard" class="calc-price-pane calc-price-pane--detail">
         <div class="rto-detail-active">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:10px;">
-          <div style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:0.95rem;letter-spacing:2px;color:var(--wheat);">DETAILED VIEW</div>
+          <div class="calc-detail-view-title">DETAILED VIEW</div>
           <div style="display:flex;align-items:center;gap:10px;">
             <div id="qpvTaxToggle" class="qpv-tax-toggle" onclick="toggleQpvShowTax()" role="button" aria-pressed="false" title="Include tax in Quick Price (cash total and RTO monthly). Saved for next visit.">
               <span class="qpv-tt-label">Tax</span>
@@ -3862,21 +3911,25 @@ select:focus {
             <div id="crBreakdown" style="display:none;padding:8px 10px;background:rgba(0,0,0,0.2);border-radius:8px;font-size:0.72rem;line-height:1.7;margin-top:6px;color:rgba(245,240,232,0.85);"></div>
           </div>
         </div>
-        <div class="calc-price-swipe-down" onclick="setCalcPriceDeckView('quick')" role="button" tabindex="0" aria-label="Back to Quick Price">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-          Swipe for quick price
-        </div>
         </div><!-- /rto-detail-active -->
       </div>
       </div><!-- /calcPriceDeckTrack -->
+      </div><!-- /calc-price-content -->
+      </div><!-- /calc-price-panel-active -->
+      </div><!-- /quickPriceWrap -->
+      <div class="calc-price-tabs" role="tablist" aria-label="Price view">
+        <button type="button" class="calc-price-tab is-active" id="calcPriceTabQuick" role="tab" aria-selected="true" data-calc-view="quick" onclick="setCalcPriceDeckView('quick')">Quick Price</button>
+        <button type="button" class="calc-price-tab" id="calcPriceTabDetailed" role="tab" aria-selected="false" data-calc-view="detailed" onclick="setCalcPriceDeckView('detailed')">Detailed View</button>
+      </div>
       </div><!-- /calcPriceDeckViewport -->
+      </div><!-- /calc-price-deck-body -->
       </div><!-- /calcPriceDeck -->
 
       <div style="border-top:1px solid rgba(232,200,122,0.15);margin:14px 0 10px;"></div>
       <div class="page-title" style="font-size:1.1rem;margin-bottom:4px;">Options &amp; Upgrades</div>
 
       <div id="optsSummary" class="opts-summary-wrap"></div>
-      <button type="button" id="addOptionBtn" class="btn-primary" style="margin-top:4px;padding:12px;width:100%;" disabled onclick="optionsSheetContext='calc';openOptionsSheet()">+ Add Option</button>
+      <button type="button" id="addOptionBtn" class="btn-primary" style="margin-top:4px;padding:12px;width:100%;" disabled onclick="optionsSheetContext='calc';openOptionsSheet()">ADD/REMOVE OPTIONS</button>
 
       <!-- Bottom-sheet picker for options -->
       <div id="optionsSheetOverlay" class="opt-sheet-overlay" onclick="if(event.target===this)closeOptionsSheet()" aria-hidden="true"></div>
@@ -4474,15 +4527,18 @@ select:focus {
       <div style="background:rgba(255,255,255,0.05);border:1.5px solid rgba(232,200,122,0.2);border-radius:10px;padding:14px;margin-bottom:12px;">
         <div style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:1.1rem;letter-spacing:2px;color:var(--wheat);margin-bottom:10px;">Share &amp; Export</div>
         <div class="quote-export-row">
-          <label for="quoteExportActionSel" class="field-label" style="width:100%;margin-bottom:4px;">Share or export</label>
-          <select id="quoteExportActionSel" aria-label="Share or export — pick a command" onchange="onQuoteExportHubSelectChange()">
-            <option value="">Share or export&hellip;</option>
-            <option value="share_email">Share / Email estimate</option>
-            <option value="sales_sheet">Generate sales sheet (PDF)</option>
-            <option value="marketplace">Generate marketplace ad</option>
-            <option value="facebook">Copy Facebook post</option>
-            <option value="print">Print quote</option>
-          </select>
+          <div class="quote-export-select-wrap">
+            <label for="quoteExportActionSel" class="field-label" style="width:100%;margin-bottom:4px;">Share or export</label>
+            <select id="quoteExportActionSel" aria-label="Share or export — pick a command" onchange="onQuoteExportHubSelectChange()">
+              <option value="">Share or export&hellip;</option>
+              <option value="share_email">Share / Email estimate</option>
+              <option value="sales_sheet">Generate sales sheet (PDF)</option>
+              <option value="marketplace">Generate marketplace ad</option>
+              <option value="facebook">Copy Facebook post</option>
+              <option value="print">Print quote</option>
+            </select>
+          </div>
+          <button type="button" class="btn-secondary calc-quote-copy-btn" onclick="copyEstimateTextToClipboard()">Copy estimate text</button>
         </div>
       </div>
 
@@ -6601,6 +6657,7 @@ select:focus {
 <div id="revCalcShell" aria-hidden="true">
   <div class="rev-page-head">
     <div class="rev-page-title">Reverse Price Calculator</div>
+    <div id="revCalcTabSlot" class="rev-page-tab-slot"></div>
   </div>
   <div class="rev-page-body">
     <div class="rev-entry-zone">
@@ -10870,6 +10927,8 @@ function goTo(screenId){
     try{ ssUpdateSsColorTrigger('adColorTrim',TRIM_COLOR_DATA); }catch(_eTrim){}
   }
   if(screenId==='screenCalc'){
+    if(!_skipCalcTaxReset) resetCalcTaxOnCalcOpen();
+    _skipCalcTaxReset=false;
     initCalcAdvancedTools();
     try{ refreshOptionsCatalogUI(); }catch(_eCat){}
   }
@@ -11991,8 +12050,9 @@ function getSettingVal(key,def){
 // ============================================================
 // CALCULATOR
 // ============================================================
-let calcState={type:null,width:null,length:null,payType:'cash',rtoMonths:36,addons:{},addonQty:{},saleActive:false,salePercent:0,dealerDiscount:0,taxMode:'standard',taxRate:0,bosActive:false,quickTaxActive:true,quickDealerActive:false,assurancePlan:2,costReduction:0,qpvShowTax:true,multiDoors:[],multiWindows:[],multiGarage:[],multiCutouts:[],multiCustom:[],multi2x6:[],multiIntwall:[],multiPaint:[],osbIntwallFtManual:false};
+let calcState={type:null,width:null,length:null,payType:'cash',rtoMonths:36,addons:{},addonQty:{},saleActive:false,salePercent:0,dealerDiscount:0,taxMode:'standard',taxRate:0,bosActive:false,quickTaxActive:false,quickDealerActive:false,assurancePlan:2,costReduction:0,qpvShowTax:false,multiDoors:[],multiWindows:[],multiGarage:[],multiCutouts:[],multiCustom:[],multi2x6:[],multiIntwall:[],multiPaint:[],osbIntwallFtManual:false};
 let calcCurrentPage=0;
+let _skipCalcTaxReset=false;
 const CALC_HISTORY_KEY='gss_calc_quote_history_v1';
 const CALC_HISTORY_MAX=4;
 
@@ -12000,7 +12060,7 @@ function getDefaultCalcState(){
   return {
     type:null,width:null,length:null,payType:'cash',rtoMonths:36,addons:{},addonQty:{},
     saleActive:false,salePercent:0,dealerDiscount:0,taxMode:'standard',taxRate:0,
-    bosActive:false,quickTaxActive:true,quickDealerActive:false,assurancePlan:2,costReduction:0,multiDoors:[],multiWindows:[],
+    bosActive:false,quickTaxActive:false,quickDealerActive:false,assurancePlan:2,costReduction:0,qpvShowTax:false,multiDoors:[],multiWindows:[],
     multiGarage:[],multiCutouts:[],multiCustom:[],multi2x6:[],multiIntwall:[],multiPaint:[],osbIntwallFtManual:false,stdRemoved:{},_stdType:null
   };
 }
@@ -12112,6 +12172,7 @@ function clearCalcForNewQuote(){
   calcState.saleActive=keepSaleActive;
   calcState.salePercent=keepSalePct;
   calcState.qpvShowTax=keepQpvShowTax;
+  calcState.quickTaxActive=!!keepQpvShowTax;
   calcCurrentPage=0;
   var typeSel=document.getElementById('calcTypeSelect');
   if(typeSel) typeSel.value='';
@@ -12149,6 +12210,7 @@ function resetPriceCalculator(){
   var keepQpvShowTax=calcState.qpvShowTax;
   calcState=getDefaultCalcState();
   calcState.qpvShowTax=keepQpvShowTax;
+  calcState.quickTaxActive=!!keepQpvShowTax;
   calcCurrentPage=0;
   var typeSel=document.getElementById('calcTypeSelect');
   if(typeSel) typeSel.value='';
@@ -12177,13 +12239,8 @@ function resetPriceCalculator(){
   var qpvBtn=document.getElementById('qpvSettingsBtn');
   if(qpvPanel) qpvPanel.style.display='none';
   if(qpvBtn) qpvBtn.setAttribute('aria-expanded','false');
-  var tgl=document.getElementById('qpvTaxToggle');
-  if(tgl){
-    tgl.classList.toggle('on',!!calcState.qpvShowTax);
-    tgl.setAttribute('aria-pressed',calcState.qpvShowTax?'true':'false');
-  }
-  var bos=document.getElementById('bosTrack');
-  if(bos) bos.classList.toggle('on',!!calcState.bosActive);
+  setCalcTaxShown(false);
+  setQpPillPressed('quickBosPill',!!calcState.bosActive);
   try{ setTaxMode('standard'); }catch(_t){}
   try{ setCalcPay('cash'); }catch(_p){}
   try{ setCalcRTO(36); }catch(_r){}
@@ -12205,6 +12262,7 @@ function resetPriceCalculator(){
 
 function restoreCalcSession(entry){
   if(!entry||!entry.state) return;
+  _skipCalcTaxReset=true;
   var savedState=cloneCalcState(entry.state);
   var qpvTaxBefore=calcState.qpvShowTax;
   calcState=getDefaultCalcState();
@@ -12223,7 +12281,14 @@ function restoreCalcSession(entry){
   onCalcLengthChange(savedState.length?String(savedState.length):'');
 
   calcState=Object.assign(calcState,savedState);
-  if(savedState.qpvShowTax===undefined) calcState.qpvShowTax=qpvTaxBefore;
+  if(savedState.qpvShowTax!==undefined||savedState.quickTaxActive!==undefined){
+    var taxOn=!!(savedState.qpvShowTax||savedState.quickTaxActive);
+    calcState.qpvShowTax=taxOn;
+    calcState.quickTaxActive=taxOn;
+  }else{
+    calcState.qpvShowTax=!!qpvTaxBefore;
+    calcState.quickTaxActive=!!qpvTaxBefore;
+  }
   calcState.addons=Object.assign({},savedState.addons||{});
   calcState.stdRemoved=Object.assign({},savedState.stdRemoved||{});
   calcState.multiDoors=Array.isArray(savedState.multiDoors)?savedState.multiDoors:[];
@@ -12369,12 +12434,36 @@ function syncSaleBidirectional(from){
 }
 
 var GSS_QPV_SHOW_TAX_KEY='gss_qpv_show_tax_v1';
+function isCalcTaxShown(){
+  return calcState.quickTaxActive!==false&&calcState.qpvShowTax!==false;
+}
+function syncCalcTaxToggleUI(){
+  var taxOn=isCalcTaxShown();
+  setQpPillPressed('quickTaxPill',taxOn);
+  var taxWrap=document.querySelector('.quick-price-ctrl--tax-tog');
+  if(taxWrap) taxWrap.classList.toggle('is-ctrl-on',taxOn);
+  var tgl=document.getElementById('qpvTaxToggle');
+  if(tgl){
+    tgl.classList.toggle('on',taxOn);
+    tgl.setAttribute('aria-pressed',taxOn?'true':'false');
+  }
+}
+function setCalcTaxShown(on){
+  calcState.quickTaxActive=!!on;
+  calcState.qpvShowTax=!!on;
+  syncCalcTaxToggleUI();
+}
+function resetCalcTaxOnCalcOpen(){
+  setCalcTaxShown(false);
+}
 function loadQpvTaxPref(){
   try{
     var raw=localStorage.getItem(GSS_QPV_SHOW_TAX_KEY);
-    if(raw===null||raw===''){ calcState.qpvShowTax=true; return; }
-    calcState.qpvShowTax=(raw==='1'||raw==='true');
-  }catch(e){ calcState.qpvShowTax=true; }
+    if(raw===null||raw===''){ calcState.qpvShowTax=false; calcState.quickTaxActive=false; return; }
+    var on=(raw==='1'||raw==='true');
+    calcState.qpvShowTax=on;
+    calcState.quickTaxActive=on;
+  }catch(e){ calcState.qpvShowTax=false; calcState.quickTaxActive=false; }
 }
 function saveQpvTaxPref(){
   try{ localStorage.setItem(GSS_QPV_SHOW_TAX_KEY, calcState.qpvShowTax?'1':'0'); }catch(e){}
@@ -12453,16 +12542,50 @@ function onQuickSaleSelectChange(el){
   syncSaleBidirectional('calc');
 }
 
+function setQpPillPressed(pillId,on){
+  var pill=document.getElementById(pillId);
+  if(pill) pill.setAttribute('aria-pressed',on?'true':'false');
+}
+
+function handleQpPillTap(e,toggleFn){
+  var pill=e.currentTarget;
+  if(!pill||typeof toggleFn!=='function') return;
+  if(e.target.closest('.gss-list-trigger,select,input')) return;
+  var rect=pill.getBoundingClientRect();
+  var x=e.clientX-rect.left;
+  var mid=rect.width/2;
+  var on=pill.getAttribute('aria-pressed')==='true';
+  if(on){
+    if(e.target.closest('.qp-pill-ball')||x<mid) toggleFn();
+  }else if(x<mid||x>=mid){
+    toggleFn();
+  }
+}
+
+function initQpPillZoneClicks(){
+  var map={
+    quickBosPill:toggleBOS,
+    quickSalePill:toggleQuickSale,
+    quickTaxPill:toggleQuickTax,
+    quickDealerPill:toggleQuickDealer
+  };
+  Object.keys(map).forEach(function(id){
+    var pill=document.getElementById(id);
+    if(!pill||pill._qpZoneBound) return;
+    pill._qpZoneBound=true;
+    pill.addEventListener('click',function(e){ handleQpPillTap(e,map[id]); });
+  });
+}
+
 function syncSaleUIFromState(){
   ensureQuickSalePctSelectOptions();
-  var track=document.getElementById('saleTrack');
   var saleTog=document.querySelector('.quick-price-ctrl--sale-tog');
   var saleSel=document.getElementById('c_quickSalePctSel');
   var quickInput=document.getElementById('c_quickSalePct');
   var step2Input=document.getElementById('c_salePercent');
   var pct=calcState.salePercent>0?calcState.salePercent:0;
 
-  if(track) track.classList.toggle('on',calcState.saleActive);
+  setQpPillPressed('quickSalePill',!!calcState.saleActive);
   if(saleTog) saleTog.classList.toggle('is-sale-on',!!calcState.saleActive);
   if(!calcState.saleActive&&saleSel&&saleSel._gssListWrap){
     closeGssListPanel(saleSel._gssListWrap);
@@ -12572,14 +12695,9 @@ function calcHasPricedBuilding(){
 
 function setCalcPriceDeckEmptyState(isEmpty){
   var quick=document.getElementById('quickPriceWrap');
-  var detail=document.getElementById('rtoStreamlineCalcCard');
   if(quick){
     quick.classList.toggle('is-empty',!!isEmpty);
     quick.querySelectorAll('.quick-price-empty').forEach(function(el){ el.setAttribute('aria-hidden',isEmpty?'false':'true'); });
-  }
-  if(detail){
-    detail.classList.toggle('is-empty',!!isEmpty);
-    detail.querySelectorAll('.quick-price-empty').forEach(function(el){ el.setAttribute('aria-hidden',isEmpty?'false':'true'); });
   }
   if(isEmpty&&calcPriceDeckView==='detailed') setCalcPriceDeckView('quick');
 }
@@ -12625,15 +12743,21 @@ function updateQuickPrice(){
   var stdCredit=getStdRemovedTotal();
   var addonTotal=calcAddons().total;
   var displayPrice=(base - saleAmt + bosAmt) - stdCredit + addonTotal;
-  baseEl.textContent='$'+base.toLocaleString();
+  if(calcState.saleActive){
+    baseEl.textContent='$'+base.toLocaleString();
+    baseEl.hidden=false;
+  }else{
+    baseEl.textContent='';
+    baseEl.hidden=true;
+  }
   var qSnap=null;
   try{ qSnap=getCalcQuoteSnapshot(); }catch(_eQ){}
   var priceToShow;
   if(qSnap&&qSnap.base){
-    priceToShow=calcState.quickTaxActive!==false?Math.ceil(qSnap.grandTotal):Math.ceil(qSnap.subtotal);
+    priceToShow=isCalcTaxShown()?Math.ceil(qSnap.grandTotal):Math.ceil(qSnap.subtotal);
   }else{
     priceToShow=Math.ceil(displayPrice);
-    if(calcState.quickTaxActive!==false){
+    if(isCalcTaxShown()){
       var tr=calcState.taxMode==='standard'?(parseFloat(getSettingVal('taxRate',0))||0):(parseFloat(calcState.taxRate)||0);
       if(tr>0) priceToShow=Math.ceil(displayPrice*(1+tr/100));
     }
@@ -12855,13 +12979,52 @@ function mileageOnFromSelectionChange(){
 
 var calcPriceDeckView='quick';
 var revCalcPageOpen=false;
+var revCalcTabHome=null;
+
+function ensureRevCalcTabHome(){
+  var tab=document.getElementById('revCalcTab');
+  var deck=document.getElementById('calcPriceDeck');
+  if(!tab||!deck) return;
+  if(!revCalcTabHome){
+    revCalcTabHome={parent:deck,next:tab.nextSibling};
+  }
+}
+
+function mountRevCalcTabToDeck(){
+  ensureRevCalcTabHome();
+  var tab=document.getElementById('revCalcTab');
+  var deck=document.getElementById('calcPriceDeck');
+  if(!tab||!deck||!revCalcTabHome) return;
+  if(tab.parentNode===deck) return;
+  if(revCalcTabHome.next&&revCalcTabHome.next.parentNode===deck){
+    deck.insertBefore(tab,revCalcTabHome.next);
+  }else{
+    deck.insertBefore(tab,deck.firstChild);
+  }
+}
+
+function mountRevCalcTabToRevShell(){
+  var tab=document.getElementById('revCalcTab');
+  var slot=document.getElementById('revCalcTabSlot');
+  if(tab&&slot&&tab.parentNode!==slot) slot.appendChild(tab);
+}
 
 function setCalcPriceDeckView(view){
   if(view==='detailed'&&!calcHasPricedBuilding()) view='quick';
   calcPriceDeckView=view==='detailed'?'detailed':'quick';
   var track=document.getElementById('calcPriceDeckTrack');
   var deck=document.getElementById('calcPriceDeck');
+  var tabQuick=document.getElementById('calcPriceTabQuick');
+  var tabDetailed=document.getElementById('calcPriceTabDetailed');
   if(deck) deck.classList.toggle('deck-view-quick',calcPriceDeckView==='quick');
+  if(tabQuick){
+    tabQuick.classList.toggle('is-active',calcPriceDeckView==='quick');
+    tabQuick.setAttribute('aria-selected',calcPriceDeckView==='quick'?'true':'false');
+  }
+  if(tabDetailed){
+    tabDetailed.classList.toggle('is-active',calcPriceDeckView==='detailed');
+    tabDetailed.setAttribute('aria-selected',calcPriceDeckView==='detailed'?'true':'false');
+  }
   if(track){
     track.classList.remove('is-dragging');
     track.classList.toggle('view-detailed',calcPriceDeckView==='detailed');
@@ -12872,6 +13035,8 @@ function setCalcPriceDeckView(view){
 }
 
 function getCalcPriceDeckWidth(){
+  var content=document.querySelector('.calc-price-content');
+  if(content) return Math.max(content.offsetWidth||0,1);
   var viewport=document.getElementById('calcPriceDeckViewport');
   if(viewport) return Math.max(viewport.offsetWidth||0,1);
   var track=document.getElementById('calcPriceDeckTrack');
@@ -12903,6 +13068,7 @@ function syncCalcPriceDeckHeight(){
   var detail=document.getElementById('rtoStreamlineCalcCard');
   var viewport=document.getElementById('calcPriceDeckViewport');
   var track=document.getElementById('calcPriceDeckTrack');
+  var content=document.querySelector('.calc-price-content');
   if(!deck||!quick) return;
   var quickEmpty=quick.classList.contains('is-empty');
   var onQuickView=calcPriceDeckView==='quick';
@@ -12910,17 +13076,10 @@ function syncCalcPriceDeckHeight(){
   if(quick) quick.style.minHeight='';
   if(detail){
     detail.style.minHeight='';
-    if(onQuickView){
-      detail.style.height='0';
-      detail.style.overflow='hidden';
-      detail.style.padding='0';
-      detail.style.visibility='hidden';
-    }else{
-      detail.style.height='';
-      detail.style.overflow='';
-      detail.style.padding='';
-      detail.style.visibility='';
-    }
+    detail.style.height='';
+    detail.style.overflow='';
+    detail.style.padding='';
+    detail.style.visibility='';
   }
   if(track){
     track.style.minHeight='';
@@ -12928,37 +13087,26 @@ function syncCalcPriceDeckHeight(){
     track.style.maxHeight='';
     track.style.overflow='';
   }
+  if(content) content.style.minHeight='';
   if(viewport) viewport.style.minHeight='';
-  var qh=quick.offsetHeight||0;
-  var dh=detail&&!onQuickView?(detail.offsetHeight||0):qh;
-  var paneMax=Math.max(qh,dh);
-  var nextH=onQuickView?qh:paneMax;
-  var trackH=onQuickView?qh:paneMax;
-  if(quickEmpty&&onQuickView){
+  if(quickEmpty){
     var emptyFloor=104;
-    nextH=Math.max(qh,emptyFloor);
-    trackH=nextH;
-  }
-  if(nextH<=0&&deck.classList.contains('is-visible')){
-    requestAnimationFrame(function(){ try{ syncCalcPriceDeckHeight(); }catch(_e){} });
+    if(viewport) viewport.style.minHeight=emptyFloor+'px';
+    deck.style.height='';
     return;
   }
-  if(track){
-    track.style.minHeight=trackH+'px';
-    if(onQuickView){
-      track.style.height=trackH+'px';
-      track.style.maxHeight=trackH+'px';
-      track.style.overflow='hidden';
-    }
-  }
-  if(viewport) viewport.style.minHeight=nextH+'px';
-  if(onQuickView) quick.style.minHeight=nextH+'px';
+  var quickPane=track?track.querySelector('.calc-price-pane--quick'):null;
+  var qh=quickPane?(quickPane.offsetHeight||0):0;
+  var dh=detail?(detail.offsetHeight||0):0;
+  var paneMax=Math.max(qh,dh,1);
+  var contentH=paneMax;
+  if(track) track.style.minHeight=paneMax+'px';
+  if(content) content.style.minHeight=contentH+'px';
   deck.style.height='';
-  try{ positionRevCalcTab(); }catch(_eRvTabPos){}
 }
 
 function calcPriceDeckSwipeTarget(el){
-  return el&&el.closest('input,select,textarea,button,a,label,.tog-wrap,.tog-track,.qpv-tax-toggle,.qpv-gear-btn,.calc-price-swipe-hint,.calc-price-swipe-down,.gss-list-trigger,.gss-list-panel,.gss-list-panel--floated,.gss-list-row,.gss-list-custom-input');
+  return el&&el.closest('input,select,textarea,button,a,label,.qp-pill-fill,.qpv-tax-toggle,.qpv-gear-btn,.calc-price-tabs,.calc-price-tab,.gss-list-trigger,.gss-list-panel,.gss-list-panel--floated,.gss-list-row,.gss-list-custom-input');
 }
 
 function handleCalcPriceDeckSwipeRelease(dx,dy,velocityX,viewAtStart){
@@ -12978,9 +13126,10 @@ function handleCalcPriceDeckSwipeRelease(dx,dy,velocityX,viewAtStart){
 }
 
 function initCalcPriceDeckGestures(){
+  var content=document.querySelector('.calc-price-content');
   var track=document.getElementById('calcPriceDeckTrack');
-  if(!track||track._deckGesturesInit) return;
-  track._deckGesturesInit=true;
+  if(!content||!track||content._deckGesturesInit) return;
+  content._deckGesturesInit=true;
   var drag={active:false,startX:0,startY:0,startOffsetPx:0,viewAtStart:'quick',lastX:0,lastT:0,velocityX:0};
   function onStart(clientX,clientY,target){
     if(calcPriceDeckSwipeTarget(target)) return false;
@@ -13018,25 +13167,25 @@ function initCalcPriceDeckGestures(){
     var dy=clientY-drag.startY;
     handleCalcPriceDeckSwipeRelease(dx,dy,drag.velocityX,drag.viewAtStart);
   }
-  track.addEventListener('touchstart',function(e){
+  content.addEventListener('touchstart',function(e){
     if(e.touches.length!==1) return;
     onStart(e.touches[0].clientX,e.touches[0].clientY,e.target);
   },{passive:true});
-  track.addEventListener('touchmove',function(e){
+  content.addEventListener('touchmove',function(e){
     if(!drag.active||!e.touches.length) return;
     onMove(e.touches[0].clientX,e.touches[0].clientY);
   },{passive:true});
-  track.addEventListener('touchend',function(e){
+  content.addEventListener('touchend',function(e){
     if(!drag.active||!e.changedTouches.length) return;
     onEnd(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
   },{passive:true});
-  track.addEventListener('touchcancel',function(){
+  content.addEventListener('touchcancel',function(){
     if(!drag.active) return;
     drag.active=false;
     track.classList.remove('is-dragging');
     setCalcPriceDeckDragPx(drag.viewAtStart==='detailed'?-getCalcPriceDeckWidth():0,true);
   },{passive:true});
-  track.addEventListener('mousedown',function(e){
+  content.addEventListener('mousedown',function(e){
     if(e.button!==0) return;
     if(!onStart(e.clientX,e.clientY,e.target)) return;
     e.preventDefault();
@@ -13071,12 +13220,13 @@ function updateRevCalcTabVisibility(){
   if(!tab.classList.contains('is-dragging')){
     tab.classList.remove('rev-tab--attached');
     tab.classList.toggle('rev-tab--open',!!revCalcPageOpen);
+    if(revCalcPageOpen) mountRevCalcTabToRevShell();
+    else mountRevCalcTabToDeck();
   }
   var openLabel='Open Reverse Price Calculator';
   var backLabel='Back to Price Calculator';
   tab.setAttribute('aria-label',revCalcPageOpen?backLabel:openLabel);
   if(lbl) lbl.textContent=revCalcPageOpen?'Price Calculator':'Reverse Price Calculator';
-  positionRevCalcTab();
 }
 
 function getRevShellWidth(){
@@ -13098,12 +13248,15 @@ function getRevShellClosedOffset(){
 }
 
 function getRevTabAnchorRect(){
-  var quick=document.getElementById('quickPriceWrap');
-  if(quick&&quick.offsetParent){
-    var deck=document.getElementById('calcPriceDeck');
-    if(deck&&deck.classList.contains('is-visible')){
-      return {top:quick.getBoundingClientRect().top,height:quick.offsetHeight||quick.getBoundingClientRect().height};
-    }
+  var body=document.querySelector('.calc-price-deck-body');
+  var deck=document.getElementById('calcPriceDeck');
+  if(body&&deck&&deck.classList.contains('is-visible')){
+    var r=body.getBoundingClientRect();
+    return {top:r.top,height:r.height};
+  }
+  if(deck&&deck.classList.contains('is-visible')){
+    var r2=deck.getBoundingClientRect();
+    return {top:r2.top,height:r2.height};
   }
   return {top:Math.max(120,window.innerHeight*0.28),height:120};
 }
@@ -13121,37 +13274,36 @@ function syncRevTabToShell(){
     var deckLeft=deck?deck.getBoundingClientRect().left:0;
     if(shellRect.right<deckLeft+tabW-4){
       tab.classList.remove('rev-tab--attached','rev-tab--open');
-      tab.style.position='absolute';
-      tab.style.left='0';
-      tab.style.right='auto';
-      tab.style.marginRight='0';
-      if(deck&&document.getElementById('quickPriceWrap')){
-        var quick=document.getElementById('quickPriceWrap');
-        tab.style.top=(quick.offsetTop||0)+'px';
-        tab.style.height=(quick.offsetHeight||0)+'px';
-      }
-      tab.style.transform='none';
+      tab.style.position='';
+      tab.style.left='';
+      tab.style.right='';
+      tab.style.top='';
+      tab.style.height='';
+      tab.style.minHeight='';
+      tab.style.marginRight='';
+      tab.style.marginLeft='';
+      tab.style.transform='';
+      tab.style.writingMode='';
+      mountRevCalcTabToDeck();
       return;
     }
+  }
+  if(tab.parentNode!==document.body){
+    document.body.appendChild(tab);
   }
   tab.classList.remove('rev-tab--open');
   tab.classList.add('rev-tab--attached');
   tab.style.position='fixed';
+  tab.style.writingMode='vertical-rl';
+  tab.style.textOrientation='mixed';
   tab.style.left=Math.max(0,Math.min(shellRect.right-tabW,window.innerWidth-tabW))+'px';
   tab.style.right='auto';
   tab.style.marginRight='0';
   tab.style.marginLeft='0';
-  if(revCalcPageOpen){
-    tab.style.top='50%';
-    tab.style.height='auto';
-    tab.style.minHeight='0';
-    tab.style.transform='translateY(-50%)';
-  }else{
-    tab.style.top=anchor.top+'px';
-    tab.style.height=anchor.height+'px';
-    tab.style.minHeight='0';
-    tab.style.transform='none';
-  }
+  tab.style.top=anchor.top+'px';
+  tab.style.height=anchor.height+'px';
+  tab.style.minHeight='0';
+  tab.style.transform='none';
 }
 
 function resetRevTabDragStyles(){
@@ -13167,24 +13319,23 @@ function resetRevTabDragStyles(){
   tab.style.top='';
   tab.style.height='';
   tab.style.minHeight='';
+  tab.style.writingMode='';
+  tab.style.textOrientation='';
 }
 
 function clearRevTabDragOffset(){
   resetRevTabDragStyles();
+  if(revCalcPageOpen) mountRevCalcTabToRevShell();
+  else mountRevCalcTabToDeck();
 }
 
 function positionRevCalcTab(){
   var tab=document.getElementById('revCalcTab');
   if(!tab||tab.style.display==='none') return;
-  if(tab.classList.contains('rev-tab--attached')||tab.classList.contains('rev-tab--open')) return;
-  tab.style.position='';
-  tab.style.left='';
-  tab.style.right='';
-  tab.style.top='';
-  tab.style.height='';
-  tab.style.minHeight='';
-  tab.style.margin='';
-  if(!tab.classList.contains('is-dragging')) tab.style.transform='none';
+  if(tab.classList.contains('rev-tab--attached')||tab.classList.contains('is-dragging')) return;
+  resetRevTabDragStyles();
+  if(revCalcPageOpen) mountRevCalcTabToRevShell();
+  else mountRevCalcTabToDeck();
 }
 
 function openRevCalcPage(){
@@ -13194,6 +13345,7 @@ function openRevCalcPage(){
   syncSaleBidirectional('calc');
   revCalcPageOpen=true;
   resetRevTabDragStyles();
+  mountRevCalcTabToRevShell();
   shell.classList.remove('is-dragging');
   setRevShellSlide(0,true);
   shell.classList.add('open');
@@ -13221,6 +13373,7 @@ function closeRevCalcPage(){
   shell.classList.remove('open');
   shell.setAttribute('aria-hidden','true');
   resetRevTabDragStyles();
+  mountRevCalcTabToDeck();
   if(backdrop){
     backdrop.classList.remove('open');
     backdrop.setAttribute('aria-hidden','true');
@@ -13242,6 +13395,7 @@ function initRevCalcGestures(){
   var shell=document.getElementById('revCalcShell');
   if(!tab||tab._revGesturesInit) return;
   tab._revGesturesInit=true;
+  ensureRevCalcTabHome();
   var drag={active:false,startX:0,startSlide:0,shellW:480,didMove:false,lastX:0,lastT:0,velocityX:0};
 
   tab.addEventListener('click',function(e){
@@ -13400,11 +13554,7 @@ function initRevCalcGestures(){
   setRevShellSlide(getRevShellClosedOffset(),false);
   window.addEventListener('resize',function(){
     if(!revCalcPageOpen) setRevShellSlide(getRevShellClosedOffset(),false);
-    try{ positionRevCalcTab(); }catch(_e){}
   });
-  window.addEventListener('scroll',function(){
-    try{ positionRevCalcTab(); }catch(_e){}
-  },{passive:true});
 }
 
 function getReverseCompareValue(snap,mode,taxBasis){
@@ -13420,6 +13570,7 @@ function initCalcAdvancedTools(){
   initRevCalcUi();
   initCalcPriceDeckGestures();
   initRevCalcGestures();
+  initQpPillZoneClicks();
   updateQuickPrice();
 }
 
@@ -14075,13 +14226,9 @@ function toggleReverseCalcPanel(){
 }
 
 function toggleQpvShowTax(){
-  calcState.qpvShowTax=!calcState.qpvShowTax;
+  setCalcTaxShown(!isCalcTaxShown());
   saveQpvTaxPref();
-  var t=document.getElementById('qpvTaxToggle');
-  if(t){
-    t.classList.toggle('on',!!calcState.qpvShowTax);
-    t.setAttribute('aria-pressed',calcState.qpvShowTax?'true':'false');
-  }
+  updateQuickPrice();
   renderCalcRTOStreamline();
 }
 
@@ -14144,7 +14291,7 @@ function renderReviewSummary(){
   function buildLineItems(){
     var html='';
     html+=buildLine('List Price', fmt(q.base));
-    if(q.saleAmount>0) html+=buildLine('Sale ('+q.salePct+'% off list)','-'+fmt(q.saleAmount));
+    if(q.saleAmount>0) html+=buildLine('Promotional Discount ('+q.salePct+'% off list)','-'+fmt(q.saleAmount));
     if(q.bosAmt>0) html+=buildLine('Build-on-Site (30%)','+'+fmt(q.bosAmt));
     if(q.dealerAmount>0){
       var dlbl=(document.getElementById('c_discountLabel')||{}).value||'Dealer discount';
@@ -14157,7 +14304,7 @@ function renderReviewSummary(){
         if(rq>0) html+=buildLine('Removed: '+(rq>1?rq+'× ':'')+it.label,'-'+fmt(rq*it.credit));
       });
     }
-    if(q.saleAmount>0||q.bosAmt>0||q.stdCredit>0||q.dealerAmount>0) html+=buildLine('Your Sale Price', fmt(q.saleBase));
+    if(q.saleAmount>0||q.bosAmt>0||q.stdCredit>0||q.dealerAmount>0) html+=buildLine('Sale Price', fmt(q.saleBase));
     if(q.addonLines&&q.addonLines.length){
       q.addonLines.forEach(function(l){ html+=buildLine('+ '+l.label, fmt(l.val)); });
     }
@@ -14517,11 +14664,7 @@ function renderCalcRTOStreamline(){
     return;
   }
   if(deck) deck.classList.add('is-visible');
-  var tgl=document.getElementById('qpvTaxToggle');
-  if(tgl){
-    tgl.classList.toggle('on',!!calcState.qpvShowTax);
-    tgl.setAttribute('aria-pressed',calcState.qpvShowTax?'true':'false');
-  }
+  syncCalcTaxToggleUI();
   body.innerHTML=buildQPVStreamlineHtml(false);
   syncCalcPriceDeckHeight();
 }
@@ -14546,7 +14689,7 @@ function buildQPVStreamlineHtml(forceNoTax){
   }
   q.addonLines.forEach(function(l){ htmlL+=line('+ '+l.label, fmtCents(l.val)); });
   htmlL+=line('Subtotal', fmtCents(q.subtotal));
-  var showTax=!!calcState.qpvShowTax&&!forceNoTax;
+  var showTax=isCalcTaxShown()&&!forceNoTax;
   var qpvCashTax=Math.round(q.subtotal*(q.taxRate/100)*100)/100;
   if(q.taxRate>0&&showTax) htmlL+=line('Tax ('+q.taxRate+'%)', fmtCents(qpvCashTax));
   var qpvCashTotal=showTax&&q.taxRate>0?Math.round((q.subtotal+qpvCashTax)*100)/100:q.subtotal;
@@ -14910,8 +15053,7 @@ function getCalcBasePrice(){
 
 function toggleBOS(){
   calcState.bosActive=!calcState.bosActive;
-  var t=document.getElementById('bosTrack');
-  if(t) t.classList.toggle('on',calcState.bosActive);
+  setQpPillPressed('quickBosPill',!!calcState.bosActive);
   var bosCtrl=document.getElementById('quickBosCtrl');
   if(bosCtrl) bosCtrl.classList.toggle('is-bos-on',!!calcState.bosActive);
   updateQuickPrice();
@@ -14919,8 +15061,8 @@ function toggleBOS(){
 }
 
 function toggleQuickTax(){
-  calcState.quickTaxActive=!calcState.quickTaxActive;
-  syncCalcQuickControlsFromState();
+  setCalcTaxShown(!isCalcTaxShown());
+  saveQpvTaxPref();
   updateQuickPrice();
   renderCalcQuote();
 }
@@ -14997,9 +15139,23 @@ function ensureCalcQuickTaxOptions(){
   sel.appendChild(frag);
 }
 
+function getCalcListBasePrice(){
+  if(!calcState.type||!calcState.width||!calcState.length) return null;
+  var row=PRICING[calcState.width]&&PRICING[calcState.width][calcState.length];
+  return row&&row[calcState.type]?row[calcState.type]:null;
+}
+
+function getQuickDealerDisplayLabel(pct,base){
+  pct=parseFloat(pct)||0;
+  if(!pct) return 'None';
+  var amt=base?Math.ceil(base*(pct/100)):0;
+  return pct+'% - '+fmt(amt);
+}
+
 function syncCalcQuickControlsFromState(){
   ensureCalcQuickTaxOptions();
-  if(calcState.quickTaxActive===undefined) calcState.quickTaxActive=true;
+  if(calcState.quickTaxActive===undefined) calcState.quickTaxActive=false;
+  if(calcState.qpvShowTax===undefined) calcState.qpvShowTax=false;
   if(calcState.quickDealerActive===undefined) calcState.quickDealerActive=!!(calcState.dealerDiscount>0);
   var sel=document.getElementById('calcQuickTaxSelect');
   var cust=document.getElementById('calcQuickTaxPct');
@@ -15019,26 +15175,30 @@ function syncCalcQuickControlsFromState(){
     }
   }
   var cd=document.getElementById('calcQuickDealer');
-  if(cd) cd.value=String(calcState.dealerDiscount||0);
+  if(cd){
+    cd.value=String(calcState.dealerDiscount||0);
+    var dealerBase=getCalcListBasePrice();
+    for(var di=0;di<cd.options.length;di++){
+      var dopt=cd.options[di];
+      dopt.textContent=getQuickDealerDisplayLabel(dopt.value,dealerBase);
+    }
+  }
   if(cust&&sel&&sel._gssListEnhanced) cust.style.display='none';
   gssRefreshListTrigger(sel);
   gssRefreshListTrigger(cd);
-  var taxTrack=document.getElementById('quickTaxTrack');
-  var taxWrap=document.querySelector('.quick-price-ctrl--tax-tog');
-  var taxOn=calcState.quickTaxActive!==false;
-  if(taxTrack) taxTrack.classList.toggle('on',taxOn);
-  if(taxWrap) taxWrap.classList.toggle('is-ctrl-on',taxOn);
-  var dealerTrack=document.getElementById('quickDealerTrack');
-  var dealerWrap=document.querySelector('.quick-price-ctrl--dealer-tog');
+  syncCalcTaxToggleUI();
   var dealerOn=!!calcState.quickDealerActive;
-  if(dealerTrack) dealerTrack.classList.toggle('on',dealerOn);
+  setQpPillPressed('quickDealerPill',dealerOn);
+  var dealerWrap=document.querySelector('.quick-price-ctrl--dealer-tog');
   if(dealerWrap) dealerWrap.classList.toggle('is-ctrl-on',dealerOn);
+  setQpPillPressed('quickBosPill',!!calcState.bosActive);
   var bosCtrl=document.getElementById('quickBosCtrl');
   if(bosCtrl) bosCtrl.classList.toggle('is-bos-on',!!calcState.bosActive);
 }
 
 function calcQuickTaxSelectChange(el){
-  calcState.quickTaxActive=true;
+  setCalcTaxShown(true);
+  saveQpvTaxPref();
   var v=el.value;
   var inp=document.getElementById('calcQuickTaxPct');
   if(v==='custom'){
@@ -15082,7 +15242,8 @@ function calcQuickTaxSelectChange(el){
 }
 
 function calcQuickTaxInput(el){
-  calcState.quickTaxActive=true;
+  setCalcTaxShown(true);
+  saveQpvTaxPref();
   var v=parseFloat(el.value);
   calcState.taxMode='custom';
   calcState.taxRate=isNaN(v)||v<0?0:v;
@@ -15172,8 +15333,6 @@ function calcGoTo(n){
   }
   document.querySelectorAll('.calc-page').forEach(function(p,i){
     p.classList.toggle('active',i===n);
-    var dot=document.getElementById('cdot'+i);
-    if(dot){dot.classList.toggle('active',i===n);dot.classList.toggle('done',i<n);}
   });
   calcCurrentPage=n;
   window.scrollTo(0,0);
@@ -18410,8 +18569,8 @@ function buildCalcQuoteText(q){
   if(_fullAddr)t+=`Delivery: ${_fullAddr}\n`;
 
   t+=`\nBUILDING\n${'─'.repeat(36)}\n${NAMES[calcState.type]}\nSize: ${calcState.width}' × ${calcState.length}' (${calcState.width*calcState.length} sq ft)\nList Price: ${fmt(q.base)}\n`;
-  if(q.saleAmount>0)t+=`Sale Discount (${q.salePct}% off list price): -${fmt(q.saleAmount)}\n`;
-  if(q.saleAmount>0||q.dealerPct>0)t+=`Your Sale Price: ${fmt(q.saleBase)}\n`;
+  if(q.saleAmount>0)t+=`Promotional Discount (${q.salePct}% off list price): -${fmt(q.saleAmount)}\n`;
+  if(q.saleAmount>0||q.dealerPct>0)t+=`Sale Price: ${fmt(q.saleBase)}\n`;
   if(q.addonLines.length){
     t+=`\nOPTIONS (added after sale)\n${'─'.repeat(36)}\n`;
     q.addonLines.forEach(function(l){ t+=`${l.label}: ${fmt(l.val)}\n`; });
@@ -18661,7 +18820,7 @@ function getCalcQuoteSnapshot(){
   var subtotal=Math.round((saleBase+addonTotal)*100)/100;
 
   var taxRate=0;
-  if(calcState.quickTaxActive!==false){
+  if(isCalcTaxShown()){
     taxRate=calcState.taxMode==='standard'?getSettingVal('taxRate',0):calcState.taxRate;
   }
   var assurancePlan=calcState.assurancePlan||2;
@@ -18773,7 +18932,7 @@ function renderCalcQuote(){
     <div class="price-card-size">${calcState.width}' × ${calcState.length}' · ${calcState.width*calcState.length} sq ft</div>
     <div class="price-line"><span class="pl-l">List Price</span><span class="pl-r">${fmt(base)}</span></div>`;
   if(saleAmount>0){
-    html+=`<div class="price-line addon"><span class="pl-l" style="color:#E87A7A;">- Sale (${salePct}% off list price)</span><span class="pl-r" style="color:#E87A7A;">-${fmt(saleAmount)}</span></div>`;
+    html+=`<div class="price-line addon"><span class="pl-l" style="color:#E87A7A;">- Promotional Discount (${salePct}% off list price)</span><span class="pl-r" style="color:#E87A7A;">-${fmt(saleAmount)}</span></div>`;
   }
   if(dealerAmount>0){
     var _dlbl=(document.getElementById('c_discountLabel')||{}).value||'Discount';
@@ -18789,7 +18948,7 @@ function renderCalcQuote(){
     html+='<div class="price-line addon"><span class="pl-l" style="color:#4A8A4A;">Removed: '+_rl.join(', ')+'</span><span class="pl-r" style="color:#4A8A4A;">-'+fmt(stdCredit)+'</span></div>';
   }
   if(saleAmount>0||bosAmt>0||stdCredit>0||dealerAmount>0){
-    html+=`<div class="price-line"><span class="pl-l" style="color:var(--sky);">Your Sale Price</span><span class="pl-r">${fmt(saleBase)}</span></div>`;
+    html+=`<div class="price-line"><span class="pl-l" style="color:var(--sky);">Sale Price</span><span class="pl-r">${fmt(saleBase)}</span></div>`;
   }
 
   addonLines.forEach(function(l){
@@ -18834,7 +18993,6 @@ function renderCalcQuote(){
   }
 
   html+=`<div class="down-card"><div class="down-lbl">Minimum Down</div><div class="down-chips"><div class="down-chip">Cash: ${fmt(Math.ceil(grandTotal*0.5))}</div><div class="down-chip">RTO: ${q.rtoDownDisplayText}</div></div></div>`;
-  html+='<button type="button" class="btn-secondary calc-quote-copy-btn" style="width:100%;margin-top:10px;margin-bottom:16px;padding:12px 14px;border-radius:10px;letter-spacing:0.5px;font-weight:700;" onclick="copyEstimateTextToClipboard()">Copy estimate text</button>';
 
   document.getElementById('calcQuoteContent').innerHTML=html;
   // ── refresh live RTO summary on cpage1 ──
@@ -24171,7 +24329,9 @@ function gssRefreshListTrigger(sel){
   if(!sel||!sel._gssListTrigger) return;
   var btn=sel._gssListTrigger;
   var label='Select…';
-  if(sel.value){
+  if(sel.id==='calcQuickDealer'){
+    label=getQuickDealerDisplayLabel(sel.value,getCalcListBasePrice());
+  }else if(sel.value){
     if(sel.value==='custom'){
       var customInp=gssListLinkedCustomInput(sel);
       if(customInp&&customInp.value!=='') label=customInp.value+(sel.id.indexOf('Sale')>=0||sel.id.indexOf('sale')>=0||sel.id.indexOf('Tax')>=0||sel.id.indexOf('tax')>=0?'%':'');
