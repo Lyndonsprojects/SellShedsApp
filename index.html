@@ -30,6 +30,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-functions-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 /* Force light mode — prevent Safari dark mode override */
 :root {
@@ -64,6 +65,7 @@ body { font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'Helvetica Neue',s
 .screen.active { display:block; }
 /* Push non-home screens below the status bar (safe area) */
 .screen.active:not(#screenHome) { padding-top:var(--safe-top-offset); }
+#screenCalc.screen.active { padding-top:0; }
 
 /* HEADER */
 .header { background:var(--earth); padding:calc(14px + var(--safe-top)) 16px 14px; display:flex; align-items:center; gap:12px; position:sticky; top:0; z-index:50; border-bottom:3px solid var(--barn); }
@@ -608,6 +610,55 @@ select option { background:var(--earth); color:var(--cream); }
 .quote-hub-tile .qhub-soon-tag { font-size:0.55rem; font-weight:800; background:rgba(232,200,122,0.18); color:var(--wheat); padding:2px 6px; border-radius:5px; letter-spacing:1px; align-self:flex-start; margin-top:2px; }
 a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
 
+.sel-opts-section {
+  border:1.5px solid rgba(232,200,122,0.25); border-radius:10px;
+  padding:10px 12px 12px; margin:10px 0 4px; background:rgba(0,0,0,0.12);
+}
+.sel-opts-head {
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  margin:0 0 8px;
+}
+.sel-opts-title {
+  font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;
+  font-size:0.95rem; letter-spacing:2px; color:rgba(232,200,122,0.85);
+}
+.sel-opts-add-btn {
+  -webkit-appearance:none; appearance:none; cursor:pointer; flex-shrink:0;
+  background:rgba(196,81,31,0.2); border:1.5px solid rgba(196,81,31,0.45);
+  color:var(--wheat); border-radius:7px; padding:5px 10px;
+  font-size:0.68rem; font-weight:700; letter-spacing:0.8px;
+}
+.sel-opts-add-btn:disabled { opacity:0.35; cursor:not-allowed; }
+.sel-opts-add-btn:active:not(:disabled) { opacity:0.85; }
+.sel-opts-grid {
+  display:grid; grid-template-columns:repeat(2,1fr); gap:6px; margin:0;
+}
+@media (max-width:340px) { .sel-opts-grid { grid-template-columns:1fr; } }
+.sel-opt-card {
+  display:grid; grid-template-columns:auto 1fr auto auto; align-items:center; gap:4px;
+  padding:7px 6px; background:rgba(0,0,0,0.22); border:1px solid rgba(232,200,122,0.15);
+  border-radius:8px; font-size:0.68rem; min-width:0;
+}
+.sel-opt-card.is-excluded { opacity:0.55; }
+.sel-opt-chk {
+  width:18px; height:18px; min-width:18px; border-radius:4px;
+  border:2px solid rgba(232,200,122,0.35); background:transparent;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  color:#fff; font-size:0.65rem; font-weight:700; line-height:1; padding:0;
+  -webkit-appearance:none; appearance:none;
+}
+.sel-opt-chk.is-included { background:var(--sage); border-color:var(--sage); }
+.sel-opt-name { font-weight:600; color:var(--cream); min-width:0; line-height:1.2; overflow-wrap:anywhere; }
+.sel-opt-price { font-weight:700; color:var(--wheat); flex-shrink:0; font-size:0.65rem; }
+.sel-opt-x {
+  -webkit-appearance:none; appearance:none; border:none;
+  background:rgba(196,81,31,0.25); color:var(--wheat);
+  width:20px; height:20px; border-radius:5px; cursor:pointer;
+  font-size:0.75rem; line-height:1; padding:0; flex-shrink:0;
+}
+.sel-opts-empty {
+  grid-column:1/-1; font-size:0.72rem; color:rgba(232,200,122,0.45); padding:4px 2px;
+}
 .opts-summary-wrap { margin:10px 0 8px; }
 .opts-summary-title { font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:0.78rem; letter-spacing:2px; color:rgba(232,200,122,0.65); margin-bottom:6px; }
 .opts-summary-row { display:flex; align-items:center; gap:8px; padding:10px 12px; margin-bottom:6px; background:rgba(0,0,0,0.22); border:1px solid rgba(232,200,122,0.15); border-radius:8px; font-size:0.8rem; }
@@ -720,16 +771,52 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
   min-width:0; flex-shrink:0; padding-bottom:6px;
 }
 .quick-price-body-row {
-  display:flex; align-items:stretch; gap:12px; flex:1; min-height:0; min-width:0;
+  display:flex; align-items:stretch; gap:0; flex:1; min-height:0; min-width:0;
 }
+.calc-price-hero-row {
+  display:flex; align-items:stretch; gap:0; min-width:0; flex-shrink:0;
+}
+.calc-rev-tab-col {
+  flex:0 0 22px; min-width:22px; max-width:22px; align-self:stretch;
+  display:flex; align-items:center; position:relative;
+}
+.calc-rev-tab-col #revCalcTab {
+  display:flex !important; position:relative; left:auto; top:auto;
+  width:22px; min-width:22px; max-width:22px; height:auto; min-height:0;
+  align-self:center; margin:0; border-radius:0 8px 8px 0;
+  border:1px solid rgba(232,200,122,0.12); border-left:none;
+  background:rgba(255,255,255,0.03);
+  padding:9px 2px; font-size:0.46rem; letter-spacing:0.6px;
+}
+.calc-price-hero-slide {
+  flex:1; min-width:0; overflow:hidden;
+  display:flex; flex-direction:column;
+}
+.calc-price-vdivider {
+  flex:0 0 1px; width:1px; align-self:stretch;
+  background:rgba(232,200,122,0.25); margin:4px 0;
+}
+#quickBosCtrl.qp-pill-row--header { display:none; }
 .quick-price-price-center {
   flex:1; min-width:0; display:flex; flex-direction:column;
   align-items:center; justify-content:center; text-align:center;
-  padding:4px 0 8px; gap:14px;
+  padding:14px 10px; gap:3px;
 }
-.quick-price-main-row {
-  display:flex; align-items:stretch; gap:12px; min-width:0;
+.cash-price-lbl {
+  font-size:0.58rem; font-weight:600; letter-spacing:1.5px;
+  color:rgba(232,200,122,0.65); text-transform:uppercase;
 }
+.cash-sale-row { display:flex; flex-direction:column; align-items:center; gap:1px; margin-bottom:3px; }
+.cash-save-amt { font-size:0.66rem; font-weight:700; letter-spacing:0.4px; color:var(--sage); }
+.cash-due-wrap { display:inline-flex; align-items:center; gap:2px; }
+.cash-due-prefix { color:var(--wheat); font-weight:700; }
+.cash-due-input {
+  width:84px; text-align:right; -webkit-appearance:none; appearance:none;
+  background:rgba(255,255,255,0.08); border:1.5px solid rgba(232,200,122,0.3);
+  border-radius:6px; color:#fff; font-size:0.82rem; padding:3px 6px; font-weight:700;
+}
+.qpv-due-note { font-size:0.62rem; color:rgba(232,200,122,0.55); text-align:right; margin-top:2px; }
+.qpv-line.qpv-due-today { align-items:center; }
 .quick-price-hero {
   display:flex; flex-direction:column; align-items:flex-start; justify-content:center;
   gap:4px; flex:1; min-width:0;
@@ -766,29 +853,33 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
 }
 .quick-price-bos.is-visible { display:block; }
 .quick-price-amount {
-  flex-shrink:0; text-align:center;
-  font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:3.25rem;
-  letter-spacing:1px; line-height:0.92; margin-top:0;
+  flex-shrink:0; text-align:center; white-space:nowrap;
+  font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:clamp(2.6rem,12vw,4rem);
+  letter-spacing:0.5px; line-height:0.92; margin-top:0;
 }
 .quick-price-controls {
-  flex:0 0 42%; max-width:42%; display:flex; flex-direction:column;
-  justify-content:center; gap:8px; min-width:0;
+  flex:0 0 40%; max-width:40%; display:flex; flex-direction:column;
+  justify-content:center; gap:0; min-width:0; padding:12px 12px 12px 8px;
 }
-#quickBosCtrl.qp-pill-row--header {
-  flex:0 0 42%; max-width:42%; min-width:0;
-}
-/* Rolling pill toggles */
+#quickBosCtrl.qp-pill-row--header { display:none; }
+/* Rolling pill toggles — label on the left, dotted separator between rows */
 .qp-pill-row {
-  display:flex; flex-direction:column; gap:3px; min-width:0;
+  display:flex; flex-direction:row; align-items:center; gap:8px; min-width:0;
+  padding:7px 0; border-bottom:1px dotted rgba(232,200,122,0.32);
 }
+.quick-price-controls > .qp-pill-row:first-child { padding-top:0; }
+.quick-price-controls > .qp-pill-row:last-child { border-bottom:none; padding-bottom:0; }
+.qp-pill-icon { width:11px; height:11px; flex-shrink:0; opacity:0.85; }
 .qp-pill-label {
+  flex:0 0 auto; min-width:38px;
   font-size:0.58rem; font-weight:600; letter-spacing:1.2px; text-transform:uppercase;
   color:var(--wheat); line-height:1.1;
+  display:inline-flex; align-items:center; gap:3px;
 }
 .qp-pill {
-  position:relative; display:flex; align-items:center; width:100%; height:36px;
+  position:relative; display:flex; align-items:center; flex:1; min-width:0; height:26px;
   border-radius:999px; border:1.5px solid rgba(232,200,122,0.25);
-  background:rgba(255,255,255,0.08); padding:0 34px 0 10px;
+  background:rgba(255,255,255,0.08); padding:0 28px 0 8px;
   overflow:hidden; cursor:pointer; box-sizing:border-box;
   -webkit-appearance:none; appearance:none; font:inherit; text-align:left;
   transition:background 0.2s ease, border-color 0.2s ease;
@@ -816,8 +907,8 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
 .qp-pill-fill .gss-list-wrap { width:100%; max-width:100%; }
 .qp-pill-fill .gss-list-trigger {
   border:none !important; background:transparent !important;
-  padding:0 4px !important; min-height:30px !important; height:30px !important;
-  font-size:0.76rem !important; color:#fff !important; text-align:center;
+  padding:0 4px !important; min-height:24px !important; height:24px !important;
+  font-size:0.74rem !important; color:#fff !important; text-align:center;
   justify-content:center;
 }
 .qp-pill-fill .gss-list-trigger::after { display:none !important; }
@@ -862,33 +953,31 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
   width:100%; max-width:100%; box-sizing:border-box;
 }
 #calcPriceDeck.is-visible {
-  display:grid; grid-template-columns:30px minmax(0,1fr); gap:0; align-items:stretch;
-  padding-left:0;
+  display:block;
 }
-#calcPriceDeck.rev-tab-open.is-visible { grid-template-columns:minmax(0,1fr); }
+#calcPriceDeck.rev-tab-open.is-visible { display:block; }
 .calc-price-deck-body {
-  grid-column:2; min-width:0; display:flex; flex-direction:column;
+  min-width:0; display:flex; flex-direction:column;
 }
-#calcPriceDeck.rev-tab-open .calc-price-deck-body { grid-column:1; }
 #calcPriceDeckViewport {
   min-width:0; width:100%; max-width:100%; overflow:hidden;
-  border:1.5px solid rgba(232,200,122,0.25); border-left:none;
-  border-radius:0 10px 10px 0; box-sizing:border-box;
+  border:1.5px solid rgba(232,200,122,0.25);
+  border-radius:10px; box-sizing:border-box;
   background:var(--calc-panel-bg);
   display:flex; flex-direction:column;
   color:#fff;
 }
 #quickPriceWrap {
   display:flex !important; flex-direction:column; background:var(--calc-panel-bg); border:none; border-radius:0;
-  padding:14px 16px 12px; margin:0; flex:1; width:100%; min-width:0; box-sizing:border-box;
+  padding:0; margin:0; flex:0 0 auto; width:100%; min-width:0; box-sizing:border-box;
   align-self:stretch; min-height:0; color:#fff;
 }
 .calc-price-panel-active {
-  display:flex; flex-direction:column; min-height:0; flex:1;
+  display:flex; flex-direction:column; min-height:0; flex:0 0 auto;
 }
 .calc-price-content {
   overflow:hidden; min-width:0; width:100%; touch-action:pan-y;
-  flex:1; display:flex; flex-direction:column; min-height:0;
+  flex:0 0 auto; display:flex; flex-direction:column; min-height:0;
 }
 #calcPriceDeckTrack {
   display:flex; flex-direction:row; align-items:stretch; width:200%; min-width:0;
@@ -898,15 +987,137 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
   flex:1; min-height:0;
 }
 #calcPriceDeckTrack.is-dragging { transition:none !important; }
-#calcPriceDeckTrack.view-detailed { transform:translateX(-50%); }
+#calcPriceDeckTrack.view-detailed,
+#calcPriceDeckTrack.view-rto { transform:translateX(-50%); }
+#calcDetailsTrack {
+  display:flex; flex-direction:row; align-items:stretch; width:200%; min-width:0;
+  transition:transform 0.38s cubic-bezier(0.32, 0.72, 0, 1); will-change:transform;
+}
+#calcDetailsTrack.is-dragging { transition:none !important; }
+#calcDetailsTrack.view-detailed,
+#calcDetailsTrack.view-rto { transform:translateX(-50%); }
+.calc-details-area { width:100%; box-sizing:border-box; }
+.calc-details-pane {
+  width:100%; min-width:0; box-sizing:border-box;
+  padding:0 12px 10px;
+}
+.calc-details-pane--cash { display:block; }
+.calc-details-pane--rto { display:none; }
+#calcPriceDeck.deck-view-rto .calc-details-pane--cash { display:none; }
+#calcPriceDeck.deck-view-rto .calc-details-pane--rto { display:block; }
+.calc-detail-collapse {
+  margin-top:6px; border-top:1px solid rgba(232,200,122,0.25);
+  margin-left:-12px; margin-right:-12px; padding-left:12px; padding-right:12px;
+}
+.calc-detail-collapse summary {
+  list-style:none; cursor:pointer; display:flex; align-items:center; justify-content:space-between;
+  padding:10px 0; font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;
+  font-size:0.95rem; letter-spacing:2px; color:rgba(232,200,122,0.85);
+}
+.calc-detail-collapse summary::-webkit-details-marker { display:none; }
+.calc-detail-chevron {
+  width:8px; height:8px; border-right:2px solid rgba(232,200,122,0.55);
+  border-bottom:2px solid rgba(232,200,122,0.55);
+  transform:rotate(45deg); transition:transform 0.2s;
+  margin-right:4px;
+}
+.calc-detail-collapse[open] .calc-detail-chevron { transform:rotate(-135deg); }
+.calc-detail-body { padding:4px 0 8px; font-size:0.76rem; }
+.rto-hero-block { padding:14px 10px; }
+.rto-hero-monthly {
+  font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;
+  font-size:clamp(1.1rem,4.5vw,1.45rem); color:var(--barn); letter-spacing:0.5px; line-height:1.1;
+}
+.rto-from-lbl { font-size:0.58rem; letter-spacing:1.5px; color:rgba(232,200,122,0.65); margin-top:6px; }
+.rto-settings-row { display:flex; gap:10px; margin-top:6px; align-items:flex-end; }
+.rto-setting-field { flex:1; min-width:0; display:flex; flex-direction:column; gap:4px; }
+.rto-setting-field .qpv-settings-label { font-size:0.6rem; letter-spacing:1px; color:rgba(232,200,122,0.7); text-transform:uppercase; display:flex; align-items:center; gap:5px; }
+.rto-setting-select,
+.calc-dark-select,
+#screenCalc .gss-list-wrap:has(#calcWidth) .gss-list-trigger,
+#screenCalc .gss-list-wrap:has(#calcLength) .gss-list-trigger,
+#screenCalc .gss-list-wrap:has(#assuranceSelect) .gss-list-trigger,
+.qp-pill-fill select {
+  -webkit-appearance:none; appearance:none; width:100%; box-sizing:border-box;
+  background:rgba(255,255,255,0.08); border:1.5px solid rgba(232,200,122,0.25);
+  color:var(--cream); border-radius:7px; padding:7px 8px; font-size:0.78rem;
+}
+.rto-setting-select option,
+.calc-dark-select option,
+.qp-pill-fill select option {
+  background:#251a15; color:var(--cream);
+}
+.rto-setting-select:focus,
+.calc-dark-select:focus {
+  border-color:var(--wheat);
+  box-shadow:0 0 0 3px rgba(232,200,122,0.12);
+  outline:none;
+}
+.calc-no-spin { -moz-appearance:textfield; }
+.calc-no-spin::-webkit-outer-spin-button,
+.calc-no-spin::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+#calcPriceDeck.bos-blocks-rto #calcPriceTabRto { opacity:0.38; pointer-events:none; cursor:not-allowed; }
+.rto-early-payoff-btn {
+  -webkit-appearance:none; appearance:none; width:100%; margin-top:10px; cursor:pointer;
+  background:rgba(255,255,255,0.06); border:1.5px solid rgba(232,200,122,0.22);
+  border-radius:8px; padding:10px 12px; color:var(--wheat); font:inherit; font-size:0.78rem;
+  font-weight:600; text-align:left;
+}
+.cash-due-display {
+  cursor:pointer; font-weight:700; color:var(--wheat); border-bottom:1px dashed rgba(232,200,122,0.45);
+  padding:0 2px;
+}
+.cash-due-display:hover { color:#fff; border-bottom-color:rgba(232,200,122,0.7); }
+#quoteShareChannelOverlay {
+  display:none; position:fixed; inset:0; z-index:10002;
+  background:rgba(0,0,0,0.55); align-items:flex-end; justify-content:center;
+  padding:0 12px max(12px, env(safe-area-inset-bottom, 0px)); box-sizing:border-box;
+}
+#quoteShareChannelOverlay.open { display:flex !important; }
+.quote-share-channel-sheet {
+  max-width:420px; width:100%; background:var(--earth);
+  border-radius:16px 16px 0 0; border:1.5px solid rgba(232,200,122,0.3);
+  border-bottom:none; padding:16px 16px 22px; box-sizing:border-box;
+}
+.quote-share-channel-btn {
+  -webkit-appearance:none; appearance:none; width:100%; margin-bottom:8px; cursor:pointer;
+  padding:14px; border-radius:10px; border:1.5px solid rgba(232,200,122,0.3);
+  background:rgba(255,255,255,0.06); color:var(--cream); font:inherit;
+  font-size:0.95rem; font-weight:600;
+}
+.quote-share-channel-btn--cancel { background:transparent; color:rgba(232,200,122,0.65); }
+.rto-setting-field .qpv-settings-cr-input { display:flex; align-items:center; gap:6px; }
+.rto-setting-field .qpv-settings-cr-input .qpv-settings-prefix { font-size:0.9rem; font-weight:700; color:var(--wheat); }
+.rto-setting-field .qpv-settings-cr-input input {
+  flex:1; min-width:0; padding:7px 8px; border-radius:7px;
+  border:1.5px solid rgba(232,200,122,0.25); background:rgba(255,255,255,0.08);
+  color:var(--cream); font-size:0.78rem; box-sizing:border-box;
+}
+.rto-term-chips { display:grid; grid-template-columns:1fr 1fr 1fr; gap:5px; margin-top:10px; }
+.rto-term-chip {
+  -webkit-appearance:none; appearance:none; cursor:pointer; text-align:center;
+  background:rgba(255,255,255,0.06); border:1.5px solid rgba(232,200,122,0.22);
+  border-radius:7px; padding:6px 4px; color:var(--cream);
+}
+.rto-term-chip.is-active { background:rgba(196,81,31,0.25); border-color:var(--barn); color:var(--wheat); }
+.rto-term-chip-mo { font-family:'Bebas Neue',Impact,sans-serif; font-size:0.68rem; letter-spacing:1px; display:block; }
+.rto-term-chip-val { font-size:0.6rem; color:rgba(232,200,122,0.7); display:block; margin-top:2px; }
+.rto-detail-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:8px 12px; margin-top:4px;
+}
+.rto-detail-cell-lbl { font-size:0.58rem; letter-spacing:1px; color:rgba(232,200,122,0.6); text-transform:uppercase; }
+.rto-detail-cell-val { font-size:0.82rem; font-weight:700; color:#fff; margin-top:2px; }
 .calc-price-pane {
   flex:0 0 50%; width:50%; min-width:0; box-sizing:border-box; align-self:stretch;
   background:var(--calc-panel-bg); padding:0 0 10px; color:#fff;
 }
+.calc-price-pane--cash,
 .calc-price-pane--quick {
-  display:flex; flex-direction:column; min-height:100%;
+  display:flex; flex-direction:column; min-height:0;
 }
+.calc-price-pane--cash .quick-price-active,
 .calc-price-pane--quick .quick-price-active,
+.calc-price-pane--cash .quick-price-layout,
 .calc-price-pane--quick .quick-price-layout {
   flex:1; min-height:0;
 }
@@ -1041,16 +1252,17 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
   position:fixed; inset:0; z-index:10029; background:rgba(0,0,0,0);
   pointer-events:none; transition:background 0.35s ease; visibility:hidden;
 }
-#revCalcBackdrop.open { background:rgba(0,0,0,0.4); pointer-events:auto; visibility:visible; }
+#revCalcBackdrop.open { background:rgba(0,0,0,0.55); pointer-events:auto; visibility:visible; }
 #revCalcShell {
   position:fixed; top:0; bottom:0;
   left:max(0px, calc((100vw - 480px) / 2));
   z-index:10030;
   width:100%; max-width:480px;
+  --calc-panel-bg:#251a15;
   --rev-slide:calc(-1 * (max(0px, (100vw - 480px) / 2) + min(480px, 100vw)));
   transform:translateX(var(--rev-slide));
   transition:transform 0.38s cubic-bezier(0.32, 0.72, 0, 1), visibility 0s linear 0.38s;
-  background:var(--calc-panel-bg); display:flex; flex-direction:column;
+  background:#251a15; display:flex; flex-direction:column;
   padding-top:var(--safe-top-offset);
   pointer-events:none; visibility:hidden; overflow:hidden;
   will-change:transform;
@@ -1068,15 +1280,17 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
 #revCalcTab {
   display:none; position:relative; left:auto; top:auto; right:auto;
   transform:none; z-index:2; align-self:stretch; justify-self:stretch;
-  writing-mode:vertical-rl; text-orientation:mixed;
+  flex-direction:column; align-items:center; justify-content:center; gap:5px;
   width:30px; max-width:30px; min-width:30px; min-height:80px; height:auto; box-sizing:border-box;
-  align-items:center; justify-content:center;
   background:var(--calc-panel-bg); border:1.5px solid rgba(232,200,122,0.25); border-right:none;
   border-radius:10px 0 0 10px; padding:10px 4px; cursor:grab; touch-action:none; user-select:none;
   font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:0.58rem; letter-spacing:1.2px; color:rgba(232,200,122,0.7);
   box-shadow:none;
   margin:0;
   transition:color 0.15s, border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+#revCalcTab #revCalcTabLabel {
+  writing-mode:vertical-rl; text-orientation:mixed; line-height:1.1; flex-shrink:0;
 }
 #revCalcTab:hover, #revCalcTab:focus-visible { color:var(--wheat); border-color:rgba(232,200,122,0.4); outline:none; }
 #revCalcTab.rev-tab--open {
@@ -1097,28 +1311,57 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
 #revCalcTab.rev-tab--attached {
   position:fixed; z-index:10031; cursor:grabbing;
   margin:0; right:auto;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
   background:var(--calc-panel-bg); color:rgba(232,200,122,0.85); border:1.5px solid rgba(232,200,122,0.3);
   border-right:none; border-radius:10px 0 0 10px;
   box-shadow:2px 0 12px rgba(0,0,0,0.25);
   width:30px; padding:10px 4px; font-size:0.58rem;
-  writing-mode:vertical-rl; text-orientation:mixed;
+}
+#revCalcTab.rev-tab--attached.rev-tab--rev-side {
+  border:1.5px solid rgba(232,200,122,0.3);
+  border-left:none;
+  border-radius:0 10px 10px 0;
+  box-shadow:-2px 0 12px rgba(0,0,0,0.25);
+}
+#revCalcTab.rev-tab--rev-side:not(.rev-tab--attached) {
+  border:1.5px solid rgba(232,200,122,0.3);
+  border-left:none;
+  border-radius:0 10px 10px 0;
+  box-shadow:-2px 0 12px rgba(0,0,0,0.25);
+}
+#revCalcTabDockShell {
+  position:absolute; right:0; top:var(--rev-tab-dock-top,120px);
+  width:30px; height:var(--rev-tab-dock-height,120px);
+  z-index:10032; pointer-events:none; display:none;
+}
+#revCalcShell.open #revCalcTabDockShell { display:block; }
+#revCalcTabDockShell:has(#revCalcTab) { pointer-events:auto; }
+#revCalcTabDockShell #revCalcTab {
+  display:flex !important; position:relative; left:auto; top:auto; right:auto;
+  height:100%; width:30px; min-height:0; max-width:30px; min-width:30px;
+  margin:0; align-self:stretch; justify-self:stretch;
+  border:1.5px solid rgba(232,200,122,0.3);
+  border-left:none;
+  border-radius:0 10px 10px 0;
+  box-shadow:-2px 0 12px rgba(0,0,0,0.25);
 }
 #revCalcTab.is-dragging { transition:none !important; }
 #revCalcTab:active { opacity:0.85; cursor:grabbing; }
-#revCalcTab .rev-tab-grip { display:block; width:3px; height:16px; background:rgba(232,200,122,0.28); border-radius:2px; margin:0 auto 4px; flex-shrink:0; }
+#revCalcTab .rev-tab-grip {
+  display:block; width:3px; height:16px; background:rgba(232,200,122,0.28);
+  border-radius:2px; margin:0; flex-shrink:0;
+}
 #revCalcShell .rev-page-head {
   display:flex; flex-direction:column; align-items:center; justify-content:center;
   padding:14px 16px 0; border-bottom:3px solid var(--barn);
-  background:var(--calc-panel-bg); flex-shrink:0;
-}
-#revCalcShell .rev-page-tab-slot {
-  display:flex; justify-content:center; width:100%; flex-shrink:0;
+  background:#251a15; flex-shrink:0;
 }
 #revCalcShell .rev-page-title {
   font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:1.2rem;
   color:var(--wheat); letter-spacing:2px; text-align:center;
 }
-#revCalcShell .rev-page-body { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:16px 14px 80px; }
+#revCalcShell .rev-page-body { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:16px 14px 80px; background:#251a15; }
+#revCalcShell.open .rev-page-body { padding-right:38px; }
 #revCalcShell .rev-entry-budget input { font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:2rem; letter-spacing:1px; padding:12px 14px; text-align:center; }
 #revCalcShell .rev-entry-row { display:flex; align-items:flex-end; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
 #revCalcShell .rev-entry-row .field-group { flex:1; min-width:100px; margin-bottom:0; }
@@ -1316,15 +1559,22 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
    SCREEN: CALCULATOR
    ============================================================ */
 .calc-page { display:none; padding:16px; }
-.calc-reset-btn {
-  flex:0 0 auto; width:auto; box-sizing:border-box; margin-top:0; align-self:center;
-  background:var(--barn); color:var(--wheat); border:none; border-radius:10px;
-  padding:8px 16px; min-height:36px;
-  font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;
-  font-size:0.82rem; letter-spacing:1.5px; line-height:1.2;
+#screenCalc .calc-page-inner { padding:0; }
+.calc-reset-inline {
+  flex:0 0 auto; display:inline-flex; align-items:center; gap:5px;
+  background:var(--barn); color:var(--wheat); border:none;
+  padding:6px 12px; min-height:0; border-radius:7px;
+  font-family:'DM Sans',-apple-system,sans-serif;
+  font-size:0.72rem; font-weight:700; letter-spacing:1px; line-height:1.2;
   cursor:pointer; -webkit-appearance:none; appearance:none;
 }
-.calc-reset-btn:active { opacity:0.85; }
+.calc-reset-inline svg { width:14px; height:14px; flex-shrink:0; opacity:0.95; }
+.calc-reset-inline:active { opacity:0.82; }
+#screenCalc .calc-page-head {
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  margin-bottom:4px; flex-wrap:nowrap;
+}
+#screenCalc .calc-page-head .page-title { margin-bottom:0; line-height:1.05; flex:1; min-width:0; font-size:1.35rem; }
 .calc-page.active { display:block; }
 .page-title { font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:1.6rem; color:var(--wheat); letter-spacing:2px; margin-bottom:4px; }
 .page-sub { font-size:0.78rem; color:rgba(232,200,122,0.55); margin-bottom:20px; }
@@ -2747,27 +2997,53 @@ select:focus {
   background: #fff;
   color: var(--earth);
 }
+#screenCalc select:focus,
+#calcPriceDeck select:focus,
+.calc-dark-select:focus,
+.rto-setting-select:focus {
+  background:rgba(255,255,255,0.08);
+  color:var(--cream);
+  border-color:var(--wheat);
+  box-shadow:0 0 0 3px rgba(232,200,122,0.12);
+}
 
-/* Calculator width/length — match building style picker */
+/* Calculator width/length — match the dark pricing window + style picker */
 #screenCalc .gss-list-wrap:has(#calcWidth) .gss-list-trigger,
-#screenCalc .gss-list-wrap:has(#calcLength) .gss-list-trigger {
-  background:#fff;
-  border:1.5px solid #D1D3D4;
+#screenCalc .gss-list-wrap:has(#calcLength) .gss-list-trigger,
+#screenCalc .gss-list-wrap:has(#assuranceSelect) .gss-list-trigger {
+  background:#251a15;
+  border:1.5px solid rgba(232,200,122,0.25);
   border-radius:8px;
-  color:var(--earth);
+  color:var(--cream);
   font-weight:600;
 }
 #screenCalc .gss-list-wrap:has(#calcWidth) .gss-list-trigger.is-placeholder,
-#screenCalc .gss-list-wrap:has(#calcLength) .gss-list-trigger.is-placeholder {
-  color:#999; font-weight:500;
+#screenCalc .gss-list-wrap:has(#calcLength) .gss-list-trigger.is-placeholder,
+#screenCalc .gss-list-wrap:has(#assuranceSelect) .gss-list-trigger.is-placeholder {
+  color:rgba(245,240,232,0.7); font-weight:500;
 }
 #screenCalc .gss-list-wrap:has(#calcWidth) .gss-list-trigger:focus,
 #screenCalc .gss-list-wrap:has(#calcLength) .gss-list-trigger:focus,
+#screenCalc .gss-list-wrap:has(#assuranceSelect) .gss-list-trigger:focus,
 #screenCalc .gss-list-wrap:has(#calcWidth).is-open .gss-list-trigger,
-#screenCalc .gss-list-wrap:has(#calcLength).is-open .gss-list-trigger {
-  border-color:#8E1B23;
-  box-shadow:0 0 0 3px rgba(142,27,35,0.10);
-  background:#fff;
+#screenCalc .gss-list-wrap:has(#calcLength).is-open .gss-list-trigger,
+#screenCalc .gss-list-wrap:has(#assuranceSelect).is-open .gss-list-trigger {
+  border-color:var(--wheat);
+  box-shadow:0 0 0 3px rgba(232,200,122,0.12);
+  background:#251a15;
+}
+/* Left icon inside each width/length tile */
+#screenCalc .gss-list-wrap:has(#calcWidth) .gss-list-trigger::before,
+#screenCalc .gss-list-wrap:has(#calcLength) .gss-list-trigger::before {
+  content:''; display:inline-block; width:17px; height:17px; margin-right:9px;
+  vertical-align:-4px; background-repeat:no-repeat; background-position:center;
+  background-size:contain; opacity:0.7;
+}
+#screenCalc .gss-list-wrap:has(#calcWidth) .gss-list-trigger::before {
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e8c87a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='8 7 3 12 8 17'/%3E%3Cpolyline points='16 7 21 12 16 17'/%3E%3Cline x1='3' y1='12' x2='21' y2='12'/%3E%3C/svg%3E");
+}
+#screenCalc .gss-list-wrap:has(#calcLength) .gss-list-trigger::before {
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e8c87a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='7 8 12 3 17 8'/%3E%3Cpolyline points='7 16 12 21 17 16'/%3E%3Cline x1='12' y1='3' x2='12' y2='21'/%3E%3C/svg%3E");
 }
 .opt-field-row select,
 .opt-field-row input[type="number"],
@@ -2937,6 +3213,33 @@ select:focus {
   background: #fff !important;
   color: #111 !important;
   color-scheme: light only;
+  position: relative;
+  width: 100%;
+  min-height: 10.2in;
+  max-height: 10.2in;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.ss-flyer-watermark {
+  position: absolute;
+  inset: 0;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0.09;
+  pointer-events: none;
+  z-index: 0;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.ss-flyer-content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transform-origin: top center;
 }
 .ss-flyer-root .ss-flyer-accent {
   color: #c0392b !important;
@@ -3048,6 +3351,21 @@ select:focus {
   margin-left: auto;
   flex-shrink: 0;
   pointer-events: none;
+}
+/* Calculator building-type picker: match the dark pricing window */
+#calcTypeSelect_trigger {
+  background: #251a15;
+  border-color: rgba(232,200,122,0.25);
+}
+#calcTypeSelect_trigger .spt-name { color: var(--cream); }
+#calcTypeSelect_trigger .spt-code { color: rgba(232,200,122,0.6); }
+#calcTypeSelect_trigger .spt-placeholder-text { color: rgba(245,240,232,0.7); }
+#calcTypeSelect_trigger .spt-arrow { color: rgba(232,200,122,0.7); }
+#calcTypeSelect_trigger .spt-placeholder { background: rgba(255,255,255,0.06); }
+#calcTypeSelect_trigger:focus,
+#calcTypeSelect_trigger:active {
+  border-color: var(--wheat);
+  box-shadow: 0 0 0 3px rgba(232,200,122,0.12);
 }
 
 /* ── Modal overlay ── */
@@ -3422,10 +3740,32 @@ select:focus {
 /* Quote-from flows (above bottom nav / share sheets) */
 #quoteSheetCondModal,#quoteAdWizardModal,#quoteAdResultModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:10001;align-items:flex-end;justify-content:center;}
 .quote-from-sheet{background:var(--earth);border:1.5px solid rgba(232,200,122,0.3);border-radius:16px 16px 0 0;padding:22px 18px 32px;width:100%;max-width:480px;max-height:88vh;overflow-y:auto;}
-.quote-export-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:nowrap;margin-top:4px;}
-.quote-export-select-wrap{flex:1;min-width:0;}
-.quote-export-row select{flex:1;min-width:0;width:100%;padding:10px 12px;border-radius:8px;border:1.5px solid rgba(232,200,122,0.25);background:rgba(255,255,255,0.06);color:var(--cream);font-size:0.9rem;}
-.quote-export-row .calc-quote-copy-btn{flex:0 0 auto;white-space:nowrap;margin:0;padding:10px 14px;font-size:0.78rem;font-weight:700;letter-spacing:0.5px;}
+.quote-export-actions{display:flex;gap:10px;margin-top:4px;}
+.quote-export-btn{
+  flex:1;min-width:0;padding:10px 12px;border-radius:8px;cursor:pointer;
+  border:1.5px solid rgba(232,200,122,0.25);background:rgba(255,255,255,0.06);color:var(--cream);
+  font-size:0.9rem;text-align:center;-webkit-appearance:none;appearance:none;box-sizing:border-box;
+}
+.quote-export-btn--pick{position:relative;display:flex;align-items:center;justify-content:center;margin:0;}
+.quote-export-native-sel{
+  position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;
+  -webkit-appearance:none;appearance:none;border:none;background:transparent;font-size:1rem;
+}
+.opt-sheet-std-btn{
+  display:block;width:calc(100% - 32px);margin:0 16px 8px;padding:10px 12px;
+  border-radius:8px;border:1px solid rgba(232,200,122,0.22);background:rgba(255,255,255,0.06);
+  color:var(--cream);font-size:0.8rem;line-height:1.35;text-align:left;cursor:pointer;
+  -webkit-appearance:none;appearance:none;
+}
+.opt-sheet-std-btn:active:not(:disabled){background:rgba(255,255,255,0.12);}
+.qp-sale-save-row{padding:0 0 4px 52px;margin-top:-2px;}
+.cash-due-edit-wrap{display:inline-flex;align-items:center;gap:4px;max-width:100%;}
+.cash-due-edit-btn{
+  -webkit-appearance:none;appearance:none;border:none;border-radius:5px;width:26px;height:26px;
+  font-size:0.85rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.cash-due-edit-btn--ok{background:var(--barn);color:var(--cream);}
+.cash-due-edit-btn--cancel{background:rgba(255,255,255,0.1);color:rgba(232,200,122,0.8);}
 #quoteAdResultBody{white-space:pre-wrap;font-size:0.88rem;line-height:1.5;color:rgba(245,240,232,0.92);max-height:42vh;overflow-y:auto;padding:10px;background:rgba(0,0,0,0.2);border-radius:8px;margin-top:10px;}
 </style>
 </head>
@@ -3739,10 +4079,13 @@ select:focus {
 
   <!-- Step 0: Building + Options -->
   <div class="calc-page active" id="cpage0">
-    <div style="padding:16px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px;flex-wrap:nowrap;">
-        <div class="page-title" style="margin-bottom:0;line-height:1.05;flex:1;min-width:0;">Building &amp; Options</div>
-        <button type="button" class="calc-reset-btn" onclick="resetPriceCalculator()" aria-label="Reset calculator">Reset</button>
+    <div class="calc-page-inner">
+      <div class="calc-page-head">
+        <div class="page-title">Building &amp; Options</div>
+        <button type="button" class="calc-reset-inline" onclick="resetPriceCalculator()" aria-label="Reset calculator">
+          Reset
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><polyline points="3 3 3 9 9 9"/></svg>
+        </button>
       </div>
 
       <!-- Building Type dropdown -->
@@ -3794,45 +4137,63 @@ select:focus {
         </div>
       </div>
 
-      <!-- Live Price Preview + Detailed View deck -->
+      <div class="sel-opts-section">
+        <div class="sel-opts-head">
+          <span class="sel-opts-title">SELECTED OPTIONS (<span id="selOptsCount">0</span>)</span>
+          <button type="button" id="addOptionBtn" class="sel-opts-add-btn" disabled onclick="optionsSheetContext='calc';openOptionsSheet()">Add Options</button>
+        </div>
+        <div id="optsSummary" class="sel-opts-grid opts-summary-wrap"></div>
+      </div>
+
+      <!-- Live Price Preview: Cash View / RTO View -->
       <div id="calcPriceDeck">
-      <button type="button" id="revCalcTab" aria-label="Open Reverse Price Calculator">
-        <span class="rev-tab-grip" aria-hidden="true"></span>
-        <span id="revCalcTabLabel">Reverse Price Calculator</span>
-      </button>
       <div class="calc-price-deck-body">
       <div id="calcPriceDeckViewport" class="calc-price-deck-viewport">
       <div id="quickPriceWrap">
         <div class="quick-price-empty" aria-hidden="true">
           <div class="quick-price-empty-msg">Choose Building Style And Size</div>
-          <div class="quick-price-empty-sub">Pricing appears here — or pull the tab for Reverse Price Calculator</div>
+          <div class="quick-price-empty-sub">Pricing appears here — or pull the tab for Reverse Calculator</div>
         </div>
         <div class="calc-price-panel-active">
         <div class="calc-price-content">
+        <div class="calc-price-hero-row">
+        <div class="calc-rev-tab-col" id="revCalcTabSlot">
+      <button type="button" id="revCalcTab" aria-label="Open Reverse Price Calculator">
+        <span id="revCalcTabLabel">Reverse Calculator</span>
+        <span class="rev-tab-grip" aria-hidden="true"></span>
+      </button>
+        </div>
+        <div class="calc-price-hero-slide">
         <div id="calcPriceDeckTrack">
-        <div class="calc-price-pane calc-price-pane--quick">
-        <div class="quick-price-active">
-        <div class="quick-price-layout">
-        <div class="quick-price-top-row">
-          <div class="quick-price-title-wrap">
-            <span class="quick-price-title">QUICK PRICE</span>
+        <div class="calc-price-pane calc-price-pane--cash calc-price-pane--quick">
+        <div class="quick-price-price-center">
+          <div id="cashSaleRow" class="cash-sale-row" hidden>
+            <span class="cash-price-lbl">List Price</span>
+            <span id="quickBasePrice" class="quick-price-base"></span>
           </div>
-          <div id="quickBosCtrl" class="qp-pill-row qp-pill-row--header">
-            <span class="qp-pill-label">BOS</span>
+          <span class="cash-price-lbl">Total Price</span>
+          <div id="quickSalePrice" class="quick-price-amount">—</div>
+        </div>
+        </div>
+        <div id="rtoStreamlineCalcCard" class="calc-price-pane calc-price-pane--rto calc-price-pane--detail">
+        <div class="rto-hero-block quick-price-price-center">
+          <span class="cash-price-lbl">Total Price</span>
+          <div id="rtoHeroTotal" class="quick-price-amount">—</div>
+        </div>
+        </div>
+        </div><!-- /calcPriceDeckTrack -->
+        </div><!-- /calc-price-hero-slide -->
+        <div class="calc-price-vdivider" aria-hidden="true"></div>
+        <div class="quick-price-controls">
+          <div id="quickBosCtrl" class="qp-pill-row">
+            <span class="qp-pill-label"><svg class="qp-pill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9.5L12 3l9 6.5V21H3z"/></svg>BOS</span>
             <button type="button" class="qp-pill" id="quickBosPill" aria-pressed="false">
               <span class="qp-pill-fill"><span id="quickBosTileAmt" class="qp-pill-value"></span></span>
               <span class="qp-pill-ball" aria-hidden="true"></span>
             </button>
           </div>
-        </div>
-        <div class="quick-price-body-row">
-        <div class="quick-price-price-center">
-          <span id="quickBasePrice" class="quick-price-base"></span>
-          <div id="quickSalePrice" class="quick-price-amount">—</div>
-        </div>
-        <div class="quick-price-controls">
           <div class="qp-pill-row quick-price-ctrl--sale-tog">
-            <span class="qp-pill-label">Sale</span>
+            <span class="qp-pill-label"><svg class="qp-pill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>SALE</span>
             <button type="button" class="qp-pill" id="quickSalePill" aria-pressed="false">
               <span class="qp-pill-fill quick-price-sale-inline" id="quickSaleInputWrap">
                 <select id="c_quickSalePctSel" onchange="onQuickSaleSelectChange(this)"></select>
@@ -3841,8 +4202,11 @@ select:focus {
               <span class="qp-pill-ball" aria-hidden="true"></span>
             </button>
           </div>
+          <div id="quickSaleSaveRow" class="qp-sale-save-row" hidden>
+            <span id="quickSaveAmt" class="cash-save-amt"></span>
+          </div>
           <div class="qp-pill-row quick-price-ctrl--tax-tog">
-            <span class="qp-pill-label">Tax %</span>
+            <span class="qp-pill-label"><svg class="qp-pill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>TAX</span>
             <button type="button" class="qp-pill" id="quickTaxPill" aria-pressed="false">
               <span class="qp-pill-fill quick-price-ctrl-inline" id="quickTaxInputWrap">
                 <select id="calcQuickTaxSelect" onchange="calcQuickTaxSelectChange(this)"></select>
@@ -3852,7 +4216,7 @@ select:focus {
             </button>
           </div>
           <div class="qp-pill-row quick-price-ctrl--dealer-tog">
-            <span class="qp-pill-label">Dealer discount</span>
+            <span class="qp-pill-label"><svg class="qp-pill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>DD</span>
             <button type="button" class="qp-pill" id="quickDealerPill" aria-pressed="false">
               <span class="qp-pill-fill quick-price-ctrl-inline" id="quickDealerInputWrap">
                 <select id="calcQuickDealer" onchange="calcQuickDealerChange(this)">
@@ -3868,68 +4232,56 @@ select:focus {
             </button>
           </div>
         </div>
-        </div><!-- /quick-price-body-row -->
-        </div><!-- /quick-price-layout -->
-        </div><!-- /quick-price-active -->
-        </div><!-- /calc-price-pane--quick -->
-
-      <div id="rtoStreamlineCalcCard" class="calc-price-pane calc-price-pane--detail">
-        <div class="rto-detail-active">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:10px;">
-          <div class="calc-detail-view-title">DETAILED VIEW</div>
-          <div style="display:flex;align-items:center;gap:10px;">
-            <div id="qpvTaxToggle" class="qpv-tax-toggle" onclick="toggleQpvShowTax()" role="button" aria-pressed="false" title="Include tax in Quick Price (cash total and RTO monthly). Saved for next visit.">
-              <span class="qpv-tt-label">Tax</span>
-              <div class="qpv-tt-track"><div class="qpv-tt-thumb"></div></div>
-            </div>
-            <button type="button" id="qpvSettingsBtn" class="qpv-gear-btn" onclick="toggleQpvSettings()" aria-expanded="false" aria-controls="qpvSettingsPanel" title="RTO settings">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-            </button>
-          </div>
+        </div><!-- /calc-price-hero-row -->
+        <div class="calc-details-area">
+        <div class="calc-details-pane calc-details-pane--cash">
+        <details class="calc-detail-collapse" id="cashDetailsCollapse" ontoggle="onCalcDetailsToggle(this)">
+          <summary>CASH DETAILS <span class="calc-detail-chevron" aria-hidden="true"></span></summary>
+          <div id="cashDetailsBody" class="calc-detail-body qpv-left"></div>
+        </details>
         </div>
-        <div id="rtoStreamlineCalcBody" class="qpv-grid"></div>
-
-        <!-- RTO settings panel: assurance + cost reduction (collapsed by default) -->
-        <div id="qpvSettingsPanel" class="qpv-settings-panel" style="display:none;">
-          <div class="qpv-settings-row">
-            <div class="qpv-settings-label">Assurance Plan</div>
-            <div class="qpv-settings-buttons">
-              <button class="rto-btn" id="assuranceBtn1" onclick="setAssurancePlan(1)">None</button>
-              <button class="rto-btn active" id="assuranceBtn2" onclick="setAssurancePlan(2)">Basic $150</button>
-              <button class="rto-btn" id="assuranceBtn3" onclick="setAssurancePlan(3)">Plus $300</button>
+        <div class="calc-details-pane calc-details-pane--rto">
+          <div class="rto-settings-row">
+            <div class="rto-setting-field">
+              <label class="qpv-settings-label" for="assuranceSelect">Assurance Plan</label>
+              <select id="assuranceSelect" class="rto-setting-select" onchange="setAssurancePlan(parseInt(this.value,10))">
+                <option value="1">None</option>
+                <option value="2" selected>Basic $150</option>
+                <option value="3">Plus $300</option>
+              </select>
+            </div>
+            <div class="rto-setting-field">
+              <label class="qpv-settings-label">Cost Reduction <span id="crAutoTag" style="display:none;font-size:0.55rem;font-weight:700;background:var(--barn);color:var(--wheat);border-radius:4px;padding:1px 5px;letter-spacing:0.5px;">AUTO 15%</span></label>
+              <div class="qpv-settings-cr-input">
+                <span class="qpv-settings-prefix">$</span>
+                <input type="text" inputmode="decimal" id="c_costReduction" class="calc-no-spin" placeholder="0" oninput="onCostReductionInput(this.value.replace(/[^0-9.]/g,''))">
+              </div>
             </div>
           </div>
-          <div class="qpv-settings-row">
-            <div class="qpv-settings-label-row">
-              <div class="qpv-settings-label">Cost Reduction</div>
-              <div id="crAutoTag" style="display:none;font-size:0.6rem;font-weight:700;background:var(--barn);color:var(--wheat);border-radius:4px;padding:2px 6px;letter-spacing:0.5px;">AUTO 15%</div>
-            </div>
-            <div class="qpv-settings-cr-input">
-              <span class="qpv-settings-prefix">$</span>
-              <input type="number" id="c_costReduction" min="0" step="50" placeholder="0" oninput="onCostReductionInput(this.value)">
-            </div>
-            <div id="crBreakdown" style="display:none;padding:8px 10px;background:rgba(0,0,0,0.2);border-radius:8px;font-size:0.72rem;line-height:1.7;margin-top:6px;color:rgba(245,240,232,0.85);"></div>
+          <div class="rto-term-chips">
+            <button type="button" class="rto-term-chip" id="rtoChip36" data-months="36" onclick="setCalcRTO(36)"><span class="rto-term-chip-mo">36 MO</span><span class="rto-term-chip-val" id="rtoChipVal36">—</span></button>
+            <button type="button" class="rto-term-chip" id="rtoChip48" data-months="48" onclick="setCalcRTO(48)"><span class="rto-term-chip-mo">48 MO</span><span class="rto-term-chip-val" id="rtoChipVal48">—</span></button>
+            <button type="button" class="rto-term-chip" id="rtoChip60" data-months="60" onclick="setCalcRTO(60)"><span class="rto-term-chip-mo">60 MO</span><span class="rto-term-chip-val" id="rtoChipVal60">—</span></button>
           </div>
+          <details class="calc-detail-collapse" id="rtoDetailsCollapse" ontoggle="onCalcDetailsToggle(this)">
+            <summary>RTO DETAILS <span class="calc-detail-chevron" aria-hidden="true"></span></summary>
+            <div id="rtoDetailsBody" class="calc-detail-body">
+              <div id="rtoDetailGrid" class="rto-detail-grid"></div>
+              <button type="button" class="rto-early-payoff-btn" onclick="openEarlyPayoffSheet()">Estimated Early Payoff Sheet</button>
+            </div>
+          </details>
         </div>
-        </div><!-- /rto-detail-active -->
-      </div>
-      </div><!-- /calcPriceDeckTrack -->
-      </div><!-- /calc-price-content -->
-      </div><!-- /calc-price-panel-active -->
+        </div><!-- /calc-details-area -->
+        </div><!-- /calc-price-content -->
+        </div><!-- /calc-price-panel-active -->
       </div><!-- /quickPriceWrap -->
       <div class="calc-price-tabs" role="tablist" aria-label="Price view">
-        <button type="button" class="calc-price-tab is-active" id="calcPriceTabQuick" role="tab" aria-selected="true" data-calc-view="quick" onclick="setCalcPriceDeckView('quick')">Quick Price</button>
-        <button type="button" class="calc-price-tab" id="calcPriceTabDetailed" role="tab" aria-selected="false" data-calc-view="detailed" onclick="setCalcPriceDeckView('detailed')">Detailed View</button>
+        <button type="button" class="calc-price-tab is-active" id="calcPriceTabCash" role="tab" aria-selected="true" data-calc-view="cash" onclick="setCalcPriceDeckView('cash')">Cash View</button>
+        <button type="button" class="calc-price-tab" id="calcPriceTabRto" role="tab" aria-selected="false" data-calc-view="rto" onclick="if(calcState.bosActive){showToast('RTO not available for build on site');return;}setCalcPriceDeckView('rto')">RTO View</button>
       </div>
       </div><!-- /calcPriceDeckViewport -->
       </div><!-- /calc-price-deck-body -->
       </div><!-- /calcPriceDeck -->
-
-      <div style="border-top:1px solid rgba(232,200,122,0.15);margin:14px 0 10px;"></div>
-      <div class="page-title" style="font-size:1.1rem;margin-bottom:4px;">Options &amp; Upgrades</div>
-
-      <div id="optsSummary" class="opts-summary-wrap"></div>
-      <button type="button" id="addOptionBtn" class="btn-primary" style="margin-top:4px;padding:12px;width:100%;" disabled onclick="optionsSheetContext='calc';openOptionsSheet()">ADD/REMOVE OPTIONS</button>
 
       <!-- Bottom-sheet picker for options -->
       <div id="optionsSheetOverlay" class="opt-sheet-overlay" onclick="if(event.target===this)closeOptionsSheet()" aria-hidden="true"></div>
@@ -3939,7 +4291,7 @@ select:focus {
           <button type="button" class="opt-sheet-close" onclick="closeOptionsSheet()" aria-label="Close">&#10005;</button>
         </div>
         <input type="search" id="optionsSheetSearch" class="opt-sheet-search" placeholder="Search options&hellip;" autocomplete="off" oninput="optWizardFilterSearch(this.value)">
-        <button type="button" class="opt-sheet-std-link" id="optSheetStdLink" onclick="optWizardShowStdSection()">Remove standard options for credit</button>
+        <button type="button" class="opt-sheet-std-btn owp-opt-tile" id="optSheetStdLink" onclick="optWizardShowStdSection()" style="display:none;">Add standard options</button>
         <div id="optWizard" class="opt-wizard">
           <div class="opt-wiz-viewport">
             <div id="optWizPickerPane" class="opt-wiz-pane"></div>
@@ -3947,8 +4299,8 @@ select:focus {
         </div>
         <div id="optionsSheetScroll" class="opt-sheet-scroll opt-sheet-legacy-list">
           <div id="removeStdSheetSection" class="opt-sheet-section" style="display:none;">
-            <div class="opt-sheet-section-title">Standard options <span id="stdRemovedBadge" class="opt-sheet-count"></span></div>
-            <p style="font-size:0.72rem;color:rgba(232,200,122,0.55);margin:0 0 8px;line-height:1.4;">Remove included standards for a base-price credit.</p>
+            <div class="opt-sheet-section-title">Add standard options</div>
+            <p style="font-size:0.72rem;color:rgba(232,200,122,0.55);margin:0 0 8px;line-height:1.4;">Re-add standards you removed from the quote.</p>
             <div id="removeStdList"></div>
           </div>
       <!-- SIDING & EXTERIOR -->
@@ -4405,14 +4757,14 @@ select:focus {
     </div>
   </div>
 
-  <!-- Step 1: Review Estimate -->
+  <!-- Step 1: Review your quote -->
   <div class="calc-page" id="cpage1">
     <div style="padding:16px;">
 
       <!-- ── Header row: title + Cash/RTO toggle ── -->
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
         <div>
-          <div class="page-title" style="margin-bottom:0;">Review Estimate</div>
+          <div class="page-title" style="margin-bottom:0;">Review your quote</div>
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
           <span style="font-size:0.72rem;font-weight:700;color:rgba(232,200,122,0.7);" id="payLabelCash">Cash</span>
@@ -4422,7 +4774,7 @@ select:focus {
           <span style="font-size:0.72rem;font-weight:700;color:rgba(232,200,122,0.7);" id="payLabelRTO">RTO</span>
         </div>
       </div>
-      <div class="page-sub" style="margin-bottom:12px;">Final summary before you send</div>
+      <div class="page-sub" style="margin-bottom:12px;">Review matches what you share — switch Cash or RTO below</div>
 
       <!-- ── Cash Summary ── -->
       <div id="reviewCashCard" class="review-card" style="display:none;">
@@ -4488,14 +4840,26 @@ select:focus {
         <div class="review-foot" id="reviewRtoFoot"></div>
       </div>
 
-      <!-- ── Estimated Early Payoff Sheet (RTO only, at the bottom) ── -->
-      <button type="button" id="earlyPayoffBtn" onclick="openEarlyPayoffSheet()" style="display:none;-webkit-appearance:none;appearance:none;width:100%;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.04);border:1.5px solid rgba(232,200,122,0.22);border-radius:10px;padding:12px 14px;margin-top:12px;color:var(--wheat);cursor:pointer;font:inherit;text-align:left;">
-        <span style="display:flex;flex-direction:column;gap:2px;">
-          <span style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:0.95rem;letter-spacing:1.5px;">Estimated Early Payoff Sheet</span>
-          <span style="font-size:0.7rem;color:rgba(232,200,122,0.6);letter-spacing:0.5px;">Show buyout savings month-by-month</span>
-        </span>
-        <span style="font-size:0.62rem;font-weight:800;background:rgba(232,200,122,0.15);color:var(--wheat);padding:4px 8px;border-radius:6px;letter-spacing:1px;margin-left:8px;flex-shrink:0;">COMING SOON</span>
-      </button>
+      <!-- Share & Export hub -->
+      <div style="background:rgba(255,255,255,0.05);border:1.5px solid rgba(232,200,122,0.2);border-radius:10px;padding:14px;margin-top:14px;margin-bottom:12px;">
+        <div style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:1.1rem;letter-spacing:2px;color:var(--wheat);margin-bottom:10px;">Share &amp; Export</div>
+        <div class="quote-export-actions">
+          <label class="quote-export-btn quote-export-btn--pick">
+            <span>Export</span>
+            <select id="quoteExportActionSel" class="calc-dark-select quote-export-native-sel" aria-label="Export — pick a command" onchange="onQuoteExportHubSelectChange()">
+              <option value="">Export&hellip;</option>
+              <option value="sales_sheet">Generate sales sheet (PDF)</option>
+              <option value="marketplace">Generate marketplace ad</option>
+              <option value="facebook">Copy Facebook post</option>
+              <option value="print">Print quote</option>
+            </select>
+          </label>
+          <button type="button" class="quote-export-btn" onclick="copyEstimateTextToClipboard()">Copy estimate text</button>
+        </div>
+      </div>
+
+      <div class="setup-note emailjs-note" id="calcSetupNote" style="display:none;"></div>
+      <div id="calcQuoteContent" style="display:none;" aria-hidden="true"></div>
 
       <!-- Hidden mirrors so legacy JS still resolves these IDs -->
       <div style="display:none;" aria-hidden="true">
@@ -4513,36 +4877,6 @@ select:focus {
         <div id="customTaxWrap"><input type="number" id="c_taxCustom" min="0" max="20" step="0.1" oninput="onTaxInput(this)"></div>
       </div>
 
-    </div>
-  </div>
-
-  <!-- Step 2: Your Quote — Share & Export Hub -->
-  <div class="calc-page" id="cpage2">
-    <div style="padding:16px;">
-      <div class="page-title">Your Quote</div>
-      <div class="page-sub">Review, share, and turn this estimate into ads or a sales sheet</div>
-      <div id="calcQuoteContent"></div>
-
-      <!-- Share & Export hub -->
-      <div style="background:rgba(255,255,255,0.05);border:1.5px solid rgba(232,200,122,0.2);border-radius:10px;padding:14px;margin-bottom:12px;">
-        <div style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:1.1rem;letter-spacing:2px;color:var(--wheat);margin-bottom:10px;">Share &amp; Export</div>
-        <div class="quote-export-row">
-          <div class="quote-export-select-wrap">
-            <label for="quoteExportActionSel" class="field-label" style="width:100%;margin-bottom:4px;">Share or export</label>
-            <select id="quoteExportActionSel" aria-label="Share or export — pick a command" onchange="onQuoteExportHubSelectChange()">
-              <option value="">Share or export&hellip;</option>
-              <option value="share_email">Share / Email estimate</option>
-              <option value="sales_sheet">Generate sales sheet (PDF)</option>
-              <option value="marketplace">Generate marketplace ad</option>
-              <option value="facebook">Copy Facebook post</option>
-              <option value="print">Print quote</option>
-            </select>
-          </div>
-          <button type="button" class="btn-secondary calc-quote-copy-btn" onclick="copyEstimateTextToClipboard()">Copy estimate text</button>
-        </div>
-      </div>
-
-      <div class="setup-note emailjs-note" id="calcSetupNote" style="display:none;"></div>
     </div>
   </div>
   <div class="sellsheds-footer">
@@ -6554,7 +6888,7 @@ select:focus {
     <button onclick="ssPrint()" class="btn-primary" style="flex:2;background:var(--barn);">🖨️ Print / Save PDF</button>
     <button onclick="document.getElementById('ssOverlay').style.display='none'" class="btn-secondary" style="flex:1;">✕ Close</button>
   </div>
-  <div id="ssSheetContent" class="ss-flyer-paper" style="padding:20px 16px 40px;max-width:600px;margin:0 auto;font-family:Georgia,serif;color:#111;background:#fff;"></div>
+  <div id="ssSheetContent" class="ss-flyer-paper" style="padding:0.35in 0.4in;max-width:8.5in;width:100%;margin:0 auto;font-family:Georgia,serif;color:#111;background:#fff;box-sizing:border-box;"></div>
 </div>
 
 <!-- SS Confirm Modal -->
@@ -6633,9 +6967,17 @@ select:focus {
       </div>
     </div>
     <div style="display:flex;flex-direction:column;gap:8px;margin-top:16px;">
-      <button type="button" class="btn-primary" id="quoteShareBtnWebShare" onclick="quoteShareSendWebShare()" style="width:100%;padding:14px;border-radius:10px;border:none;background:var(--barn);color:var(--cream);font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:1rem;letter-spacing:2px;cursor:pointer;">Share…</button>
-      <button type="button" class="btn-email" id="quoteShareSendEmailBtn" onclick="quoteShareSendEmailJs()" style="width:100%;padding:14px;border-radius:10px;border:none;cursor:pointer;font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:0.95rem;letter-spacing:1.5px;">Send email</button>
+      <button type="button" class="btn-primary" id="quoteShareCommitBtn" onclick="quoteShareCommit()" style="width:100%;padding:14px;border-radius:10px;border:none;background:var(--barn);color:var(--cream);font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:1rem;letter-spacing:2px;cursor:pointer;">Share</button>
     </div>
+  </div>
+</div>
+
+<div id="quoteShareChannelOverlay" onclick="if(event.target===this)closeQuoteShareChannelPicker()">
+  <div class="quote-share-channel-sheet" onclick="event.stopPropagation()">
+    <div style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:1.1rem;letter-spacing:2px;color:var(--wheat);margin-bottom:12px;">Send via</div>
+    <button type="button" class="quote-share-channel-btn" onclick="quoteShareSendNativeEmail()">Email</button>
+    <button type="button" class="quote-share-channel-btn" onclick="quoteShareSendSms()">SMS</button>
+    <button type="button" class="quote-share-channel-btn quote-share-channel-btn--cancel" onclick="closeQuoteShareChannelPicker()">Cancel</button>
   </div>
 </div>
 
@@ -6655,9 +6997,9 @@ select:focus {
 <!-- Reverse Price Calculator — separate body-level page -->
 <div id="revCalcBackdrop" class="rev-calc-backdrop" onclick="closeRevCalcPage()" aria-hidden="true"></div>
 <div id="revCalcShell" aria-hidden="true">
+  <div id="revCalcTabDockShell" aria-hidden="true"></div>
   <div class="rev-page-head">
     <div class="rev-page-title">Reverse Price Calculator</div>
-    <div id="revCalcTabSlot" class="rev-page-tab-slot"></div>
   </div>
   <div class="rev-page-body">
     <div class="rev-entry-zone">
@@ -7449,7 +7791,7 @@ async function crmWatchLeads(){
     crmRenderLeadList();
     leadsSidePanelsRefresh();
     try{ renderHomeDashboard(); }catch(_e){}
-    try{ if(typeof calcCurrentPage==='number'&&calcCurrentPage===2) populateQuoteShareLeadPickerIfOpen(); }catch(_eQ){}
+    try{ if(typeof calcCurrentPage==='number'&&calcCurrentPage===1) populateQuoteShareLeadPickerIfOpen(); }catch(_eQ){}
   },function(err){
     console.log('Lead watch failed:',err);
   });
@@ -9693,11 +10035,14 @@ function renderSettingsOptionsCatalog(s,nrto){
       var modeFieldHtml=showMode
         ? '<div class="opt-set-field"><span class="opt-set-field-label">Pricing</span><div class="opt-settings-mode">'+_optSettingsModeButtons(cfg.key,modeVal)+'</div></div>'
         : '';
+      var autoMeasureHtml=(cfg.priceMode==='linft'||cfg.priceMode==='sqft')
+        ? '<div class="opt-set-field opt-set-field--wide"><label class="opt-settings-auto-measure" style="display:flex;align-items:center;gap:8px;font-size:0.78rem;color:rgba(245,240,232,0.9);cursor:pointer;"><input type="checkbox" data-opt-auto-measure'+(cfg.autoMeasure?' checked':'')+'> Auto from building size (skip confirm)</label></div>'
+        : '';
       var nrtoHtml=_optNonRtoHtml(cfg,nrto);
       var nrtoFieldHtml=nrtoHtml&&nrtoHtml!=='<span></span>'
         ? '<div class="opt-set-field opt-set-field--nrto"><span class="opt-set-field-label">Non-RTO (paid upfront)</span>'+nrtoHtml+'</div>'
         : '';
-      var fieldsBlock=[priceFieldHtml,modeFieldHtml,nrtoFieldHtml].filter(Boolean).join('');
+      var fieldsBlock=[priceFieldHtml,modeFieldHtml,autoMeasureHtml,nrtoFieldHtml].filter(Boolean).join('');
       row.setAttribute('data-opt-enabled',isShown?'1':'0');
       var actBtn=isShown?'Hide':'Show';
       var actBtnClass='opt-settings-vis'+(isShown?'':' is-show-btn');
@@ -9749,7 +10094,7 @@ function bindOptionsCatalogAutosave(){
   });
   container.addEventListener('change',function(e){
     var t=e.target;
-    if(t&&t.matches('[data-opt-cat],.opt-set-nrto')) scheduleOptionsCatalogAutosave();
+    if(t&&t.matches('[data-opt-cat],.opt-set-nrto,[data-opt-auto-measure]')) scheduleOptionsCatalogAutosave();
   });
 }
 
@@ -9841,6 +10186,8 @@ function collectOptionsCatalogFromForm(){
       if(activeBtn) base.priceMode=activeBtn.getAttribute('data-mode')||base.priceMode;
     }
     if(priceEl&&priceEl.value!=='') base.price=parseFloat(priceEl.value)||0;
+    var autoEl=row.querySelector('[data-opt-auto-measure]');
+    if(autoEl) base.autoMeasure=autoEl.checked;
     row.querySelectorAll('[data-opt-var]').forEach(function(inp){
       var gk=inp.getAttribute('data-var-group');
       var idx=parseInt(inp.getAttribute('data-var-idx'),10);
@@ -10695,8 +11042,7 @@ function appBottomNavPrimaryAction(){
   if(sid==='screenCalc'){
     if(typeof calcCurrentPage==='number'){
       if(calcCurrentPage===0) calcGoTo(1);
-      else if(calcCurrentPage===1) calcGoTo(2);
-      else if(calcCurrentPage===2) openQuoteShareRecipientModal();
+      else if(calcCurrentPage===1) openQuoteShareRecipientModal();
     }
     return;
   }
@@ -10749,10 +11095,17 @@ function appBottomNavSetPrimaryVisual(opts){
     lbl.textContent=opts.text;
     lbl.removeAttribute('hidden');
     primBtn.classList.add('has-text-label');
+    icon.innerHTML='<path d="M9 18l6-6-6-6"/>';
+  }else if(opts&&opts.mode==='share'){
+    lbl.textContent='';
+    lbl.setAttribute('hidden','true');
+    primBtn.classList.remove('has-text-label');
+    icon.innerHTML='<path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/>';
   }else{
     lbl.textContent='';
     lbl.setAttribute('hidden','true');
     primBtn.classList.remove('has-text-label');
+    icon.innerHTML='<path d="M9 18l6-6-6-6"/>';
   }
 }
 
@@ -10778,7 +11131,12 @@ function updateAppBottomNav(){
   var sid=active?active.id:'';
 
   if(sid==='screenCalc'){
-    primBtn.setAttribute('aria-label',(calcCurrentPage===0)?'Next: Review Estimate':(calcCurrentPage===1)?'Next: Quote':'Send estimate');
+    if(calcCurrentPage===0){
+      primBtn.setAttribute('aria-label','Next: Review your quote');
+    }else{
+      primBtn.setAttribute('aria-label','Share estimate');
+      appBottomNavSetPrimaryVisual({mode:'share'});
+    }
     return;
   }
   if(sid==='screenSalesSheet'){
@@ -12050,7 +12408,7 @@ function getSettingVal(key,def){
 // ============================================================
 // CALCULATOR
 // ============================================================
-let calcState={type:null,width:null,length:null,payType:'cash',rtoMonths:36,addons:{},addonQty:{},saleActive:false,salePercent:0,dealerDiscount:0,taxMode:'standard',taxRate:0,bosActive:false,quickTaxActive:false,quickDealerActive:false,assurancePlan:2,costReduction:0,qpvShowTax:false,multiDoors:[],multiWindows:[],multiGarage:[],multiCutouts:[],multiCustom:[],multi2x6:[],multiIntwall:[],multiPaint:[],osbIntwallFtManual:false};
+let calcState={type:null,width:null,length:null,payType:'cash',rtoMonths:36,addons:{},addonQty:{},addonExcluded:{},saleActive:false,salePercent:0,dealerDiscount:0,taxMode:'standard',taxRate:0,bosActive:false,quickTaxActive:false,quickDealerActive:false,assurancePlan:2,costReduction:0,qpvShowTax:false,multiDoors:[],multiWindows:[],multiGarage:[],multiCutouts:[],multiCustom:[],multi2x6:[],multiIntwall:[],multiPaint:[],osbIntwallFtManual:false,stdRemoved:{},stdHidden:{},cashDownPayment:null};
 let calcCurrentPage=0;
 let _skipCalcTaxReset=false;
 const CALC_HISTORY_KEY='gss_calc_quote_history_v1';
@@ -12058,10 +12416,10 @@ const CALC_HISTORY_MAX=4;
 
 function getDefaultCalcState(){
   return {
-    type:null,width:null,length:null,payType:'cash',rtoMonths:36,addons:{},addonQty:{},
+    type:null,width:null,length:null,payType:'cash',rtoMonths:36,addons:{},addonQty:{},addonExcluded:{},
     saleActive:false,salePercent:0,dealerDiscount:0,taxMode:'standard',taxRate:0,
     bosActive:false,quickTaxActive:false,quickDealerActive:false,assurancePlan:2,costReduction:0,qpvShowTax:false,multiDoors:[],multiWindows:[],
-    multiGarage:[],multiCutouts:[],multiCustom:[],multi2x6:[],multiIntwall:[],multiPaint:[],osbIntwallFtManual:false,stdRemoved:{},_stdType:null
+    multiGarage:[],multiCutouts:[],multiCustom:[],multi2x6:[],multiIntwall:[],multiPaint:[],osbIntwallFtManual:false,stdRemoved:{},stdHidden:{},cashDownPayment:null,_stdType:null
   };
 }
 
@@ -12164,6 +12522,25 @@ function closeResumeQuoteList(){
   modal.style.display='none';
 }
 
+function resetCalcDimensionSelectors(){
+  calcState.width=null;
+  calcState.length=null;
+  var wSel=document.getElementById('calcWidth');
+  var lSel=document.getElementById('calcLength');
+  if(lSel) lSel.innerHTML='<option value="">Length</option>';
+  if(wSel){
+    wSel.value='';
+    if(wSel._gssListEnhanced) gssRefreshListTrigger(wSel);
+  }
+  if(lSel){
+    lSel.value='';
+    if(lSel._gssListEnhanced){
+      gssRebuildListPanel(lSel);
+      gssRefreshListTrigger(lSel);
+    }
+  }
+}
+
 function clearCalcForNewQuote(){
   var keepSaleActive=calcState.saleActive;
   var keepSalePct=calcState.salePercent;
@@ -12177,10 +12554,7 @@ function clearCalcForNewQuote(){
   var typeSel=document.getElementById('calcTypeSelect');
   if(typeSel) typeSel.value='';
   syncCalcTypeTrigger(null);
-  var wSel=document.getElementById('calcWidth');
-  if(wSel) wSel.value='';
-  var lSel=document.getElementById('calcLength');
-  if(lSel) lSel.innerHTML='<option value="">Length</option>';
+  resetCalcDimensionSelectors();
   document.querySelectorAll('#screenCalc [id^="c_"]').forEach(function(el){
     if(!el||!el.id) return;
     if(el.type==='checkbox'||el.type==='radio') el.checked=false;
@@ -12215,10 +12589,7 @@ function resetPriceCalculator(){
   var typeSel=document.getElementById('calcTypeSelect');
   if(typeSel) typeSel.value='';
   syncCalcTypeTrigger(null);
-  var wSel=document.getElementById('calcWidth');
-  if(wSel) wSel.value='';
-  var lSel=document.getElementById('calcLength');
-  if(lSel) lSel.innerHTML='<option value="">Length</option>';
+  resetCalcDimensionSelectors();
   document.querySelectorAll('#screenCalc [id^="c_"]').forEach(function(el){
     if(!el||!el.id) return;
     if(el.type==='checkbox'||el.type==='radio') el.checked=false;
@@ -12236,9 +12607,7 @@ function resetPriceCalculator(){
   calcRenderRows('paint');
   try{ buildRemoveStdPanel(); }catch(_b){}
   var qpvPanel=document.getElementById('qpvSettingsPanel');
-  var qpvBtn=document.getElementById('qpvSettingsBtn');
-  if(qpvPanel) qpvPanel.style.display='none';
-  if(qpvBtn) qpvBtn.setAttribute('aria-expanded','false');
+  if(qpvPanel) qpvPanel.style.display='';
   setCalcTaxShown(false);
   setQpPillPressed('quickBosPill',!!calcState.bosActive);
   try{ setTaxMode('standard'); }catch(_t){}
@@ -12248,7 +12617,9 @@ function resetPriceCalculator(){
   saveSaleState();
   syncSaleUIFromState();
   try{ onDealerDiscountChange(0); }catch(_d){}
-  setCalcPriceDeckView('quick');
+  setCalcPriceDeckView('cash');
+  syncCalcDetailsOpen(false);
+  syncBosRtoLock();
   calcGoTo(0);
   updateCatCounts();
   updateAutoWidthPrices();
@@ -12363,14 +12734,90 @@ function resumeLastCalcQuote(){
 function setCalcType(code){
   calcState.type=code||null;
   calcState.stdRemoved={};
+  calcState.stdHidden={};
   calcState._stdType=null;
   buildRemoveStdPanel();
+  updateOptSheetStdLinkVisibility();
   updateQuickPrice();
   updateTallWallAvailability();
   updatePorchAvailability();
   updateAutoWidthPrices();
   updateAddOptionBtnState();
   if(calcState.width) onCalcWidthChange(String(calcState.width));
+}
+
+function _optSkipsMeasureConfirm(entry){
+  if(!entry) return false;
+  return !!(entry.autoOnly||entry.autoMeasure);
+}
+
+function _optAutoMeasureLinft(entry,ctx){
+  if(entry&&entry.defaultQty) return entry.defaultQty(ctx);
+  return ctx.l||0;
+}
+
+function _optAutoMeasureSqft(entry,ctx){
+  if(entry&&entry.defaultQty) return entry.defaultQty(ctx);
+  return (ctx.w&&ctx.l)?ctx.w*ctx.l:0;
+}
+
+function _optPrefillAutoMeasureDraft(key,entry,draft){
+  if(!_optSkipsMeasureConfirm(entry)) return;
+  var ctx=_wizCtx();
+  if(entry.qtyStep==='linft'){
+    if(key==='osb_intwall') draft.linft=String(computeOsbInteriorWallLinFt(_stagingMergedForOsb())||'');
+    else draft.linft=String(_optAutoMeasureLinft(entry,ctx)||'');
+  }else if(entry.qtyStep==='sqft'){
+    draft.sqft=String(_optAutoMeasureSqft(entry,ctx)||'');
+  }
+}
+
+function syncDimensionBasedOptionFields(){
+  var w=calcState.width||0;
+  var l=calcState.length||0;
+  var sq=(w&&l)?w*l:0;
+  var linftFieldMap={
+    rooffelt:'c_rooffeltFt',
+    housewrap:'c_housewrapFt',
+    rooftrusses:'c_rooftrussft',
+    floorjoists:'c_floorjoistFt',
+    shelves:'c_shelvesLinFt',
+    loft:'c_loftFt',
+    porch:'c_porchFt'
+  };
+  Object.keys(linftFieldMap).forEach(function(key){
+    if(!calcState.addons[key]) return;
+    var entry=getOptCatalogEntry(key);
+    if(!_optSkipsMeasureConfirm(entry)) return;
+    var el=document.getElementById(linftFieldMap[key]);
+    if(el) el.value=l>0?String(l):'';
+  });
+  if(calcState.addons.flooring){
+    var flEntry=getOptCatalogEntry('flooring');
+    if(_optSkipsMeasureConfirm(flEntry)){
+      var fl=document.getElementById('c_flooringSqFt');
+      if(fl) fl.value=sq>0?String(sq):'';
+    }
+  }
+  if(calcState.addons.doubletopplate){
+    var dtpEntry=getOptCatalogEntry('doubletopplate');
+    if(_optSkipsMeasureConfirm(dtpEntry)){
+      /* price uses building length directly */
+    }
+  }
+  if(calcState.multi2x6&&calcState.multi2x6.length){
+    var x6Entry=getOptCatalogEntry('2x6');
+    if(_optSkipsMeasureConfirm(x6Entry)){
+      calcState.multi2x6.forEach(function(row){
+        if(row&&row.type) row.linft=l>0?String(l):'';
+      });
+      try{ calcRenderRows('x6'); }catch(_eX6){}
+    }
+  }
+  refreshOsbIntwallFtDefault(false);
+  updateAutoWidthPrices();
+  try{ renderCalcQuote(); }catch(_eQ){}
+  try{ renderOptsSummary(); }catch(_eO){}
 }
 
 function onCalcWidthChange(val){
@@ -12384,9 +12831,9 @@ function onCalcWidthChange(val){
     ls.value=String(prevLength);
   }else{
     calcState.length=null;
+    ls.value='';
   }
-  refreshOsbIntwallFtDefault(false);
-  updateAutoWidthPrices();
+  syncDimensionBasedOptionFields();
   updateTrussVisibility();
   updateQuickPrice();
   updateAddOptionBtnState();
@@ -12397,7 +12844,7 @@ function onCalcWidthChange(val){
 
 function onCalcLengthChange(val){
   calcState.length=val?parseInt(val):null;
-  refreshOsbIntwallFtDefault(false);
+  syncDimensionBasedOptionFields();
   updateAutoWidthPrices();
   updateQuickPrice();
   updateAddOptionBtnState();
@@ -12687,6 +13134,24 @@ function onQuickSaleInput(el){
   syncSaleBidirectional('calc');
 }
 
+function normalizeCalcDeckView(view){
+  if(view==='detailed'||view==='rto') return 'rto';
+  if(view==='quick'||view==='cash') return 'cash';
+  return 'cash';
+}
+function _addonExcludeKey(sourceKey,multiIdx){
+  if(multiIdx!==null&&multiIdx!==undefined) return (sourceKey||'')+':'+multiIdx;
+  return sourceKey||'';
+}
+function isAddonExcluded(key){
+  return !!(calcState.addonExcluded&&calcState.addonExcluded[key]);
+}
+function toggleAddonExcluded(key){
+  if(!calcState.addonExcluded) calcState.addonExcluded={};
+  if(calcState.addonExcluded[key]) delete calcState.addonExcluded[key];
+  else calcState.addonExcluded[key]=true;
+}
+
 function calcHasPricedBuilding(){
   if(!calcState.type||!calcState.width||!calcState.length) return false;
   var row=PRICING[calcState.width]&&PRICING[calcState.width][calcState.length];
@@ -12699,12 +13164,24 @@ function setCalcPriceDeckEmptyState(isEmpty){
     quick.classList.toggle('is-empty',!!isEmpty);
     quick.querySelectorAll('.quick-price-empty').forEach(function(el){ el.setAttribute('aria-hidden',isEmpty?'false':'true'); });
   }
-  if(isEmpty&&calcPriceDeckView==='detailed') setCalcPriceDeckView('quick');
+  if(isEmpty&&calcPriceDeckView==='rto') setCalcPriceDeckView('cash');
 }
 
 function renderCalcRTOStreamlineBlank(){
-  var body=document.getElementById('rtoStreamlineCalcBody');
-  if(body) body.innerHTML='';
+  var cashBody=document.getElementById('cashDetailsBody');
+  var rtoGrid=document.getElementById('rtoDetailGrid');
+  var rtoTotal=document.getElementById('rtoHeroTotal');
+  var rtoMo=document.getElementById('rtoHeroMonthly');
+  if(cashBody) cashBody.innerHTML='';
+  if(rtoGrid) rtoGrid.innerHTML='';
+  if(rtoTotal) rtoTotal.textContent='—';
+  if(rtoMo) rtoMo.textContent='—';
+  ['36','48','60'].forEach(function(m){
+    var v=document.getElementById('rtoChipVal'+m);
+    if(v) v.textContent='—';
+    var c=document.getElementById('rtoChip'+m);
+    if(c) c.classList.remove('is-active');
+  });
   syncCalcPriceDeckHeight();
 }
 
@@ -12717,7 +13194,6 @@ function showBlankCalcPriceDeck(){
   try{ renderOptsSummary(); }catch(_e2){}
   try{ renderReviewSummary(); }catch(_eR){}
   try{ updateRevCalcTabVisibility(); }catch(_eRv){}
-  try{ positionRevCalcTab(); }catch(_eRv2){}
 }
 
 function updateQuickPrice(){
@@ -12743,12 +13219,21 @@ function updateQuickPrice(){
   var stdCredit=getStdRemovedTotal();
   var addonTotal=calcAddons().total;
   var displayPrice=(base - saleAmt + bosAmt) - stdCredit + addonTotal;
+  var saleRow=document.getElementById('cashSaleRow');
+  var saleSaveRow=document.getElementById('quickSaleSaveRow');
+  var saveEl=document.getElementById('quickSaveAmt');
   if(calcState.saleActive){
     baseEl.textContent='$'+base.toLocaleString();
     baseEl.hidden=false;
+    if(saveEl) saveEl.textContent='You save '+fmt(Math.ceil(saleAmt));
+    if(saleRow) saleRow.hidden=false;
+    if(saleSaveRow) saleSaveRow.hidden=false;
   }else{
     baseEl.textContent='';
     baseEl.hidden=true;
+    if(saveEl) saveEl.textContent='';
+    if(saleRow) saleRow.hidden=true;
+    if(saleSaveRow) saleSaveRow.hidden=true;
   }
   var qSnap=null;
   try{ qSnap=getCalcQuoteSnapshot(); }catch(_eQ){}
@@ -12763,17 +13248,19 @@ function updateQuickPrice(){
     }
   }
   priceEl.textContent=fmt(priceToShow);
+  var rtoHeroTotal=document.getElementById('rtoHeroTotal');
+  if(rtoHeroTotal) rtoHeroTotal.textContent=fmt(priceToShow);
   if(bosCtrl) bosCtrl.classList.toggle('is-bos-on',!!calcState.bosActive);
   if(bosTileAmt){
     bosTileAmt.textContent=calcState.bosActive&&bosAmt>0?('+'+fmt(bosAmt)):'';
     bosTileAmt.setAttribute('aria-hidden',calcState.bosActive&&bosAmt>0?'false':'true');
   }
   renderCalcRTOStreamlineFromState();
+  syncBosRtoLock();
   syncCalcPriceDeckHeight();
   updateRTOPreviews();
   try{ renderOptsSummary(); }catch(_e3){}
   try{ renderReviewSummary(); }catch(_eR3){}
-  try{ positionRevCalcTab(); }catch(_eRvTab3){}
 }
 
 function combineBizAddressFromSettings(s){
@@ -12977,64 +13464,152 @@ function mileageOnFromSelectionChange(){
   w.style.display=sel&&sel.value===GSS_MILE_FROM_CUSTOM?'block':'none';
 }
 
-var calcPriceDeckView='quick';
+var calcPriceDeckView='cash';
+var calcDetailsOpen=false;
 var revCalcPageOpen=false;
 var revCalcTabHome=null;
 
 function ensureRevCalcTabHome(){
   var tab=document.getElementById('revCalcTab');
-  var deck=document.getElementById('calcPriceDeck');
-  if(!tab||!deck) return;
+  var slot=document.getElementById('revCalcTabSlot');
+  if(!tab||!slot) return;
   if(!revCalcTabHome){
-    revCalcTabHome={parent:deck,next:tab.nextSibling};
+    revCalcTabHome={parent:slot,next:null};
   }
+}
+
+function syncRevTabShellDockMetrics(){
+  var shell=document.getElementById('revCalcShell');
+  var anchor=getRevTabAnchorRect();
+  if(!shell) return;
+  var shellRect=shell.getBoundingClientRect();
+  var top=Math.max(0,Math.round(anchor.top-shellRect.top));
+  shell.style.setProperty('--rev-tab-dock-top',top+'px');
+  shell.style.setProperty('--rev-tab-dock-height',Math.max(80,Math.round(anchor.height))+'px');
 }
 
 function mountRevCalcTabToDeck(){
   ensureRevCalcTabHome();
   var tab=document.getElementById('revCalcTab');
-  var deck=document.getElementById('calcPriceDeck');
-  if(!tab||!deck||!revCalcTabHome) return;
-  if(tab.parentNode===deck) return;
-  if(revCalcTabHome.next&&revCalcTabHome.next.parentNode===deck){
-    deck.insertBefore(tab,revCalcTabHome.next);
-  }else{
-    deck.insertBefore(tab,deck.firstChild);
-  }
+  var slot=document.getElementById('revCalcTabSlot');
+  if(!tab||!slot||!revCalcTabHome) return;
+  if(tab.parentNode===slot&&!tab.classList.contains('rev-tab--attached')&&!tab.classList.contains('rev-tab--rev-side')) return;
+  resetRevTabDragStyles();
+  tab.classList.remove('rev-tab--rev-side');
+  slot.appendChild(tab);
 }
 
-function mountRevCalcTabToRevShell(){
+function mountRevCalcTabToShell(){
+  ensureRevCalcTabHome();
   var tab=document.getElementById('revCalcTab');
-  var slot=document.getElementById('revCalcTabSlot');
-  if(tab&&slot&&tab.parentNode!==slot) slot.appendChild(tab);
+  var dock=document.getElementById('revCalcTabDockShell');
+  if(!tab||!dock) return;
+  if(tab.parentNode===dock&&!tab.classList.contains('rev-tab--attached')) return;
+  resetRevTabDragStyles();
+  syncRevTabShellDockMetrics();
+  tab.classList.add('rev-tab--rev-side');
+  dock.appendChild(tab);
+}
+
+function attachRevTabDuringDrag(onRight){
+  var tab=document.getElementById('revCalcTab');
+  var shell=document.getElementById('revCalcShell');
+  if(!tab||!shell) return;
+  var anchor=getRevTabAnchorRect();
+  var shellRect=shell.getBoundingClientRect();
+  var tabW=30;
+  var left=shellRect.right-tabW;
+  if(tab.parentNode!==document.body) document.body.appendChild(tab);
+  tab.classList.remove('rev-tab--open');
+  tab.classList.toggle('rev-tab--rev-side',!!onRight);
+  tab.classList.add('rev-tab--attached');
+  tab.style.position='fixed';
+  tab.style.zIndex='10031';
+  tab.style.display='flex';
+  tab.style.left=left+'px';
+  tab.style.top=anchor.top+'px';
+  tab.style.height=anchor.height+'px';
+  tab.style.width=tabW+'px';
+  tab.style.minWidth=tabW+'px';
+  tab.style.maxWidth=tabW+'px';
+  tab.style.minHeight='0';
+  tab.style.margin='0';
+  tab.style.transform='none';
+}
+
+function ensureRevCalcTabInDeck(){
+  if(revCalcPageOpen) return;
+  var tab=document.getElementById('revCalcTab');
+  var shell=document.getElementById('revCalcShell');
+  if(!tab||tab.classList.contains('is-dragging')) return;
+  if(shell&&shell.classList.contains('is-dragging')) return;
+  mountRevCalcTabToDeck();
+}
+
+function syncCalcDetailsOpen(open){
+  calcDetailsOpen=!!open;
+  var cash=document.getElementById('cashDetailsCollapse');
+  var rto=document.getElementById('rtoDetailsCollapse');
+  if(cash) cash.open=calcDetailsOpen;
+  if(rto) rto.open=calcDetailsOpen;
+}
+
+function onCalcDetailsToggle(el){
+  if(el) calcDetailsOpen=!!el.open;
+  syncCalcDetailsOpen(calcDetailsOpen);
+  syncCalcPriceDeckHeight();
+}
+
+function syncBosRtoLock(){
+  var deck=document.getElementById('calcPriceDeck');
+  if(deck) deck.classList.toggle('bos-blocks-rto',!!calcState.bosActive);
+  if(calcState.bosActive&&calcPriceDeckView==='rto'){
+    setCalcPriceDeckView('cash');
+    showToast('RTO not available for build on site');
+  }
 }
 
 function setCalcPriceDeckView(view){
-  if(view==='detailed'&&!calcHasPricedBuilding()) view='quick';
-  calcPriceDeckView=view==='detailed'?'detailed':'quick';
+  view=normalizeCalcDeckView(view);
+  if(view==='rto'&&(calcState.bosActive||!calcHasPricedBuilding())) view='cash';
+  calcPriceDeckView=view;
   var track=document.getElementById('calcPriceDeckTrack');
+  var detailsTrack=document.getElementById('calcDetailsTrack');
   var deck=document.getElementById('calcPriceDeck');
-  var tabQuick=document.getElementById('calcPriceTabQuick');
-  var tabDetailed=document.getElementById('calcPriceTabDetailed');
-  if(deck) deck.classList.toggle('deck-view-quick',calcPriceDeckView==='quick');
-  if(tabQuick){
-    tabQuick.classList.toggle('is-active',calcPriceDeckView==='quick');
-    tabQuick.setAttribute('aria-selected',calcPriceDeckView==='quick'?'true':'false');
+  var tabCash=document.getElementById('calcPriceTabCash')||document.getElementById('calcPriceTabQuick');
+  var tabRto=document.getElementById('calcPriceTabRto')||document.getElementById('calcPriceTabDetailed');
+  var isCash=calcPriceDeckView==='cash';
+  if(deck) deck.classList.toggle('deck-view-cash',isCash);
+  if(deck) deck.classList.toggle('deck-view-quick',isCash);
+  if(deck) deck.classList.toggle('deck-view-rto',!isCash);
+  if(tabCash){
+    tabCash.classList.toggle('is-active',isCash);
+    tabCash.setAttribute('aria-selected',isCash?'true':'false');
   }
-  if(tabDetailed){
-    tabDetailed.classList.toggle('is-active',calcPriceDeckView==='detailed');
-    tabDetailed.setAttribute('aria-selected',calcPriceDeckView==='detailed'?'true':'false');
+  if(tabRto){
+    tabRto.classList.toggle('is-active',!isCash);
+    tabRto.setAttribute('aria-selected',!isCash?'true':'false');
   }
   if(track){
     track.classList.remove('is-dragging');
-    track.classList.toggle('view-detailed',calcPriceDeckView==='detailed');
+    track.classList.toggle('view-detailed',!isCash);
+    track.classList.toggle('view-rto',!isCash);
     track.style.transform='';
+  }
+  if(detailsTrack){
+    detailsTrack.classList.remove('is-dragging');
+    detailsTrack.classList.toggle('view-detailed',!isCash);
+    detailsTrack.classList.toggle('view-rto',!isCash);
+    detailsTrack.style.transform='';
   }
   syncCalcPriceDeckHeight();
   requestAnimationFrame(function(){ try{ syncCalcPriceDeckHeight(); }catch(_e){} });
+  syncCalcDetailsOpen(calcDetailsOpen);
 }
 
 function getCalcPriceDeckWidth(){
+  var slide=document.querySelector('.calc-price-hero-slide');
+  if(slide) return Math.max(slide.offsetWidth||0,1);
   var content=document.querySelector('.calc-price-content');
   if(content) return Math.max(content.offsetWidth||0,1);
   var viewport=document.getElementById('calcPriceDeckViewport');
@@ -13045,13 +13620,28 @@ function getCalcPriceDeckWidth(){
 
 function setCalcPriceDeckDragPx(px,animate){
   var track=document.getElementById('calcPriceDeckTrack');
-  if(!track) return;
-  track.classList.toggle('is-dragging',!animate);
-  if(animate){
-    track.style.transform='';
-    track.classList.toggle('view-detailed',calcPriceDeckView==='detailed');
-  }else{
-    track.style.transform='translateX('+px+'px)';
+  var detailsTrack=document.getElementById('calcDetailsTrack');
+  if(track){
+    track.classList.toggle('is-dragging',!animate);
+    if(animate){
+      track.style.transform='';
+      var isRto=calcPriceDeckView==='rto';
+      track.classList.toggle('view-detailed',isRto);
+      track.classList.toggle('view-rto',isRto);
+    }else{
+      track.style.transform='translateX('+px+'px)';
+    }
+  }
+  if(detailsTrack){
+    detailsTrack.classList.toggle('is-dragging',!animate);
+    if(animate){
+      detailsTrack.style.transform='';
+      var isRto2=calcPriceDeckView==='rto';
+      detailsTrack.classList.toggle('view-detailed',isRto2);
+      detailsTrack.classList.toggle('view-rto',isRto2);
+    }else{
+      detailsTrack.style.transform='translateX('+px+'px)';
+    }
   }
 }
 
@@ -13065,28 +13655,17 @@ function syncCalcPriceDeckHeight(){
   if(document.querySelector('.gss-list-panel--floated')) return;
   var deck=document.getElementById('calcPriceDeck');
   var quick=document.getElementById('quickPriceWrap');
-  var detail=document.getElementById('rtoStreamlineCalcCard');
   var viewport=document.getElementById('calcPriceDeckViewport');
   var track=document.getElementById('calcPriceDeckTrack');
+  var detailsTrack=document.getElementById('calcDetailsTrack');
   var content=document.querySelector('.calc-price-content');
   if(!deck||!quick) return;
   var quickEmpty=quick.classList.contains('is-empty');
-  var onQuickView=calcPriceDeckView==='quick';
-  if(deck) deck.classList.toggle('deck-view-quick',onQuickView);
+  var onCashView=calcPriceDeckView==='cash';
+  if(deck){ deck.classList.toggle('deck-view-cash',onCashView); deck.classList.toggle('deck-view-quick',onCashView); deck.classList.toggle('deck-view-rto',!onCashView); }
   if(quick) quick.style.minHeight='';
-  if(detail){
-    detail.style.minHeight='';
-    detail.style.height='';
-    detail.style.overflow='';
-    detail.style.padding='';
-    detail.style.visibility='';
-  }
-  if(track){
-    track.style.minHeight='';
-    track.style.height='';
-    track.style.maxHeight='';
-    track.style.overflow='';
-  }
+  if(track){ track.style.minHeight=''; track.style.height=''; track.style.maxHeight=''; track.style.overflow=''; }
+  if(detailsTrack){ detailsTrack.style.minHeight=''; }
   if(content) content.style.minHeight='';
   if(viewport) viewport.style.minHeight='';
   if(quickEmpty){
@@ -13095,31 +13674,37 @@ function syncCalcPriceDeckHeight(){
     deck.style.height='';
     return;
   }
-  var quickPane=track?track.querySelector('.calc-price-pane--quick'):null;
-  var qh=quickPane?(quickPane.offsetHeight||0):0;
-  var dh=detail?(detail.offsetHeight||0):0;
-  var paneMax=Math.max(qh,dh,1);
-  var contentH=paneMax;
-  if(track) track.style.minHeight=paneMax+'px';
-  if(content) content.style.minHeight=contentH+'px';
+  var cashPane=track?track.querySelector('.calc-price-pane--cash,.calc-price-pane--quick'):null;
+  var rtoPane=track?track.querySelector('.calc-price-pane--rto,.calc-price-pane--detail'):null;
+  // Hero price track sizes to the taller of the two price blocks; the
+  // details area below flows naturally with the active (display-toggled)
+  // pane, so there is no dead space and the window flexes on collapse/expand.
+  if(track) track.style.minHeight=Math.max(cashPane?cashPane.offsetHeight:0,rtoPane?rtoPane.offsetHeight:0,1)+'px';
+  if(content) content.style.minHeight='';
   deck.style.height='';
+  if(revCalcPageOpen){
+    try{ syncRevTabShellDockMetrics(); }catch(_eDock){}
+  }
 }
 
 function calcPriceDeckSwipeTarget(el){
-  return el&&el.closest('input,select,textarea,button,a,label,.qp-pill-fill,.qpv-tax-toggle,.qpv-gear-btn,.calc-price-tabs,.calc-price-tab,.gss-list-trigger,.gss-list-panel,.gss-list-panel--floated,.gss-list-row,.gss-list-custom-input');
+  return el&&el.closest('input,select,textarea,button,a,label,.qp-pill-fill,.qpv-tax-toggle,.qpv-gear-btn,.calc-price-tabs,.calc-price-tab,.gss-list-trigger,.gss-list-panel,.gss-list-panel--floated,.gss-list-row,.gss-list-custom-input,.sel-opt-chk,.sel-opt-x,.rto-term-chip,.calc-detail-collapse summary');
 }
 
 function handleCalcPriceDeckSwipeRelease(dx,dy,velocityX,viewAtStart){
+  viewAtStart=normalizeCalcDeckView(viewAtStart);
   var snapBack=function(){
-    setCalcPriceDeckDragPx(viewAtStart==='detailed'?-getCalcPriceDeckWidth():0,true);
+    setCalcPriceDeckDragPx(viewAtStart==='rto'?-getCalcPriceDeckWidth():0,true);
   };
   if(Math.abs(dx)<Math.abs(dy)&&Math.abs(dx)<28){ snapBack(); return false; }
   var threshold=28;
   var flick=Math.abs(velocityX)>0.35;
-  if(viewAtStart==='quick'){
-    if(dx<-threshold||(flick&&velocityX<0)){ setCalcPriceDeckView('detailed'); return true; }
-  }else if(viewAtStart==='detailed'){
-    if(dx>threshold||(flick&&velocityX>0)){ setCalcPriceDeckView('quick'); return true; }
+  if(viewAtStart==='cash'){
+    if(dx<-threshold||(flick&&velocityX<0)){
+      if(!calcState.bosActive){ setCalcPriceDeckView('rto'); return true; }
+    }
+  }else if(viewAtStart==='rto'){
+    if(dx>threshold||(flick&&velocityX>0)){ setCalcPriceDeckView('cash'); return true; }
   }
   snapBack();
   return false;
@@ -13130,7 +13715,7 @@ function initCalcPriceDeckGestures(){
   var track=document.getElementById('calcPriceDeckTrack');
   if(!content||!track||content._deckGesturesInit) return;
   content._deckGesturesInit=true;
-  var drag={active:false,startX:0,startY:0,startOffsetPx:0,viewAtStart:'quick',lastX:0,lastT:0,velocityX:0};
+  var drag={active:false,startX:0,startY:0,startOffsetPx:0,viewAtStart:'cash',lastX:0,lastT:0,velocityX:0};
   function onStart(clientX,clientY,target){
     if(calcPriceDeckSwipeTarget(target)) return false;
     var deckW=getCalcPriceDeckWidth();
@@ -13138,7 +13723,7 @@ function initCalcPriceDeckGestures(){
     drag.startX=clientX;
     drag.startY=clientY;
     drag.viewAtStart=calcPriceDeckView;
-    drag.startOffsetPx=calcPriceDeckView==='detailed'?-deckW:0;
+    drag.startOffsetPx=calcPriceDeckView==='rto'?-deckW:0;
     drag.lastX=clientX;
     drag.lastT=Date.now();
     drag.velocityX=0;
@@ -13183,7 +13768,7 @@ function initCalcPriceDeckGestures(){
     if(!drag.active) return;
     drag.active=false;
     track.classList.remove('is-dragging');
-    setCalcPriceDeckDragPx(drag.viewAtStart==='detailed'?-getCalcPriceDeckWidth():0,true);
+    setCalcPriceDeckDragPx(normalizeCalcDeckView(drag.viewAtStart)==='rto'?-getCalcPriceDeckWidth():0,true);
   },{passive:true});
   content.addEventListener('mousedown',function(e){
     if(e.button!==0) return;
@@ -13203,7 +13788,10 @@ function initCalcPriceDeckGestures(){
     document.addEventListener('mousemove',onMouseMove);
     document.addEventListener('mouseup',onMouseUp);
   });
-  window.addEventListener('resize',function(){ try{ syncCalcPriceDeckHeight(); }catch(_e){} });
+  window.addEventListener('resize',function(){
+    try{ syncCalcPriceDeckHeight(); }catch(_e){}
+    try{ if(revCalcPageOpen) syncRevTabShellDockMetrics(); }catch(_e2){}
+  });
 }
 
 function updateRevCalcTabVisibility(){
@@ -13218,9 +13806,8 @@ function updateRevCalcTabVisibility(){
   tab.style.display=show?'flex':'none';
   if(deck) deck.classList.toggle('rev-tab-open',!!revCalcPageOpen);
   if(!tab.classList.contains('is-dragging')){
-    tab.classList.remove('rev-tab--attached');
-    tab.classList.toggle('rev-tab--open',!!revCalcPageOpen);
-    if(revCalcPageOpen) mountRevCalcTabToRevShell();
+    tab.classList.remove('rev-tab--attached','rev-tab--open');
+    if(revCalcPageOpen) mountRevCalcTabToShell();
     else mountRevCalcTabToDeck();
   }
   var openLabel='Open Reverse Price Calculator';
@@ -13248,11 +13835,16 @@ function getRevShellClosedOffset(){
 }
 
 function getRevTabAnchorRect(){
+  var heroRow=document.querySelector('.calc-price-hero-row');
   var body=document.querySelector('.calc-price-deck-body');
   var deck=document.getElementById('calcPriceDeck');
-  if(body&&deck&&deck.classList.contains('is-visible')){
-    var r=body.getBoundingClientRect();
+  if(heroRow&&deck&&deck.classList.contains('is-visible')){
+    var r=heroRow.getBoundingClientRect();
     return {top:r.top,height:r.height};
+  }
+  if(body&&deck&&deck.classList.contains('is-visible')){
+    var r2=body.getBoundingClientRect();
+    return {top:r2.top,height:r2.height};
   }
   if(deck&&deck.classList.contains('is-visible')){
     var r2=deck.getBoundingClientRect();
@@ -13267,75 +13859,58 @@ function syncRevTabToShell(){
   if(!tab||!shell||tab.style.display==='none') return;
   if(!shell.classList.contains('is-dragging')) return;
   var shellRect=shell.getBoundingClientRect();
-  var tabW=tab.offsetWidth||30;
-  var anchor=getRevTabAnchorRect();
+  var tabW=30;
   if(!revCalcPageOpen){
     var deck=document.getElementById('calcPriceDeck');
     var deckLeft=deck?deck.getBoundingClientRect().left:0;
-    if(shellRect.right<deckLeft+tabW-4){
-      tab.classList.remove('rev-tab--attached','rev-tab--open');
-      tab.style.position='';
-      tab.style.left='';
-      tab.style.right='';
-      tab.style.top='';
-      tab.style.height='';
-      tab.style.minHeight='';
-      tab.style.marginRight='';
-      tab.style.marginLeft='';
-      tab.style.transform='';
-      tab.style.writingMode='';
-      mountRevCalcTabToDeck();
+    if(shellRect.right<deckLeft+tabW+2){
+      ensureRevCalcTabInDeck();
       return;
     }
+    attachRevTabDuringDrag(false);
+    return;
   }
-  if(tab.parentNode!==document.body){
-    document.body.appendChild(tab);
-  }
-  tab.classList.remove('rev-tab--open');
-  tab.classList.add('rev-tab--attached');
-  tab.style.position='fixed';
-  tab.style.writingMode='vertical-rl';
-  tab.style.textOrientation='mixed';
-  tab.style.left=Math.max(0,Math.min(shellRect.right-tabW,window.innerWidth-tabW))+'px';
-  tab.style.right='auto';
-  tab.style.marginRight='0';
-  tab.style.marginLeft='0';
-  tab.style.top=anchor.top+'px';
-  tab.style.height=anchor.height+'px';
-  tab.style.minHeight='0';
-  tab.style.transform='none';
+  attachRevTabDuringDrag(true);
 }
 
 function resetRevTabDragStyles(){
   var tab=document.getElementById('revCalcTab');
   if(!tab) return;
-  tab.classList.remove('rev-tab--attached','is-dragging');
+  tab.classList.remove('rev-tab--attached','rev-tab--rev-side','is-dragging');
   tab.style.position='';
   tab.style.left='';
   tab.style.right='';
-  tab.style.marginRight='';
-  tab.style.marginLeft='';
-  tab.style.transform='';
   tab.style.top='';
   tab.style.height='';
   tab.style.minHeight='';
+  tab.style.width='';
+  tab.style.minWidth='';
+  tab.style.maxWidth='';
+  tab.style.zIndex='';
+  tab.style.margin='';
+  tab.style.marginLeft='';
+  tab.style.marginRight='';
+  tab.style.transform='';
   tab.style.writingMode='';
   tab.style.textOrientation='';
 }
 
 function clearRevTabDragOffset(){
-  resetRevTabDragStyles();
-  if(revCalcPageOpen) mountRevCalcTabToRevShell();
+  if(revCalcPageOpen) mountRevCalcTabToShell();
   else mountRevCalcTabToDeck();
 }
 
 function positionRevCalcTab(){
   var tab=document.getElementById('revCalcTab');
+  var shell=document.getElementById('revCalcShell');
   if(!tab||tab.style.display==='none') return;
-  if(tab.classList.contains('rev-tab--attached')||tab.classList.contains('is-dragging')) return;
-  resetRevTabDragStyles();
-  if(revCalcPageOpen) mountRevCalcTabToRevShell();
-  else mountRevCalcTabToDeck();
+  if(tab.classList.contains('is-dragging')||(shell&&shell.classList.contains('is-dragging'))) return;
+  if(revCalcPageOpen){
+    syncRevTabShellDockMetrics();
+    mountRevCalcTabToShell();
+  }else{
+    mountRevCalcTabToDeck();
+  }
 }
 
 function openRevCalcPage(){
@@ -13345,7 +13920,6 @@ function openRevCalcPage(){
   syncSaleBidirectional('calc');
   revCalcPageOpen=true;
   resetRevTabDragStyles();
-  mountRevCalcTabToRevShell();
   shell.classList.remove('is-dragging');
   setRevShellSlide(0,true);
   shell.classList.add('open');
@@ -13361,6 +13935,7 @@ function openRevCalcPage(){
   onRevBudgetInput();
   updateRevNrtoBanner();
   updateRevCalcTabVisibility();
+  requestAnimationFrame(function(){ try{ syncRevTabShellDockMetrics(); }catch(_e){} });
 }
 
 function closeRevCalcPage(){
@@ -13372,8 +13947,6 @@ function closeRevCalcPage(){
   setRevShellSlide(getRevShellClosedOffset(),true);
   shell.classList.remove('open');
   shell.setAttribute('aria-hidden','true');
-  resetRevTabDragStyles();
-  mountRevCalcTabToDeck();
   if(backdrop){
     backdrop.classList.remove('open');
     backdrop.setAttribute('aria-hidden','true');
@@ -13437,7 +14010,7 @@ function initRevCalcGestures(){
       var progress=Math.max(0,Math.min(1,(next-closed)/(-closed*0.85)));
       backdrop.style.visibility='visible';
       backdrop.style.pointerEvents=progress>0.02?'auto':'none';
-      backdrop.style.background='rgba(0,0,0,'+(progress*0.4).toFixed(3)+')';
+      backdrop.style.background='rgba(0,0,0,'+(progress*0.55).toFixed(3)+')';
     }
   }
 
@@ -13533,7 +14106,7 @@ function initRevCalcGestures(){
       var backdrop=document.getElementById('revCalcBackdrop');
       if(backdrop){
         var progress=Math.max(0,Math.min(1,(next-closed)/(-closed*0.85)));
-        backdrop.style.background='rgba(0,0,0,'+(progress*0.4).toFixed(3)+')';
+        backdrop.style.background='rgba(0,0,0,'+(progress*0.55).toFixed(3)+')';
       }
     },{passive:true});
     shell.addEventListener('touchend',function(e){
@@ -14251,7 +14824,6 @@ function renderReviewSummary(){
   try{ q=getCalcQuoteSnapshot(); }catch(_e){}
   var cashCard=document.getElementById('reviewCashCard');
   var rtoCard=document.getElementById('calcRTOTerms');
-  var earlyBtn=document.getElementById('earlyPayoffBtn');
   var pay=calcState.payType==='rto'?'rto':'cash';
 
   if(!q||!q.base){
@@ -14278,7 +14850,6 @@ function renderReviewSummary(){
       var rf=document.getElementById('reviewRtoFoot');
       if(rf) rf.textContent='';
     }
-    if(earlyBtn) earlyBtn.style.display=pay==='rto'?'flex':'none';
     return;
   }
 
@@ -14364,11 +14935,9 @@ function renderReviewSummary(){
       rf.innerHTML=planL2+(crNote?' · '+crNote:'')+(q.rtoDownDisplayText?' · Down: '+q.rtoDownDisplayText:'');
     }
   }
-
-  if(earlyBtn) earlyBtn.style.display=pay==='rto'?'flex':'none';
 }
 
-// ── Step 2 share/export hub helpers ────────────────────────────────────
+// ── Share/export hub helpers ────────────────────────────────────
 function copyEstimateTextToClipboard(){
   try{
     var q=getCalcQuoteSnapshot();
@@ -14403,6 +14972,298 @@ function goToMarketplaceAdFromQuote(){
 
 function shareEstimate(){
   openQuoteShareRecipientModal();
+}
+
+function getStyleImageForCalcType(){
+  var code=calcState.type||'';
+  var row=(Array.isArray(STYLE_DATA)?STYLE_DATA:[]).find(function(s){ return s&&s.code===code; });
+  return row?row.img:null;
+}
+
+function loadImageForPdf(dataUrl){
+  return new Promise(function(resolve){
+    if(!dataUrl){ resolve(null); return; }
+    var img=new Image();
+    img.crossOrigin='anonymous';
+    img.onload=function(){
+      try{
+        var c=document.createElement('canvas');
+        c.width=img.naturalWidth||img.width||1;
+        c.height=img.naturalHeight||img.height||1;
+        var ctx=c.getContext('2d');
+        ctx.drawImage(img,0,0);
+        var fmt=String(dataUrl).indexOf('image/png')>=0?'PNG':'JPEG';
+        resolve({dataUrl:c.toDataURL('image/'+fmt.toLowerCase()),fmt:fmt,w:c.width,h:c.height});
+      }catch(_e){ resolve(null); }
+    };
+    img.onerror=function(){ resolve(null); };
+    img.src=dataUrl;
+  });
+}
+
+function makeFadedLogoDataUrl(logoImg,opacity){
+  if(!logoImg||!logoImg.dataUrl) return null;
+  try{
+    var c=document.createElement('canvas');
+    c.width=logoImg.w||1;
+    c.height=logoImg.h||1;
+    var ctx=c.getContext('2d');
+    ctx.globalAlpha=opacity!=null?opacity:0.09;
+    var img=new Image();
+    return new Promise(function(resolve){
+      img.onload=function(){
+        ctx.drawImage(img,0,0,c.width,c.height);
+        var fmt=logoImg.fmt||'PNG';
+        resolve({dataUrl:c.toDataURL('image/'+fmt.toLowerCase()),fmt:fmt,w:c.width,h:c.height});
+      };
+      img.onerror=function(){ resolve(null); };
+      img.src=logoImg.dataUrl;
+    });
+  }catch(_e){ return Promise.resolve(null); }
+}
+
+async function drawPdfLogoBackground(doc,logoData,pageW,pageH){
+  if(!logoData||!doc) return;
+  var logo=await loadImageForPdf(logoData);
+  if(!logo) return;
+  var faded=await makeFadedLogoDataUrl(logo,0.09);
+  if(!faded) return;
+  var pageRatio=pageW/pageH;
+  var logoRatio=faded.w/faded.h;
+  var drawW,drawH;
+  if(logoRatio>pageRatio){
+    drawH=pageH;
+    drawW=drawH*logoRatio;
+  }else{
+    drawW=pageW;
+    drawH=drawW/logoRatio;
+  }
+  var x=(pageW-drawW)/2;
+  var y=(pageH-drawH)/2;
+  doc.addImage(faded.dataUrl,faded.fmt,x,y,drawW,drawH);
+}
+
+function buildEstimatePdfLines(q){
+  var lines=[];
+  var today=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  lines.push({kind:'title',text:'PRICE ESTIMATE'});
+  lines.push({kind:'body',text:'Date: '+today});
+  var name=cv('c_custName'), phone=cv('c_custPhone'), email=cv('c_custEmail');
+  var addr=cv('c_custAddress');
+  var cCity=cv('c_custCity'), cState=cv('c_custState'), cZip=cv('c_custZip');
+  var csz=[cCity,cState,cZip].filter(Boolean).join(' ');
+  var fullAddr=[addr,csz].filter(Boolean).join(', ');
+  if(name) lines.push({kind:'body',text:'Customer: '+name});
+  if(phone) lines.push({kind:'body',text:'Phone: '+phone});
+  if(email) lines.push({kind:'body',text:'Email: '+email});
+  if(fullAddr) lines.push({kind:'body',text:'Delivery: '+fullAddr});
+  lines.push({kind:'rule'});
+  lines.push({kind:'section',text:'BUILDING'});
+  lines.push({kind:'body',text:NAMES[calcState.type]||calcState.type||'Building',bold:true});
+  lines.push({kind:'body',text:"Size: "+calcState.width+"' \u00d7 "+calcState.length+"' ("+(calcState.width*calcState.length)+" sq ft)"});
+  lines.push({kind:'body',text:'List Price: '+fmt(q.base)});
+  if(q.saleAmount>0){
+    lines.push({kind:'body',text:'Promotional Discount ('+q.salePct+'% off list): -'+fmt(q.saleAmount)});
+    lines.push({kind:'body',text:'Sale Price: '+fmt(q.saleBase)});
+  }
+  if(q.bosAmt>0) lines.push({kind:'body',text:'Build-on-Site (30%): +'+fmt(q.bosAmt)});
+  if(q.dealerAmount>0) lines.push({kind:'body',text:'Dealer discount ('+q.dealerPct+'%): -'+fmt(q.dealerAmount)});
+  var listing=getStyleListingCopy(calcState.type||'');
+  if(listing.blurb) lines.push({kind:'body',text:listing.blurb});
+  var stdItems=STD_OPTIONS[calcState.type]||[];
+  stdItems.forEach(function(it){
+    var rq=calcState.stdRemoved&&calcState.stdRemoved[it.id];
+    if(!rq) lines.push({kind:'body',text:it.label+(it.qty>1?' ('+it.qty+'×)':'')});
+  });
+  if(listing.specs&&listing.specs.length){
+    lines.push({kind:'section',text:'STANDARD FEATURES'});
+    listing.specs.forEach(function(sp){ lines.push({kind:'body',text:sp}); });
+  }
+  if(q.addonLines&&q.addonLines.length){
+    lines.push({kind:'rule'});
+    lines.push({kind:'section',text:'OPTIONS'});
+    q.addonLines.forEach(function(l){ lines.push({kind:'body',text:l.label+': '+fmt(l.val)}); });
+    lines.push({kind:'body',text:'Options Total: '+fmt(q.addonTotal),bold:true});
+  }
+  lines.push({kind:'rule'});
+  lines.push({kind:'section',text:'PRICING'});
+  var pay=calcState.payType==='rto'?'rto':'cash';
+  if(pay==='cash'){
+    lines.push({kind:'body',text:'Subtotal: '+fmt(q.subtotal)});
+    if(q.taxRate>0) lines.push({kind:'body',text:'Tax ('+q.taxRate+'%): '+fmt(q.taxAmount)});
+    lines.push({kind:'body',text:'CASH TOTAL: '+fmt(q.grandTotal),bold:true});
+    var halfDue=Math.ceil((q.grandTotal/2)*100)/100;
+    var dueToday=(calcState.cashDownPayment!=null&&calcState.cashDownPayment>=halfDue)?calcState.cashDownPayment:halfDue;
+    dueToday=Math.ceil(dueToday*100)/100;
+    lines.push({kind:'body',text:'Amount Due Today: '+fmtCents(dueToday),bold:true});
+  }else{
+    lines.push({kind:'body',text:'Subtotal: '+fmt(q.subtotalWithAssurance)});
+    if(q.taxRate>0) lines.push({kind:'body',text:'Tax ('+q.taxRate+'%): '+fmt(q.taxAmount)});
+    lines.push({kind:'body',text:'TOTAL: '+fmt(q.grandTotal),bold:true});
+    var rd=q.rtoData;
+    var mo=calcState.rtoMonths||36;
+    if(rd){
+      lines.push({kind:'body',text:'Due Today: '+fmtCents(rd.totalReceived),bold:true});
+      lines.push({kind:'body',text:'Monthly Payment ('+mo+' mo): '+fmtCents(rd.totalMonthly)+'/mo',bold:true});
+      if(rd.monthlyTax>0) lines.push({kind:'body',text:'  (pre-tax '+fmtCents(rd.monthly)+' + tax '+fmtCents(rd.monthlyTax)+')'});
+      if(q.effectiveCR>0) lines.push({kind:'body',text:'Cost Reduction: '+fmt(q.effectiveCR)});
+      var planL={1:'No Assurance',2:'Basic Assurance $150',3:'Assurance Plus $300'}[q.assurancePlan||2];
+      lines.push({kind:'body',text:'Assurance: '+planL});
+    }
+    [36,48,60].forEach(function(mo2){
+      var d2=getRTODataForMonths(q.subtotalWithAssurance,calcState.width||0,q.taxRate,q.assurancePlan,q.effectiveCR,mo2);
+      lines.push({kind:'body',text:'RTO '+mo2+'-Mo: '+fmt(d2.monthly)+'/mo + '+fmt(d2.monthlyTax)+'/mo tax = '+fmt(d2.totalMonthly)+'/mo total'});
+    });
+  }
+  var notes=cv('c_custNotes');
+  if(notes){
+    lines.push({kind:'rule'});
+    lines.push({kind:'section',text:'NOTES'});
+    lines.push({kind:'body',text:notes});
+  }
+  var dis=(q.disclaimerText||'').trim();
+  if(dis){
+    lines.push({kind:'rule'});
+    lines.push({kind:'section',text:'DISCLAIMER'});
+    lines.push({kind:'body',text:dis});
+  }
+  return lines;
+}
+
+function measureEstimatePdfHeight(lines,scale,margin,pageW){
+  var lineH=0.155*scale;
+  var bodyFs=8.5*scale;
+  var y=margin;
+  var textW=pageW-margin*2;
+  lines.forEach(function(item){
+    if(item.kind==='title'){ y+=0.28*scale; return; }
+    if(item.kind==='section'){ y+=0.22*scale; return; }
+    if(item.kind==='rule'){ y+=0.12*scale; return; }
+    var fs=bodyFs;
+    var approxChars=Math.max(24,Math.floor(textW/(fs*0.045)));
+    var wraps=Math.max(1,Math.ceil(String(item.text||'').length/approxChars));
+    y+=lineH*wraps;
+  });
+  return y;
+}
+
+function renderEstimatePdfLines(doc,lines,scale,margin,pageW,pageH){
+  var lineH=0.155*scale;
+  var bodyFs=8.5*scale;
+  var titleFs=14*scale;
+  var sectionFs=9.5*scale;
+  var y=margin;
+  var textW=pageW-margin*2;
+  lines.forEach(function(item){
+    if(item.kind==='title'){
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(titleFs);
+      doc.setTextColor(0,0,0);
+      doc.text(item.text,margin,y);
+      y+=0.28*scale;
+      return;
+    }
+    if(item.kind==='section'){
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(sectionFs);
+      doc.setTextColor(0,0,0);
+      doc.text(item.text,margin,y);
+      y+=0.22*scale;
+      return;
+    }
+    if(item.kind==='rule'){
+      doc.setDrawColor(0,0,0);
+      doc.setLineWidth(0.006*scale);
+      doc.line(margin,y,pageW-margin,y);
+      y+=0.12*scale;
+      return;
+    }
+    doc.setFont('helvetica',item.bold?'bold':'normal');
+    doc.setFontSize(bodyFs);
+    doc.setTextColor(0,0,0);
+    var wrapped=doc.splitTextToSize(String(item.text||''),textW);
+    wrapped.forEach(function(ln){
+      doc.text(ln,margin,y);
+      y+=lineH;
+    });
+  });
+  return y;
+}
+
+async function generateEstimatePdfBlob(){
+  var q=getCalcQuoteSnapshot();
+  if(!q||!q.base) return null;
+  var jspdfLib=window.jspdf;
+  if(!jspdfLib||!jspdfLib.jsPDF){ showToast('PDF library not loaded'); return null; }
+  var s=loadSettings();
+  var margin=0.45;
+  var pageW=8.5;
+  var pageH=11;
+  var lines=buildEstimatePdfLines(q);
+  var avail=pageH-margin*2;
+  var scale=1;
+  var estH=measureEstimatePdfHeight(lines,scale,margin,pageW);
+  var contentH=estH-margin;
+  if(contentH>avail) scale=Math.max(0.62,avail/contentH);
+  var doc=new jspdfLib.jsPDF({unit:'in',format:[pageW,pageH],orientation:'portrait'});
+  await drawPdfLogoBackground(doc,s.logoData||'',pageW,pageH);
+  renderEstimatePdfLines(doc,lines,scale,margin,pageW,pageH);
+  var bizName=s.bizName||'Your Business';
+  var safeName=bizName.replace(/[^\w\-]+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'')||'Estimate';
+  var fname='Estimate-'+safeName+'-'+new Date().toISOString().slice(0,10)+'.pdf';
+  return {blob:doc.output('blob'),filename:fname};
+}
+
+function downloadEstimatePdfBlob(pdf){
+  if(!pdf||!pdf.blob) return;
+  var url=URL.createObjectURL(pdf.blob);
+  var a=document.createElement('a');
+  a.href=url;
+  a.download=pdf.filename||'estimate.pdf';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); },60000);
+}
+
+async function shareEstimatePdfNative(){
+  var q=getCalcQuoteSnapshot();
+  if(!q||!q.base){ showToast('Build a quote first'); return false; }
+  var pdf=await generateEstimatePdfBlob();
+  if(!pdf) return false;
+  var s=loadSettings();
+  var bizName=s.bizName||'Your Business';
+  var file=new File([pdf.blob],pdf.filename,{type:'application/pdf'});
+  var email=String(cv('c_custEmail')||'').trim();
+  var phone=_quoteSharePhoneDigits();
+  var sharePayload={
+    title:'Price Estimate \u2014 '+bizName,
+    text:'Price estimate from '+bizName+(email?('\n'+email):'')
+  };
+  if(navigator.canShare&&navigator.canShare({files:[file]})){
+    try{
+      await navigator.share(Object.assign({},sharePayload,{files:[file]}));
+      return true;
+    }catch(e){
+      if(e&&e.name==='AbortError') throw e;
+    }
+  }
+  downloadEstimatePdfBlob(pdf);
+  if(email){
+    var pkt=buildCalcQuoteText(q);
+    var subj=encodeURIComponent('Your Price Estimate \u2014 '+bizName);
+    var body=encodeURIComponent('Your price estimate PDF has been downloaded. Please attach it to this email.\n\n'+(pkt.t||''));
+    window.location.href='mailto:'+encodeURIComponent(email)+'?subject='+subj+'&body='+body;
+    return true;
+  }
+  if(phone.length>=10){
+    var pkt2=buildCalcQuoteText(q);
+    var smsTo=phone.length===10?('1'+phone):phone;
+    window.location.href='sms:'+smsTo+'?&body='+encodeURIComponent('Your price estimate PDF was downloaded. Summary:\n\n'+(pkt2.t||'').slice(0,900));
+    return true;
+  }
+  showToast('PDF downloaded \u2014 attach from Files');
+  return true;
 }
 
 function quoteShareBuildingSummary(){
@@ -14515,14 +15376,125 @@ function openQuoteShareRecipientModal(){
   var sel=document.getElementById('quoteShareLeadPicker');
   if(sel) sel.value='';
   updateQuoteShareFirebaseHint();
-  var ws=document.getElementById('quoteShareBtnWebShare');
-  if(ws) ws.style.display=navigator.share?'block':'none';
   ov.classList.add('open');
 }
 
 function closeQuoteShareRecipientModal(){
   var ov=document.getElementById('quoteShareRecipientOverlay');
   if(ov) ov.classList.remove('open');
+  closeQuoteShareChannelPicker();
+}
+
+function showQuoteShareChannelPicker(){
+  var ov=document.getElementById('quoteShareChannelOverlay');
+  if(ov) ov.classList.add('open');
+}
+
+function closeQuoteShareChannelPicker(){
+  var ov=document.getElementById('quoteShareChannelOverlay');
+  if(ov) ov.classList.remove('open');
+}
+
+async function quoteShareSaveToCrm(){
+  if(!(await firebaseEnsureAuthed())) return null;
+  var summary=quoteShareBuildingSummary();
+  var sel=document.getElementById('quoteShareLeadPicker');
+  var leadId=(quoteShareMode==='pick'&&sel&&sel.value)?String(sel.value):'';
+  var name=cv('c_custName'), phone=cv('c_custPhone'), email=cv('c_custEmail');
+  var addr=cv('c_custAddress'), city=cv('c_custCity'), state=cv('c_custState'), zip=cv('c_custZip');
+  if(leadId){
+    await crmUpdateLead(leadId,{
+      contact:{name:name,phone:phone,email:email},
+      notes:cv('c_custNotes')||'',
+      buildingInterest:{summary:summary}
+    });
+    return leadId;
+  }
+  if(!name&&!phone&&!email) return null;
+  var now=new Date().toISOString();
+  var payload={
+    contact:{name:name,phone:phone,email:email},
+    buildingInterest:{summary:summary},
+    notes:cv('c_custNotes')||'',
+    conversation:{channel:'email',lastMessageAt:now,lastDirection:'outbound',summary:'Estimate prepared'},
+    source:'calculator',
+    status:crmStatusToFirestore('new')
+  };
+  if(addr||city||state||zip) payload.deliveryAddress={street:addr,city:city,state:state,zip:zip};
+  return await crmCreateLead(payload);
+}
+
+async function quoteShareLogActivityAfterSend(method){
+  try{
+    if(!(await firebaseEnsureAuthed())) return;
+    var methodLabel=method==='sms'?'SMS':method==='email'?'Email':'Share';
+    var summary=quoteShareBuildingSummary();
+    var body='Price estimate sent via '+methodLabel+'. '+summary;
+    var sel=document.getElementById('quoteShareLeadPicker');
+    var leadId=(quoteShareMode==='pick'&&sel&&sel.value)?String(sel.value):'';
+    if(!leadId){
+      var name=cv('c_custName'), phone=cv('c_custPhone'), email=cv('c_custEmail');
+      if(!name&&!phone&&!email) return;
+      leadId=await quoteShareSaveToCrm();
+    }
+    if(leadId){
+      await crmAddActivity(leadId,{channel:method==='sms'?'sms':'email',direction:'outbound',body:body.slice(0,900),createdBy:loadSettings().contactName||'sales'});
+      await crmUpdateLead(leadId,{conversation:{channel:method==='sms'?'sms':'email',lastMessageAt:new Date().toISOString(),lastDirection:'outbound',summary:('Estimate · '+summary).slice(0,180)}});
+    }
+  }catch(e){
+    console.log('Quote share CRM log failed:',e);
+  }
+}
+
+async function quoteShareCommit(){
+  var name=cv('c_custName'), phone=cv('c_custPhone'), email=cv('c_custEmail');
+  if(!name&&!phone&&!email){ showToast('Enter customer name, phone, or email'); return; }
+  var btn=document.getElementById('quoteShareCommitBtn');
+  if(btn){ btn.disabled=true; btn.textContent='Preparing\u2026'; }
+  try{
+    await quoteShareSaveToCrm();
+    await shareEstimatePdfNative();
+    quoteShareLogActivityAfterSend('web_share');
+    closeQuoteShareRecipientModal();
+  }catch(e){
+    if(e&&e.name==='AbortError') return;
+    console.warn('Share failed:',e);
+    showToast('Could not share PDF');
+  }finally{
+    if(btn){ btn.disabled=false; btn.textContent='Share'; }
+  }
+}
+
+function _quoteSharePhoneDigits(){
+  return String(cv('c_custPhone')||'').replace(/\D/g,'');
+}
+
+function quoteShareSendSms(){
+  var digits=_quoteSharePhoneDigits();
+  if(digits.length<10){ showToast('Enter a valid customer phone for SMS'); return; }
+  var q=getCalcQuoteSnapshot();
+  if(!q||!q.base){ showToast('Build a quote first'); return; }
+  var pkt=buildCalcQuoteText(q);
+  var body=encodeURIComponent(pkt.t||'');
+  var smsTo=digits.length===10?('1'+digits):digits;
+  window.location.href='sms:'+smsTo+'?&body='+body;
+  quoteShareLogActivityAfterSend('sms');
+  closeQuoteShareChannelPicker();
+  closeQuoteShareRecipientModal();
+}
+
+function quoteShareSendNativeEmail(){
+  var email=cv('c_custEmail');
+  if(!email){ showToast('Enter customer email'); return; }
+  var q=getCalcQuoteSnapshot();
+  if(!q||!q.base){ showToast('Build a quote first'); return; }
+  var pkt=buildCalcQuoteText(q);
+  var subj=encodeURIComponent('Your Price Estimate — '+(loadSettings().bizName||'Your Business'));
+  var body=encodeURIComponent(pkt.t||'');
+  window.location.href='mailto:'+encodeURIComponent(email)+'?subject='+subj+'&body='+body;
+  quoteShareLogActivityAfterSend('email');
+  closeQuoteShareChannelPicker();
+  closeQuoteShareRecipientModal();
 }
 
 async function quoteShareLogToCrmAfterSend(method){
@@ -14656,8 +15628,9 @@ function copyFacebookPost(){
 
 function renderCalcRTOStreamline(){
   var deck=document.getElementById('calcPriceDeck');
-  var body=document.getElementById('rtoStreamlineCalcBody');
-  if(!body) return;
+  var cashBody=document.getElementById('cashDetailsBody');
+  var rtoGrid=document.getElementById('rtoDetailGrid');
+  if(!cashBody&&!rtoGrid) return;
   var q=getCalcQuoteSnapshot();
   if(!q||!q.base){
     renderCalcRTOStreamlineBlank();
@@ -14665,8 +15638,146 @@ function renderCalcRTOStreamline(){
   }
   if(deck) deck.classList.add('is-visible');
   syncCalcTaxToggleUI();
-  body.innerHTML=buildQPVStreamlineHtml(false);
+  if(cashBody) cashBody.innerHTML=buildCashDetailsHtml(false);
+  if(rtoGrid) rtoGrid.innerHTML=buildRtoDetailsGridHtml(q);
+  updateRtoTermChips(q);
   syncCalcPriceDeckHeight();
+}
+
+function buildCashDetailsHtml(forceNoTax){
+  forceNoTax=!!forceNoTax;
+  var q=getCalcQuoteSnapshot();
+  if(!q||!q.base) return '';
+  function line(l,r,cls){return '<div class="qpv-line'+(cls||'')+'"><span class="qpv-l">'+l+'</span><span class="qpv-r">'+r+'</span></div>';}
+  var html='';
+  html+=line('List Price', fmtCents(q.base));
+  if(q.saleAmount>0) html+=line('Sale ('+q.salePct+'% off list)','-'+fmtCents(q.saleAmount));
+  if(q.bosAmt>0) html+=line('Build-on-Site (30%)','+'+fmtCents(q.bosAmt));
+  if(q.dealerAmount>0) html+=line('Dealer discount ('+q.dealerPct+'%)','-'+fmtCents(q.dealerAmount));
+  if(q.stdCredit>0){
+    var _si=STD_OPTIONS[calcState.type]||[];
+    _si.forEach(function(it){
+      var rq=calcState.stdRemoved&&calcState.stdRemoved[it.id];
+      if(rq>0) html+=line('Removed: '+(rq>1?rq+'× ':'')+it.label,'-'+fmtCents(rq*it.credit));
+    });
+  }
+  q.addonLines.forEach(function(l){ html+=line('+ '+l.label, fmtCents(l.val)); });
+  html+=line('Subtotal', fmtCents(q.subtotal));
+  var showTax=isCalcTaxShown()&&!forceNoTax;
+  var qpvCashTax=Math.round(q.subtotal*(q.taxRate/100)*100)/100;
+  if(q.taxRate>0&&showTax) html+=line('Tax ('+q.taxRate+'%)', fmtCents(qpvCashTax));
+  var qpvCashTotal=showTax&&q.taxRate>0?Math.round((q.subtotal+qpvCashTax)*100)/100:q.subtotal;
+  html+=line('Cash total', fmtCents(qpvCashTotal),' qpv-total');
+  var half=Math.ceil((qpvCashTotal/2)*100)/100;
+  var dp=calcState.cashDownPayment;
+  var dueVal=(dp!=null&&dp>=half)?dp:half;
+  dueVal=Math.ceil(dueVal*100)/100;
+  html+='<div class="qpv-line qpv-due-today">'+
+    '<span class="qpv-l">Amount due today</span>'+
+    '<span class="qpv-r cash-due-display" id="cashDueTodayDisplay" role="button" tabindex="0" '+
+    'data-half="'+half+'" onclick="startCashDueEdit(this)" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();startCashDueEdit(this);}">'+
+    fmtCents(dueVal)+'</span></div>';
+  var deliveryDue=Math.max(0,Math.round((qpvCashTotal-dueVal)*100)/100);
+  html+=line('Amount due at delivery', fmtCents(deliveryDue));
+  return html;
+}
+
+function startCashDueEdit(el){
+  if(!el||el.dataset.editing==='1') return;
+  var half=parseFloat(el.getAttribute('data-half'))||0;
+  var cur=calcState.cashDownPayment;
+  var v=(cur!=null&&cur>=half)?cur:half;
+  el.dataset.editing='1';
+  var wrap=document.createElement('span');
+  wrap.className='cash-due-edit-wrap';
+  var inp=document.createElement('input');
+  inp.type='text';
+  inp.inputMode='decimal';
+  inp.className='cash-due-input calc-no-spin';
+  inp.value=String(Math.ceil(v*100)/100);
+  inp.setAttribute('data-half',String(half));
+  var okBtn=document.createElement('button');
+  okBtn.type='button';
+  okBtn.className='cash-due-edit-btn cash-due-edit-btn--ok';
+  okBtn.textContent='\u2713';
+  okBtn.setAttribute('aria-label','Save amount due');
+  var cancelBtn=document.createElement('button');
+  cancelBtn.type='button';
+  cancelBtn.className='cash-due-edit-btn cash-due-edit-btn--cancel';
+  cancelBtn.textContent='\u2715';
+  cancelBtn.setAttribute('aria-label','Cancel edit');
+  function finish(save){
+    if(save){
+      var half2=parseFloat(inp.getAttribute('data-half'))||0;
+      var n=parseFloat(String(inp.value).replace(/[^0-9.]/g,''));
+      if(isNaN(n)||n<half2) n=half2;
+      n=Math.ceil(n*100)/100;
+      calcState.cashDownPayment=n;
+      el.textContent=fmtCents(n);
+    }
+    el.dataset.editing='0';
+    el.style.display='';
+    if(wrap.parentNode) wrap.parentNode.removeChild(wrap);
+  }
+  okBtn.onclick=function(e){ e.preventDefault(); finish(true); };
+  cancelBtn.onclick=function(e){ e.preventDefault(); finish(false); };
+  inp.onkeydown=function(e){
+    if(e.key==='Enter'){ e.preventDefault(); finish(true); }
+    if(e.key==='Escape'){ e.preventDefault(); finish(false); }
+  };
+  wrap.appendChild(inp);
+  wrap.appendChild(okBtn);
+  wrap.appendChild(cancelBtn);
+  el.style.display='none';
+  el.parentNode.insertBefore(wrap,el.nextSibling);
+  inp.focus();
+  inp.select();
+}
+
+/** Cash down payment: clamped so it can never go below 50% of the cash total. */
+function onCashDownChange(el){
+  if(!el) return;
+  var half=parseFloat(el.getAttribute('data-half'))||0;
+  var v=parseFloat(el.value);
+  if(isNaN(v)||v<half) v=half;
+  v=Math.ceil(v*100)/100;
+  calcState.cashDownPayment=v;
+  var disp=document.getElementById('cashDueTodayDisplay');
+  if(disp){ disp.textContent=fmtCents(v); disp.style.display=''; disp.dataset.editing='0'; }
+}
+
+function buildRtoDetailsGridHtml(q){
+  if(!q||!q.rtoData) return '';
+  var mo=calcState.rtoMonths||36;
+  var ap=calcState.assurancePlan||2;
+  var rtoSub=(q.subtotal||0)+(ASSURANCE_COST[ap]||0);
+  var rd=q.rtoData;
+  var showTax=isCalcTaxShown();
+  var perMo=showTax?rd.totalMonthly:rd.monthly;
+  var dueToday=rd.totalReceived||0;
+  var totalPayments=Math.round(perMo*mo*100)/100;
+  var amountFinanced=rd.rtoAmount||0;
+  function cell(lbl,val){
+    return '<div class="rto-detail-cell"><div class="rto-detail-cell-lbl">'+lbl+'</div><div class="rto-detail-cell-val">'+val+'</div></div>';
+  }
+  return cell('Due Today',fmtCents(dueToday))+cell('Monthly Payment',fmtCents(perMo))+cell('Total of Payments',fmtCents(totalPayments))+cell('Amount Financed',fmtCents(amountFinanced));
+}
+
+function updateRtoTermChips(q){
+  if(!q||!q.base) return;
+  var showTax=isCalcTaxShown();
+  var ap=calcState.assurancePlan||2;
+  var rtoSub=(q.subtotal||0)+(ASSURANCE_COST[ap]||0);
+  var selMo=calcState.rtoMonths||36;
+  [36,48,60].forEach(function(mo){
+    var chip=document.getElementById('rtoChip'+mo);
+    var valEl=document.getElementById('rtoChipVal'+mo);
+    if(chip) chip.classList.toggle('is-active',selMo===mo);
+    if(!valEl) return;
+    var d=getRTODataForMonths(rtoSub,calcState.width||0,q.taxRate||0,ap,q.effectiveCR||0,mo);
+    var perMo=showTax?d.totalMonthly:d.monthly;
+    valEl.textContent='$'+Math.ceil(perMo).toLocaleString()+'/mo';
+  });
 }
 
 /** Shared QPV grid HTML. When forceNoTax, omit tax line and use pre-tax cash/RTO figures (Sales Sheet breakdown). */
@@ -14674,29 +15785,10 @@ function buildQPVStreamlineHtml(forceNoTax){
   forceNoTax=!!forceNoTax;
   var q=getCalcQuoteSnapshot();
   if(!q||!q.base) return '';
-  function line(l,r,cls){return '<div class="qpv-line'+(cls||'')+'"><span class="qpv-l">'+l+'</span><span class="qpv-r">'+r+'</span></div>';}
-  var htmlL='';
-  htmlL+=line('List Price', fmtCents(q.base));
-  if(q.saleAmount>0) htmlL+=line('Sale ('+q.salePct+'% off list)','-'+fmtCents(q.saleAmount));
-  if(q.bosAmt>0) htmlL+=line('Build-on-Site (30%)','+'+fmtCents(q.bosAmt));
-  if(q.dealerAmount>0) htmlL+=line('Dealer discount ('+q.dealerPct+'%)','-'+fmtCents(q.dealerAmount));
-  if(q.stdCredit>0){
-    var _si=STD_OPTIONS[calcState.type]||[];
-    _si.forEach(function(it){
-      var rq=calcState.stdRemoved&&calcState.stdRemoved[it.id];
-      if(rq>0) htmlL+=line('Removed: '+(rq>1?rq+'× ':'')+it.label,'-'+fmtCents(rq*it.credit));
-    });
-  }
-  q.addonLines.forEach(function(l){ htmlL+=line('+ '+l.label, fmtCents(l.val)); });
-  htmlL+=line('Subtotal', fmtCents(q.subtotal));
-  var showTax=isCalcTaxShown()&&!forceNoTax;
-  var qpvCashTax=Math.round(q.subtotal*(q.taxRate/100)*100)/100;
-  if(q.taxRate>0&&showTax) htmlL+=line('Tax ('+q.taxRate+'%)', fmtCents(qpvCashTax));
-  var qpvCashTotal=showTax&&q.taxRate>0?Math.round((q.subtotal+qpvCashTax)*100)/100:q.subtotal;
-  htmlL+=line('Cash total', fmtCents(qpvCashTotal),' qpv-total');
-
+  var htmlL=buildCashDetailsHtml(forceNoTax);
   var ap=calcState.assurancePlan||2;
   var rtoSubtotal=q.subtotal+(ASSURANCE_COST[ap]||0);
+  var showTax=isCalcTaxShown()&&!forceNoTax;
   var htmlR='';
   [36,48,60].forEach(function(mo){
     var d=getRTODataForMonths(rtoSubtotal, calcState.width||0, q.taxRate, ap, q.effectiveCR, mo);
@@ -14989,6 +16081,7 @@ function updateTrussVisibility(){
 }
 
 function setCalcPay(p){
+  if(p==='rto'&&calcState.bosActive){ p='cash'; showToast('RTO not available for build on site'); }
   calcState.payType=p;
   // legacy pay-btn support (kept in case used elsewhere)
   document.querySelectorAll('.pay-btn').forEach(b=>b.classList.toggle('active',b.dataset.pay===p));
@@ -14996,8 +16089,6 @@ function setCalcPay(p){
   if(rtoCard) rtoCard.style.display=p==='rto'?'block':'none';
   var cashCard=document.getElementById('reviewCashCard');
   if(cashCard) cashCard.style.display=p==='cash'?'block':'none';
-  var earlyBtn=document.getElementById('earlyPayoffBtn');
-  if(earlyBtn) earlyBtn.style.display=p==='rto'?'flex':'none';
   // drive header toggle track
   var track=document.getElementById('payTypeTrack');
   if(track) track.classList.toggle('on',p==='rto');
@@ -15015,25 +16106,44 @@ function setCalcPay(p){
 function setCalcRTO(m){
   calcState.rtoMonths=m;
   document.querySelectorAll('.rto-btn[data-months]').forEach(b=>b.classList.toggle('active',parseInt(b.dataset.months)===m));
+  document.querySelectorAll('.rto-term-chip').forEach(function(b){
+    b.classList.toggle('is-active',parseInt(b.dataset.months,10)===m);
+  });
   updateRTOPreviews();
   updateRTOLivePanel();
   renderCalcQuote();
 }
 
 function updateRTOPreviews(){
-  var base=getCalcBasePrice();
-  var subtotal=getCalcSubtotal();
-  var taxRate=calcState.taxMode==='standard'?getSettingVal('taxRate',0):calcState.taxRate;
+  var q=null;
+  try{ q=getCalcQuoteSnapshot(); }catch(_e){}
+  if(!q||!q.base){
+    ['36','48','60'].forEach(function(m){
+      var el=document.getElementById('rtoPreview'+m);
+      if(el) el.textContent='—';
+      var v=document.getElementById('rtoChipVal'+m);
+      if(v) v.textContent='—';
+    });
+    return;
+  }
+  updateRtoTermChips(q);
+  var showTax=isCalcTaxShown();
+  var ap=calcState.assurancePlan||2;
+  var rtoSub=(q.subtotal||0)+(ASSURANCE_COST[ap]||0);
+  var selMo=calcState.rtoMonths||36;
+  var dSel=getRTODataForMonths(rtoSub,calcState.width||0,q.taxRate||0,ap,q.effectiveCR||0,selMo);
+  var perMoSel=showTax?dSel.totalMonthly:dSel.monthly;
+  var rtoHeroMonthly=document.getElementById('rtoHeroMonthly');
+  if(rtoHeroMonthly) rtoHeroMonthly.textContent='$'+Math.ceil(perMoSel).toLocaleString()+'/mo';
   [36,48,60].forEach(function(mo){
     var el=document.getElementById('rtoPreview'+mo);
-    if(!el) return;
-    if(!base){el.textContent='—';return;}
-    var savedMo=calcState.rtoMonths;
-    calcState.rtoMonths=mo;
-    var d=calcRTOData(subtotal,calcState.width||0,taxRate,calcState.assurancePlan||2,calcState.costReduction||0);
-    calcState.rtoMonths=savedMo;
-    el.textContent='~$'+d.monthly.toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0})+'/mo';
-    el.style.color=calcState.rtoMonths===mo?'var(--barn)':'var(--mid)';
+    var d=getRTODataForMonths(rtoSub,calcState.width||0,q.taxRate||0,ap,q.effectiveCR||0,mo);
+    var perMo=showTax?d.totalMonthly:d.monthly;
+    var moStr='~$'+Math.ceil(perMo).toLocaleString()+'/mo';
+    if(el){
+      el.textContent=moStr;
+      el.style.color=calcState.rtoMonths===mo?'var(--barn)':'var(--mid)';
+    }
   });
 }
 
@@ -15056,6 +16166,7 @@ function toggleBOS(){
   setQpPillPressed('quickBosPill',!!calcState.bosActive);
   var bosCtrl=document.getElementById('quickBosCtrl');
   if(bosCtrl) bosCtrl.classList.toggle('is-bos-on',!!calcState.bosActive);
+  syncBosRtoLock();
   updateQuickPrice();
   renderCalcQuote();
 }
@@ -15328,15 +16439,19 @@ function updateTallWallAvailability(){
 }
 
 function calcGoTo(n){
-  if(n===1||n===2){
+  if(n>=1){
     if(!calcState.type||!calcState.width||!calcState.length){showToast('Select building type and size first');return;}
   }
+  if(n>1) n=1;
   document.querySelectorAll('.calc-page').forEach(function(p,i){
     p.classList.toggle('active',i===n);
   });
   calcCurrentPage=n;
   window.scrollTo(0,0);
-  if(n===2) renderCalcQuote();
+  if(n===1){
+    var pay=(calcState.bosActive||calcPriceDeckView!=='rto')?'cash':'rto';
+    setCalcPay(pay);
+  }
   try{ updateRevCalcTabVisibility(); }catch(_eRv){}
   try{ positionRevCalcTab(); }catch(_eRvPos){}
   try{ updateAppBottomNav(); }catch(_e){}
@@ -15469,11 +16584,11 @@ function buildSlidePages(key,entry,draft){
       return _appendQtyPageIfNeeded(key,entry,draft,pages);
     }
   }
-  if(entry.qtyStep==='linft'){
+  if(entry.qtyStep==='linft'&&!_optSkipsMeasureConfirm(entry)){
     var def=entry.defaultQty?entry.defaultQty(ctx):ctx.l||'';
     if(key==='osb_intwall') def=computeOsbInteriorWallLinFt(_stagingMergedForOsb());
     pages.push({id:'linft',label:'Linear feet',type:'number',defaultVal:def});
-  }else if(entry.qtyStep==='sqft'){
+  }else if(entry.qtyStep==='sqft'&&!_optSkipsMeasureConfirm(entry)){
     var sqDef=entry.defaultQty?entry.defaultQty(ctx):((ctx.w&&ctx.l)?ctx.w*ctx.l:'');
     pages.push({id:'sqft',label:'Sq ft',type:'number',defaultVal:sqDef});
   }else if(entry.qtyStep==='count'){
@@ -15899,6 +17014,9 @@ function _wizCtx(){
 }
 
 function optWizardShowStdSection(){
+  var items=STD_OPTIONS[calcState.type]||[];
+  var hidden=items.filter(function(it){ return calcState.stdHidden&&calcState.stdHidden[it.id]; });
+  if(!hidden.length){ showToast('No removed standards to add back'); return; }
   var wiz=document.getElementById('optWizard');
   var scroll=document.getElementById('optionsSheetScroll');
   var link=document.getElementById('optSheetStdLink');
@@ -16086,6 +17204,7 @@ function optWizardTap(key,multiAdd){
   optWizardState.activeKey=key;
   optWizardState.key=key;
   optWizardState.draft=key==='custom'?{customMode:'total',qty:'1'}:{};
+  _optPrefillAutoMeasureDraft(key,entry,optWizardState.draft);
   optWizardState.multiAdd=!!multiAdd;
   optWizardState.slideIdx=0;
   optWizardState.slides=buildSlidePages(key,entry,optWizardState.draft);
@@ -16100,7 +17219,7 @@ function optWizardTap(key,multiAdd){
     optWizardState.multiAdd=false;
     optWizardRender();
     try{ updateQuickPrice(); }catch(_e){}
-    if(calcCurrentPage===2) try{ renderCalcQuote(); }catch(_e2){}
+    if(calcCurrentPage===1) try{ renderReviewSummary(); }catch(_e2){}
     return;
   }
   optWizardRender();
@@ -16237,7 +17356,7 @@ function commitOptSheetStaging(){
   updateCatCounts();
   updateAutoWidthPrices();
   updateQuickPrice();
-  if(calcCurrentPage===2) renderCalcQuote();
+  if(calcCurrentPage===1) try{ renderReviewSummary(); }catch(_e){}
   try{ renderOptsSummary(); }catch(_e){}
   clearOptSheetStaging();
 }
@@ -16633,7 +17752,7 @@ function toggleOpt(key){
   updateAutoWidthPrices();
   updateQuickPrice();
   if(key==='tallwall') { if(calcState.addons['garagedoor']) calcRenderRows('garage'); }
-  if(calcCurrentPage===2) renderCalcQuote();
+  if(calcCurrentPage===1) try{ renderReviewSummary(); }catch(_e){}
   try{ renderOptsSummary(); }catch(_e){}
 }
 
@@ -16756,7 +17875,7 @@ var OPT_ADD_CATALOG=[
      calcState.multiPaint.push({type:d.paintType||''});
      calcRenderRows('paint');
    }},
-  {key:'doubletopplate',label:'Double Top Plate',category:'Structure',hint:'$5/lin ft',qtyStep:'linft',autoOnly:true,
+  {key:'doubletopplate',label:'Double Top Plate',category:'Structure',hint:'$5/lin ft',qtyStep:'linft',autoOnly:true,autoMeasure:true,
    defaultQty:function(c){return c.l||0;},
    commit:function(d){calcState.addons.doubletopplate=true;}},
   {key:'4ineves',label:'4″ Eaves',category:'Structure',hint:'$1,000',qtyStep:'none',
@@ -16764,7 +17883,7 @@ var OPT_ADD_CATALOG=[
   {key:'tallwall',label:'Tall Wall',category:'Structure',hint:'$500–$1,000',qtyStep:'none',
    isAvailable:function(){return LOFTED_TYPES.indexOf(calcState.type)>=0;},
    commit:function(){calcState.addons.tallwall=true;}},
-  {key:'2x6',label:'2×6 Upgrade',category:'Structure',hint:'$35–$120/lin ft',qtyStep:'linft',multiType:'x6',
+  {key:'2x6',label:'2×6 Upgrade',category:'Structure',hint:'$35–$120/lin ft',qtyStep:'linft',multiType:'x6',autoMeasure:true,
    subSteps:[{id:'x6type',label:'Apply to',type:'select',options:_X6_TYPE_OPTS}],
    defaultQty:function(c){return c.l||0;},
    commit:function(d){
@@ -16773,13 +17892,13 @@ var OPT_ADD_CATALOG=[
      calcState.multi2x6.push({type:d.x6type||'',linft:d.linft||calcState.length||''});
      calcRenderRows('x6');
    }},
-  {key:'rooftrusses',label:'16" OC Roof Trusses',category:'Structure',hint:'$25/lin ft',qtyStep:'linft',fieldId:'c_rooftrussft',
+  {key:'rooftrusses',label:'16" OC Roof Trusses',category:'Structure',hint:'$25/lin ft',qtyStep:'linft',fieldId:'c_rooftrussft',autoMeasure:true,
    isAvailable:function(){var w=calcState.width||0;return w>=8&&w<=12;},
    defaultQty:function(c){return c.l||0;},
-   commit:function(d){calcState.addons.rooftrusses=true;var el=document.getElementById('c_rooftrussft');if(el)el.value=d.linft||'';}},
-  {key:'floorjoists',label:'12" OC Floor Joists',category:'Structure',hint:'$25/lin ft',qtyStep:'linft',fieldId:'c_floorjoistFt',
+   commit:function(d){calcState.addons.rooftrusses=true;var el=document.getElementById('c_rooftrussft');if(el)el.value=d.linft||String(calcState.length||'');}},
+  {key:'floorjoists',label:'12" OC Floor Joists',category:'Structure',hint:'$25/lin ft',qtyStep:'linft',fieldId:'c_floorjoistFt',autoMeasure:true,
    defaultQty:function(c){return c.l||0;},
-   commit:function(d){calcState.addons.floorjoists=true;var el=document.getElementById('c_floorjoistFt');if(el)el.value=d.linft||'';}},
+   commit:function(d){calcState.addons.floorjoists=true;var el=document.getElementById('c_floorjoistFt');if(el)el.value=d.linft||String(calcState.length||'');}},
   {key:'porch',label:'Extra Porch',category:'Structure',hint:'$75/lin ft',qtyStep:'linft',fieldId:'c_porchFt',
    isAvailable:function(){return CABIN_TYPES.indexOf(calcState.type)>=0;},
    commit:function(d){calcState.addons.porch=true;var el=document.getElementById('c_porchFt');if(el)el.value=d.linft||'';}},
@@ -16811,9 +17930,9 @@ var OPT_ADD_CATALOG=[
      calcState.multiCutouts.push({type:d.cutType||'',qty:Math.max(1,parseInt(d.qty)||1),customSize:'',customPrice:''});
      calcRenderRows('cutouts');
    }},
-  {key:'flooring',label:'¾" Flooring Upgrade',category:'Interior',hint:'$2/sq ft',qtyStep:'sqft',fieldId:'c_flooringSqFt',
+  {key:'flooring',label:'¾" Flooring Upgrade',category:'Interior',hint:'$2/sq ft',qtyStep:'sqft',fieldId:'c_flooringSqFt',autoMeasure:true,
    defaultQty:function(c){return (c.w&&c.l)?c.w*c.l:0;},
-   commit:function(d){calcState.addons.flooring=true;var el=document.getElementById('c_flooringSqFt');if(el)el.value=d.sqft||'';}},
+   commit:function(d){calcState.addons.flooring=true;var el=document.getElementById('c_flooringSqFt');if(el)el.value=d.sqft||String((calcState.width&&calcState.length)?calcState.width*calcState.length:'');}},
   {key:'shelves',label:'Shelves / Workbench',category:'Interior',hint:'$25/lin ft',qtyStep:'linft',fieldId:'c_shelvesLinFt',
    commit:function(d){calcState.addons.shelves=true;var el=document.getElementById('c_shelvesLinFt');if(el)el.value=d.linft||'';}},
   {key:'intwall',label:'Interior Walls',category:'Interior',hint:'$25–$45/lin ft',qtyStep:'linft',multiType:'intwall',
@@ -16894,18 +18013,18 @@ function getDefaultOptionsCatalog(){
     {key:'rooffelt',label:'Roof Felt',category:'Siding & Exterior',enabled:true,builtin:true,priceMode:'linft',price:17,sortOrder:1},
     {key:'housewrap',label:'House Wrap',category:'Siding & Exterior',enabled:true,builtin:true,priceMode:'linft',price:17,sortOrder:2},
     {key:'paintupgrade',label:'Paint Upgrade',category:'Siding & Exterior',enabled:true,builtin:true,priceMode:'variants',price:200,variants:{paint:[{id:'twotone',label:'Two-Tone Paint',priceMode:'width_tiers',widthTiers:{'8':100,'10':200,'12':300,'14':400,'16':500}},{id:'custpaint',label:'Custom Paint',price:200}]},sortOrder:3},
-    {key:'doubletopplate',label:'Double Top Plate',category:'Structure',enabled:true,builtin:true,priceMode:'linft',price:5,sortOrder:4},
+    {key:'doubletopplate',label:'Double Top Plate',category:'Structure',enabled:true,builtin:true,priceMode:'linft',price:5,autoMeasure:true,sortOrder:4},
     {key:'4ineves',label:'4\u2033 Eaves',category:'Structure',enabled:true,builtin:true,priceMode:'total',price:1000,sortOrder:5},
     {key:'tallwall',label:'Tall Wall',category:'Structure',enabled:true,builtin:true,priceMode:'tallwall',price:500,prices:{wide14:1000,long40:750,default:500},sortOrder:6},
-    {key:'2x6',label:'2\u00d76 Upgrade',category:'Structure',enabled:true,builtin:true,priceMode:'variants',price:35,variants:{x6:_variantsFromLinFtOpts(_X6_TYPE_OPTS)},sortOrder:7},
-    {key:'rooftrusses',label:'16" OC Roof Trusses',category:'Structure',enabled:true,builtin:true,priceMode:'linft',price:25,sortOrder:8},
-    {key:'floorjoists',label:'12" OC Floor Joists',category:'Structure',enabled:true,builtin:true,priceMode:'linft',price:25,sortOrder:9},
+    {key:'2x6',label:'2\u00d76 Upgrade',category:'Structure',enabled:true,builtin:true,priceMode:'variants',price:35,autoMeasure:true,variants:{x6:_variantsFromLinFtOpts(_X6_TYPE_OPTS)},sortOrder:7},
+    {key:'rooftrusses',label:'16" OC Roof Trusses',category:'Structure',enabled:true,builtin:true,priceMode:'linft',price:25,autoMeasure:true,sortOrder:8},
+    {key:'floorjoists',label:'12" OC Floor Joists',category:'Structure',enabled:true,builtin:true,priceMode:'linft',price:25,autoMeasure:true,sortOrder:9},
     {key:'porch',label:'Extra Porch',category:'Structure',enabled:true,builtin:true,priceMode:'linft',price:75,sortOrder:10},
     {key:'door36',label:'Door Options',category:'Doors & Windows',enabled:true,builtin:true,priceMode:'variants',price:150,variants:{doors:_variantsFromSelectOpts(_DOOR_OPTS)},sortOrder:11},
     {key:'window',label:'Windows',category:'Doors & Windows',enabled:true,builtin:true,priceMode:'variants',price:115,variants:{windows:_variantsFromSelectOpts(_WIN_OPTS)},sortOrder:12},
     {key:'garagedoor',label:'Garage / Rollup Door',category:'Doors & Windows',enabled:true,builtin:true,priceMode:'garage',price:525,variants:{sectional:_variantsFromSelectOpts(_GARAGE_SECTIONAL_OPTS),rollup:_variantsFromSelectOpts(_GARAGE_ROLLUP_OPTS)},sortOrder:13},
     {key:'cutouts',label:'Cutouts',category:'Doors & Windows',enabled:true,builtin:true,priceMode:'variants',price:50,variants:{cutouts:_variantsFromSelectOpts(_CUTOUT_OPTS)},sortOrder:14},
-    {key:'flooring',label:'\u00be" Flooring Upgrade',category:'Interior',enabled:true,builtin:true,priceMode:'sqft',price:2,sortOrder:15},
+    {key:'flooring',label:'\u00be" Flooring Upgrade',category:'Interior',enabled:true,builtin:true,priceMode:'sqft',price:2,autoMeasure:true,sortOrder:15},
     {key:'shelves',label:'Shelves / Workbench',category:'Interior',enabled:true,builtin:true,priceMode:'linft',price:25,sortOrder:16},
     {key:'intwall',label:'Interior Walls',category:'Interior',enabled:true,builtin:true,priceMode:'variants',price:25,variants:{intwall:_variantsFromLinFtOpts(_INTWALL_TYPE_OPTS)},sortOrder:17},
     {key:'osb_intwall',label:'OSB Interior Walls',category:'Interior',enabled:true,builtin:true,priceMode:'linft',price:20,sortOrder:18},
@@ -17189,6 +18308,9 @@ function getEffectiveOptCatalog(){
     e.enabled=cfg.enabled!==false;
     e._cfg=cfg;
     e.hint=formatOptionHintFromCfg(cfg);
+    if(cfg&&cfg.autoMeasure!=null) e.autoMeasure=!!cfg.autoMeasure;
+    else if(b.autoMeasure!=null) e.autoMeasure=!!b.autoMeasure;
+    if(b.autoOnly) e.autoOnly=true;
     if(e.subSteps){
       e.subSteps=e.subSteps.map(function(s){
         var ns=Object.assign({},s);
@@ -17321,7 +18443,7 @@ calcRenderRows.garageSizeChange=function(sel){
   calcState.multiGarage[idx].customSize=sel.value;
   updateAutoWidthPrices();
   updateQuickPrice();
-  if(calcCurrentPage===2) renderCalcQuote();
+  if(calcCurrentPage===1) try{ renderReviewSummary(); }catch(_e){}
 };
 
 function calcRowChange(type,idx,field,val){
@@ -17336,7 +18458,7 @@ function calcRowChange(type,idx,field,val){
   refreshOsbIntwallFtDefault(false);
   updateAutoWidthPrices();
   updateQuickPrice();
-  if(calcCurrentPage===2) renderCalcQuote();
+  if(calcCurrentPage===1) try{ renderReviewSummary(); }catch(_e){}
 }
 
 function calcAddRow(type){
@@ -17349,7 +18471,7 @@ function calcAddRow(type){
   refreshOsbIntwallFtDefault(false);
   updateAutoWidthPrices();
   updateQuickPrice();
-  if(calcCurrentPage===2) renderCalcQuote();
+  if(calcCurrentPage===1) try{ renderReviewSummary(); }catch(_e){}
 }
 
 function calcRemoveRow(type,idx){
@@ -17372,7 +18494,7 @@ function calcRemoveRow(type,idx){
   refreshOsbIntwallFtDefault(false);
   updateAutoWidthPrices();
   updateQuickPrice();
-  if(calcCurrentPage===2) renderCalcQuote();
+  if(calcCurrentPage===1) try{ renderReviewSummary(); }catch(_e){}
 }
 
 // ── MULTI-ROW: door/window/garage/cutout/subselect option rows (Sales Sheet) ─
@@ -17546,77 +18668,55 @@ function toggleCustomTrim(prefix){
   }
 }
 
+function updateOptSheetStdLinkVisibility(){
+  var link=document.getElementById('optSheetStdLink');
+  if(!link) return;
+  var items=STD_OPTIONS[calcState.type]||[];
+  var hidden=items.filter(function(it){ return calcState.stdHidden&&calcState.stdHidden[it.id]; });
+  link.style.display=hidden.length?'block':'none';
+}
+
 function buildRemoveStdPanel(){
   var section=document.getElementById('removeStdSheetSection');
   var list=document.getElementById('removeStdList');
   if(!list) return;
   var type=calcState.type;
   var items=type&&STD_OPTIONS[type]?STD_OPTIONS[type]:[];
-  if(!items.length){
-    if(section){ section.style.display='none'; }
+  var hiddenItems=items.filter(function(it){ return calcState.stdHidden&&calcState.stdHidden[it.id]; });
+  if(!hiddenItems.length){
+    if(section) section.style.display='none';
     list.innerHTML='';
+    updateOptSheetStdLinkVisibility();
     return;
   }
-  if(section){ section.style.display='block'; }
-  if(!calcState.stdRemoved||calcState._stdType!==type){
-    calcState.stdRemoved={};
+  if(section) section.style.display='block';
+  if(!calcState.stdRemoved) calcState.stdRemoved={};
+  if(!calcState.stdHidden) calcState.stdHidden={};
+  if(calcState._stdType!==type){
     calcState._stdType=type;
   }
   list.innerHTML='';
-  items.forEach(function(item){
-    var qty=calcState.stdRemoved[item.id]||0;
-    var checked=qty>0;
-    var row=document.createElement('div');
-    row.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(232,200,122,0.12);gap:10px;';
-
-    var chkDiv=document.createElement('div');
-    chkDiv.onclick=function(){toggleStdRemove(item.id);};
-    chkDiv.style.cssText='width:22px;height:22px;min-width:22px;border-radius:5px;border:2px solid '+(checked?'var(--sage)':'rgba(232,200,122,0.35)')+';background:'+(checked?'var(--sage)':'transparent')+';cursor:pointer;display:flex;align-items:center;justify-content:center;color:white;font-size:0.8rem;font-weight:700;';
-    chkDiv.textContent=checked?'✓':'';
-
-    var labelDiv=document.createElement('div');
-    labelDiv.style.cssText='flex:1;';
-    var nameEl=document.createElement('div');
-    nameEl.style.cssText='font-size:0.85rem;font-weight:600;color:var(--cream);';
-    nameEl.textContent=item.label;
-    var subEl=document.createElement('div');
-    subEl.style.cssText='font-size:0.72rem;color:rgba(232,200,122,0.55);margin-top:1px;';
-    subEl.textContent='$'+item.credit+' each'+(item.qty>1?' (up to '+item.qty+')':'');
-    labelDiv.appendChild(nameEl);
-    labelDiv.appendChild(subEl);
-
-    var rightDiv=document.createElement('div');
-    rightDiv.style.cssText='display:flex;flex-direction:column;align-items:flex-end;gap:4px;';
-
-    if(item.qty>1&&checked){
-      var qtyInp=document.createElement('input');
-      qtyInp.type='number';
-      qtyInp.className='os-qty';
-      qtyInp.min='1';
-      qtyInp.max=String(item.qty);
-      qtyInp.step='1';
-      qtyInp.value=String(qty);
-      (function(id,maxQ){
-        qtyInp.onchange=function(){
-          var v=Math.max(1,Math.min(maxQ,parseInt(this.value)||1));
-          this.value=String(v);
-          setStdQty(id,v);
-        };
-      })(item.id,item.qty);
-      rightDiv.appendChild(qtyInp);
-    }
-
-    var creditEl=document.createElement('div');
-    creditEl.style.cssText='font-size:0.85rem;font-weight:700;color:'+(checked?'var(--wheat)':'rgba(232,200,122,0.45)')+';';
-    creditEl.textContent='-$'+(checked?qty*item.credit:item.credit);
-    rightDiv.appendChild(creditEl);
-
-    row.appendChild(chkDiv);
-    row.appendChild(labelDiv);
-    row.appendChild(rightDiv);
+  hiddenItems.forEach(function(item){
+    var row=document.createElement('button');
+    row.type='button';
+    row.className='owp-opt-tile';
+    row.style.marginBottom='6px';
+    row.innerHTML='<span class="owp-opt-tile-text">'+item.label+(item.qty>1?' ('+item.qty+'×)':'')+'</span>';
+    row.onclick=function(){ restoreStdOption(item.id); };
     list.appendChild(row);
   });
-  updateStdRemovedCountBadge();
+  updateOptSheetStdLinkVisibility();
+}
+
+function restoreStdOption(itemId){
+  if(calcState.stdHidden) delete calcState.stdHidden[itemId];
+  if(calcState.stdRemoved) calcState.stdRemoved[itemId]=0;
+  buildRemoveStdPanel();
+  refreshOsbIntwallFtDefault(false);
+  updateQuickPrice();
+  if(calcCurrentPage===1) try{ renderReviewSummary(); }catch(_e){}
+  try{ renderOptsSummary(); }catch(_e2){}
+  optWizardHideStdSection();
 }
 
 function updateStdRemovedCountBadge(){
@@ -17673,6 +18773,7 @@ function openOptionsSheet(){
   document.body.style.overflow='hidden';
   try{ refreshOptionsCatalogUI(); }catch(_eCat){}
   buildRemoveStdPanel();
+  updateOptSheetStdLinkVisibility();
   ensureCalcOptsSheetDetails();
   clearOptSheetStaging();
   optWizardHideStdSection();
@@ -17790,17 +18891,123 @@ function _afterOptsSummaryHostChange(hostId){
     return;
   }
   updateQuickPrice();
-  if(calcCurrentPage===2) renderCalcQuote();
+  if(calcCurrentPage===1) try{ renderReviewSummary(); }catch(_e){}
   renderOptsSummary();
+}
+
+function _appendSelOptCard(host,hostId,isRev,cfg){
+  var card=document.createElement('div');
+  card.className='sel-opt-card'+(cfg.excluded?' is-excluded':'');
+  var chk=document.createElement('button');
+  chk.type='button';
+  chk.className='sel-opt-chk'+(cfg.included?' is-included':'');
+  chk.setAttribute('aria-label',cfg.included?'Included in price':'Excluded from price');
+  chk.textContent=cfg.included?'\u2713':'';
+  chk.onclick=function(){
+    if(cfg.isStd){
+      var doTog=function(){ toggleStdRemove(cfg.stdId); };
+      if(isRev) withRevOptsProbe(doTog); else doTog();
+    }else{
+      var doTog2=function(){ toggleAddonExcluded(cfg.exKey); };
+      if(isRev) withRevOptsProbe(doTog2); else doTog2();
+    }
+    _afterOptsSummaryHostChange(hostId);
+  };
+  card.appendChild(chk);
+  var name=document.createElement('div');
+  name.className='sel-opt-name';
+  name.textContent=cfg.label;
+  name.title=cfg.label;
+  card.appendChild(name);
+  var price=document.createElement('div');
+  price.className='sel-opt-price';
+  price.textContent=cfg.priceText||'';
+  card.appendChild(price);
+  if(cfg.showRemove){
+    var xb=document.createElement('button');
+    xb.type='button';
+    xb.className='sel-opt-x';
+    xb.setAttribute('aria-label','Remove');
+    xb.textContent='\u2715';
+    xb.onclick=function(){
+      if(cfg.onRemove) cfg.onRemove();
+    };
+    card.appendChild(xb);
+  }else{
+    var ph=document.createElement('div');
+    ph.style.width='20px';
+    card.appendChild(ph);
+  }
+  host.appendChild(card);
 }
 
 function _renderOptsSummaryInto(hostId){
   var host=document.getElementById(hostId);
   if(!host) return;
   var isRev=hostId==='rev_optsSummary';
+  var useCards=hostId==='optsSummary';
   host.innerHTML='';
-  var ca=calcAddons();
+  var ca=calcAddons(useCards);
   var stdItems=STD_OPTIONS[calcState.type]||[];
+  var stdHidden=calcState.stdHidden||{};
+  var visibleStd=stdItems.filter(function(it){ return !stdHidden[it.id]; });
+  var countEl=document.getElementById('selOptsCount');
+  var totalCount=visibleStd.length+ca.lines.length;
+
+  if(useCards){
+    if(countEl) countEl.textContent=String(totalCount);
+    if(!visibleStd.length&&!ca.lines.length){
+      var emptyC=document.createElement('div');
+      emptyC.className='sel-opts-empty';
+      emptyC.textContent=calcState.type?'No options yet — tap Add Options.':'Select a building type first.';
+      host.appendChild(emptyC);
+      return;
+    }
+    visibleStd.forEach(function(it){
+      var rq=calcState.stdRemoved&&calcState.stdRemoved[it.id];
+      var removed=rq>0;
+      var lbl=it.label+(it.qty>1?' ('+it.qty+'×)':'');
+      _appendSelOptCard(host,hostId,isRev,{
+        isStd:true,stdId:it.id,label:lbl,included:!removed,excluded:removed,
+        priceText:removed?('-'+fmt((rq||1)*it.credit)):'Std',
+        showRemove:true,
+        onRemove:function(){
+          var doHide=function(){ hideStdOption(it.id); };
+          if(isRev) withRevOptsProbe(doHide); else doHide();
+          _afterOptsSummaryHostChange(hostId);
+        }
+      });
+    });
+    ca.lines.forEach(function(l){
+      (function(l){
+        var exKey=_addonExcludeKey(l.sourceKey,l.multiIdx);
+        _appendSelOptCard(host,hostId,isRev,{
+          isStd:false,exKey:exKey,label:l.label,included:!l.excluded,excluded:!!l.excluded,
+          priceText:'+'+fmt(l.val),showRemove:true,
+          onRemove:function(){
+            var sk=l.sourceKey;
+            var mt2=_summaryMultiTypeForKey(sk);
+            var doRemove=function(){
+              if(sk==='shopSurcharge'||sk==='metal'){ toggleOpt('metal'); }
+              else if(mt2!==null&&l.multiIdx!==null){
+                if(mt2==='custom'){
+                  if(calcState.multiCustom) calcState.multiCustom.splice(l.multiIdx,1);
+                } else { calcRemoveRow(mt2,l.multiIdx); }
+              }
+              else if(sk==='twotone'||sk==='custompaint'){ toggleOpt('paintupgrade'); }
+              else if(sk&&calcState.addons[sk]){ toggleOpt(sk); }
+              else if(sk&&sk.indexOf('ins_')===0){ toggleOpt(sk); }
+              if(calcState.addonExcluded&&calcState.addonExcluded[exKey]) delete calcState.addonExcluded[exKey];
+            };
+            if(isRev) withRevOptsProbe(doRemove); else doRemove();
+            _afterOptsSummaryHostChange(hostId);
+          }
+        });
+      })(l);
+    });
+    return;
+  }
+
   var stdRows=[];
   stdItems.forEach(function(it){
     var rq=calcState.stdRemoved&&calcState.stdRemoved[it.id];
@@ -18157,10 +19364,29 @@ function toggleStdRemove(itemId){
   for(var i=0;i<items.length;i++){if(items[i].id===itemId){item=items[i];break;}}
   if(!item) return;
   calcState.stdRemoved[itemId]=calcState.stdRemoved[itemId]>0?0:1;
+  if(!(calcState.stdRemoved[itemId]>0)&&calcState.stdHidden){ delete calcState.stdHidden[itemId]; }
   buildRemoveStdPanel();
   refreshOsbIntwallFtDefault(false);
   updateQuickPrice();
-  if(calcCurrentPage===2) renderCalcQuote();
+  if(calcCurrentPage===1) try{ renderReviewSummary(); }catch(_e){}
+  try{ renderOptsSummary(); }catch(_e){}
+}
+
+/** X on a standard option card: hide it from the list AND apply the full credit. */
+function hideStdOption(itemId){
+  if(!calcState.stdRemoved) calcState.stdRemoved={};
+  if(!calcState.stdHidden) calcState.stdHidden={};
+  var items=STD_OPTIONS[calcState.type]||[];
+  var item=null;
+  for(var i=0;i<items.length;i++){if(items[i].id===itemId){item=items[i];break;}}
+  if(!item) return;
+  calcState.stdRemoved[itemId]=item.qty||1;
+  calcState.stdHidden[itemId]=true;
+  buildRemoveStdPanel();
+  updateOptSheetStdLinkVisibility();
+  refreshOsbIntwallFtDefault(false);
+  updateQuickPrice();
+  if(calcCurrentPage===1) try{ renderReviewSummary(); }catch(_e){}
   try{ renderOptsSummary(); }catch(_e){}
 }
 
@@ -18170,7 +19396,7 @@ function setStdQty(itemId,qty){
   buildRemoveStdPanel();
   refreshOsbIntwallFtDefault(false);
   updateQuickPrice();
-  if(calcCurrentPage===2) renderCalcQuote();
+  if(calcCurrentPage===1) try{ renderReviewSummary(); }catch(_e){}
   try{ renderOptsSummary(); }catch(_e){}
 }
 
@@ -18412,16 +19638,17 @@ document.addEventListener('input',function(e){
       syncSaleUIFromState();
       saveSaleState();
       updateQuickPrice();
-      if(calcCurrentPage===2)renderCalcQuote();
+      if(calcCurrentPage===1) try{ renderReviewSummary(); }catch(_e){}
     }
-    if(e.target.id==='c_taxCustom'){var v=parseFloat(e.target.value);calcState.taxRate=isNaN(v)||v<0?0:v;if(calcCurrentPage===2)renderCalcQuote();}
+    if(e.target.id==='c_taxCustom'){var v=parseFloat(e.target.value);calcState.taxRate=isNaN(v)||v<0?0:v;if(calcCurrentPage===1) try{ renderReviewSummary(); }catch(_e){}}
     updateAutoWidthPrices();
-    if(calcCurrentPage===2) renderCalcQuote();
+    if(calcCurrentPage===1) try{ renderReviewSummary(); }catch(_e){}
   }
 });
 // Multi-row subselect options update via calcRowChange handlers
 
-function calcAddons(){
+function calcAddons(forDisplay){
+  forDisplay=!!forDisplay;
   var w=calcState.width||0;
   var l=calcState.length||0;
   var total=0; var lines=[];
@@ -18429,12 +19656,16 @@ function calcAddons(){
   function _aq(k){ return Math.max(1,parseInt((calcState.addonQty||{})[k])||1); }
   function add(label,val,optKey,multiIdx){
     if(val<=0) return;
-    total+=val;
+    var exKey=_addonExcludeKey(optKey,multiIdx);
+    var excluded=optKey&&isAddonExcluded(exKey);
+    if(excluded&&!forDisplay) return;
+    if(!excluded) total+=val;
     lines.push({
       label:label,val:val,
       nonRto:optKey?!!_nrto[optKey]:false,
       sourceKey:optKey||null,
-      multiIdx:(multiIdx===undefined||multiIdx===null)?null:multiIdx
+      multiIdx:(multiIdx===undefined||multiIdx===null)?null:multiIdx,
+      excluded:!!excluded
     });
   }
   if(_calcAddonActive('metal')){
@@ -18577,17 +19808,38 @@ function buildCalcQuoteText(q){
     t+=`Options Total: ${fmt(q.addonTotal)}\n`;
   }
 
-  t+=`\nPRICING\n${'─'.repeat(36)}\nSubtotal: ${fmt(q.subtotalWithAssurance)}\nTax (${q.taxRate}%): ${fmt(q.taxAmount)}\nTOTAL: ${fmt(q.grandTotal)}\n\nMin Down (Cash): ${fmt(Math.ceil(q.grandTotal*0.5))}\nMin Down (RTO): ${q.rtoDownDisplayText}\n\n`;
-  [36,48,60].forEach(function(mo){
-    var _d=getRTODataForMonths(q.subtotalWithAssurance, calcState.width||0, q.taxRate, q.assurancePlan, q.effectiveCR, mo);
-    t+='RTO '+mo+'-Mo: '+fmt(_d.monthly)+'/mo + '+fmt(_d.monthlyTax)+'/mo tax = '+fmt(_d.totalMonthly)+'/mo total\n';
-  });
+  t+=`\nPRICING\n${'─'.repeat(36)}\n`;
+  var pay=calcState.payType==='rto'?'rto':'cash';
+  if(pay==='cash'){
+    t+=`Subtotal: ${fmt(q.subtotal)}\n`;
+    if(q.taxRate>0) t+=`Tax (${q.taxRate}%): ${fmt(q.taxAmount)}\n`;
+    t+=`CASH TOTAL: ${fmt(q.grandTotal)}\n\n`;
+    var halfDue=Math.ceil((q.grandTotal/2)*100)/100;
+    var dueToday=(calcState.cashDownPayment!=null&&calcState.cashDownPayment>=halfDue)?calcState.cashDownPayment:halfDue;
+    dueToday=Math.ceil(dueToday*100)/100;
+    t+=`Amount Due Today: ${fmtCents(dueToday)} (min half-down ${fmtCents(halfDue)})\n`;
+  }else{
+    t+=`Subtotal: ${fmt(q.subtotalWithAssurance)}\n`;
+    if(q.taxRate>0) t+=`Tax (${q.taxRate}%): ${fmt(q.taxAmount)}\n`;
+    t+=`TOTAL: ${fmt(q.grandTotal)}\n\n`;
+    var mo=calcState.rtoMonths||36;
+    var rd=q.rtoData;
+    if(rd){
+      t+=`Due Today: ${fmtCents(rd.totalReceived)}\n`;
+      t+=`Monthly Payment (${mo} mo): ${fmtCents(rd.totalMonthly)}/mo\n`;
+      if(rd.monthlyTax>0) t+=`  (pre-tax ${fmtCents(rd.monthly)} + tax ${fmtCents(rd.monthlyTax)})\n`;
+      if(q.effectiveCR>0) t+=`Cost Reduction: ${fmt(q.effectiveCR)}\n`;
+      var planL={1:'No Assurance',2:'Basic Assurance $150',3:'Assurance Plus $300'}[q.assurancePlan||2];
+      t+=`Assurance: ${planL}\n`;
+    }
+    t+='\n';
+    [36,48,60].forEach(function(mo2){
+      var _d=getRTODataForMonths(q.subtotalWithAssurance, calcState.width||0, q.taxRate, q.assurancePlan, q.effectiveCR, mo2);
+      t+='RTO '+mo2+'-Mo: '+fmt(_d.monthly)+'/mo + '+fmt(_d.monthlyTax)+'/mo tax = '+fmt(_d.totalMonthly)+'/mo total\n';
+    });
+  }
 
-  var _ph=_s2.bizPhone||'';
-  var _pe=_s2.bizEmail||'';
-  var _footerLine=[_bn,_ph,_pe].filter(Boolean).join(' | ');
   t+='\n'+'─'.repeat(36)+'\n'+(q.disclaimerText||'');
-  if(_footerLine) t+='\n'+_footerLine;
   if(notes)t+=`\nNotes: ${notes}`;
   var emailExtras=_buildEmailQuoteExtrasText();
   if(emailExtras) t+='\n\n'+emailExtras;
@@ -18660,16 +19912,14 @@ function calcRTOData(subtotal, width, taxRate, assurancePlan, costReductionEnter
     taxOnCR = Math.round((cr - preTaxCR) * 100) / 100;
   } else if(cr > 0){
     if(isNarrow){
-      // 8/10/12: CR >= $500 waives deposit; else first $[deposit] is security deposit
       if(cr >= CR_WAIVER_THRESHOLD){
         securityDeposit = 0;
         actualCR = cr;
       } else {
         securityDeposit = deposit;
-        actualCR = Math.max(0, cr - deposit);
+        actualCR = cr;
       }
     } else {
-      // 14/16: full entered amount is CR, deposit = $0 shown
       securityDeposit = 0;
       actualCR = cr;
     }
@@ -18689,7 +19939,12 @@ function calcRTOData(subtotal, width, taxRate, assurancePlan, costReductionEnter
   var monthly = Math.round((rtoAmount / div) * 100) / 100;
   var monthlyTax = taxRate > 0 ? Math.round(monthly * (taxRate/100) * 100) / 100 : 0;
   var totalMonthly = Math.round((monthly + monthlyTax) * 100) / 100;
-  var totalReceived = cr + securityDeposit;
+  var totalReceived;
+  if(isNarrow && cr > 0){
+    totalReceived = cr >= CR_WAIVER_THRESHOLD ? cr : (deposit + cr);
+  } else {
+    totalReceived = cr + securityDeposit;
+  }
 
   return {
     effectiveTotal: effectiveTotal,
@@ -18721,6 +19976,9 @@ function setAssurancePlan(n){
     var btn = document.getElementById('assuranceBtn'+i);
     if(btn) btn.classList.toggle('active', i===n);
   });
+  var asel = document.getElementById('assuranceSelect');
+  if(asel && String(asel.value) !== String(n)) asel.value = String(n);
+  if(asel && asel._gssListEnhanced) gssRefreshListTrigger(asel);
   try{ renderCalcRTOStreamlineFromState(); }catch(_q){}
   updateCostReductionUI();
   updateRTOLivePanel();
@@ -18750,8 +20008,6 @@ function updateCostReductionUI(){
   var effectiveTotal = subtotal + assuranceCost;
   var autoTag = document.getElementById('crAutoTag');
   var crInput = document.getElementById('c_costReduction');
-  var crBreakdown = document.getElementById('crBreakdown');
-  var crNote = document.getElementById('crNote');
 
   // Auto 15% trigger
   if(effectiveTotal >= 24000 && (!calcState.costReduction || calcState.costReduction === 0)){
@@ -18762,22 +20018,6 @@ function updateCostReductionUI(){
     if(autoTag) autoTag.style.display='none';
     if(crInput) crInput.disabled = false;
   }
-
-  var entered = parseFloat((crInput||{}).value) || 0;
-  if(entered <= 0){ if(crBreakdown) crBreakdown.style.display='none'; return; }
-
-  var d = calcRTOData(subtotal, width, taxRate, assurancePlan, entered);
-
-  var html = '';
-  if(d.securityDeposit > 0){
-    html += '<div>Security Deposit: <strong>$'+d.securityDeposit.toLocaleString()+'</strong></div>';
-    html += '<div>Cost Reduction portion: <strong>$'+d.actualCR.toLocaleString()+'</strong></div>';
-  }
-  html += '<div>Pre-Tax Cost Reduction: <strong>$'+d.preTaxCR.toLocaleString()+'</strong></div>';
-  html += '<div>Tax on CR: <strong>$'+d.taxOnCR.toLocaleString()+'</strong></div>';
-  html += '<div>RTO Amount: <strong>$'+d.rtoAmount.toLocaleString()+'</strong></div>';
-
-  if(crBreakdown){ crBreakdown.innerHTML=html; crBreakdown.style.display='block'; }
 }
 
 function getCalcSubtotal(){
@@ -18903,10 +20143,12 @@ function renderCalcQuote(){
   updateTallWallAvailability();
   var q=getCalcQuoteSnapshot();
   if(!q){
-    document.getElementById('calcQuoteContent').innerHTML='<p style="text-align:center;padding:20px;color:rgba(232,200,122,0.5);">Select a building type, width, and length to see pricing.</p>';
+    var qcEmpty=document.getElementById('calcQuoteContent');
+    if(qcEmpty) qcEmpty.innerHTML='<p style="text-align:center;padding:20px;color:rgba(232,200,122,0.5);">Select a building type, width, and length to see pricing.</p>';
     updateRTOLivePanel();
     renderCalcRTOStreamlineFromState();
     try{ renderOptsSummary(); }catch(_e){}
+    try{ if(calcCurrentPage===1) renderReviewSummary(); }catch(_rv){}
     return;
   }
   var base=q.base;
@@ -18994,11 +20236,13 @@ function renderCalcQuote(){
 
   html+=`<div class="down-card"><div class="down-lbl">Minimum Down</div><div class="down-chips"><div class="down-chip">Cash: ${fmt(Math.ceil(grandTotal*0.5))}</div><div class="down-chip">RTO: ${q.rtoDownDisplayText}</div></div></div>`;
 
-  document.getElementById('calcQuoteContent').innerHTML=html;
-  // ── refresh live RTO summary on cpage1 ──
+  var qcEl=document.getElementById('calcQuoteContent');
+  if(qcEl) qcEl.innerHTML=html;
+  // ── refresh live RTO summary on review page ──
   updateRTOLivePanel();
   renderCalcRTOStreamlineFromState();
   try{ renderOptsSummary(); }catch(_e4){}
+  try{ if(calcCurrentPage===1) renderReviewSummary(); }catch(_rv){}
 }
 
 async function sendCalcEmail(opts){
@@ -20035,8 +21279,7 @@ function docsClearSearch(){
 }
 
 function quoteRunExportHubByValue(v){
-  if(v==='share_email') openQuoteShareRecipientModal();
-  else if(v==='sales_sheet') goToSalesSheetFromQuote();
+  if(v==='sales_sheet') goToSalesSheetFromQuote();
   else if(v==='marketplace') goToMarketplaceAdFromQuote();
   else if(v==='facebook') copyFacebookPost();
   else if(v==='print') printQuote();
@@ -20210,6 +21453,7 @@ function syncCalcFromSsOptions(){
   _SS_CALC_FIELD_PAIRS.forEach(function(pair){ _copyInputById(pair[1],pair[0]); });
   if(!calcState.stdRemoved) calcState.stdRemoved={};
   calcState.stdRemoved={};
+  calcState.stdHidden={};
   var _stdOpts=STD_OPTIONS[t]||[];
   _stdOpts.forEach(function(item){
     var maxQ=item.qty||1;
@@ -23480,20 +24724,25 @@ function ssGetStdCredit(t){
 
 function ssPrint(){
   var el=document.getElementById('ssSheetContent');
-  if(!el||!el.innerHTML.trim()){showToast('Generate a sheet first');return;}
+  if(!el||!el.innerHTML.trim()){showToast('Generate a sheet first'); return;}
+  ssFitSalesSheetToPage();
   var html=el.innerHTML;
   var w=window.open('','_blank');
   if(!w){ showToast('Popup blocked — allow popups to print'); return; }
   var doc='<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Sales Sheet</title><style>';
-  doc+='body{font-family:Georgia,serif;font-size:11pt;color:#111;background:#fff;margin:0;padding:0.4in 0.45in;max-width:7in;}';
-  doc+='#ssPrintRoot{overflow-wrap:break-word;word-wrap:break-word;background:#fff;color:#111;}';
-  doc+='.ss-flyer-root{background:#fff!important;color:#111!important;color-scheme:light only;}';
+  doc+='@page{size:letter portrait;margin:0.35in;}';
+  doc+='html,body{width:8.5in;height:11in;margin:0;padding:0;overflow:hidden;background:#fff;color:#111;}';
+  doc+='body{font-family:Georgia,serif;font-size:11pt;color:#111;background:#fff;box-sizing:border-box;padding:0.35in 0.4in;}';
+  doc+='#ssPrintRoot{overflow:hidden;word-wrap:break-word;background:#fff;color:#111;width:100%;height:10.2in;position:relative;}';
+  doc+='.ss-flyer-root{position:relative;min-height:10.2in;max-height:10.2in;overflow:hidden;background:#fff!important;color:#111!important;}';
+  doc+='.ss-flyer-watermark{position:absolute;inset:0;background-position:center;background-repeat:no-repeat;background-size:cover;opacity:0.09;pointer-events:none;z-index:0;-webkit-print-color-adjust:exact;print-color-adjust:exact;}';
+  doc+='.ss-flyer-content{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;justify-content:space-between;transform-origin:top center;}';
   doc+='.ss-flyer-root .ss-flyer-accent{color:#c0392b!important;}';
-  doc+='.ss-flyer-root img.ss-flyer-logo{-webkit-print-color-adjust:exact;print-color-adjust:exact;}';
-  doc+='@media print{button,.no-print{display:none!important;}body{padding:0;margin:0;background:#fff!important;}#ssPrintRoot{background:#fff!important;}}';
+  doc+='@media print{button,.no-print{display:none!important;}html,body{width:8.5in;height:11in;margin:0;padding:0.35in 0.4in;background:#fff!important;}#ssPrintRoot{background:#fff!important;}}';
   doc+='</style></head><body><div id="ssPrintRoot">';
   doc+=html;
   doc+='</div><p class="no-print" style="margin-top:16px;text-align:center;"><button type="button" onclick="window.print()" style="padding:10px 24px;font-size:14px;cursor:pointer;">Print / Save as PDF</button></p>';
+  doc+='<script>window.addEventListener("load",function(){var root=document.querySelector(".ss-flyer-content");if(!root)return;var maxH=Math.round(10.15*96);var h=root.scrollHeight;if(h>maxH){var s=maxH/h;root.style.transform="scale("+s+")";root.style.width=(100/s)+"%";}});<\/script>';
   doc+='</body></html>';
   w.document.open();
   w.document.write(doc);
@@ -23676,14 +24925,9 @@ function ssBuildSalesSheetPrintHtml(imgId1, imgId2, opts){
   [36,48,60].forEach(function(mo){rto[mo]=Math.ceil(salePrice/rtoDivMap[mo]);});
 
   var optLabels=addonLines.map(function(li){return li.label.replace(/ \([^)]+\)/,'');});
+  var listing=getStyleListingCopy(t);
 
   var h='';
-
-  if(s.logoData){
-    h+='<div style="text-align:center;margin-bottom:12px;">';
-    h+='<img class="ss-flyer-logo" src="'+s.logoData+'" style="max-height:70px;max-width:220px;object-fit:contain;" alt="logo">';
-    h+='</div>';
-  }
 
   var condHtml=(typeof window._quoteSheetConditionHtml==='string')?window._quoteSheetConditionHtml:'';
   if(condHtml){
@@ -23697,6 +24941,16 @@ function ssBuildSalesSheetPrintHtml(imgId1, imgId2, opts){
   if(optLabels.length){
     h+='<div style="font-size:1rem;font-weight:700;color:#000;margin-bottom:2px;">(Includes: '+optLabels.join(', ')+')</div>';
     h+='<div class="ss-flyer-accent" style="font-size:1rem;font-weight:700;">$'+addonTotal.toLocaleString()+' Value</div>';
+  }
+  if(listing.blurb){
+    h+='<div style="font-size:0.82rem;color:#000;margin-top:8px;line-height:1.45;max-width:100%;">'+String(listing.blurb).replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</div>';
+  }
+  if(listing.specs&&listing.specs.length){
+    h+='<div style="text-align:left;margin:10px auto 0;max-width:100%;font-size:0.76rem;line-height:1.45;color:#000;">';
+    listing.specs.forEach(function(sp){
+      h+='<div style="margin-bottom:2px;">\u2713 '+String(sp).replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</div>';
+    });
+    h+='</div>';
   }
   h+='</div>';
 
@@ -23767,16 +25021,12 @@ function ssBuildSalesSheetPrintHtml(imgId1, imgId2, opts){
     h+='</div>';
   }
 
-  h+='<div class="ss-flyer-accent" style="font-size:0.52rem;text-align:center;text-decoration:underline;margin-bottom:18px;">Purchase can be made over the phone or in person by appointment.</div>';
+  h+='<div class="ss-flyer-accent" style="font-size:0.52rem;text-align:center;text-decoration:underline;margin-bottom:4px;">Purchase can be made over the phone or in person by appointment.</div>';
 
-  if(bizName||bizAddr){
-    h+='<div style="text-align:center;font-size:0.8rem;color:#000;border-top:1px solid #ccc;padding-top:10px;margin-top:8px;">';
-    h+=bizName;
-    if(bizAddr) h+=' &nbsp;&middot;&nbsp; '+bizAddr;
-    h+='</div>';
-  }
-
-  return '<div class="ss-flyer-root">'+h+'</div>';
+  var watermark=s.logoData
+    ? '<div class="ss-flyer-watermark" style="background-image:url(\''+String(s.logoData).replace(/'/g,'%27')+'\');"></div>'
+    : '';
+  return '<div class="ss-flyer-root">'+watermark+'<div class="ss-flyer-content">'+h+'</div></div>';
 }
 
 function ssWireSsQrForUrls(id1,id2,qrUrl,qrPurchaseUrl,id3,qrIntakeUrl){
@@ -23800,6 +25050,25 @@ function ssWireSsQrForUrls(id1,id2,qrUrl,qrPurchaseUrl,id3,qrIntakeUrl){
   }
 }
 
+function ssFitSalesSheetToPage(){
+  var root=document.querySelector('#ssSheetContent .ss-flyer-root');
+  if(!root) return;
+  var content=root.querySelector('.ss-flyer-content');
+  if(!content) return;
+  content.style.transform='';
+  content.style.width='';
+  var maxH=Math.round(10.15*96);
+  var h=content.scrollHeight;
+  if(h>maxH){
+    var scale=maxH/h;
+    content.style.transform='scale('+scale.toFixed(4)+')';
+    content.style.width=(100/scale).toFixed(2)+'%';
+    root.style.height=Math.ceil(h*scale)+'px';
+  }else{
+    root.style.height='';
+  }
+}
+
 function ssGenerate(){
   var h=ssBuildSalesSheetPrintHtml('ssQRImg','ssQRImg2',{preview:false,imgId3:'ssQRImg3'});
   if(!h) return;
@@ -23809,7 +25078,10 @@ function ssGenerate(){
   var qrPurchaseUrl=(document.getElementById('ss_qrPurchaseUrl').value||'').trim();
   var qrIntakeUrl=(document.getElementById('ss_qrIntakeUrl').value||'').trim();
   ssWireSsQrForUrls('ssQRImg','ssQRImg2',qrUrl,qrPurchaseUrl,'ssQRImg3',qrIntakeUrl);
-  setTimeout(function(){window.scrollTo(0,0);},50);
+  setTimeout(function(){
+    ssFitSalesSheetToPage();
+    window.scrollTo(0,0);
+  },50);
 }
 
 
@@ -24535,6 +25807,21 @@ function closeAllGssListPanels(){
   document.querySelectorAll('.gss-list-wrap.is-open').forEach(function(w){ closeGssListPanel(w); });
 }
 
+function gssScrollListToSelected(wrap){
+  if(!wrap) return;
+  var panel=gssGetListPanel(wrap);
+  if(!panel) return;
+  var rowsEl=panel.querySelector('.gss-list-rows');
+  if(!rowsEl) return;
+  var selRow=rowsEl.querySelector('.gss-list-row.is-selected');
+  if(selRow){
+    requestAnimationFrame(function(){
+      try{ selRow.scrollIntoView({block:'center', behavior:'instant'}); }
+      catch(_e){ selRow.scrollIntoView(true); }
+    });
+  }
+}
+
 function openGssListPanel(sel,wrap){
   if(!sel||!wrap) return;
   gssRebuildListPanel(sel);
@@ -24544,7 +25831,11 @@ function openGssListPanel(sel,wrap){
   gssFloatListPanel(wrap);
   requestAnimationFrame(function(){
     gssPositionFloatedListPanel(wrap);
-    requestAnimationFrame(function(){ gssPositionFloatedListPanel(wrap); });
+    gssScrollListToSelected(wrap);
+    requestAnimationFrame(function(){
+      gssPositionFloatedListPanel(wrap);
+      gssScrollListToSelected(wrap);
+    });
   });
 }
 
@@ -24636,6 +25927,7 @@ function initGssListSelectors(){
     {id:'c_quickSalePctSel',title:'Sale %'},
     {id:'calcQuickTaxSelect',title:'Tax %'},
     {id:'calcQuickDealer',title:'Dealer discount'},
+    {id:'assuranceSelect',title:'Assurance Plan'},
     {id:'rev_salePctSel',title:'Sale %'},
     {id:'rev_taxPctSel',title:'Tax %'},
     {id:'rev_filterSize',title:'Filter by size'},
@@ -24686,6 +25978,13 @@ function openStylePicker(selectId) {
   var modal = document.getElementById('stylePickerModal');
   modal.classList.add('open');
   document.body.style.overflow = 'hidden';
+  requestAnimationFrame(function(){
+    var selOpt=list.querySelector('.spm-option.selected');
+    if(selOpt){
+      try{ selOpt.scrollIntoView({block:'center', behavior:'instant'}); }
+      catch(_e){ selOpt.scrollIntoView(true); }
+    }
+  });
 }
 
 function selectStyle(val, displayName, code, imgSrc) {
