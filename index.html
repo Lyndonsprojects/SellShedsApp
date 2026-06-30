@@ -277,15 +277,152 @@ select option { background:var(--earth); color:var(--cream); }
 #invPromoModalOverlay { z-index:125; }
 #invFacebookPromoModalOverlay { z-index:127; }
 #invPriceModalOverlay { z-index:130; }
-#screenCRM .crm-grid { display:grid; grid-template-columns:1fr; gap:12px; }
-#screenCRM .crm-list { border:1.5px solid rgba(232,200,122,0.2); border-radius:10px; background:rgba(255,255,255,0.04); max-height:280px; overflow:auto; }
-#screenCRM .crm-lead-item { padding:10px 12px; border-bottom:1px solid rgba(232,200,122,0.12); cursor:pointer; }
-#screenCRM .crm-lead-item:last-child { border-bottom:none; }
-#screenCRM .crm-lead-item.active { background:rgba(122,158,135,0.2); }
-#screenCRM .crm-activity-wrap { border:1.5px solid rgba(232,200,122,0.2); border-radius:10px; background:rgba(255,255,255,0.04); padding:10px 12px; max-height:220px; overflow:auto; }
-#screenCRM .crm-activity-item { border-bottom:1px solid rgba(232,200,122,0.12); padding:8px 0; }
-#screenCRM .crm-activity-item:last-child { border-bottom:none; }
-#screenCRM .crm-muted { font-size:0.72rem; color:rgba(232,200,122,0.65); }
+#screenCRM .crm-list,
+#screenCRMDetail .crm-list,
+#screenContacts .crm-list,
+#screenFollowups .crm-list { border:1.5px solid rgba(232,200,122,0.2); border-radius:10px; background:rgba(255,255,255,0.04); overflow:auto; }
+#screenCRM .crm-list { max-height:none; }
+#screenCRM .crm-lead-card,
+#screenContacts .crm-lead-item,
+#screenFollowups .crm-lead-item,
+#screenCRMDetail .crm-lead-item { padding:10px 12px; border-bottom:1px solid rgba(232,200,122,0.12); cursor:pointer; }
+#screenCRM .crm-lead-card:last-child { border-bottom:none; }
+#screenCRM .crm-lead-card-head { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
+#screenCRM .crm-lead-card-name { font-size:0.86rem; font-weight:700; color:var(--wheat); }
+#screenCRM .crm-status-chip { font-size:0.62rem; letter-spacing:0.5px; text-transform:uppercase; padding:3px 7px; border-radius:999px; background:rgba(232,200,122,0.15); color:var(--wheat); flex-shrink:0; }
+#screenCRM .crm-lead-quick { margin-top:8px; }
+#screenCRM .crm-action-select,
+#screenCRMDetail .crm-action-select {
+  width:100%; margin-top:0; font-size:0.78rem; padding:9px 10px; border-radius:8px;
+  border:1.5px solid rgba(232,200,122,0.28);
+  background-color:rgba(44,24,16,0.94) !important;
+  background:rgba(44,24,16,0.94) !important;
+  color:var(--cream) !important;
+  -webkit-text-fill-color:var(--cream);
+  -webkit-appearance:none; appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23E8C87A' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 10px center; padding-right:28px;
+  min-height:38px; box-sizing:border-box;
+}
+#screenCRM .crm-action-select option,
+#screenCRMDetail .crm-action-select option {
+  background-color:var(--earth); color:var(--cream);
+}
+#screenCRMDetail .crm-detail-actions { margin-bottom:12px; }
+#screenCRMDetail .crm-detail-card {
+  border:1.5px solid rgba(232,200,122,0.22); border-radius:12px; background:rgba(255,255,255,0.04);
+  padding:14px; margin-bottom:14px;
+}
+#screenCRMDetail .crm-detail-card-head {
+  display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+  margin-bottom:10px; padding-bottom:10px; border-bottom:1px solid rgba(232,200,122,0.12);
+}
+#screenCRMDetail .crm-detail-card-name { font-size:1.08rem; font-weight:800; color:var(--wheat); line-height:1.25; }
+#screenCRMDetail .crm-detail-sum-row {
+  display:flex; gap:10px; padding:5px 0; font-size:0.8rem; line-height:1.45;
+}
+#screenCRMDetail .crm-detail-sum-row .lbl {
+  flex:0 0 92px; font-size:0.62rem; letter-spacing:0.6px; text-transform:uppercase; color:rgba(232,200,122,0.6);
+}
+#screenCRMDetail .crm-detail-sum-row .val { flex:1; color:var(--cream); word-break:break-word; }
+#screenCRMDetail .crm-detail-toolbar { margin-bottom:16px; }
+#screenCRMDetail .crm-detail-btn-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px; }
+#screenCRMDetail .crm-detail-btn {
+  -webkit-appearance:none; appearance:none; border:1.5px solid rgba(232,200,122,0.22); border-radius:8px;
+  padding:10px 8px; font-size:0.76rem; font-weight:600; cursor:pointer;
+  background:rgba(255,255,255,0.08); color:var(--cream); font-family:inherit;
+}
+#screenCRMDetail .crm-detail-btn:active { opacity:0.88; }
+#screenCRMDetail .crm-detail-btn.primary { background:rgba(122,158,135,0.28); border-color:rgba(122,158,135,0.4); color:var(--wheat); }
+#screenCRMDetail .crm-detail-dd-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+#screenCRMDetail .crm-add-activity-card .field-group { margin-bottom:10px; }
+#screenCRMDetail .crm-add-activity-card .field-label,
+#screenCRMNew .field-label {
+  color:var(--wheat);
+}
+#screenCRMDetail .crm-add-activity-card .inv-grid2 { gap:8px; margin-bottom:10px; }
+#screenCRMDetail .crm-add-activity-card .inv-grid2 .field-group { margin-bottom:0; }
+#screenCRMDetail .crm-add-activity-card select,
+#screenCRMDetail .crm-add-activity-card textarea,
+#screenCRMNew select,
+#screenCRMNew input[type="text"],
+#screenCRMNew input[type="email"],
+#screenCRMNew input[type="tel"],
+#screenCRMNew textarea {
+  width:100%; box-sizing:border-box; margin:0;
+  font-size:0.82rem; line-height:1.35;
+  padding:9px 10px; border-radius:8px;
+  border:1.5px solid rgba(232,200,122,0.28);
+  background-color:rgba(44,24,16,0.94) !important;
+  background:rgba(44,24,16,0.94) !important;
+  color:var(--cream) !important;
+  -webkit-appearance:none; appearance:none;
+  font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;
+}
+#screenCRMDetail .crm-add-activity-card select,
+#screenCRMNew select {
+  -webkit-text-fill-color:var(--cream);
+  padding-right:28px;
+  min-height:38px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23E8C87A' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+  background-repeat:no-repeat !important;
+  background-position:right 10px center !important;
+}
+#screenCRMDetail .crm-add-activity-card select:focus,
+#screenCRMDetail .crm-add-activity-card textarea:focus,
+#screenCRMNew select:focus,
+#screenCRMNew input:focus,
+#screenCRMNew textarea:focus {
+  outline:none;
+  border-color:var(--wheat);
+  background-color:rgba(44,24,16,0.98) !important;
+  box-shadow:0 0 0 2px rgba(232,200,122,0.15);
+}
+#screenCRMDetail .crm-add-activity-card select option,
+#screenCRMNew select option {
+  background-color:var(--earth); color:var(--cream);
+}
+#screenCRMDetail .crm-add-activity-card textarea,
+#screenCRMNew textarea {
+  min-height:68px; max-height:120px; resize:vertical; padding:10px 12px;
+}
+#screenCRMDetail .crm-add-activity-card textarea::placeholder,
+#screenCRMNew textarea::placeholder,
+#screenCRMNew input::placeholder {
+  color:rgba(245,240,232,0.38) !important;
+  -webkit-text-fill-color:rgba(245,240,232,0.38) !important;
+  opacity:1;
+}
+#screenCRMDetail .crm-add-activity-card textarea::-webkit-input-placeholder,
+#screenCRMNew textarea::-webkit-input-placeholder,
+#screenCRMNew input::-webkit-input-placeholder {
+  color:rgba(245,240,232,0.38) !important;
+  -webkit-text-fill-color:rgba(245,240,232,0.38) !important;
+  opacity:1;
+}
+#screenCRMDetail .crm-add-activity-btn { margin-top:2px; font-size:1.05rem; padding:12px; }
+#screenCRMDetail .crm-timeline-card { padding:0; overflow:hidden; margin-bottom:0; }
+#screenCRMDetail .crm-timeline-card .crm-activity-wrap {
+  border:none; border-radius:0; max-height:min(42vh,320px); padding:12px 14px 14px;
+  background:transparent; margin:0;
+}
+#screenCRMDetail .crm-timeline-empty { padding:14px; font-size:0.78rem; color:rgba(232,200,122,0.65); text-align:center; }
+#screenCRMDetail .crm-activity-item { border-bottom:1px solid rgba(232,200,122,0.12); padding:12px 0; }
+#screenCRMDetail .crm-activity-item:last-child { border-bottom:none; padding-bottom:0; }
+#screenCRMDetail .crm-activity-meta { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:6px; }
+#screenCRMDetail .crm-activity-chip {
+  font-size:0.6rem; letter-spacing:0.5px; text-transform:uppercase; font-weight:700;
+  padding:3px 8px; border-radius:999px; background:rgba(232,200,122,0.12); color:rgba(232,200,122,0.88);
+}
+#screenCRMDetail .crm-activity-time { font-size:0.68rem; color:rgba(232,200,122,0.5); margin-left:auto; }
+#screenCRMDetail .crm-activity-body { font-size:0.82rem; color:var(--cream); line-height:1.45; white-space:pre-wrap; word-break:break-word; }
+#screenCRMDetail .crm-detail-block { border:1.5px solid rgba(232,200,122,0.2); border-radius:10px; background:rgba(255,255,255,0.04); padding:12px; margin-bottom:12px; }
+#screenCRM .crm-muted,
+#screenCRMDetail .crm-muted,
+#screenCRMNew .crm-muted { font-size:0.72rem; color:rgba(232,200,122,0.65); }
+#screenCRMNew .crm-activity-wrap { border:1.5px solid rgba(232,200,122,0.2); border-radius:10px; background:rgba(255,255,255,0.04); padding:10px 12px; max-height:220px; overflow:auto; }
+.inv-card-sum-price { font-size:0.76rem; color:var(--wheat); font-weight:700; margin-top:3px; }
+#invAdPromoModalOverlay { z-index:126; }
 #screenContacts .contacts-filter-row,
 #screenFollowups .contacts-filter-row {
   display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;
@@ -2721,6 +2858,32 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
 }
 .home-fab:active { transform: scale(0.96); }
 
+.screen-fab {
+  position: fixed;
+  right: max(16px, calc((100vw - min(100vw, 480px)) / 2 + 16px));
+  bottom: calc(var(--app-bottom-nav-h, 58px) + env(safe-area-inset-bottom, 0px) + 14px);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(232, 200, 122, 0.45);
+  background: linear-gradient(160deg, rgba(90, 52, 32, 0.98) 0%, rgba(44, 24, 16, 0.98) 100%);
+  color: var(--wheat);
+  font-size: 1.65rem;
+  line-height: 1;
+  font-weight: 300;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  z-index: 47;
+  -webkit-appearance: none;
+  appearance: none;
+  padding: 0 0 2px 0;
+}
+.screen-fab.visible { display: flex; }
+.screen-fab:active { transform: scale(0.96); }
+
 .cc-dock-shell {
   pointer-events: auto;
   border-radius: 22px;
@@ -4010,7 +4173,7 @@ select:focus {
            class="cc-dock-side cc-dock-left"
            onclick="var s=loadSettings();var u=s.rtoUrl||'';if(u){window.open(u,'_blank');}else{showToast('Set RTO URL in Settings');}return false;">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:24px;height:24px;"><path d="M3 11.5L12 3l9 8.5V21a1 1 0 01-1 1H15v-6H9v6H4a1 1 0 01-1-1V11.5z" stroke="rgba(232,200,122,0.9)" stroke-width="1.6" fill="rgba(232,200,122,0.12)"/></svg>
-          <div class="cc-dock-side-label">RTO</div>
+          <div class="cc-dock-side-label">RTO LINK</div>
         </a>
 
         <div class="cc-dock-center-slot">
@@ -4895,6 +5058,11 @@ select:focus {
     <div class="page-sub">From: saved Shop/Lot, or <strong>Custom</strong> city &amp; state. To customer: full address, city &amp; state, or ZIP only.</div>
     <div id="mileageSearchCard" style="background:rgba(255,255,255,0.05);border:1.5px solid rgba(232,200,122,0.22);border-radius:10px;padding:12px 14px;margin:12px 0;">
       <div class="field-group"><label class="field-label">From</label><select id="mile_from" onchange="mileageOnFromSelectionChange()"></select></div>
+      <div class="tog-wrap" style="margin:10px 0 4px;" onclick="mileageToggleUseClosest()">
+        <div class="tog-track" id="mile_useClosestTrack"><div class="tog-thumb"></div></div>
+        <span class="tog-label">Use closest shop/lot</span>
+      </div>
+      <input type="checkbox" id="mile_useClosest" style="display:none;" aria-hidden="true">
       <div id="mile_from_override_wrap" style="display:none;margin-top:8px;">
         <div style="font-size:0.72rem;color:rgba(232,200,122,0.55);margin-bottom:4px;">Starting point — enter city and state</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
@@ -5019,9 +5187,9 @@ select:focus {
      SCREEN: PHOTOS
      ============================================================ -->
 <div class="screen" id="screenPhotos">
-  <div class="header"><div class="header-spacer" aria-hidden="true"></div><div class="header-title">Photo Library</div></div>
-  <div style="background:rgba(232,200,122,0.08);border-bottom:1.5px solid rgba(232,200,122,0.3);padding:14px 16px;font-size:0.78rem;line-height:1.6;color:var(--cream);">
-    <strong style="color:var(--barn);">📁 Setup:</strong> Tap "Edit Links" to paste your Google Drive folder URLs for each building style.
+  <div class="header"><div class="header-spacer" aria-hidden="true"></div><div class="header-title">Photo Library</div><div class="header-spacer" aria-hidden="true"></div></div>
+  <div id="photoSetupBanner" class="setup-note" style="margin:0;border-radius:0;border-left:none;border-right:none;">
+    <strong>📁 Setup:</strong> Tap "Edit Folder Links" to paste your Google Drive folder URLs for each building style.
   </div>
   <div style="padding:16px;">
     <div id="photoFolderList"></div>
@@ -5052,8 +5220,7 @@ select:focus {
     <div class="header-spacer" aria-hidden="true"></div>
   </div>
   <div style="padding:16px;">
-    <div class="page-title inv-page-title">Lot inventory</div>
-    <div class="page-sub inv-page-intro">Filter by lot or size/style. Available units are listed first.</div>
+    <div class="page-title inv-page-title">Lot Inventory</div>
 
     <div class="inv-toolbar">
       <div class="inv-filter-row">
@@ -5070,6 +5237,7 @@ select:focus {
     <div id="inv_listWrap" class="inv-list-stack"></div>
     <div class="pb40"></div>
   </div>
+  <button type="button" class="screen-fab visible" id="invScreenFab" onclick="invOpenAddModal()" aria-label="Add inventory" title="Add inventory">+</button>
 
   <div class="photo-modal-overlay inv-add-modal-overlay" id="invAddEditModalOverlay" aria-hidden="true" onclick="if(event.target===this)invCloseAddEditModal()">
     <div class="photo-modal" role="dialog" aria-modal="true" aria-labelledby="invAddEditTitle" onclick="event.stopPropagation()">
@@ -5099,7 +5267,7 @@ select:focus {
         <input type="file" id="inv_serialPhotoCamera" accept="image/*" capture="environment" onchange="invHandlePhoto(this,'plate')">
         <input type="file" id="inv_serialPhotoLibrary" accept="image/*" onchange="invHandlePhoto(this,'plate')">
       </div>
-      <div class="inv-photo-pick" style="margin-bottom:10px;" role="button" tabindex="0" onclick="invOpenPhotoSourcePicker('plate')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();invOpenPhotoSourcePicker('plate');}">
+      <div class="inv-photo-pick" style="margin-bottom:10px;" role="button" tabindex="0" onclick="invPickPhotoDirect('plate')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();invPickPhotoDirect('plate');}">
         <div class="upload-icon">📷</div>
         <div class="upload-label">Serial plate photo</div>
         <div class="upload-preview" id="inv_serialPreview"></div>
@@ -5184,7 +5352,7 @@ select:focus {
         <input type="file" id="inv_frontPhotoCamera" accept="image/*" capture="environment" onchange="invHandlePhoto(this,'front')">
         <input type="file" id="inv_frontPhotoLibrary" accept="image/*" onchange="invHandlePhoto(this,'front')">
       </div>
-      <div class="inv-photo-pick" role="button" tabindex="0" onclick="invOpenPhotoSourcePicker('front')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();invOpenPhotoSourcePicker('front');}">
+      <div class="inv-photo-pick" role="button" tabindex="0" onclick="invPickPhotoDirect('front')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();invPickPhotoDirect('front');}">
         <div class="upload-icon">📸</div>
         <div class="upload-label">Front corner photo</div>
         <div class="upload-preview" id="inv_frontPreview"></div>
@@ -5283,6 +5451,20 @@ select:focus {
     </div>
   </div>
 
+  <div class="photo-modal-overlay" id="invAdPromoModalOverlay" aria-hidden="true" onclick="if(event.target===this)invCloseAdPromoModal()">
+    <div class="photo-modal" role="dialog" aria-modal="true" aria-labelledby="invAdPromoTitle" onclick="event.stopPropagation()">
+      <div class="inv-modal-header-row">
+        <h3 id="invAdPromoTitle">Marketplace listing</h3>
+        <button type="button" class="inv-modal-x-btn" onclick="invCloseAdPromoModal()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="field-group"><label class="field-label">Lot / location</label><select id="invAdPromoLot"></select></div>
+      <div class="field-group"><label class="field-label">Tone</label>
+        <select id="invAdPromoTone"><option value="friendly">Friendly &amp; Conversational</option><option value="quality">Quality &amp; Craftsmanship</option><option value="sale">Limited Time Sale</option><option value="repo">Repo / As-Is Special</option><option value="inventory">Limited Inventory</option><option value="value">Value-Focused</option></select>
+      </div>
+      <button type="button" class="btn-primary" style="margin-top:0;width:100%;" onclick="invAdPromoGenerate()">Generate &amp; copy</button>
+    </div>
+  </div>
+
   <div class="photo-modal-overlay" id="invPromoModalOverlay" aria-hidden="true" onclick="if(event.target===this)invClosePromoModal()">
     <div class="photo-modal" role="dialog" aria-modal="true" aria-labelledby="invPromoTitle" onclick="event.stopPropagation()">
       <div class="inv-modal-header-row">
@@ -5296,16 +5478,8 @@ select:focus {
     </div>
   </div>
 
-  <div class="photo-modal-overlay" id="invFacebookPromoModalOverlay" aria-hidden="true" onclick="if(event.target===this)invCloseFacebookPromoModal()">
-    <div class="photo-modal" role="dialog" aria-modal="true" aria-labelledby="invFbPromoTitle" onclick="event.stopPropagation()">
-      <div class="inv-modal-header-row">
-        <h3 id="invFbPromoTitle">Facebook post</h3>
-        <button type="button" class="inv-modal-x-btn" onclick="invCloseFacebookPromoModal()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      </div>
-      <textarea id="invFacebookPostTextarea" readonly rows="10" style="width:100%;box-sizing:border-box;font-size:0.82rem;margin:10px 0;border-radius:8px;padding:10px;background:rgba(0,0,0,0.25);color:var(--cream);border:1.5px solid rgba(232,200,122,0.22);"></textarea>
-      <button type="button" class="btn-primary" style="margin-top:0;width:100%;" onclick="invCopyFacebookPromoText()">Copy to clipboard</button>
-    </div>
   </div>
+
 </div><!-- end screenInventory -->
 
 <!-- ============================================================
@@ -5314,11 +5488,10 @@ select:focus {
 <div class="screen" id="screenLotPagesHub">
   <div class="header">
     <button type="button" class="back-btn" onclick="appNavSkipHistoryPush=true;goTo('screenHome');" aria-label="Back">&#8592;</button>
-    <div class="header-title">Lot pages</div>
+    <div class="header-title">Lot Inventory</div>
     <div class="header-spacer" aria-hidden="true"></div>
   </div>
   <div class="lot-pages-pad">
-    <div class="page-title inv-page-title">Locations</div>
     <div id="lotHubList" class="lot-hub-list"></div>
     <div class="pb40"></div>
   </div>
@@ -5356,6 +5529,7 @@ select:focus {
     <div id="lotDetailInvWrap" class="lot-detail-inv-wrap"></div>
     <div class="pb40"></div>
   </div>
+  <button type="button" class="screen-fab visible" id="lotDetailFab" onclick="lotPagesFabAddInventory()" aria-label="Add inventory at this lot" title="Add inventory">+</button>
   <div class="photo-modal-overlay" id="lotManualSaleModalOverlay" aria-hidden="true" onclick="if(event.target===this)lotPagesCloseManualSaleModal()">
     <div class="photo-modal" role="dialog" aria-modal="true" aria-labelledby="lotManualSaleTitle" onclick="event.stopPropagation()">
       <div class="inv-modal-header-row">
@@ -5395,12 +5569,12 @@ select:focus {
      ============================================================ -->
 <div class="screen" id="screenCRM">
   <div class="header"><div class="header-spacer" aria-hidden="true"></div><div class="header-title">CRM</div></div>
-  <div style="padding:16px;">
-    <div class="page-title">Leads &amp; Conversations</div>
-    <div class="page-sub">Lite pipeline for contacts, building interest, notes, and conversation channel.</div>
+  <div style="padding:16px;padding-bottom:80px;">
+    <div class="page-title">Leads</div>
+    <div class="page-sub">Tap a lead for details. Use the Actions menu on each card.</div>
 
     <div class="field-group">
-      <label class="field-label">Search Leads</label>
+      <label class="field-label">Search</label>
       <input type="text" id="crm_search" placeholder="Name, phone, email, serial..." oninput="crmRenderLeadList()">
     </div>
     <div style="display:flex;gap:8px;margin-bottom:10px;">
@@ -5408,79 +5582,98 @@ select:focus {
       <button class="btn-secondary" style="margin-top:0;" onclick="crmRefreshLeads()">Refresh</button>
     </div>
 
-    <div class="crm-grid">
-      <div class="crm-list" id="crm_leadList"></div>
-
-      <div style="border:1.5px solid rgba(232,200,122,0.2);border-radius:10px;background:rgba(255,255,255,0.04);padding:10px 12px;">
-        <div class="crm-muted" id="crm_selectedLeadLabel">No lead selected</div>
-        <div class="inv-grid2">
-          <div class="field-group"><label class="field-label">Name</label><input type="text" id="crm_name" placeholder="Customer name"></div>
-          <div class="field-group"><label class="field-label">Phone</label><input type="text" id="crm_phone" placeholder="123-123-1234"></div>
-        </div>
-        <div class="inv-grid2">
-          <div class="field-group"><label class="field-label">Email</label><input type="email" id="crm_email" placeholder="name@email.com"></div>
-          <div class="field-group"><label class="field-label">Status</label>
-            <select id="crm_status">
-              <option value="interested">Interested</option>
-              <option value="ordered">Ordered</option>
-              <option value="delivered">Delivered</option>
-            </select>
-          </div>
-        </div>
-        <div style="display:flex;gap:8px;margin-top:4px;">
-          <button type="button" class="btn-secondary" style="margin-top:0;flex:1;font-size:0.78rem;padding:10px 8px;letter-spacing:0.5px;" onclick="crmComposeSmsToLead()">Text lead</button>
-          <button type="button" class="btn-secondary" style="margin-top:0;flex:1;font-size:0.78rem;padding:10px 8px;letter-spacing:0.5px;" onclick="crmComposeEmailToLead()">Email lead</button>
-        </div>
-        <div class="inv-grid2">
-          <div class="field-group"><label class="field-label">Building Interest</label><input type="text" id="crm_building" placeholder="10x16 Lofted Barn"></div>
-          <div class="field-group"><label class="field-label">Conversation Channel</label>
-            <select id="crm_channel">
-              <option value="sms">SMS/Text</option>
-              <option value="phone">Phone Call</option>
-              <option value="email">Email</option>
-              <option value="facebook">Facebook</option>
-              <option value="instagram">Instagram</option>
-              <option value="inPerson">In Person</option>
-              <option value="form">Web Form</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-        </div>
-        <div class="field-group"><label class="field-label">Notes</label><textarea id="crm_notes" rows="3" placeholder="General lead notes"></textarea></div>
-        <div style="display:flex;gap:8px;">
-          <button class="btn-secondary" style="margin-top:0;flex:1;" onclick="crmDeleteLeadFromForm()">Delete</button>
-          <button class="btn-secondary" style="margin-top:0;flex:1;" onclick="crmClearLeadForm()">Clear</button>
-        </div>
-      </div>
-
-      <div style="border:1.5px solid rgba(232,200,122,0.2);border-radius:10px;background:rgba(255,255,255,0.04);padding:10px 12px;">
-        <div class="field-group"><label class="field-label">Add Activity</label>
-          <div class="inv-grid2">
-            <select id="crm_activity_channel">
-              <option value="sms">SMS/Text</option>
-              <option value="phone">Phone Call</option>
-              <option value="email">Email</option>
-              <option value="facebook">Facebook</option>
-              <option value="instagram">Instagram</option>
-              <option value="inPerson">In Person</option>
-              <option value="other">Other</option>
-            </select>
-            <select id="crm_activity_direction">
-              <option value="outbound">Outbound</option>
-              <option value="inbound">Inbound</option>
-              <option value="note">Note</option>
-            </select>
-          </div>
-        </div>
-        <div class="field-group"><textarea id="crm_activity_body" rows="2" placeholder="What happened in the conversation?"></textarea></div>
-        <button class="btn-secondary" style="margin-top:0;" onclick="crmAddActivityFromForm()">Add Activity</button>
-        <div class="section-head" style="margin-top:12px;">Timeline</div>
-        <div class="crm-activity-wrap" id="crm_activityList"></div>
-      </div>
-    </div>
-    <div class="pb40"></div>
+    <div class="crm-list" id="crm_leadList"></div>
   </div>
 </div><!-- end screenCRM -->
+
+<div class="screen" id="screenCRMDetail">
+  <div class="header">
+    <button type="button" class="back-btn" onclick="goTo('screenCRM')" aria-label="Back">&#8592;</button>
+    <div class="header-title">Lead</div>
+    <div class="header-spacer" aria-hidden="true"></div>
+  </div>
+  <div style="padding:16px;padding-bottom:100px;">
+    <div id="crm_detailMount"></div>
+
+    <div class="section-head">Add activity</div>
+    <div class="crm-detail-card crm-add-activity-card">
+      <div class="inv-grid2">
+        <div class="field-group">
+          <label class="field-label" for="crm_activity_channel">Channel</label>
+          <select id="crm_activity_channel" class="crm-action-select">
+            <option value="sms">SMS / Text</option>
+            <option value="phone">Phone call</option>
+            <option value="email">Email</option>
+            <option value="facebook">Facebook</option>
+            <option value="instagram">Instagram</option>
+            <option value="inPerson">In person</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="crm_activity_direction">Direction</label>
+          <select id="crm_activity_direction" class="crm-action-select">
+            <option value="outbound">Outbound</option>
+            <option value="inbound">Inbound</option>
+            <option value="note">Note</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="crm_activity_body">Note</label>
+        <textarea id="crm_activity_body" rows="2" placeholder="What happened in the conversation?"></textarea>
+      </div>
+      <button type="button" class="btn-primary crm-add-activity-btn" onclick="crmAddActivityFromForm()">Add to timeline</button>
+    </div>
+
+    <div class="section-head">Timeline</div>
+    <div class="crm-detail-card crm-timeline-card">
+      <div class="crm-activity-wrap" id="crm_activityList"></div>
+    </div>
+  </div>
+</div><!-- end screenCRMDetail -->
+
+<div class="screen" id="screenCRMNew">
+  <div class="header">
+    <button type="button" class="back-btn" onclick="crmNewCancel()" aria-label="Back">&#8592;</button>
+    <div class="header-title" id="crmNewHeaderTitle">New Lead</div>
+    <div class="header-spacer" aria-hidden="true"></div>
+  </div>
+  <div style="padding:16px;padding-bottom:100px;">
+    <div class="crm-muted" id="crm_selectedLeadLabel" style="margin-bottom:10px;display:none;">Editing lead</div>
+    <div class="inv-grid2">
+      <div class="field-group"><label class="field-label">Name</label><input type="text" id="crm_name" placeholder="Customer name"></div>
+      <div class="field-group"><label class="field-label">Phone</label><input type="text" id="crm_phone" placeholder="123-123-1234"></div>
+    </div>
+    <div class="inv-grid2">
+      <div class="field-group"><label class="field-label">Email</label><input type="email" id="crm_email" placeholder="name@email.com"></div>
+      <div class="field-group"><label class="field-label">Status</label>
+        <select id="crm_status">
+          <option value="interested">Interested</option>
+          <option value="ordered">Ordered</option>
+          <option value="delivered">Delivered</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-group"><label class="field-label">Attach inventory (optional)</label>
+      <select id="crm_invPick" onchange="crmInventoryPickChanged()"><option value="">— Pick inventory or type below —</option></select>
+    </div>
+    <div class="field-group"><label class="field-label">Building interest</label><input type="text" id="crm_building" placeholder="10x16 Lofted Barn"></div>
+    <div class="field-group"><label class="field-label">Conversation channel</label>
+      <select id="crm_channel">
+        <option value="sms">SMS/Text</option>
+        <option value="phone">Phone Call</option>
+        <option value="email">Email</option>
+        <option value="facebook">Facebook</option>
+        <option value="instagram">Instagram</option>
+        <option value="inPerson">In Person</option>
+        <option value="form">Web Form</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+    <div class="field-group"><label class="field-label">Notes</label><textarea id="crm_notes" rows="3" placeholder="General lead notes"></textarea></div>
+  </div>
+</div><!-- end screenCRMNew -->
 
 <!-- ============================================================
      SCREEN: APPOINTMENTS
@@ -5549,7 +5742,7 @@ select:focus {
   <div class="header"><div class="header-spacer" aria-hidden="true"></div><div class="header-title">Contacts</div></div>
   <div style="padding:16px;">
     <div class="page-title">Contacts</div>
-    <div class="page-sub">Filter by deal status. Tap a row to open the full CRM for that lead.</div>
+    <div class="page-sub">Filter by deal status. Tap a row to open lead details.</div>
     <div class="contacts-filter-row" id="contacts_filterRow">
       <span class="contacts-chip active" data-filter="all" onclick="contactsSetFilter('all')">All</span>
       <span class="contacts-chip" data-filter="interested" onclick="contactsSetFilter('interested')">Interested</span>
@@ -5633,7 +5826,7 @@ select:focus {
   <div style="padding:16px;">
     <div class="form-title purchase">Purchase Form</div>
     <div class="form-sub">Cash / Outright · 50% down required</div>
-    <div class="setup-note"><strong>⚙️ Formspree endpoint required</strong> to submit this form. Set it in Settings.</div>
+    <div class="setup-note formspree-note" id="purchaseFormspreeNote"><strong>⚙️ Formspree endpoint required</strong> to submit this form. Set it in Settings.</div>
     <span class="section-head">Contact</span>
     <div class="field-group"><label class="field-label">Full Legal Name <span class="req">*</span></label><input type="text" id="p_name" placeholder="First Middle Last"></div>
     <div class="row2"><div class="field-group"><label class="field-label">Phone <span class="req">*</span></label><input type="tel" id="p_phone" placeholder="123-123-1234"></div><div class="field-group"><label class="field-label">Email</label><input type="email" id="p_email" placeholder="email@example.com"></div></div>
@@ -5721,7 +5914,7 @@ select:focus {
     <div class="form-title rto">RTO Application</div>
     <div class="form-sub">Rent-To-Own · Full application</div>
     <div class="security-notice"><strong>🔒 Privacy Notice:</strong> Information is sent directly to your sales representative via encrypted email and is not stored on any server. SSN is optional — we can collect by phone. ID photos are used for verification only.</div>
-    <div class="setup-note"><strong>⚙️ Formspree endpoint required</strong> to submit this form. Set it in Settings.</div>
+    <div class="setup-note formspree-note" id="purchaseFormspreeNote"><strong>⚙️ Formspree endpoint required</strong> to submit this form. Set it in Settings.</div>
     <span class="section-head">Personal Info</span>
     <div class="field-group"><label class="field-label">Full Legal Name <span class="req">*</span></label><input type="text" id="r_name" placeholder="First Middle Last"></div>
     <div class="field-group"><label class="field-label">Date of Birth <span class="req">*</span></label><input type="date" id="r_dob"></div>
@@ -5855,7 +6048,7 @@ select:focus {
   <div style="padding:16px;">
     <div class="form-title interest">General Interest</div>
     <div class="form-sub">Quick lead capture</div>
-    <div class="setup-note"><strong>⚙️ Formspree endpoint required</strong> to submit this form. Set it in Settings.</div>
+    <div class="setup-note formspree-note" id="purchaseFormspreeNote"><strong>⚙️ Formspree endpoint required</strong> to submit this form. Set it in Settings.</div>
     <span class="section-head">Contact</span>
     <div class="field-group"><label class="field-label">Name <span class="req">*</span></label><input type="text" id="i_name" placeholder="Full name"></div>
     <div class="row2"><div class="field-group"><label class="field-label">Phone <span class="req">*</span></label><input type="tel" id="i_phone" placeholder="123-123-1234"></div><div class="field-group"><label class="field-label">Email</label><input type="email" id="i_email" placeholder="email@example.com"></div></div>
@@ -6210,7 +6403,7 @@ select:focus {
     <div id="ss_quickPriceMirror" style="display:none;margin-bottom:12px;">
       <div style="background:var(--earth);border-radius:10px;padding:14px 16px;margin:0 0 10px;border:1.5px solid rgba(232,200,122,0.22);border-top:3px solid var(--barn);">
         <div id="ss_combinedPriceTitle" style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:0.95rem;letter-spacing:2px;text-transform:uppercase;color:var(--wheat);opacity:0.85;margin-bottom:10px;line-height:1.25;">Select size and style</div>
-        <div id="ss_saleControlsRow" style="display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:10px;margin-bottom:10px;">
+        <div id="ss_saleControlsRow" style="display:flex;align-items:center;justify-content:flex-start;flex-wrap:wrap;gap:10px;margin-bottom:10px;">
           <div class="tog-wrap" onclick="ssMirrorToggleQuickSale()" style="flex-shrink:0;">
             <div class="tog-track" id="ss_saleTrack"><div class="tog-thumb"></div></div>
             <span class="tog-label">Sale %</span>
@@ -6242,12 +6435,12 @@ select:focus {
 
     <div class="field-label" style="margin:12px 0 6px;">QR codes</div>
     <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:12px;">
-      <div id="ss_qrListingChip" class="toggle-chip ss-qr-chip" role="checkbox" tabindex="0" aria-checked="false" onclick="ssQrChipClick('listing')" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();ssQrChipClick('listing');}"><span class="ss-qr-chip-txt">Listing QR</span><span class="ss-qr-check" aria-hidden="true">✓</span></div>
+      <div id="ss_qrListingChip" class="toggle-chip ss-qr-chip" role="checkbox" tabindex="0" aria-checked="false" onclick="ssQrChipClick('listing')" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();ssQrChipClick('listing');}"><span class="ss-qr-chip-txt">Online Listing</span><span class="ss-qr-check" aria-hidden="true">✓</span></div>
       <div id="ss_qrListingUrlRow" class="field-group" style="display:none;margin:0;">
         <label class="field-label" for="ss_qrListingUrlInput">Listing URL</label>
         <input type="url" id="ss_qrListingUrlInput" placeholder="https://…" autocomplete="off" oninput="ssOnListingQrUrlInput()" onblur="ssOnListingQrUrlInput()">
       </div>
-      <div id="ss_qrPurchaseChip" class="toggle-chip ss-qr-chip" role="checkbox" tabindex="0" aria-checked="false" onclick="ssQrChipClick('purchase')" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();ssQrChipClick('purchase');}"><span class="ss-qr-chip-txt">Purchase QR</span><span class="ss-qr-check" aria-hidden="true">✓</span></div>
+      <div id="ss_qrPurchaseChip" class="toggle-chip ss-qr-chip" role="checkbox" tabindex="0" aria-checked="false" onclick="ssQrChipClick('purchase')" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();ssQrChipClick('purchase');}"><span class="ss-qr-chip-txt">Scan to start purchase</span><span class="ss-qr-check" aria-hidden="true">✓</span></div>
       <div id="ss_qrIntakeChip" class="toggle-chip ss-qr-chip" role="checkbox" tabindex="0" aria-checked="false" onclick="ssQrChipClick('intake')" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();ssQrChipClick('intake');}"><span class="ss-qr-chip-txt">Intake Form QR</span><span class="ss-qr-check" aria-hidden="true">✓</span></div>
     </div>
     <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:4px;">
@@ -6463,8 +6656,8 @@ select:focus {
     <div class="field-group"><label class="field-label">Project API Key</label><input type="text" id="set_firebaseApiKey" placeholder="AIza..."></div>
     <div class="field-group"><label class="field-label">Auth Domain</label><input type="text" id="set_firebaseAuthDomain" placeholder="your-project.firebaseapp.com"></div>
     <div class="field-group"><label class="field-label">Project ID</label><input type="text" id="set_firebaseProjectId" placeholder="your-project-id"></div>
-    <div class="field-group"><label class="field-label">Storage Bucket (optional for later)</label><input type="text" id="set_firebaseStorageBucket" placeholder="Optional — Firebase Storage not required"></div>
-    <div class="setup-note" style="margin-top:-4px;margin-bottom:12px;">Firestore sync is active. Firebase Storage is optional and not required.</div>
+    <div class="field-group"><label class="field-label">Storage Bucket (optional — future migration)</label><input type="text" id="set_firebaseStorageBucket" placeholder="your-project.appspot.com"></div>
+    <div class="setup-note" style="margin-top:-4px;margin-bottom:12px;">Firestore sync is active today. Inventory photos currently upload to <strong>Cloudflare R2</strong> or <strong>Google Drive</strong> (below). When you are ready to consolidate, create a Firebase Storage bucket here and migrate JPEG URLs in inventory — the app will prefer Storage once wired; until then R2/Drive remain the supported path.</div>
     <div class="field-group"><label class="field-label">Messaging Sender ID</label><input type="text" id="set_firebaseMessagingSenderId" placeholder="1234567890"></div>
     <div class="field-group"><label class="field-label">App ID</label><input type="text" id="set_firebaseAppId" placeholder="1:123456:web:abc..."></div>
     <div class="field-group"><label class="field-label">Staff email (Firebase Auth)</label><input type="email" id="set_firebaseEmail" placeholder="staff@yourcompany.com"></div>
@@ -6492,7 +6685,7 @@ select:focus {
   </div>
   <div style="padding:16px;padding-bottom:100px;" class="settings-panel-body">
 <!-- EmailJS -->
-    <div class="settings-section-title" style="margin:16px 0 10px;">EmailJS</div>
+    <div class="setup-note" style="margin-top:-4px;margin-bottom:12px;">Standalone <strong>GemStateSheds-IntakeForm.html</strong> sends EmailJS email and also creates a Firestore lead when Firebase is configured (anonymous auth). Point customers to your hosted intake URL from Settings.</div>
     <div class="field-group"><label class="field-label">Public Key</label><input type="text" id="set_ejsPublicKey" placeholder="..."></div>
     <div class="field-group"><label class="field-label">Service ID</label><input type="text" id="set_ejsServiceId" placeholder="service_..."></div>
     <div class="field-group"><label class="field-label">Template ID</label><input type="text" id="set_ejsTemplateId" placeholder="template_..."></div>
@@ -6899,6 +7092,21 @@ select:focus {
       <button type="button" class="btn-secondary" onclick="ssCloseSalesSheetConfirmModal()" style="flex:1;min-width:90px;">Cancel</button>
       <button type="button" class="btn-secondary" onclick="ssConfirmSalesSheetEdit()" style="flex:1;min-width:90px;">Edit</button>
       <button type="button" class="btn-primary" onclick="ssConfirmAndGenerate()" style="flex:2;min-width:120px;background:var(--barn);">Generate</button>
+    </div>
+  </div>
+</div>
+
+<!-- Facebook post preview (global — used from Price Calc and Inventory) -->
+<div class="photo-modal-overlay" id="invFacebookPromoModalOverlay" aria-hidden="true" onclick="if(event.target===this)invCloseFacebookPromoModal()">
+  <div class="photo-modal" role="dialog" aria-modal="true" aria-labelledby="invFbPromoTitle" onclick="event.stopPropagation()">
+    <div class="inv-modal-header-row">
+      <h3 id="invFbPromoTitle">Facebook post</h3>
+      <button type="button" class="inv-modal-x-btn" onclick="invCloseFacebookPromoModal()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    </div>
+    <textarea id="invFacebookPostTextarea" readonly rows="10" style="width:100%;box-sizing:border-box;font-size:0.82rem;margin:10px 0;border-radius:8px;padding:10px;background:rgba(0,0,0,0.25);color:var(--cream);border:1.5px solid rgba(232,200,122,0.22);"></textarea>
+    <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;">
+      <button type="button" class="btn-secondary" style="margin-top:0;flex:1;min-width:120px;" id="invFbRegenerateBtn" onclick="fbPostRegenerate()">Regenerate</button>
+      <button type="button" class="btn-primary" style="margin-top:0;flex:1;min-width:120px;" onclick="fbPostConfirmCopy()">Confirm &amp; copy</button>
     </div>
   </div>
 </div>
@@ -7528,7 +7736,8 @@ function openFollowups(){
 }
 async function crmLeadsBootstrap(){
   if(!(await firebaseEnsureAuthed())) return false;
-  await crmWatchLeads();
+  await crmFetchLeadsOnce();
+  await crmEnsureLeadsListener();
   return true;
 }
 function firebaseRefreshHomeTilesFromCloud(){
@@ -7631,14 +7840,47 @@ function crmSignatureBlock(){
   var tail=reach.length?('\nReach me: '+reach.join(' · ')+'.'):'';
   return (line.length?line.join('\n'):'Your team')+tail;
 }
-function crmComposeSmsToLead(){
-  var raw=(document.getElementById('crm_phone')&&document.getElementById('crm_phone').value||'').trim();
-  var digits=String(raw).replace(/\D/g,'');
-  if(digits.length<10){showToast('Add the lead phone first (10+ digits).');return;}
+function crmGetLeadById(id){
+  return (crmState.leads||[]).find(function(l){return l.id===id;})||null;
+}
+function crmEsc(t){
+  return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function crmPopulateInventoryPicker(selectedId){
+  var sel=document.getElementById('crm_invPick');
+  if(!sel) return;
+  var prev=selectedId||sel.value||'';
+  sel.innerHTML='<option value="">— Pick inventory or type below —</option>';
+  (invState.items||[]).filter(function(it){
+    return invNormalizeUnitStatus(it.unitStatus)==='available';
+  }).forEach(function(it){
+    var label=[it.size,it.style,it.serialNumber,it.lotLocation].filter(Boolean).join(' · ');
+    var opt=document.createElement('option');
+    opt.value=it.id;
+    opt.textContent=label||it.id;
+    sel.appendChild(opt);
+  });
+  if(prev) sel.value=prev;
+}
+function crmInventoryPickChanged(){
+  var sel=document.getElementById('crm_invPick');
+  var b=document.getElementById('crm_building');
+  if(!sel||!b||!sel.value) return;
+  var it=invState.items.find(function(x){return x.id===sel.value;});
+  if(!it) return;
+  b.value=[it.size,it.style,it.serialNumber?('Serial '+it.serialNumber):''].filter(Boolean).join(' · ');
+}
+function crmLeadPhoneDigits(lead){
+  var raw=lead&&lead.contact&&lead.contact.phone||'';
+  return String(raw).replace(/\D/g,'');
+}
+function crmComposeSmsForLead(lead, bodyPrefix){
+  var digits=crmLeadPhoneDigits(lead);
+  if(digits.length<10){showToast('Lead needs a phone number (10+ digits).');return;}
   var to=(digits.length===11&&digits.charAt(0)==='1')?digits:((digits.length===10)?'1'+digits:digits);
-  var leadName=(document.getElementById('crm_name')&&document.getElementById('crm_name').value||'').trim();
+  var leadName=(lead.contact&&lead.contact.name||'').trim();
   var first=leadName?leadName.split(/\s+/)[0]:'';
-  var opener=first?('Hi '+first+' — '):'Hi — ';
+  var opener=bodyPrefix||(first?('Hi '+first+' — '):'Hi — ');
   var body=encodeURIComponent(opener+'\n\n'+crmSignatureBlock());
   var a=document.createElement('a');
   a.href='sms:'+to+'?body='+body;
@@ -7646,9 +7888,9 @@ function crmComposeSmsToLead(){
   a.click();
   document.body.removeChild(a);
 }
-function crmComposeEmailToLead(){
-  var to=(document.getElementById('crm_email')&&document.getElementById('crm_email').value||'').trim();
-  if(!to||to.indexOf('@')<1){showToast('Add the lead email first.');return;}
+function crmComposeEmailForLead(lead){
+  var to=(lead.contact&&lead.contact.email||'').trim();
+  if(!to||to.indexOf('@')<1){showToast('Lead needs an email address.');return;}
   var s=loadSettings();
   var biz=(s.bizName||'').trim()||'Follow up';
   var sub=encodeURIComponent(biz+' — follow up');
@@ -7659,9 +7901,296 @@ function crmComposeEmailToLead(){
   a.click();
   document.body.removeChild(a);
 }
+function crmComposeCallForLead(lead){
+  var digits=crmLeadPhoneDigits(lead);
+  if(digits.length<10){showToast('Lead needs a phone number.');return;}
+  var tel=(digits.length===10)?'+1'+digits:('+'+digits);
+  window.location.href='tel:'+tel;
+}
+function crmComposeIntakeSmsForLead(lead){
+  var digits=crmLeadPhoneDigits(lead);
+  if(digits.length<10){showToast('Lead needs a phone number.');return;}
+  var to=(digits.length===11&&digits.charAt(0)==='1')?digits:((digits.length===10)?'1'+digits:digits);
+  var url=ssBuildIntakeFormQrUrl(loadSettings());
+  var leadName=(lead.contact&&lead.contact.name||'').trim();
+  var first=leadName?leadName.split(/\s+/)[0]:'';
+  var msg=(first?('Hi '+first+' — '):'Hi — ')+'Please complete our intake form: '+url;
+  var a=document.createElement('a');
+  a.href='sms:'+to+'?body='+encodeURIComponent(msg);
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+function crmCopyRtoLink(){
+  var s=loadSettings();
+  var u=(s.rtoUrl||'').trim();
+  if(!u){ showToast('Set RTO URL in Settings'); return; }
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(u).then(function(){ showToast('RTO link copied'); },function(){ legacyCopy(u); });
+  }else legacyCopy(u);
+}
+function crmComposeSmsToLead(){
+  var lead=crmGetLeadById(crmState.selectedLeadId);
+  if(!lead){ showToast('Select a lead first'); return; }
+  crmComposeSmsForLead(lead);
+}
+function crmComposeEmailToLead(){
+  var lead=crmGetLeadById(crmState.selectedLeadId);
+  if(!lead){ showToast('Select a lead first'); return; }
+  crmComposeEmailForLead(lead);
+}
+function crmMapLeadFromDoc(doc){
+  var d=(doc&&typeof doc.data==='function')?doc.data():(doc||{});
+  if(!d||typeof d!=='object') d={};
+  d=Object.assign({},d);
+  d.id=(doc&&doc.id)||d.id||'';
+  d.createdAt=firebaseTsToIso(d.createdAt);
+  d.updatedAt=firebaseTsToIso(d.updatedAt);
+  return d;
+}
+function crmOnLeadsDataUpdated(){
+  if(crmState.selectedLeadId){
+    var active=crmState.leads.find(function(l){return l.id===crmState.selectedLeadId;});
+    var detailActive=document.getElementById('screenCRMDetail');
+    if(active&&detailActive&&detailActive.classList.contains('active')) crmRenderDetailView();
+    if(active){
+      var newActive=document.getElementById('screenCRMNew');
+      if(newActive&&newActive.classList.contains('active')&&!crmState.intentNewLead) crmLeadDocToUi(active);
+    }
+  }
+  crmRenderLeadList();
+  leadsSidePanelsRefresh();
+  try{ renderHomeDashboard(); }catch(_e){}
+  try{ if(typeof calcCurrentPage==='number'&&calcCurrentPage===1) populateQuoteShareLeadPickerIfOpen(); }catch(_eQ){}
+}
+async function crmFetchLeadsOnce(opts){
+  if(!(await firebaseEnsureAuthed())) return false;
+  var src=(opts&&opts.fromCache)?'default':'server';
+  try{
+    var snap=await fbDb.collection('leads').orderBy('updatedAt','desc').get({source:src});
+    crmState.leads=snap.docs.map(crmMapLeadFromDoc);
+    return true;
+  }catch(e){
+    console.log('Lead fetch failed:',e);
+    try{
+      var snap2=await fbDb.collection('leads').get({source:src});
+      crmState.leads=snap2.docs.map(crmMapLeadFromDoc).sort(function(a,b){return leadTouchMs(b)-leadTouchMs(a);});
+      return true;
+    }catch(e2){
+      console.log('Lead fetch fallback failed:',e2);
+      return false;
+    }
+  }
+}
+async function crmEnsureLeadsListener(){
+  if(!(await firebaseEnsureAuthed())) return false;
+  if(fbLeadsUnsub) return true;
+  fbLeadsUnsub=fbDb.collection('leads').orderBy('updatedAt','desc').onSnapshot(function(snap){
+    crmState.leads=snap.docs.map(crmMapLeadFromDoc);
+    crmOnLeadsDataUpdated();
+  },function(err){
+    console.log('Lead watch failed:',err);
+    showToast('CRM sync error — tap Refresh');
+  });
+  return true;
+}
+function crmDetailSumRow(label,val){
+  return '<div class="crm-detail-sum-row"><span class="lbl">'+crmEsc(label)+'</span><span class="val">'+crmEsc(val||'—')+'</span></div>';
+}
+function crmDetailToolbarHtml(leadId){
+  var id=crmEsc(leadId);
+  return '<div class="crm-detail-toolbar">'+
+    '<div class="crm-detail-btn-row">'+
+      '<button type="button" class="crm-detail-btn primary" onclick="crmDetailEdit()">Edit</button>'+
+      '<button type="button" class="crm-detail-btn" onclick="crmComposeSmsToLead()">Text</button>'+
+      '<button type="button" class="crm-detail-btn" onclick="crmComposeEmailToLead()">Email</button>'+
+      '<button type="button" class="crm-detail-btn" onclick="crmRunListAction(\''+id+'\',\'call\')">Call</button>'+
+    '</div>'+
+    '<div class="crm-detail-dd-row">'+
+      '<select class="crm-action-select" aria-label="Update status" onchange="crmDetailStatusPick(this)">'+
+        '<option value="">Update status…</option>'+
+        '<option value="interested">Interested</option>'+
+        '<option value="ordered">Ordered</option>'+
+        '<option value="delivered">Delivered</option>'+
+      '</select>'+
+      '<select class="crm-action-select" aria-label="More actions" onchange="crmDetailMorePick(this)">'+
+        '<option value="">More actions…</option>'+
+        '<option value="intake">Send intake form</option>'+
+        '<option value="rto">Copy RTO link</option>'+
+        '<option value="note">Add quick note</option>'+
+        '<option value="delete">Delete lead</option>'+
+      '</select>'+
+    '</div>'+
+  '</div>';
+}
+function crmDetailStatusPick(sel){
+  var v=sel?sel.value:'';
+  if(sel) sel.value='';
+  if(!v||!crmState.selectedLeadId) return;
+  crmQuickStatus(crmState.selectedLeadId,v);
+}
+function crmDetailMorePick(sel){
+  var leadId=crmState.selectedLeadId;
+  var v=sel?sel.value:'';
+  if(sel) sel.value='';
+  if(!v||!leadId) return;
+  if(v==='delete'){ void crmDeleteLeadById(leadId); return; }
+  crmRunListAction(leadId,v);
+}
+function crmActionSelectHtml(leadId){
+  var id=crmEsc(leadId);
+  var html='<select class="crm-action-select" aria-label="Lead actions" onchange="crmListActionPick(this,\''+id+'\')" onclick="event.stopPropagation()">';
+  html+='<option value="">Actions…</option>';
+  html+='<option value="text">Text lead</option>';
+  html+='<option value="email">Email lead</option>';
+  html+='<option value="call">Call lead</option>';
+  html+='<option value="intake">Send intake form (SMS)</option>';
+  html+='<option value="rto">Copy RTO link</option>';
+  html+='<optgroup label="Status">';
+  html+='<option value="status:interested">Mark interested</option>';
+  html+='<option value="status:ordered">Mark ordered</option>';
+  html+='<option value="status:delivered">Mark delivered</option>';
+  html+='</optgroup>';
+  html+='<option value="note">Add quick note</option>';
+  html+='</select>';
+  return html;
+}
+function crmRunListAction(leadId, action){
+  if(!leadId||!action) return;
+  var lead=crmGetLeadById(leadId);
+  if(action.indexOf('status:')===0){
+    crmQuickStatus(leadId, action.slice(7));
+    return;
+  }
+  if(action==='note'){ crmQuickNote(leadId); return; }
+  if(!lead){ showToast('Lead not found — refresh'); return; }
+  if(action==='text') crmComposeSmsForLead(lead);
+  else if(action==='email') crmComposeEmailForLead(lead);
+  else if(action==='call') crmComposeCallForLead(lead);
+  else if(action==='intake') crmComposeIntakeSmsForLead(lead);
+  else if(action==='rto') crmCopyRtoLink();
+}
+function crmListActionPick(sel,leadId){
+  var v=sel?sel.value:'';
+  if(sel) sel.value='';
+  if(!v) return;
+  crmRunListAction(leadId,v);
+}
+function crmQuickStatus(leadId, status){
+  void (async function(){
+    try{
+      if(!(await firebaseEnsureAuthed())){ showToastForFirebaseCRMBlock(); return; }
+      await crmUpdateLead(leadId,{status:crmStatusToFirestore(status)});
+      showToast('Status updated');
+    }catch(e){
+      showToast('Could not update status');
+    }
+  })();
+}
+function crmQuickNote(leadId){
+  var txt=window.prompt('Quick note for this lead:');
+  if(!txt||!String(txt).trim()) return;
+  void (async function(){
+    try{
+      if(!(await firebaseEnsureAuthed())){ showToastForFirebaseCRMBlock(); return; }
+      await crmAddActivity(leadId,{channel:'other',direction:'note',body:String(txt).trim(),createdBy:loadSettings().contactName||'sales'});
+      showToast('Note added');
+    }catch(e){
+      showToast('Could not add note');
+    }
+  })();
+}
 function navigateToLeadInCrm(leadId){
-  goTo('screenCRM');
-  setTimeout(function(){ crmSelectLead(leadId); }, 60);
+  crmOpenDetail(leadId);
+}
+function crmOpenDetail(leadId){
+  crmState.intentNewLead=false;
+  crmState.selectedLeadId=leadId;
+  goTo('screenCRMDetail');
+}
+async function crmDetailInit(){
+  if(!(await firebaseEnsureAuthed())){
+    showToastForFirebaseCRMBlock();
+    goTo('screenHome');
+    return;
+  }
+  await crmFetchLeadsOnce();
+  await crmEnsureLeadsListener();
+  if(!crmState.selectedLeadId){
+    goTo('screenCRM');
+    return;
+  }
+  if(!crmGetLeadById(crmState.selectedLeadId)){
+    await crmFetchLeadsOnce();
+  }
+  crmRenderDetailView();
+  await crmWatchActivities(crmState.selectedLeadId);
+}
+function crmChannelDisplayLabel(ch){
+  var m={sms:'SMS / Text',phone:'Phone call',email:'Email',facebook:'Facebook',instagram:'Instagram',inPerson:'In person',form:'Web form',other:'Other'};
+  return m[String(ch||'').trim()]||ch||'—';
+}
+function crmRenderDetailView(){
+  var mount=document.getElementById('crm_detailMount');
+  if(!mount) return;
+  var lead=crmGetLeadById(crmState.selectedLeadId);
+  if(!lead){
+    mount.innerHTML='<div class="crm-muted">Lead not found.</div>';
+    return;
+  }
+  var st=crmStatusDisplayLabel(crmNormalizeStatus(lead.status));
+  var name=(lead.contact&&lead.contact.name)||'Unnamed Lead';
+  var phone=(lead.contact&&lead.contact.phone)||'—';
+  var email=(lead.contact&&lead.contact.email)||'—';
+  var building=(lead.buildingInterest&&lead.buildingInterest.summary)||'—';
+  var channel=crmChannelDisplayLabel(lead.conversation&&lead.conversation.channel);
+  var notes=lead.notes||'—';
+  var source=String(lead.source||'manual').replace(/_/g,' ');
+  var touch=formatLeadTouchShort(lead);
+  mount.innerHTML=
+    '<div class="crm-detail-card">'+
+      '<div class="crm-detail-card-head">'+
+        '<div class="crm-detail-card-name">'+crmEsc(name)+'</div>'+
+        '<span class="crm-status-chip">'+crmEsc(st)+'</span>'+
+      '</div>'+
+      crmDetailSumRow('Phone',phone)+
+      crmDetailSumRow('Email',email)+
+      crmDetailSumRow('Building',building)+
+      crmDetailSumRow('Channel',channel)+
+      crmDetailSumRow('Notes',notes)+
+      crmDetailSumRow('Source',source)+
+      crmDetailSumRow('Last touch',touch)+
+    '</div>'+
+    crmDetailToolbarHtml(lead.id);
+}
+function crmDetailEdit(){
+  var lead=crmGetLeadById(crmState.selectedLeadId);
+  if(!lead) return;
+  crmLeadDocToUi(lead);
+  crmState.intentNewLead=false;
+  goTo('screenCRMNew');
+}
+function crmNewCancel(){
+  if(crmState.selectedLeadId&&!crmState.intentNewLead) goTo('screenCRMDetail');
+  else goTo('screenCRM');
+}
+async function crmNewInit(){
+  if(!(await crmLeadsBootstrap())){
+    showToastForFirebaseCRMBlock();
+    goTo('screenHome');
+    return;
+  }
+  try{ await invLoad(); }catch(_e){}
+  crmPopulateInventoryPicker();
+  var title=document.getElementById('crmNewHeaderTitle');
+  var lbl=document.getElementById('crm_selectedLeadLabel');
+  if(crmState.intentNewLead||!crmState.selectedLeadId){
+    if(title) title.textContent='New Lead';
+    if(lbl) lbl.style.display='none';
+  }else{
+    if(title) title.textContent='Edit Lead';
+    if(lbl){ lbl.style.display='block'; lbl.textContent='Editing: '+((crmGetLeadById(crmState.selectedLeadId)||{}).contact||{}).name||'Lead'; }
+  }
 }
 async function contactsInit(){
   if(!(await crmLeadsBootstrap())){
@@ -7689,15 +8218,16 @@ function crmClearLeadForm(){
   if(status) status.value='interested';
   var ch=document.getElementById('crm_channel');
   if(ch) ch.value='sms';
+  var invPick=document.getElementById('crm_invPick');
+  if(invPick) invPick.value='';
   var lbl=document.getElementById('crm_selectedLeadLabel');
-  if(lbl) lbl.textContent='No lead selected';
+  if(lbl) lbl.style.display='none';
   crmState.selectedLeadId='';
-  crmRenderLeadList();
-  crmRenderActivities();
 }
 function crmStartNewLead(){
   crmState.intentNewLead=true;
   crmClearLeadForm();
+  goTo('screenCRMNew');
 }
 function crmLeadDocToUi(lead){
   var setVal=function(id,v){
@@ -7712,8 +8242,11 @@ function crmLeadDocToUi(lead){
   setVal('crm_notes',lead.notes||'');
   setVal('crm_status',crmNormalizeStatus(lead.status));
   setVal('crm_channel',lead.conversation&&lead.conversation.channel||'sms');
+  try{ crmPopulateInventoryPicker(lead.buildingInterest&&lead.buildingInterest.inventoryId||''); }catch(_p){}
+  var title=document.getElementById('crmNewHeaderTitle');
+  if(title) title.textContent='Edit Lead';
   var lbl=document.getElementById('crm_selectedLeadLabel');
-  if(lbl) lbl.textContent='Lead ID: '+lead.id;
+  if(lbl){ lbl.style.display='block'; lbl.textContent='Editing: '+(lead.contact&&lead.contact.name||'Lead'); }
 }
 function crmRenderLeadList(){
   var wrap=document.getElementById('crm_leadList');
@@ -7729,73 +8262,52 @@ function crmRenderLeadList(){
     return;
   }
   wrap.innerHTML=leads.map(function(lead){
-    var active=lead.id===crmState.selectedLeadId?'active':'';
-    var when=lead.updatedAt?new Date(lead.updatedAt).toLocaleString():'';
-    return '<div class="crm-lead-item '+active+'" onclick="crmSelectLead(\''+lead.id+'\')">'+
-      '<div style="font-size:0.84rem;font-weight:700;color:var(--wheat);">'+((lead.contact&&lead.contact.name)||'Unnamed Lead')+'</div>'+
-      '<div style="font-size:0.72rem;color:rgba(245,240,232,0.75);margin-top:2px;">'+((lead.contact&&lead.contact.phone)||'No phone')+' · '+crmStatusDisplayLabel(crmNormalizeStatus(lead.status))+'</div>'+
-      '<div class="crm-muted" style="margin-top:2px;">'+((lead.buildingInterest&&lead.buildingInterest.summary)||'No building selected')+(when?' · '+when:'')+'</div>'+
+    var id=crmEsc(lead.id);
+    var st=crmStatusDisplayLabel(crmNormalizeStatus(lead.status));
+    var name=(lead.contact&&lead.contact.name)||'Unnamed Lead';
+    return '<div class="crm-lead-card" onclick="crmOpenDetail(\''+id+'\')">'+
+      '<div class="crm-lead-card-head">'+
+        '<div class="crm-lead-card-name">'+crmEsc(name)+'</div>'+
+        '<span class="crm-status-chip">'+crmEsc(st)+'</span>'+
+      '</div>'+
+      '<div class="crm-lead-quick" onclick="event.stopPropagation()">'+
+        crmActionSelectHtml(lead.id)+
+      '</div>'+
     '</div>';
   }).join('');
+}
+function crmActivityChannelLabel(ch){
+  return crmChannelDisplayLabel(ch)||'Other';
+}
+function crmActivityDirectionLabel(dir){
+  var m={outbound:'Outbound',inbound:'Inbound',note:'Note'};
+  return m[String(dir||'').trim()]||dir||'Note';
 }
 function crmRenderActivities(){
   var wrap=document.getElementById('crm_activityList');
   if(!wrap) return;
   if(!crmState.selectedLeadId){
-    wrap.innerHTML='<div class="crm-muted">Select a lead to see conversation timeline.</div>';
+    wrap.innerHTML='<div class="crm-timeline-empty">Select a lead to see the conversation timeline.</div>';
     return;
   }
   if(!crmState.activities.length){
-    wrap.innerHTML='<div class="crm-muted">No activities yet.</div>';
+    wrap.innerHTML='<div class="crm-timeline-empty">No activities yet — add one above.</div>';
     return;
   }
   wrap.innerHTML=crmState.activities.map(function(a){
     var when=a.timestamp?new Date(a.timestamp).toLocaleString():'';
     return '<div class="crm-activity-item">'+
-      '<div style="font-size:0.72rem;color:rgba(232,200,122,0.8);text-transform:uppercase;letter-spacing:0.6px;">'+(a.channel||'other')+' · '+(a.direction||'note')+(when?' · '+when:'')+'</div>'+
-      '<div style="font-size:0.78rem;color:var(--cream);margin-top:3px;">'+(a.body||'')+'</div>'+
+      '<div class="crm-activity-meta">'+
+        '<span class="crm-activity-chip">'+crmEsc(crmActivityChannelLabel(a.channel))+'</span>'+
+        '<span class="crm-activity-chip">'+crmEsc(crmActivityDirectionLabel(a.direction))+'</span>'+
+        (when?'<span class="crm-activity-time">'+crmEsc(when)+'</span>':'')+
+      '</div>'+
+      '<div class="crm-activity-body">'+crmEsc(a.body||'')+'</div>'+
     '</div>';
   }).join('');
 }
 async function crmWatchLeads(){
-  if(!(await firebaseEnsureAuthed())) return false;
-  if(fbLeadsUnsub){
-    crmRenderLeadList();
-    if(crmState.selectedLeadId){
-      var pick=crmState.leads.find(function(l){return l.id===crmState.selectedLeadId;});
-      if(pick) crmLeadDocToUi(pick);
-      crmWatchActivities(crmState.selectedLeadId);
-    }
-    leadsSidePanelsRefresh();
-    try{ renderHomeDashboard(); }catch(_e){}
-    return true;
-  }
-  fbLeadsUnsub=fbDb.collection('leads').orderBy('updatedAt','desc').onSnapshot(function(snap){
-    crmState.leads=snap.docs.map(function(doc){
-      var d=doc.data()||{};
-      d.id=doc.id;
-      d.createdAt=firebaseTsToIso(d.createdAt);
-      d.updatedAt=firebaseTsToIso(d.updatedAt);
-      return d;
-    });
-    var crmAutoPickedFirst=false;
-    if(crmState.leads.length&&!crmState.selectedLeadId&&!crmState.intentNewLead){
-      crmState.selectedLeadId=crmState.leads[0].id;
-      crmAutoPickedFirst=true;
-    }
-    if(crmState.selectedLeadId){
-      var active=crmState.leads.find(function(l){return l.id===crmState.selectedLeadId;});
-      if(active) crmLeadDocToUi(active);
-      if(crmAutoPickedFirst) crmWatchActivities(crmState.selectedLeadId);
-    }
-    crmRenderLeadList();
-    leadsSidePanelsRefresh();
-    try{ renderHomeDashboard(); }catch(_e){}
-    try{ if(typeof calcCurrentPage==='number'&&calcCurrentPage===1) populateQuoteShareLeadPickerIfOpen(); }catch(_eQ){}
-  },function(err){
-    console.log('Lead watch failed:',err);
-  });
-  return true;
+  return await crmEnsureLeadsListener();
 }
 async function crmWatchActivities(leadId){
   if(crmActivitiesUnsub){crmActivitiesUnsub();crmActivitiesUnsub=null;}
@@ -7816,25 +8328,29 @@ async function crmWatchActivities(leadId){
   });
 }
 async function crmSelectLead(id){
-  crmState.intentNewLead=false;
-  crmState.selectedLeadId=id;
-  var lead=crmState.leads.find(function(l){return l.id===id;});
-  if(lead) crmLeadDocToUi(lead);
-  crmRenderLeadList();
-  await crmWatchActivities(id);
+  crmOpenDetail(id);
 }
-function crmBuildLeadPayloadFromForm(){
+function crmBuildLeadPayloadFromForm(opts){
+  opts=opts||{};
   var cv=function(id){var el=document.getElementById(id);return el?el.value.trim():'';};
   var now=new Date().toISOString();
-  return {
+  var ch=cv('crm_channel')||'sms';
+  var validChannels=['sms','phone','email','facebook','instagram','inPerson','form','other'];
+  if(validChannels.indexOf(ch)<0) ch='other';
+  var building={summary:cv('crm_building')};
+  var invPick=document.getElementById('crm_invPick');
+  if(invPick&&invPick.value) building.inventoryId=invPick.value;
+  else if(opts.isUpdate) building.inventoryId=firebase.firestore.FieldValue.delete();
+  var payload={
     contact:{name:cv('crm_name'),phone:cv('crm_phone'),email:cv('crm_email')},
-    buildingInterest:{summary:cv('crm_building')},
+    buildingInterest:building,
     notes:cv('crm_notes'),
-    conversation:{channel:cv('crm_channel'),lastMessageAt:now,lastDirection:'note',summary:'Lead profile saved in CRM screen'},
-    source:'manual',
+    conversation:{channel:ch,lastMessageAt:now,lastDirection:'note',summary:'Lead profile saved in CRM'},
     status:crmStatusToFirestore(cv('crm_status')),
     updatedAt:firebase.firestore.FieldValue.serverTimestamp()
   };
+  if(!opts.isUpdate) payload.source='manual';
+  return payload;
 }
 async function crmCreateLead(payload){
   if(!(await firebaseEnsureAuthed())) throw new Error('Firebase not ready');
@@ -7860,21 +8376,30 @@ async function crmDeleteLead(leadId){
 async function crmSaveLeadFromForm(){
   try{
     if(!(await firebaseEnsureAuthed())){showToastForFirebaseCRMBlock();return;}
-    var payload=crmBuildLeadPayloadFromForm();
+    var isUpdate=!!(crmState.selectedLeadId&&!crmState.intentNewLead);
+    var payload=crmBuildLeadPayloadFromForm({isUpdate:isUpdate});
     if(!payload.contact.name&&!payload.contact.phone){
       showToast('Name or phone required');
       return;
     }
-    if(crmState.selectedLeadId){
-      crmState.intentNewLead=false;
+    if(isUpdate){
       await crmUpdateLead(crmState.selectedLeadId,payload);
-      showToast('Lead updated');
+      crmState.intentNewLead=false;
+      await crmFetchLeadsOnce();
+      showToast('Lead saved to cloud');
+      goTo('screenCRMDetail');
+      crmRenderDetailView();
+      await crmWatchActivities(crmState.selectedLeadId);
     }else{
       var id=await crmCreateLead(payload);
       crmState.intentNewLead=false;
       crmState.selectedLeadId=id;
       await crmAddActivity(id,{channel:payload.conversation.channel||'other',direction:'note',body:'Lead created manually'});
-      showToast('Lead saved');
+      await crmFetchLeadsOnce();
+      showToast('Lead saved to cloud');
+      goTo('screenCRMDetail');
+      crmRenderDetailView();
+      await crmWatchActivities(id);
     }
   }catch(e){
     console.log('Save lead failed:',e);
@@ -7885,16 +8410,20 @@ async function crmSaveLeadFromForm(){
     showToast('Could not save lead');
   }
 }
-async function crmDeleteLeadFromForm(){
-  if(!crmState.selectedLeadId){showToast('Select a lead first');return;}
-  if(!window.confirm('Delete this lead?')) return;
+async function crmDeleteLeadById(leadId){
+  if(!leadId) return;
+  if(!window.confirm('Delete this lead? This cannot be undone.')) return;
   try{
-    var id=crmState.selectedLeadId;
-    await crmDeleteLead(id);
-    crmState.leads=crmState.leads.filter(function(lead){return lead.id!==id;});
-    crmClearLeadForm();
-    leadsSidePanelsRefresh();
+    if(!(await firebaseEnsureAuthed())){showToastForFirebaseCRMBlock();return;}
+    await crmDeleteLead(leadId);
+    if(crmState.selectedLeadId===leadId){
+      crmClearLeadForm();
+      crmState.selectedLeadId='';
+    }
+    await crmFetchLeadsOnce();
+    crmOnLeadsDataUpdated();
     showToast('Lead deleted');
+    goTo('screenCRM');
   }catch(e){
     console.log('Delete lead failed:',e);
     if(e&&e.code==='permission-denied'){
@@ -7903,6 +8432,10 @@ async function crmDeleteLeadFromForm(){
     }
     showToast('Could not delete lead');
   }
+}
+async function crmDeleteLeadFromForm(){
+  if(!crmState.selectedLeadId||crmState.intentNewLead){showToast('Open the lead and use Actions → Delete');return;}
+  await crmDeleteLeadById(crmState.selectedLeadId);
 }
 async function crmAddActivityFromForm(){
   if(!crmState.selectedLeadId){showToast('Select a lead first');return;}
@@ -7934,19 +8467,24 @@ async function crmAddActivityFromForm(){
   }
 }
 async function crmRefreshLeads(){
-  await crmWatchLeads();
-  crmRenderLeadList();
-  leadsSidePanelsRefresh();
+  if(!(await firebaseEnsureAuthed())){ showToastForFirebaseCRMBlock(); return; }
+  var ok=await crmFetchLeadsOnce();
+  await crmEnsureLeadsListener();
+  if(ok){
+    crmOnLeadsDataUpdated();
+    showToast('Leads refreshed from cloud');
+  }else{
+    showToast('Could not refresh leads');
+  }
 }
 async function crmInit(){
-  if(!(await crmLeadsBootstrap())){
+  if(!(await firebaseEnsureAuthed())){
     showToastForFirebaseCRMBlock();
     return;
   }
-  var leads=crmState.leads||[];
-  if(leads.length&&!crmState.selectedLeadId&&!crmState.intentNewLead){
-    await crmSelectLead(leads[0].id);
-  }
+  await crmFetchLeadsOnce();
+  await crmEnsureLeadsListener();
+  crmRenderLeadList();
 }
 
 // ============================================================
@@ -8792,7 +9330,12 @@ function invRenderWizardStep(){
   var next=document.getElementById('inv_wizardNextBtn');
   var save=document.getElementById('inv_wizardSaveBtn');
   if(back) back.style.display=invState.wizardStep>0?'inline-flex':'none';
-  if(next) next.style.display=invState.wizardStep<INV_WIZARD_LAST_STEP?'inline-flex':'none';
+  if(next){
+    next.style.display=invState.wizardStep<INV_WIZARD_LAST_STEP?'inline-flex':'none';
+    if(invState.wizardStep===2||invState.wizardStep===3) next.textContent='Confirm';
+    else if(invState.wizardStep===4) next.textContent='Confirm';
+    else next.textContent='Next';
+  }
   if(save) save.style.display=invState.wizardStep===INV_WIZARD_LAST_STEP?'inline-flex':'none';
   if(invState.wizardStep===3){
     try{ invRefreshCalcQuotePreview(); }catch(_e){}
@@ -8992,6 +9535,7 @@ function invRenderItemCard(item){
   var loc=invEscapeHtml(item.lotLocation||'No lot location');
   var sty=invEscapeHtml(item.style||'—');
   var sz=invEscapeHtml(item.size||'—');
+  var summaryPrice=(item.priceData&&item.priceData.finalTotal!=null)?'<div class="inv-card-sum-price">'+invFmt(item.priceData.finalTotal)+'</div>':'';
 
   var colorParts=[];
   if(item.roofColor) colorParts.push('Roof: '+invEscapeHtml(item.roofColor));
@@ -9000,6 +9544,22 @@ function invRenderItemCard(item){
   var colorLine=colorParts.length?'<div style="font-size:0.72rem;color:rgba(245,240,232,0.65);margin-top:4px;">'+colorParts.join(' · ')+'</div>':'';
   var dateLine=item.buildDate?'<div style="font-size:0.7rem;color:rgba(232,200,122,0.62);margin-top:3px;">Build: '+invEscapeHtml(item.buildDate)+'</div>':'';
   var priceLine=item.priceData&&item.priceData.finalTotal?'<div style="font-size:0.78rem;color:var(--wheat);margin-top:4px;">Price: '+invFmt(item.priceData.finalTotal)+'</div>':'';
+  var btnStyle='-webkit-appearance:none;appearance:none;border:none;border-radius:6px;padding:7px 10px;font-size:0.72rem;cursor:pointer;';
+  var saleEditor='';
+  if(item.priceData&&item.priceData.baseRaw){
+    var curPct=item.priceData.salePct||0;
+    var draft=invCardDrafts[item.id];
+    if(draft&&draft.salePct!=null) curPct=draft.salePct;
+    var dirty=!!(draft&&draft.dirty);
+    var saleOpts=[0,5,10,15,20,25,30,35,40].map(function(p){
+      return '<option value="'+p+'"'+(Math.abs(curPct-p)<0.01?' selected':'')+'>'+(p?p+'% off list':'No sale')+'</option>';
+    }).join('');
+    saleEditor='<div style="margin-top:8px;padding:8px;border:1px solid rgba(232,200,122,0.2);border-radius:8px;background:rgba(255,255,255,0.03);">'+
+      '<div style="font-size:0.66rem;letter-spacing:1px;color:rgba(232,200,122,0.7);text-transform:uppercase;margin-bottom:6px;">Sale discount</div>'+
+      '<select data-id="'+idAttr+'" onchange="invCardSaleDraftChange(this)" onclick="event.stopPropagation()" style="width:100%;margin-bottom:8px;">'+saleOpts+'</select>'+
+      '<button type="button" data-id="'+idAttr+'" onclick="event.stopPropagation();invCardSaveSaleFromBtn(this)" style="'+btnStyle+'background:'+(dirty?'rgba(122,158,135,0.45)':'rgba(122,158,135,0.2)')+';color:var(--wheat);width:100%;opacity:'+(dirty?'1':'0.55')+';"'+(dirty?'':' disabled')+'>Save sale change</button>'+
+      '</div>';
+  }
   var rtosQuick='';
   if(item.priceData&&item.priceData.baseRaw){
     var saleDiscount=item.priceData.saleAmt||0;
@@ -9025,7 +9585,6 @@ function invRenderItemCard(item){
     (frontU?'<img src="'+invEscapeAttr(frontU)+'" alt="Front" style="width:54px;height:54px;object-fit:cover;border-radius:6px;border:1px solid rgba(232,200,122,0.25);">':'')+
     '</div>';
 
-  var btnStyle='-webkit-appearance:none;appearance:none;border:none;border-radius:6px;padding:7px 10px;font-size:0.72rem;cursor:pointer;';
   var actions='<div class="inv-card-actions">'+
     '<button type="button" data-id="'+idAttr+'" onclick="invCopyInventoryQuoteFromBtn(this)" style="'+btnStyle+'background:rgba(232,200,122,0.18);color:var(--wheat);">Copy quote</button>'+
     '<button type="button" data-id="'+idAttr+'" onclick="invEditFromBtn(this)" style="'+btnStyle+'background:rgba(122,158,135,0.25);color:var(--wheat);">Edit</button>'+
@@ -9040,12 +9599,13 @@ function invRenderItemCard(item){
         '<div class="inv-card-loc">'+loc+'</div>'+
         '<div class="inv-card-style">'+sty+'</div>'+
         '<div class="inv-card-size">'+sz+'</div>'+
+        summaryPrice+
       '</span>'+
       '<span class="inv-card-sum-chev" aria-hidden="true">▾</span>'+
     '</summary>'+
     '<div class="inv-card-body"><div class="inv-card-body-inner">'+
       '<div style="font-size:0.86rem;font-weight:700;color:var(--wheat);">Serial: '+invEscapeHtml(item.serialNumber||'—')+'</div>'+
-      priceLine+colorLine+dateLine+thumbs+rtosQuick+
+      priceLine+colorLine+dateLine+saleEditor+thumbs+rtosQuick+
       actions+
     '</div></div></details>';
 }
@@ -9086,10 +9646,7 @@ function invRenderLotPageReadOnlyCard(item){
     '</div></div></details>';
 }
 function invRenderSection(headerHtml,items,emptyHint){
-  if(!items.length){
-    return '<div class="inv-section"><h3 class="inv-section-label">'+headerHtml+'</h3>'+
-      '<div style="padding:12px;font-size:0.78rem;color:rgba(232,200,122,0.62);border:1px dashed rgba(232,200,122,0.2);border-radius:10px;">'+emptyHint+'</div></div>';
-  }
+  if(!items.length) return '';
   return '<div class="inv-section"><h3 class="inv-section-label">'+headerHtml+' <em>('+items.length+')</em></h3><div class="inv-list-stack">'+
     items.map(invRenderItemCard).join('')+'</div></div>';
 }
@@ -9469,11 +10026,31 @@ function lotPagesRenderDetail(){
   if(invWrap){
     var filt=(invState.items||[]).filter(function(it){ return String(it.lotLocation||'').trim()===addr; });
     var available=invSortItemsByUpdatedDesc(filt.filter(function(it){ return invNormalizeUnitStatus(it.unitStatus)==='available'; }));
-    if(!available.length){
-      invWrap.innerHTML='<div style="padding:12px;border:1px solid rgba(232,200,122,0.2);border-radius:10px;background:rgba(255,255,255,0.03);font-size:0.8rem;color:rgba(232,200,122,0.7);">No available inventory at this lot. Add units on the Inventory screen.</div>';
+    var sold=invSortItemsByUpdatedDesc(filt.filter(function(it){ return invNormalizeUnitStatus(it.unitStatus)==='sold'; }));
+    var delivered=invSortItemsByUpdatedDesc(filt.filter(function(it){ return invNormalizeUnitStatus(it.unitStatus)==='delivered'; }));
+    var html='';
+    if(available.length) html+=lotPagesInvReadOnlySection('Available',available,'');
+    if(sold.length) html+=lotPagesInvReadOnlySection('Sold',sold,'');
+    if(delivered.length) html+=lotPagesInvReadOnlySection('Delivered',delivered,'');
+    if(!html){
+      invWrap.innerHTML='<div style="padding:12px;border:1px solid rgba(232,200,122,0.2);border-radius:10px;background:rgba(255,255,255,0.03);font-size:0.8rem;color:rgba(232,200,122,0.7);">No inventory at this lot. Tap + to add a unit.</div>';
     }else{
-      invWrap.innerHTML=lotPagesInvReadOnlySection('Available',available,'No available units at this lot.');
+      invWrap.innerHTML=html;
     }
+  }
+}
+function lotPagesFabAddInventory(){
+  var addr=String(lotPageSelectedAddress||'').trim();
+  invOpenAddModal();
+  if(addr){
+    window.setTimeout(function(){
+      var lotEl=document.getElementById('inv_lotLocation');
+      if(lotEl){
+        for(var i=0;i<lotEl.options.length;i++){
+          if(lotEl.options[i].value===addr){ lotEl.selectedIndex=i; break; }
+        }
+      }
+    },80);
   }
 }
 function lotPagesCopyUrlFromBtn(btn){
@@ -9508,6 +10085,21 @@ function initEmailJS(){
   document.querySelectorAll('.setup-note.emailjs-note').forEach(function(n){n.style.display=configured?'none':'block';});
   var csn=document.getElementById('calcSetupNote');
   if(csn) csn.style.display=configured?'none':'block';
+}
+function isFormspreeConfigured(){
+  return !!((loadSettings().formspreeEndpoint||'').trim());
+}
+function initFormspreeNotes(){
+  var configured=isFormspreeConfigured();
+  document.querySelectorAll('.setup-note.formspree-note').forEach(function(n){n.style.display=configured?'none':'block';});
+}
+function photoLinksAllConfigured(){
+  var links=loadPhotoLinks();
+  return PHOTO_FOLDERS.every(function(f){ return !!((links[f.key]||'').trim()); });
+}
+function applyPhotoLibrarySetupVisibility(){
+  var banner=document.getElementById('photoSetupBanner');
+  if(banner) banner.style.display=photoLinksAllConfigured()?'none':'block';
 }
 // ============================================================
 
@@ -9759,6 +10351,7 @@ function settingsAfterLocalSave(s){
   initCalcAdvancedTools();
   try{ refreshOptionsCatalogUI(); }catch(_eCat){}
   initEmailJS();
+initFormspreeNotes();
   fbApp=null; fbDb=null; fbAuth=null; fbReady=false;
   try{ populateLotContactPickSelect('ss_sheetLotContact'); }catch(_eSsPop){}
   try{ populateLotContactPickSelect('adLotContact'); }catch(_eAdPop){}
@@ -11076,7 +11669,8 @@ function appBottomNavPrimaryAction(){
     return;
   }
   if(sid==='screenLandlordForm'){ printLandlordForm(); return; }
-  if(sid==='screenCRM'){ crmSaveLeadFromForm(); return; }
+  if(sid==='screenCRM'){ crmStartNewLead(); return; }
+  if(sid==='screenCRMNew'){ crmSaveLeadFromForm(); return; }
   if(sid==='screenAppointments'){ void apptSave(); return; }
   if(sid==='screenInventory'){ invOpenAddModal(); return; }
   goTo('screenHome');
@@ -11101,6 +11695,11 @@ function appBottomNavSetPrimaryVisual(opts){
     lbl.setAttribute('hidden','true');
     primBtn.classList.remove('has-text-label');
     icon.innerHTML='<path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/>';
+  }else if(opts&&opts.mode==='save'){
+    lbl.textContent='';
+    lbl.setAttribute('hidden','true');
+    primBtn.classList.remove('has-text-label');
+    icon.innerHTML='<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>';
   }else{
     lbl.textContent='';
     lbl.setAttribute('hidden','true');
@@ -11165,8 +11764,21 @@ function updateAppBottomNav(){
     return;
   }
   if(sid==='screenLandlordForm'){ primBtn.setAttribute('aria-label','Print / PDF'); return; }
-  if(sid==='screenCRM'){ primBtn.setAttribute('aria-label','Save lead'); return; }
-  if(sid==='screenAppointments'){ primBtn.setAttribute('aria-label','Save appointment'); return; }
+  if(sid==='screenCRM'){
+    primBtn.setAttribute('aria-label','New lead');
+    appBottomNavSetPrimaryVisual({mode:'text', text:'NEW'});
+    return;
+  }
+  if(sid==='screenCRMNew'){
+    primBtn.setAttribute('aria-label','Save lead');
+    appBottomNavSetPrimaryVisual({mode:'save'});
+    return;
+  }
+  if(sid==='screenAppointments'){
+    primBtn.setAttribute('aria-label','Save appointment');
+    appBottomNavSetPrimaryVisual({mode:'save'});
+    return;
+  }
   if(sid==='screenInventory'){
     primBtn.setAttribute('aria-label','Add inventory item');
     appBottomNavSetPrimaryVisual({mode:'text', text:'ADD'});
@@ -11306,6 +11918,8 @@ function goTo(screenId){
     })();
   }
   if(screenId==='screenCRM') crmInit();
+  if(screenId==='screenCRMDetail') void crmDetailInit();
+  if(screenId==='screenCRMNew') void crmNewInit();
   if(screenId==='screenAppointments') void apptInit();
   if(screenId==='screenContacts') contactsInit();
   if(screenId==='screenFollowups') followupsInit();
@@ -13464,6 +14078,81 @@ function mileageOnFromSelectionChange(){
   w.style.display=sel&&sel.value===GSS_MILE_FROM_CUSTOM?'block':'none';
 }
 
+function mileageToggleUseClosest(){
+  var cb=document.getElementById('mile_useClosest');
+  var tr=document.getElementById('mile_useClosestTrack');
+  if(!cb) return;
+  cb.checked=!cb.checked;
+  if(tr) tr.classList.toggle('on',cb.checked);
+}
+
+async function mileageApplyClosestOriginIfNeeded(){
+  var cb=document.getElementById('mile_useClosest');
+  if(!cb||!cb.checked) return true;
+  var dest=buildMileageDestinationString();
+  if(!dest){
+    var statusEl=document.getElementById('mileageFormStatus');
+    if(statusEl) statusEl.textContent='Enter customer destination first to use closest location.';
+    return false;
+  }
+  var s=loadSettings();
+  var key=(s.mapsApiKey||'').trim();
+  if(!key){
+    var st=document.getElementById('mileageFormStatus');
+    if(st) st.textContent='Add Google Maps API Key in Settings to use closest location.';
+    return false;
+  }
+  var opts=getMileageOriginOptions(s);
+  if(!opts.length){
+    var st2=document.getElementById('mileageFormStatus');
+    if(st2) st2.textContent='Add shop or lot addresses in Settings first.';
+    return false;
+  }
+  var statusEl=document.getElementById('mileageFormStatus');
+  if(statusEl) statusEl.textContent='Finding closest location…';
+  try{
+    await ensureGoogleMapsLoaded(key);
+    var bestAddr='', bestMiles=Infinity, bestLabel='';
+    for(var i=0;i<opts.length;i++){
+      var o=opts[i];
+      if(!o.address) continue;
+      var miles=await new Promise(function(resolve,reject){
+        var svc=new google.maps.DistanceMatrixService();
+        svc.getDistanceMatrix({
+          origins:[o.address],
+          destinations:[dest],
+          travelMode:google.maps.TravelMode.DRIVING,
+          unitSystem:google.maps.UnitSystem.IMPERIAL
+        },function(response,status){
+          if(status!=='OK'){ reject(new Error(status)); return; }
+          var row=response&&response.rows&&response.rows[0];
+          var elem=row&&row.elements&&row.elements[0];
+          if(!elem||elem.status!=='OK'){ reject(new Error('ELEM')); return; }
+          resolve((elem.distance&&elem.distance.value)?(elem.distance.value/1609.344):Infinity);
+        });
+      });
+      if(miles<bestMiles){ bestMiles=miles; bestAddr=o.address; bestLabel=o.label||''; }
+    }
+    if(!bestAddr){
+      if(statusEl) statusEl.textContent='Could not determine closest location.';
+      return false;
+    }
+    var sel=document.getElementById('mile_from');
+    if(sel){
+      for(var j=0;j<sel.options.length;j++){
+        if(sel.options[j].value===bestAddr){ sel.selectedIndex=j; break; }
+      }
+    }
+    mileageOnFromSelectionChange();
+    if(statusEl) statusEl.textContent='Using closest: '+(bestLabel||'origin')+' ('+bestMiles.toFixed(1)+' mi to customer).';
+    return true;
+  }catch(err){
+    console.log('Closest origin failed:',err);
+    if(statusEl) statusEl.textContent='Could not find closest location — pick origin manually.';
+    return false;
+  }
+}
+
 var calcPriceDeckView='cash';
 var calcDetailsOpen=false;
 var revCalcPageOpen=false;
@@ -14774,7 +15463,7 @@ function initMileageScreen(){
     opts.forEach(function(o){
       var opt=document.createElement('option');
       opt.value=o.address;
-      opt.textContent=o.label+' — '+o.address;
+      opt.textContent=o.label||('Lot');
       opt.setAttribute('data-origin-kind',o.kind||'lot');
       opt.setAttribute('data-street',o.street||'');
       opt.setAttribute('data-city',o.city||'');
@@ -14961,8 +15650,19 @@ function legacyCopy(text){
 }
 
 function goToSalesSheetFromQuote(){
-  try{ openQuoteSheetCondModal(); }
-  catch(_e){ showToast('Sales Sheet unavailable'); }
+  try{
+    if(!openSalesSheetReviewFromSyncedCalc()) return;
+  }catch(_e){ showToast('Sales Sheet unavailable'); }
+}
+
+function openSalesSheetReviewFromSyncedCalc(){
+  window._quoteSheetConditionHtml='';
+  if(!syncSalesSheetFromCalcForQuote()){ showToast('Select building type, width, and length first'); return false; }
+  window._ssSkipPick=true;
+  window._ssResumeStep=2;
+  goTo('screenSalesSheet');
+  try{ ssRefreshSalesSheetTriggersFromDom(); }catch(_t){}
+  return true;
 }
 
 function goToMarketplaceAdFromQuote(){
@@ -15550,7 +16250,8 @@ async function quoteShareSendEmailJs(){
   await sendCalcEmail({logCrm:true,closeModal:true});
 }
 
-function buildFacebookPostFromQuote(q){
+function buildFacebookPostFromQuote(q, opts){
+  opts=opts||{};
   if(!q||!q.base) return '';
   var s=loadSettings();
   var biz=s.bizName||'';
@@ -15573,8 +16274,20 @@ function buildFacebookPostFromQuote(q){
   bottom=_qSkin(bottom);
   trim=_qTrim(trim);
   roof=_qRoof(roof);
+  var variant=parseInt(opts.variant,10)||0;
+  var hooks=[
+    '🏡 '+size+name+' — IN STOCK',
+    '🔥 '+size+name+' — ready for delivery!',
+    '✨ '+size+name+' — on the lot now!',
+    '🏡 '+name+' '+size+' — available now!'
+  ];
+  var closers=[
+    '📦 Free or low-cost delivery available — message for details.',
+    '📦 Delivery available across the area — message for a quote.',
+    '📦 We deliver — ask about delivery to your site.'
+  ];
   var lines=[];
-  lines.push('🏡 '+size+name+' — IN STOCK');
+  lines.push(hooks[variant%hooks.length]);
   if(listing.blurb) lines.push(listing.blurb);
   if(siding||bottom||trim||roof){
     var cp=[];
@@ -15599,30 +16312,120 @@ function buildFacebookPostFromQuote(q){
   if(features&&features.length){
     features.forEach(function(f){ lines.push('✅ '+f); });
   }
-  lines.push('📦 Free or low-cost delivery available — message for details.');
+  lines.push(closers[variant%closers.length]);
   if(biz||phone) lines.push('📞 '+[biz,phone].filter(Boolean).join(' · '));
-  lines.push('#shed #backyardstorage #shedlife #shopsmall');
+  if(variant%2===0) lines.push('#shed #backyardstorage #shedlife #shopsmall');
   return lines.join('\n');
+}
+
+var _fbPostVariant=0;
+
+function fbPostCopyText(text, msg){
+  text=String(text||'').trim();
+  if(!text){ showToast('Nothing to copy'); return; }
+  var ok=function(){ showToast(msg||'Facebook post copied'); };
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(ok,function(){
+      try{
+        var ta=document.createElement('textarea');
+        ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+        document.body.appendChild(ta); ta.focus(); ta.select();
+        document.execCommand('copy'); document.body.removeChild(ta); ok();
+      }catch(e){ showToast('Copy failed'); }
+    });
+  }else{
+    try{
+      var ta2=document.createElement('textarea');
+      ta2.value=text; ta2.style.position='fixed'; ta2.style.opacity='0';
+      document.body.appendChild(ta2); ta2.focus(); ta2.select();
+      document.execCommand('copy'); document.body.removeChild(ta2); ok();
+    }catch(e2){ showToast('Copy failed'); }
+  }
+}
+
+function fbPostShowModal(post){
+  var ta=document.getElementById('invFacebookPostTextarea');
+  if(ta) ta.value=post;
+  var titleEl=document.getElementById('invFbPromoTitle');
+  if(titleEl) titleEl.textContent='Facebook post';
+  var m=document.getElementById('invFacebookPromoModalOverlay');
+  if(m){ m.classList.add('open'); m.setAttribute('aria-hidden','false'); }
+}
+
+function fbPostConfirmCopy(){
+  var ta=document.getElementById('invFacebookPostTextarea');
+  var post=ta?ta.value:'';
+  if(!post){ showToast('Nothing to copy'); return; }
+  fbPostCopyText(post,'Facebook post copied');
+  invCloseFacebookPromoModal();
+}
+
+async function fbPostRegenerate(){
+  var btn=document.getElementById('invFbRegenerateBtn');
+  if(btn){ btn.disabled=true; btn.textContent='Generating…'; }
+  try{
+    var q=getCalcQuoteSnapshot();
+    if(!q||!q.base){ showToast('Build a quote first'); return; }
+    var post='';
+    try{
+      var typeCode=calcState.type;
+      var pfx=(calcState.payType==='rto')?'r_':'p_';
+      var siding=document.getElementById(pfx+'sidingColor')?document.getElementById(pfx+'sidingColor').value:'';
+      var bottom=document.getElementById(pfx+'bottomColor')?document.getElementById(pfx+'bottomColor').value:'';
+      var trim=document.getElementById(pfx+'trimColor')?document.getElementById(pfx+'trimColor').value:'';
+      var roof=document.getElementById(pfx+'roofColor')?document.getElementById(pfx+'roofColor').value:'';
+      var sw=document.getElementById(pfx+'sidingWrap');
+      var qMetal=sw&&sw.getAttribute('data-metal-siding')==='1';
+      function _qSkin(v){ return (qMetal&&v&&typeof roofMetalDisplayLabel==='function')?roofMetalDisplayLabel(v):v; }
+      function _qTrim(v){ return (v&&typeof trimDisplayLabel==='function')?trimDisplayLabel(v):v; }
+      function _qRoof(v){ return (v&&typeof roofMetalDisplayLabel==='function')?roofMetalDisplayLabel(v):v; }
+      var result=await generateAdListingHybrid({
+        settings:loadSettings(),
+        typeCode:typeCode,
+        type:AD_TYPE_NAMES[typeCode]||NAMES[typeCode]||typeCode,
+        width:String(calcState.width||'')+"'",
+        length:String(calcState.length||'')+"'",
+        widthNum:parseInt(calcState.width,10)||0,
+        price:'$'+Math.round(q.grandTotal||0).toLocaleString(),
+        listPrice:q.base,
+        saleAmount:q.saleAmount||0,
+        rto:(calcState.payType==='rto'&&q.rtoMonthly)?('Rent-to-own from $'+q.rtoMonthly.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+'+/mo'):'',
+        rtoFormatted:true,
+        siding:_qSkin(siding),
+        bottom:_qSkin(bottom),
+        trim:_qTrim(trim),
+        roof:_qRoof(roof),
+        location:combineBizAddressFromSettings(loadSettings())||'on the lot',
+        tone:'friendly',
+        features:adFeaturesFromCalcAddonLabels(),
+        optionsSummary:adBuildOptionsSummarySentence()
+      });
+      if(result){
+        var title=String(result.title||'').trim();
+        var body=String(result.body||'').trim();
+        post=title?(title+'\n\n'+body):body;
+      }
+    }catch(_ai){}
+    if(!post){
+      _fbPostVariant+=1;
+      post=buildFacebookPostFromQuote(q,{variant:_fbPostVariant});
+    }
+    fbPostShowModal(post);
+    fbPostCopyText(post,'New post copied');
+  }catch(e){
+    showToast('Could not regenerate post');
+  }finally{
+    if(btn){ btn.disabled=false; btn.textContent='Regenerate'; }
+  }
 }
 
 function copyFacebookPost(){
   try{
     var q=getCalcQuoteSnapshot();
-    var post=buildFacebookPostFromQuote(q);
+    _fbPostVariant=0;
+    var post=buildFacebookPostFromQuote(q,{variant:0});
     if(!post){ showToast('Build a quote first'); return; }
-    var ta=document.getElementById('invFacebookPostTextarea');
-    if(ta) ta.value=post;
-    var titleEl=document.getElementById('invFbPromoTitle');
-    if(titleEl) titleEl.textContent='Facebook post';
-    var m=document.getElementById('invFacebookPromoModalOverlay');
-    if(m){
-      m.classList.add('open');
-      m.setAttribute('aria-hidden','false');
-      return;
-    }
-    if(navigator.clipboard&&navigator.clipboard.writeText){
-      navigator.clipboard.writeText(post).then(function(){ showToast('Facebook post copied'); },function(){ legacyCopy(post); });
-    } else { legacyCopy(post); }
+    fbPostShowModal(post);
   }catch(e){ showToast('Could not build post'); }
 }
 
@@ -15985,6 +16788,7 @@ async function runMileageCalculator(){
   var statusEl=document.getElementById('mileageFormStatus');
   var sel=document.getElementById('mile_from');
   if(!statusEl) return;
+  if(!(await mileageApplyClosestOriginIfNeeded())) return;
   var originInfo=buildMileageOriginString();
   var from=originInfo.origin;
   var to=buildMileageDestinationString();
@@ -20260,6 +21064,7 @@ async function sendCalcEmail(opts){
   if(btn){ btn.disabled=true; if(lab) lab.textContent='Sending...'; }
   if(sheetBtn){ sheetBtn.disabled=true; sheetBtn.textContent='Sending…'; }
   initEmailJS();
+initFormspreeNotes();
   if(typeof emailjs==='undefined'||!emailjs.send){
     showToast('EmailJS script failed to load. Check your connection.');
     if(btn){ btn.disabled=false; if(lab) lab.textContent='Send Email'; }
@@ -22145,6 +22950,7 @@ function renderPhotoFolders(){
     const has=url.length>0;
     return`<div class="folder-card ${has?'':'not-set'}"><a class="folder-link" href="${has?url:'#'}" ${has?'target="_blank"':''} onclick="${has?'':'event.preventDefault();showToast(\'Tap Edit Folder Links to add this folder\');'}"><div class="folder-icon-l">${f.icon}</div><div class="folder-info"><div class="folder-name">${f.name}</div><div class="folder-desc">${has?f.desc:'Tap Edit Links to add Google Drive URL'}</div></div><div class="folder-arrow">${has?'↗':'+'}</div></a></div>`;
   }).join('');
+  applyPhotoLibrarySetupVisibility();
 }
 
 function openPhotoModal(){
@@ -22290,9 +23096,72 @@ var invState={
   wizardActive:false,
   wizardStep:0,
   calcSession:null,
-  promoPendingItem:null
+  promoPendingItem:null,
+  adPromoPendingItem:null
 };
 var invPhotoPickerKind=null;
+var invCardDrafts={};
+function invPickPhotoDirect(kind){
+  if(kind!=='plate'&&kind!=='front') return;
+  var inp=document.getElementById(kind==='plate'?'inv_serialPhotoLibrary':'inv_frontPhotoLibrary');
+  if(!inp) return;
+  inp.value='';
+  window.setTimeout(function(){ try{ inp.click(); }catch(_e){} },16);
+}
+function invCardSaleDraftChange(sel){
+  var id=sel&&sel.getAttribute('data-id');
+  if(!id) return;
+  var item=invState.items.find(function(it){return it.id===id;});
+  var savedPct=(item&&item.priceData)?(item.priceData.salePct||0):0;
+  var newPct=parseFloat(sel.value)||0;
+  invCardDrafts[id]={salePct:newPct,dirty:Math.abs(newPct-savedPct)>0.001};
+  var btn=sel.parentElement&&sel.parentElement.querySelector('[onclick*="invCardSaveSaleFromBtn"]');
+  if(btn){
+    btn.disabled=!invCardDrafts[id].dirty;
+    btn.style.opacity=invCardDrafts[id].dirty?'1':'0.55';
+    btn.style.background=invCardDrafts[id].dirty?'rgba(122,158,135,0.45)':'rgba(122,158,135,0.2)';
+  }
+}
+function invCardSaveSaleFromBtn(btn){
+  var id=btn&&btn.getAttribute('data-id');
+  if(!id) return;
+  var draft=invCardDrafts[id];
+  if(!draft||!draft.dirty) return;
+  void invCardSaveSale(id,draft.salePct||0);
+}
+async function invCardSaveSale(itemId,salePct){
+  var item=invState.items.find(function(it){return it.id===itemId;});
+  if(!item||!item.priceData||item.priceData.baseRaw==null) return;
+  var pd=Object.assign({},item.priceData);
+  var sp=Math.max(0,Math.min(100,parseFloat(salePct)||0));
+  pd.salePct=sp;
+  pd.saleAmt=saleAmountListPct(pd.baseRaw,sp);
+  pd.subtotal=Math.round((pd.baseRaw-pd.saleAmt+(pd.adjust||0))*100)/100;
+  if(pd.subtotal<0) pd.subtotal=0;
+  var taxRate=pd.taxRate||0;
+  pd.taxAmt=taxRate>0?Math.round(pd.subtotal*(taxRate/100)*100)/100:0;
+  pd.finalTotal=Math.round((pd.subtotal+pd.taxAmt)*100)/100;
+  var now=new Date().toISOString();
+  pd.updatedAt=now;
+  if(cloudReady()){
+    try{
+      await invUpdateItemCloud(itemId,{priceData:pd,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+      delete invCardDrafts[itemId];
+      invRenderList();
+      showToast('Sale updated');
+    }catch(e){
+      console.log('Card sale save failed:',e);
+      showToast('Could not save sale');
+    }
+    return;
+  }
+  item.priceData=pd;
+  item.updatedAt=now;
+  delete invCardDrafts[itemId];
+  if(!invPersist()) return;
+  invRenderList();
+  showToast('Sale updated');
+}
 function invOpenPhotoSourcePicker(kind){
   invPhotoPickerKind=(kind==='plate'||kind==='front')?kind:null;
   if(!invPhotoPickerKind) return;
@@ -22487,6 +23356,15 @@ function invRenderOcrReview(){
   set('inv_ocrRoofColor',s.roofColor);
   set('inv_ocrWallColor',s.wallColor);
   set('inv_ocrTrimColor',s.trimColor);
+  ['inv_ocrStyle','inv_ocrSerial','inv_ocrSize','inv_ocrDate','inv_ocrRoofColor','inv_ocrWallColor','inv_ocrTrimColor'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el){
+      el.setAttribute('contenteditable','true');
+      el.style.cursor='text';
+      el.style.borderBottom='1px dashed rgba(232,200,122,0.35)';
+      el.style.padding='2px 0';
+    }
+  });
   wrap.style.display='block';
 }
 
@@ -22495,6 +23373,27 @@ function invConfirmOcrRead(){
     showToast('No OCR read to confirm');
     return;
   }
+  function pullOcrField(id, key){
+    var el=document.getElementById(id);
+    if(!el||!invState.ocrSuggestedFields) return;
+    var t=(el.textContent||'').trim();
+    if(t&&t!=='—') invState.ocrSuggestedFields[key]=t;
+  }
+  pullOcrField('inv_ocrStyle','style');
+  pullOcrField('inv_ocrSerial','serial');
+  pullOcrField('inv_ocrSize','size');
+  pullOcrField('inv_ocrDate','buildDate');
+  pullOcrField('inv_ocrRoofColor','roofColor');
+  pullOcrField('inv_ocrWallColor','wallColor');
+  pullOcrField('inv_ocrTrimColor','trimColor');
+  var s=invState.ocrSuggestedFields||{};
+  if(s.serial) document.getElementById('inv_serialNumber').value=s.serial;
+  if(s.size) document.getElementById('inv_size').value=s.size;
+  if(s.style) document.getElementById('inv_style').value=s.style;
+  if(s.buildDate) document.getElementById('inv_buildDate').value=s.buildDate;
+  if(s.roofColor) document.getElementById('inv_roofColor').value=s.roofColor;
+  if(s.wallColor) document.getElementById('inv_wallColor').value=s.wallColor;
+  if(s.trimColor) document.getElementById('inv_trimColor').value=s.trimColor;
   invState.ocrConfirmed=true;
   invState.ocrRejected=false;
   invUpdateOcrStatus('OCR confirmed. You can save now.');
@@ -23290,43 +24189,9 @@ function invPromoChooseSalesSheet(){
   }
   try{
     restoreCalcSession(it.calcSession);
-    if(!syncSalesSheetFromCalcForQuote()){ showToast('Select building type, width, and length first'); return; }
-    goTo('screenSalesSheet');
-    try{ ssRefreshSalesSheetTriggersFromDom(); }catch(_t){}
+    if(!openSalesSheetReviewFromSyncedCalc()) return;
   }catch(e){
     showToast('Could not open sales sheet');
-  }
-}
-
-async function invPromoChooseMarketplace(){
-  var it=invState.promoPendingItem;
-  invClosePromoModal();
-  if(!it) return;
-  try{
-    if(it.calcSession) restoreCalcSession(it.calcSession);
-    invHydrateAdFromInventoryItem(it);
-    goTo('screenAd');
-    try{ adPopulateLocation(); }catch(_a){}
-    await generateAd();
-    var title=(window._adListingTitle||'').trim();
-    var body=(window._adListingBody||'').trim();
-    if(!body){
-      var tEl=document.getElementById('adText');
-      body=tEl?String(tEl.textContent||'').trim():'';
-    }
-    if(!title){
-      var tiEl=document.getElementById('adListingTitle');
-      title=tiEl?String(tiEl.textContent||'').trim():'';
-    }
-    var text=title?(title+'\n\n'+body):body;
-    if(text){
-      if(navigator.clipboard&&navigator.clipboard.writeText){
-        navigator.clipboard.writeText(text).then(function(){ showToast('Title and listing copied — paste into Marketplace'); },function(){ legacyCopy(text); });
-      }else legacyCopy(text);
-    }
-  }catch(e){
-    try{ goTo('screenAd'); }catch(_g){}
-    showToast('Open Marketplace Ad to review fields');
   }
 }
 
@@ -23341,19 +24206,99 @@ function invPromoChooseFacebook(){
     restoreCalcSession(it.calcSession);
     try{ setCalcPay('cash'); }catch(_e){}
     try{ updateQuickPrice(); }catch(_e2){}
-    var q=getCalcQuoteSnapshot();
-    var post=buildFacebookPostFromQuote(q);
-    if(!post){ showToast('Could not build Facebook post'); return; }
-    var ta=document.getElementById('invFacebookPostTextarea');
-    if(ta) ta.value=post;
-    var m=document.getElementById('invFacebookPromoModalOverlay');
-    if(m){
-      m.classList.add('open');
-      m.setAttribute('aria-hidden','false');
-    }
+    copyFacebookPost();
   }catch(e){
     showToast('Could not build Facebook post');
   }
+}
+
+function invOpenAdPromoModal(it){
+  invState.adPromoPendingItem=it||null;
+  var lotSel=document.getElementById('invAdPromoLot');
+  if(lotSel){
+    lotSel.innerHTML='';
+    var s=loadSettings();
+    getSettingsAddressOptions(s).forEach(function(entry){
+      var opt=document.createElement('option');
+      opt.value=entry.address;
+      opt.textContent=entry.label||entry.address;
+      lotSel.appendChild(opt);
+    });
+    var want=it&&String(it.lotLocation||'').trim();
+    if(want){
+      for(var i=0;i<lotSel.options.length;i++){
+        if(lotSel.options[i].value===want){ lotSel.selectedIndex=i; break; }
+      }
+    }
+  }
+  var m=document.getElementById('invAdPromoModalOverlay');
+  if(m){ m.classList.add('open'); m.setAttribute('aria-hidden','false'); }
+}
+function invCloseAdPromoModal(){
+  var m=document.getElementById('invAdPromoModalOverlay');
+  if(m){ m.classList.remove('open'); m.setAttribute('aria-hidden','true'); }
+  invState.adPromoPendingItem=null;
+}
+async function invAdPromoGenerate(){
+  var it=invState.adPromoPendingItem;
+  if(!it){ showToast('No inventory item'); return; }
+  var lotSel=document.getElementById('invAdPromoLot');
+  var toneEl=document.getElementById('invAdPromoTone');
+  var location=lotSel?String(lotSel.value||'').trim():'';
+  var tone=toneEl?toneEl.value:'friendly';
+  invCloseAdPromoModal();
+  try{
+    if(it.calcSession) restoreCalcSession(it.calcSession);
+    var code=invGetStyleCodeFromInput(it.style||'');
+    var sz=invParseSizeToParts(it.size||'');
+    var widthN=sz?sz.width:0;
+    var lengthN=sz?sz.length:0;
+    var type=AD_TYPE_NAMES[code]||it.style||code;
+    var listBase=0;
+    if(widthN&&PRICING[widthN]&&PRICING[widthN][lengthN]&&PRICING[widthN][lengthN][code]) listBase=PRICING[widthN][lengthN][code];
+    var saleAmt=(it.priceData&&it.priceData.saleAmt)||0;
+    var finalP=(it.priceData&&it.priceData.finalTotal)||listBase;
+    var _adS=loadSettings();
+    showToast('Generating listing…');
+    var result=await generateAdListingHybrid({
+      settings:_adS,
+      typeCode:code,
+      type:type,
+      width:widthN+"'",
+      length:lengthN+"'",
+      widthNum:widthN,
+      price:String(finalP),
+      listPrice:listBase,
+      saleAmount:saleAmt,
+      rto:'',
+      siding:it.wallColor||'',
+      bottom:it.wallColor||'',
+      trim:it.trimColor||'',
+      roof:it.roofColor||'',
+      location:location||combineBizAddressFromSettings(_adS)||'on the lot',
+      lotPick:'',
+      tone:tone,
+      features:[],
+      optionsSummary:''
+    });
+    var title=(result&&result.title)||'';
+    var body=(result&&result.body)||'';
+    var text=title?(title+'\n\n'+body):body;
+    if(text){
+      if(navigator.clipboard&&navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(function(){ showToast('Listing copied — paste into Marketplace'); },function(){ legacyCopy(text); });
+      }else legacyCopy(text);
+    }else showToast('Could not generate listing');
+  }catch(e){
+    showToast('Could not generate listing');
+  }
+}
+
+async function invPromoChooseMarketplace(){
+  var it=invState.promoPendingItem;
+  invClosePromoModal();
+  if(!it) return;
+  invOpenAdPromoModal(it);
 }
 
 function invDeleteItem(id){
@@ -23551,45 +24496,24 @@ function stripInlineStylesForPrint(root){
     root.querySelectorAll('*').forEach(function(el){ el.removeAttribute('style'); });
   }catch(_e){}
 }
-function printQuote(){
+function buildPrintQuoteDocumentHtml(){
   var content=document.getElementById('calcQuoteContent');
-  if(!content||!content.innerHTML.trim()){showToast('Generate a quote first');return;}
+  if(!content||!content.innerHTML.trim()) return null;
   var s=loadSettings();
   var bizName=s.bizName||'Your Business';
   var bizPhone=s.bizPhone||'';
   var bizEmail=s.bizEmail||'';
-  var addrFull=combineBizAddressFromSettings(s);
   var logoData=s.logoData||'';
   var custName=document.getElementById('c_custName')?document.getElementById('c_custName').value.trim():'';
   var custPhone=document.getElementById('c_custPhone')?document.getElementById('c_custPhone').value.trim():'';
   var custAddr=document.getElementById('c_custAddress')?document.getElementById('c_custAddress').value.trim():'';
   var custNotes=document.getElementById('c_custNotes')?document.getElementById('c_custNotes').value.trim():'';
   var today=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
-
-  // Populate the print overlay (already in DOM — works on iOS Safari)
-  var pn=document.getElementById('printBizName');
-  var pc=document.getElementById('printBizContact');
-  var pf=document.getElementById('printFooter');
-  var pl=document.getElementById('printLogo');
-  var pd=document.getElementById('printDate');
-  var pi=document.getElementById('printCustomerInfo');
-  var pq=document.getElementById('printQuoteContent');
-
-  if(pn) pn.textContent=bizName;
-  if(pc){
-    var parts=[];
-    if(bizPhone) parts.push(bizPhone);
-    if(bizEmail) parts.push(bizEmail);
-    if(addrFull) parts.push(addrFull);
-    pc.textContent=parts.join('  \u00b7  ');
-  }
-  if(pf) pf.textContent=bizName+(addrFull?' \u00b7 '+addrFull:'');
-  if(pl){
-    if(logoData){pl.src=logoData;pl.style.display='block';}
-    else{pl.src='';pl.style.display='none';}
-  }
-  if(pd) pd.textContent='Price Estimate  \u00b7  '+today;
-
+  var logoHtml=logoData?'<img src="'+logoData.replace(/"/g,'&quot;')+'" alt="" style="max-height:60px;max-width:180px;object-fit:contain;margin-bottom:8px;">':'';
+  var contactParts=[];
+  if(bizPhone) contactParts.push(bizPhone);
+  if(bizEmail) contactParts.push(bizEmail);
+  var contactHtml=contactParts.length?('<div class="po-sub">'+contactParts.join('  ·  ')+'</div>'):'';
   var custHtml='';
   if(custName||custPhone||custAddr){
     custHtml='<div class="po-customer">';
@@ -23599,30 +24523,47 @@ function printQuote(){
     if(custNotes) custHtml+='<div class="po-cust-notes"><strong>Notes:</strong> '+custNotes+'</div>';
     custHtml+='</div>';
   }
-  if(pi) pi.innerHTML=custHtml;
-  if(pq){
-    pq.innerHTML=content.innerHTML;
-    var copyBtn=pq.querySelector('.calc-quote-copy-btn');
-    if(copyBtn) copyBtn.remove();
-    stripInlineStylesForPrint(pq);
-    try{
-      var qPrint=getCalcQuoteSnapshot();
-      var dTxt=(qPrint&&qPrint.disclaimerText||'').trim();
-      if(dTxt){
-        var dis=document.createElement('div');
-        dis.className='po-quote-disclaimer';
-        dis.style.cssText='margin-top:10px;padding:10px 12px;background:#f8f5f0;border:1px solid rgba(232,200,122,0.2);border-radius:8px;font-size:0.7rem;color:rgba(92,70,40,0.75);line-height:1.5;';
-        dis.textContent=dTxt;
-        pq.appendChild(dis);
-      }
-    }catch(_eP){}
-  }
-  stripInlineStylesForPrint(pi);
+  var quoteHtml=content.innerHTML;
+  var tmp=document.createElement('div');
+  tmp.innerHTML=quoteHtml;
+  var copyBtn=tmp.querySelector('.calc-quote-copy-btn');
+  if(copyBtn) copyBtn.remove();
+  quoteHtml=tmp.innerHTML;
+  try{
+    var qPrint=getCalcQuoteSnapshot();
+    var dTxt=(qPrint&&qPrint.disclaimerText||'').trim();
+    if(dTxt){
+      quoteHtml+='<div class="po-quote-disclaimer" style="margin-top:10px;padding:10px 12px;background:#f8f5f0;border:1px solid rgba(232,200,122,0.2);border-radius:8px;font-size:0.7rem;color:rgba(92,70,40,0.75);line-height:1.5;">'+dTxt.replace(/</g,'&lt;')+'</div>';
+    }
+  }catch(_eP){}
+  var css='@page{size:letter portrait;margin:0.4in;}body{font-family:Georgia,serif;font-size:10pt;color:#000;max-width:7.5in;margin:0 auto;padding:12px;}h1{font-size:0.95rem;margin:0 0 2px;line-height:1.2;color:#000;} .po-sub{margin-bottom:4px;font-size:8pt;line-height:1.2;color:#000;} .po-customer{margin-bottom:4px;padding:4px 8px;font-size:8pt;line-height:1.25;border:1px solid #ccc;border-radius:6px;} .po-footer{margin-top:8px;padding-top:4px;font-size:7pt;color:#000;text-align:center;border-top:1px solid #ccc;} .price-card,.rto-card,.down-card{border:1px solid #000;background:#fff;padding:6px 10px;margin-bottom:4px;page-break-inside:avoid;} .price-line{padding:2px 0;font-size:8pt;border-bottom:1px solid #ccc;} .total-line{padding:4px 0 1px;font-size:0.85rem;border-top:2px solid #000;} @media print{button,.no-print{display:none!important;}}';
+  return '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Price Estimate</title><style>'+css+'</style></head><body>'+
+    logoHtml+
+    '<h1>'+bizName.replace(/</g,'&lt;')+'</h1>'+
+    contactHtml+
+    '<div class="po-sub">Price Estimate · '+today+'</div>'+
+    custHtml+
+    '<div id="printQuoteContent">'+quoteHtml+'</div>'+
+    '<div class="po-footer">'+bizName.replace(/</g,'&lt;')+'</div>'+
+    '<p class="no-print" style="margin-top:16px;text-align:center;"><button type="button" onclick="window.print()" style="padding:10px 24px;font-size:14px;cursor:pointer;">Print / Save as PDF</button></p>'+
+    '</body></html>';
+}
 
-  // Show overlay then print — direct window.print() required for iOS Safari
-  document.getElementById('printOverlay').style.display='block';
-  window.scrollTo(0,0);
-  setTimeout(function(){ window.print(); },300);
+function printQuote(){
+  var docHtml=buildPrintQuoteDocumentHtml();
+  if(!docHtml){ showToast('Generate a quote first'); return; }
+  var w=window.open('','_blank');
+  if(!w){
+    showToast('Popup blocked — allow popups to print');
+    document.getElementById('printOverlay').style.display='block';
+    setTimeout(function(){ window.print(); },300);
+    return;
+  }
+  w.document.open();
+  w.document.write(docHtml);
+  w.document.close();
+  try{ w.focus(); }catch(e){}
+  setTimeout(function(){ try{ w.print(); }catch(e2){} },300);
 }
 
 
@@ -23652,6 +24593,7 @@ function showToast(msg){
 
 // Initialize EmailJS from saved settings on load
 initEmailJS();
+initFormspreeNotes();
 
 // ============================================================
 // SALES SHEET GENERATOR
@@ -24773,7 +25715,7 @@ function ssUpdateQR2(){
   if(!url){ container.style.display='none'; container.innerHTML=''; return; }
   container.style.display='block';
   container.innerHTML='';
-  try{new QRCode(container,{text:url,width:80,height:80,correctLevel:QRCode.CorrectLevel.M});}catch(e){}
+  try{new QRCode(container,{text:url,width:100,height:100,correctLevel:QRCode.CorrectLevel.M});}catch(e){}
 }
 
 function ssUpdateQR3(){
@@ -24784,7 +25726,7 @@ function ssUpdateQR3(){
   if(!url){ container.style.display='none'; container.innerHTML=''; return; }
   container.style.display='block';
   container.innerHTML='';
-  try{new QRCode(container,{text:url,width:80,height:80,correctLevel:QRCode.CorrectLevel.M});}catch(e){}
+  try{new QRCode(container,{text:url,width:100,height:100,correctLevel:QRCode.CorrectLevel.M});}catch(e){}
 }
 
 function ssGetQRDataUrl(url,cb){
@@ -24976,14 +25918,13 @@ function ssBuildSalesSheetPrintHtml(imgId1, imgId2, opts){
   h+='</div>';
 
   h+='<div style="border:2px solid #000;border-radius:4px;padding:8px 10px;margin-bottom:14px;text-align:center;line-height:1.65;box-sizing:border-box;max-width:100%;">';
-  if(bizUrl) h+='<div style="font-size:0.72rem;color:#000;">Go to <strong>'+bizUrl.replace(/https?:\/\//,'')+'</strong> to design your own building with your own colors and layout.</div>';
   h+='<div style="font-size:0.72rem;color:#000;margin-top:6px;">'+sizeBlurb+'</div>';
   h+='</div>';
 
   if(qrUrl||qrPurchaseUrl||qrIntakeUrl){
     var qrBlocks=[];
-    if(qrUrl) qrBlocks.push({url:qrUrl,id:imgId1,label:'Listing',accent:false});
-    if(qrPurchaseUrl) qrBlocks.push({url:qrPurchaseUrl,id:imgId2,label:'Scan to Purchase',accent:true});
+    if(qrUrl) qrBlocks.push({url:qrUrl,id:imgId1,label:'Online Listing',accent:false});
+    if(qrPurchaseUrl) qrBlocks.push({url:qrPurchaseUrl,id:imgId2,label:'Scan to start purchase',accent:true});
     if(qrIntakeUrl) qrBlocks.push({url:qrIntakeUrl,id:imgId3,label:'Intake Form',accent:false});
     var n=qrBlocks.length;
     if(n>=2){
@@ -24997,7 +25938,7 @@ function ssBuildSalesSheetPrintHtml(imgId1, imgId2, opts){
       h+='</div>';
     }else{
       var b0=qrBlocks[0];
-      var lbl=b0.label==='Listing'?'Scan listing QR':(b0.accent?'<span class="ss-flyer-accent" style="font-weight:700;">Scan to Purchase</span>':'Scan Intake QR');
+      var lbl=b0.label==='Online Listing'?'Scan listing QR':(b0.accent?'<span class="ss-flyer-accent" style="font-weight:700;">Scan to start purchase</span>':'Scan Intake QR');
       h+='<div style="display:flex;align-items:center;gap:20px;margin-bottom:14px;padding:14px;border:1px solid #ccc;border-radius:6px;flex-wrap:wrap;justify-content:center;">';
       h+=ssGetQRImgTag(b0.url,110,b0.id);
       h+='<div style="font-size:1rem;color:#000;line-height:1.6;"><strong>'+lbl+'</strong></div>';
