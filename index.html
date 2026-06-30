@@ -734,6 +734,23 @@ select option { background:var(--earth); color:var(--cream); }
 .review-card .review-grand-val { font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:1.6rem; color:var(--wheat); letter-spacing:0.5px; line-height:1; }
 .review-card .review-foot { font-size:0.7rem; color:rgba(232,200,122,0.6); margin-top:10px; line-height:1.5; }
 .review-card .review-rto-terms { background:rgba(0,0,0,0.18); border-radius:8px; padding:10px 12px; }
+.quote-pdf-preview-wrap { margin-bottom:14px; }
+.quote-pdf-preview-label {
+  font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:0.85rem; letter-spacing:1.5px;
+  color:var(--wheat); margin-bottom:8px;
+}
+.quote-pdf-preview-slot {
+  background:rgba(0,0,0,0.2); border:1.5px solid rgba(232,200,122,0.22); border-radius:10px;
+  padding:10px; min-height:140px; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden;
+}
+.quote-pdf-preview-canvas {
+  display:block; width:100%; height:auto; border-radius:4px;
+  box-shadow:0 2px 12px rgba(0,0,0,0.35); background:#fff;
+}
+.quote-pdf-preview-loading,
+.quote-pdf-preview-empty {
+  font-size:0.75rem; color:rgba(232,200,122,0.55); padding:24px; text-align:center; width:100%;
+}
 
 /* Your Quote — Share & Export hub tiles */
 .quote-hub-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
@@ -4937,7 +4954,14 @@ select:focus {
           <span style="font-size:0.72rem;font-weight:700;color:rgba(232,200,122,0.7);" id="payLabelRTO">RTO</span>
         </div>
       </div>
-      <div class="page-sub" style="margin-bottom:12px;">Review matches what you share — switch Cash or RTO below</div>
+      <div class="page-sub" style="margin-bottom:12px;">Preview matches the PDF you share — switch Cash or RTO below</div>
+
+      <div id="quotePdfPreviewWrap" class="quote-pdf-preview-wrap" style="display:none;" aria-live="polite">
+        <div class="quote-pdf-preview-label">Shared PDF preview</div>
+        <div id="quotePdfPreviewSlot" class="quote-pdf-preview-slot">
+          <div class="quote-pdf-preview-loading">Generating preview…</div>
+        </div>
+      </div>
 
       <!-- ── Cash Summary ── -->
       <div id="reviewCashCard" class="review-card" style="display:none;">
@@ -15539,6 +15563,7 @@ function renderReviewSummary(){
       var rf=document.getElementById('reviewRtoFoot');
       if(rf) rf.textContent='';
     }
+    scheduleQuotePdfPreview();
     return;
   }
 
@@ -15622,6 +15647,100 @@ function renderReviewSummary(){
       if(crManual>0&&nonRto>0) crNote+=' (Manual '+fmt(crManual)+' + auto '+fmt(nonRto)+')';
       var planL2={1:'No assurance plan',2:'Basic Assurance · $150',3:'Assurance Plus · $300'}[q.assurancePlan||2];
       rf.innerHTML=planL2+(crNote?' · '+crNote:'')+(q.rtoDownDisplayText?' · Down: '+q.rtoDownDisplayText:'');
+    }
+  }
+  scheduleQuotePdfPreview();
+}
+
+var _quotePdfPreviewTimer=null;
+var _quotePdfPreviewToken=0;
+var _quotePdfPreviewUrl=null;
+
+function quotePdfPreviewShowIframe(blob,slot){
+  if(_quotePdfPreviewUrl){ try{ URL.revokeObjectURL(_quotePdfPreviewUrl); }catch(_u){} }
+  _quotePdfPreviewUrl=URL.createObjectURL(blob);
+  slot.innerHTML='<iframe class="quote-pdf-preview-frame" style="width:100%;min-height:420px;height:70vh;border:none;background:#fff;border-radius:4px;" src="'+_quotePdfPreviewUrl+'#toolbar=0&navpanes=0"></iframe>';
+}
+
+function ensurePdfJsWorker(){
+  if(typeof pdfjsLib==='undefined') return;
+  if(!pdfjsLib.GlobalWorkerOptions.workerSrc){
+    pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+}
+
+function scheduleQuotePdfPreview(){
+  if(typeof calcCurrentPage!=='number'||calcCurrentPage!==1) return;
+  if(_quotePdfPreviewTimer) clearTimeout(_quotePdfPreviewTimer);
+  _quotePdfPreviewTimer=setTimeout(function(){
+    _quotePdfPreviewTimer=null;
+    void renderQuotePdfPreview();
+  },320);
+}
+
+async function renderQuotePdfPreview(){
+  var wrap=document.getElementById('quotePdfPreviewWrap');
+  var slot=document.getElementById('quotePdfPreviewSlot');
+  if(!wrap||!slot) return;
+
+  var q=null;
+  try{ q=getCalcQuoteSnapshot(); }catch(_e){}
+  if(!q||!q.base){
+    wrap.style.display='none';
+    slot.innerHTML='';
+    return;
+  }
+
+  wrap.style.display='block';
+  var token=++_quotePdfPreviewToken;
+  slot.innerHTML='<div class="quote-pdf-preview-loading">Generating preview…</div>';
+
+  var pdf=null;
+  try{
+    pdf=await generateEstimatePdfBlob();
+    if(token!==_quotePdfPreviewToken) return;
+    if(!pdf||!pdf.blob){
+      slot.innerHTML='<div class="quote-pdf-preview-empty">Could not generate preview</div>';
+      return;
+    }
+    if(typeof pdfjsLib==='undefined'){
+      quotePdfPreviewShowIframe(pdf.blob,slot);
+      return;
+    }
+    ensurePdfJsWorker();
+    var arrayBuf=await pdf.blob.arrayBuffer();
+    if(token!==_quotePdfPreviewToken) return;
+    var doc=await pdfjsLib.getDocument({data:arrayBuf}).promise;
+    if(token!==_quotePdfPreviewToken) return;
+    var page=await doc.getPage(1);
+    var maxW=Math.max(220,wrap.clientWidth-20);
+    var baseViewport=page.getViewport({scale:1});
+    var scale=maxW/baseViewport.width;
+    var viewport=page.getViewport({scale:scale});
+    var canvas=document.createElement('canvas');
+    canvas.className='quote-pdf-preview-canvas';
+    canvas.width=Math.floor(viewport.width);
+    canvas.height=Math.floor(viewport.height);
+    var ctx=canvas.getContext('2d');
+    slot.innerHTML='';
+    slot.appendChild(canvas);
+    var renderTask=page.render({canvasContext:ctx,viewport:viewport});
+    await (renderTask.promise||renderTask);
+    if(token!==_quotePdfPreviewToken) return;
+    if(doc.numPages>1){
+      var note=document.createElement('div');
+      note.style.cssText='font-size:0.65rem;color:rgba(232,200,122,0.5);text-align:center;margin-top:8px;width:100%;';
+      note.textContent='Page 1 of '+doc.numPages;
+      slot.appendChild(note);
+    }
+  }catch(e){
+    if(token!==_quotePdfPreviewToken) return;
+    console.warn('Quote PDF preview failed:',e);
+    try{
+      if(pdf&&pdf.blob) quotePdfPreviewShowIframe(pdf.blob,slot);
+      else slot.innerHTML='<div class="quote-pdf-preview-empty">Preview unavailable</div>';
+    }catch(_e2){
+      slot.innerHTML='<div class="quote-pdf-preview-empty">Preview unavailable</div>';
     }
   }
 }
@@ -15726,7 +15845,7 @@ async function drawPdfLogoBackground(doc,logoData,pageW,pageH){
   if(!logoData||!doc) return;
   var logo=await loadImageForPdf(logoData);
   if(!logo) return;
-  var faded=await makeFadedLogoDataUrl(logo,0.09);
+  var faded=await makeFadedLogoDataUrl(logo,0.06);
   if(!faded) return;
   var pageRatio=pageW/pageH;
   var logoRatio=faded.w/faded.h;
@@ -15743,76 +15862,116 @@ async function drawPdfLogoBackground(doc,logoData,pageW,pageH){
   doc.addImage(faded.dataUrl,faded.fmt,x,y,drawW,drawH);
 }
 
-function buildEstimatePdfLines(q){
-  var lines=[];
-  var today=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
-  lines.push({kind:'title',text:'PRICE ESTIMATE'});
-  lines.push({kind:'body',text:'Date: '+today});
+function getEstimatePdfBusinessInfo(s){
+  s=s||loadSettings()||{};
+  var rows=[];
+  var name=(s.bizName||'').trim()||'Your Business';
+  rows.push({text:name,bold:true});
+  var street=(s.bizStreet||'').trim();
+  if(street) rows.push({text:street});
+  var city=(s.bizCity||'').trim();
+  var st=(s.bizState||'').trim();
+  var zip=(s.bizZip||'').trim();
+  var csz=[city,st].filter(Boolean).join(', ');
+  if(zip) csz=csz?(csz+' '+zip):zip;
+  if(csz) rows.push({text:csz});
+  var phone=(s.bizPhone||'').trim();
+  if(phone) rows.push({text:phone});
+  var email=(s.bizEmail||'').trim();
+  if(email) rows.push({text:email});
+  var sites=s.websites||[];
+  if(sites.length){
+    var w=sites[0];
+    var url=String(w.url||'').trim();
+    if(url) rows.push({text:url.replace(/^https?:\/\//i,'').replace(/\/$/,'')});
+    else if(w.name) rows.push({text:String(w.name).trim()});
+  }
+  return rows;
+}
+
+function buildEstimatePdfCustomer(){
   var name=cv('c_custName'), phone=cv('c_custPhone'), email=cv('c_custEmail');
   var addr=cv('c_custAddress');
   var cCity=cv('c_custCity'), cState=cv('c_custState'), cZip=cv('c_custZip');
   var csz=[cCity,cState,cZip].filter(Boolean).join(' ');
   var fullAddr=[addr,csz].filter(Boolean).join(', ');
-  if(name) lines.push({kind:'body',text:'Customer: '+name});
-  if(phone) lines.push({kind:'body',text:'Phone: '+phone});
-  if(email) lines.push({kind:'body',text:'Email: '+email});
-  if(fullAddr) lines.push({kind:'body',text:'Delivery: '+fullAddr});
-  lines.push({kind:'rule'});
-  lines.push({kind:'section',text:'BUILDING'});
-  lines.push({kind:'body',text:NAMES[calcState.type]||calcState.type||'Building',bold:true});
-  lines.push({kind:'body',text:"Size: "+calcState.width+"' \u00d7 "+calcState.length+"' ("+(calcState.width*calcState.length)+" sq ft)"});
-  lines.push({kind:'body',text:'List Price: '+fmt(q.base)});
-  if(q.saleAmount>0){
-    lines.push({kind:'body',text:'Promotional Discount ('+q.salePct+'% off list): -'+fmt(q.saleAmount)});
-    lines.push({kind:'body',text:'Sale Price: '+fmt(q.saleBase)});
+  var hasAny=!!(name||phone||email||fullAddr);
+  return {hasAny:hasAny,name:name,phone:phone,email:email,address:fullAddr};
+}
+
+function buildEstimatePdfLines(q){
+  var lines=[];
+  var customer=buildEstimatePdfCustomer();
+  if(customer.hasAny){
+    lines.push({kind:'customer'});
+    if(customer.name) lines.push({kind:'body',text:'Name: '+customer.name});
+    if(customer.phone) lines.push({kind:'body',text:'Phone: '+customer.phone});
+    if(customer.email) lines.push({kind:'body',text:'Email: '+customer.email});
+    if(customer.address) lines.push({kind:'body',text:'Delivery: '+customer.address});
+    lines.push({kind:'spacer'});
   }
-  if(q.bosAmt>0) lines.push({kind:'body',text:'Build-on-Site (30%): +'+fmt(q.bosAmt)});
-  if(q.dealerAmount>0) lines.push({kind:'body',text:'Dealer discount ('+q.dealerPct+'%): -'+fmt(q.dealerAmount)});
+  lines.push({kind:'section',text:'BUILDING'});
+  lines.push({
+    kind:'building-summary',
+    name:NAMES[calcState.type]||calcState.type||'Building',
+    size:(calcState.width||'')+"' \u00d7 "+(calcState.length||'')+"'",
+    sqft:(calcState.width&&calcState.length)?(calcState.width*calcState.length)+' sq ft':''
+  });
+  lines.push({kind:'price-table'});
+  lines.push({kind:'price-row',label:'List Price',value:fmt(q.base)});
+  if(q.saleAmount>0){
+    lines.push({kind:'price-row',label:'Promotional Discount ('+q.salePct+'% off list)',value:'-'+fmt(q.saleAmount)});
+    lines.push({kind:'price-row',label:'Sale Price',value:fmt(q.saleBase),bold:true});
+  }
+  if(q.bosAmt>0) lines.push({kind:'price-row',label:'Build-on-Site (30%)',value:'+'+fmt(q.bosAmt)});
+  if(q.dealerAmount>0) lines.push({kind:'price-row',label:'Dealer discount ('+q.dealerPct+'%)',value:'-'+fmt(q.dealerAmount)});
   var listing=getStyleListingCopy(calcState.type||'');
   if(listing.blurb) lines.push({kind:'body',text:listing.blurb});
   var stdItems=STD_OPTIONS[calcState.type]||[];
   stdItems.forEach(function(it){
     var rq=calcState.stdRemoved&&calcState.stdRemoved[it.id];
-    if(!rq) lines.push({kind:'body',text:it.label+(it.qty>1?' ('+it.qty+'×)':'')});
+    if(!rq) lines.push({kind:'feature',text:it.label+(it.qty>1?' ('+it.qty+'×)':'')});
   });
   if(listing.specs&&listing.specs.length){
     lines.push({kind:'section',text:'STANDARD FEATURES'});
-    listing.specs.forEach(function(sp){ lines.push({kind:'body',text:sp}); });
+    listing.specs.forEach(function(sp){ lines.push({kind:'feature',text:sp}); });
   }
   if(q.addonLines&&q.addonLines.length){
     lines.push({kind:'rule'});
     lines.push({kind:'section',text:'OPTIONS'});
-    q.addonLines.forEach(function(l){ lines.push({kind:'body',text:l.label+': '+fmt(l.val)}); });
-    lines.push({kind:'body',text:'Options Total: '+fmt(q.addonTotal),bold:true});
+    lines.push({kind:'price-table'});
+    q.addonLines.forEach(function(l){ lines.push({kind:'price-row',label:l.label,value:fmt(l.val)}); });
+    lines.push({kind:'price-row',label:'Options Total',value:fmt(q.addonTotal),bold:true});
   }
   lines.push({kind:'rule'});
   lines.push({kind:'section',text:'PRICING'});
+  lines.push({kind:'price-table'});
   var pay=calcState.payType==='rto'?'rto':'cash';
   if(pay==='cash'){
-    lines.push({kind:'body',text:'Subtotal: '+fmt(q.subtotal)});
-    if(q.taxRate>0) lines.push({kind:'body',text:'Tax ('+q.taxRate+'%): '+fmt(q.taxAmount)});
-    lines.push({kind:'body',text:'CASH TOTAL: '+fmt(q.grandTotal),bold:true});
+    lines.push({kind:'price-row',label:'Subtotal',value:fmt(q.subtotal)});
+    if(q.taxRate>0) lines.push({kind:'price-row',label:'Tax ('+q.taxRate+'%)',value:fmt(q.taxAmount)});
+    lines.push({kind:'total-row',label:'CASH TOTAL',value:fmt(q.grandTotal)});
     var halfDue=Math.ceil((q.grandTotal/2)*100)/100;
     var dueToday=(calcState.cashDownPayment!=null&&calcState.cashDownPayment>=halfDue)?calcState.cashDownPayment:halfDue;
     dueToday=Math.ceil(dueToday*100)/100;
-    lines.push({kind:'body',text:'Amount Due Today: '+fmtCents(dueToday),bold:true});
+    lines.push({kind:'total-row',label:'Amount Due Today',value:fmtCents(dueToday),accent:false});
   }else{
-    lines.push({kind:'body',text:'Subtotal: '+fmt(q.subtotalWithAssurance)});
-    if(q.taxRate>0) lines.push({kind:'body',text:'Tax ('+q.taxRate+'%): '+fmt(q.taxAmount)});
-    lines.push({kind:'body',text:'TOTAL: '+fmt(q.grandTotal),bold:true});
+    lines.push({kind:'price-row',label:'Subtotal',value:fmt(q.subtotalWithAssurance)});
+    if(q.taxRate>0) lines.push({kind:'price-row',label:'Tax ('+q.taxRate+'%)',value:fmt(q.taxAmount)});
+    lines.push({kind:'total-row',label:'TOTAL',value:fmt(q.grandTotal)});
     var rd=q.rtoData;
     var mo=calcState.rtoMonths||36;
     if(rd){
-      lines.push({kind:'body',text:'Due Today: '+fmtCents(rd.totalReceived),bold:true});
-      lines.push({kind:'body',text:'Monthly Payment ('+mo+' mo): '+fmtCents(rd.totalMonthly)+'/mo',bold:true});
-      if(rd.monthlyTax>0) lines.push({kind:'body',text:'  (pre-tax '+fmtCents(rd.monthly)+' + tax '+fmtCents(rd.monthlyTax)+')'});
-      if(q.effectiveCR>0) lines.push({kind:'body',text:'Cost Reduction: '+fmt(q.effectiveCR)});
+      lines.push({kind:'total-row',label:'Due Today',value:fmtCents(rd.totalReceived),accent:false});
+      lines.push({kind:'total-row',label:'Monthly Payment ('+mo+' mo)',value:fmtCents(rd.totalMonthly)+'/mo',accent:false});
+      if(rd.monthlyTax>0) lines.push({kind:'body',text:'Pre-tax '+fmtCents(rd.monthly)+' + tax '+fmtCents(rd.monthlyTax)+'/mo'});
+      if(q.effectiveCR>0) lines.push({kind:'price-row',label:'Cost Reduction',value:fmt(q.effectiveCR)});
       var planL={1:'No Assurance',2:'Basic Assurance $150',3:'Assurance Plus $300'}[q.assurancePlan||2];
       lines.push({kind:'body',text:'Assurance: '+planL});
     }
     [36,48,60].forEach(function(mo2){
       var d2=getRTODataForMonths(q.subtotalWithAssurance,calcState.width||0,q.taxRate,q.assurancePlan,q.effectiveCR,mo2);
-      lines.push({kind:'body',text:'RTO '+mo2+'-Mo: '+fmt(d2.monthly)+'/mo + '+fmt(d2.monthlyTax)+'/mo tax = '+fmt(d2.totalMonthly)+'/mo total'});
+      lines.push({kind:'price-row',label:'RTO '+mo2+'-Mo',value:fmt(d2.totalMonthly)+'/mo total'});
     });
   }
   var notes=cv('c_custNotes');
@@ -15822,71 +15981,455 @@ function buildEstimatePdfLines(q){
     lines.push({kind:'body',text:notes});
   }
   var dis=(q.disclaimerText||'').trim();
-  if(dis){
-    lines.push({kind:'rule'});
-    lines.push({kind:'section',text:'DISCLAIMER'});
-    lines.push({kind:'body',text:dis});
-  }
+  if(dis) lines.push({kind:'disclaimer',text:dis});
   return lines;
 }
 
-function measureEstimatePdfHeight(lines,scale,margin,pageW){
-  var lineH=0.155*scale;
-  var bodyFs=8.5*scale;
-  var y=margin;
+var ESTIMATE_PDF_COLORS={
+  brand:[139,46,13],
+  brandLight:[252,246,238],
+  brandMuted:[210,185,150],
+  ink:[38,38,38],
+  inkMid:[72,72,72],
+  inkSoft:[108,108,108],
+  rule:[210,200,185],
+  panel:[248,245,240],
+  panelBorder:[200,185,160],
+  white:[255,255,255]
+};
+
+var ESTIMATE_PDF_TYPE={
+  bodyFs:11,
+  titleFs:20,
+  sectionFs:10,
+  bizFs:8.8,
+  bizNameFs:10,
+  lineH:0.23,
+  bizLineH:0.138,
+  titleLead:0.38,
+  dateLead:0.15,
+  sectionGap:0.24,
+  sectionPreGap:0.14,
+  sectionBandH:0.22,
+  ruleGap:0.14,
+  headerTopBar:0.07,
+  headerPad:0.12,
+  headerRuleGap:0.14,
+  customerPad:0.1,
+  bizBoxPad:0.09,
+  buildingCardPad:0.12,
+  minScale:0.78,
+  maxFontScale:1.32,
+  maxSpaceScale:1.7,
+  targetFill:0.9
+};
+
+function estimatePdfFontScale(rawScale){
+  return Math.min(ESTIMATE_PDF_TYPE.maxFontScale,Math.max(0.78,rawScale));
+}
+
+function estimatePdfSpaceScale(rawScale){
+  return Math.min(ESTIMATE_PDF_TYPE.maxSpaceScale,Math.max(0.78,rawScale));
+}
+
+function measureEstimatePdfHeaderHeight(s,spaceScale,margin,pageW){
+  var t=ESTIMATE_PDF_TYPE;
+  var fScale=estimatePdfFontScale(spaceScale);
+  var bizLines=getEstimatePdfBusinessInfo(s);
+  var bizInnerH=bizLines.length*t.bizLineH*spaceScale+t.bizBoxPad*2*spaceScale;
+  var leftH=t.titleLead*fScale*1.05+t.dateLead*fScale;
+  var blockH=Math.max(leftH,bizInnerH);
+  return t.headerTopBar*spaceScale+t.headerPad*spaceScale+blockH+t.headerRuleGap*spaceScale+t.ruleGap*spaceScale;
+}
+
+function measureEstimatePdfHeight(lines,spaceScale,margin,pageW,s){
+  var t=ESTIMATE_PDF_TYPE;
+  var fScale=estimatePdfFontScale(spaceScale);
+  var lineH=t.lineH*spaceScale;
+  var bodyFs=t.bodyFs*fScale;
+  var y=measureEstimatePdfHeaderHeight(s||loadSettings(),spaceScale,margin,pageW);
   var textW=pageW-margin*2;
-  lines.forEach(function(item){
-    if(item.kind==='title'){ y+=0.28*scale; return; }
-    if(item.kind==='section'){ y+=0.22*scale; return; }
-    if(item.kind==='rule'){ y+=0.12*scale; return; }
+  var disclaimerH=0;
+  for(var idx=0;idx<lines.length;idx++){
+    var item=lines[idx];
+    if(item.kind==='disclaimer'){
+      var approxChars=Math.max(24,Math.floor(textW/(bodyFs*0.85*0.045)));
+      var wraps=Math.max(1,Math.ceil(String(item.text||'').length/approxChars));
+      disclaimerH+=0.14*spaceScale+lineH*0.85*wraps+0.22*spaceScale;
+      continue;
+    }
+    if(item.kind==='customer'){
+      var rows=0;
+      var i=idx+1;
+      while(i<lines.length&&lines[i].kind!=='spacer'){
+        if(lines[i].kind==='body') rows++;
+        i++;
+      }
+      if(rows){
+        var boxPad=t.customerPad*spaceScale;
+        var headerH=0.18*spaceScale;
+        y+=boxPad+headerH+rows*lineH*0.9+boxPad+t.ruleGap*spaceScale;
+      }
+      idx=i;
+      continue;
+    }
+    if(item.kind==='spacer'||item.kind==='price-table'){
+      if(item.kind==='price-table') y+=t.lineH*spaceScale*1.1;
+      continue;
+    }
+    if(item.kind==='building-summary'){ y+=0.62*spaceScale; continue; }
+    if(item.kind==='section'){
+      y+=t.sectionPreGap*spaceScale+t.sectionBandH*spaceScale+t.sectionGap*spaceScale;
+      continue;
+    }
+    if(item.kind==='rule'){ y+=t.ruleGap*spaceScale; continue; }
+    if(item.kind==='price-row'){ y+=lineH; continue; }
+    if(item.kind==='total-row'){ y+=0.08*spaceScale; y+=lineH*1.12; continue; }
+    if(item.kind==='feature'){ y+=0.06*spaceScale+lineH*0.92; continue; }
     var fs=bodyFs;
     var approxChars=Math.max(24,Math.floor(textW/(fs*0.045)));
     var wraps=Math.max(1,Math.ceil(String(item.text||'').length/approxChars));
     y+=lineH*wraps;
+  }
+  return y+disclaimerH+0.35*spaceScale;
+}
+
+function estimatePdfDrawSectionBand(doc,text,y,spaceScale,margin,pageW,fScale){
+  var t=ESTIMATE_PDF_TYPE;
+  var c=ESTIMATE_PDF_COLORS;
+  var textW=pageW-margin*2;
+  var bandH=t.sectionBandH*spaceScale;
+  var bandY=y-t.sectionBandH*spaceScale*0.62;
+  doc.setFillColor(c.brand[0],c.brand[1],c.brand[2]);
+  if(typeof doc.roundedRect==='function'){
+    doc.roundedRect(margin,bandY,textW,bandH,0.04*spaceScale,0.04*spaceScale,'F');
+  }else{
+    doc.rect(margin,bandY,textW,bandH,'F');
+  }
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(t.sectionFs*fScale);
+  doc.setTextColor(c.white[0],c.white[1],c.white[2]);
+  doc.text(String(text||'').toUpperCase(),margin+0.1*spaceScale,y);
+  return y+t.sectionGap*spaceScale;
+}
+
+function renderEstimatePdfHeader(doc,s,spaceScale,margin,pageW){
+  var t=ESTIMATE_PDF_TYPE;
+  var fScale=estimatePdfFontScale(spaceScale);
+  var c=ESTIMATE_PDF_COLORS;
+  var barH=t.headerTopBar*spaceScale;
+  doc.setFillColor(c.brand[0],c.brand[1],c.brand[2]);
+  doc.rect(0,0,pageW,barH,'F');
+  var contentTop=barH+t.headerPad*spaceScale;
+  var leftX=margin;
+  var rightX=pageW-margin;
+  var bizLines=getEstimatePdfBusinessInfo(s);
+  var bizPad=t.bizBoxPad*spaceScale;
+  var bizInnerH=bizLines.length*t.bizLineH*spaceScale+bizPad*2;
+  var bizBoxW=Math.min(2.5*spaceScale,pageW*0.4);
+  var bizBoxX=rightX-bizBoxW;
+  var bizBoxY=contentTop;
+  doc.setFillColor(c.panel[0],c.panel[1],c.panel[2]);
+  doc.setDrawColor(c.panelBorder[0],c.panelBorder[1],c.panelBorder[2]);
+  doc.setLineWidth(0.01*spaceScale);
+  if(typeof doc.roundedRect==='function'){
+    doc.roundedRect(bizBoxX,bizBoxY,bizBoxW,bizInnerH,0.05*spaceScale,0.05*spaceScale,'FD');
+  }else{
+    doc.rect(bizBoxX,bizBoxY,bizBoxW,bizInnerH,'FD');
+  }
+  var by=bizBoxY+bizPad+(t.bizNameFs*fScale/72)*0.82;
+  bizLines.forEach(function(row){
+    doc.setFont('helvetica',row.bold?'bold':'normal');
+    doc.setFontSize((row.bold?t.bizNameFs:t.bizFs)*fScale);
+    doc.setTextColor(row.bold?c.brand[0]:c.inkMid[0],row.bold?c.brand[1]:c.inkMid[1],row.bold?c.brand[2]:c.inkMid[2]);
+    doc.text(row.text,bizBoxX+bizBoxW-bizPad,by,{align:'right'});
+    by+=t.bizLineH*spaceScale;
+  });
+  var titleBaseline=contentTop+(t.titleFs*fScale/72)*0.8;
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(t.titleFs*fScale);
+  doc.setTextColor(c.ink[0],c.ink[1],c.ink[2]);
+  doc.text('PRICE ESTIMATE',leftX,titleBaseline);
+  var payLabel=(calcState&&calcState.payType==='rto')?'RTO QUOTE':'CASH QUOTE';
+  var dateBaseline=titleBaseline+t.titleLead*fScale*0.55;
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(t.sectionFs*fScale*0.95);
+  doc.setTextColor(c.brand[0],c.brand[1],c.brand[2]);
+  doc.text(payLabel,leftX,dateBaseline);
+  dateBaseline+=t.titleLead*fScale*0.5;
+  var today=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(t.bodyFs*fScale*0.9);
+  doc.setTextColor(c.inkSoft[0],c.inkSoft[1],c.inkSoft[2]);
+  doc.text('Date: '+today,leftX,dateBaseline);
+  var leftBottom=dateBaseline+t.dateLead*fScale;
+  var headerBottom=Math.max(leftBottom,bizBoxY+bizInnerH)+t.headerRuleGap*spaceScale;
+  doc.setDrawColor(c.rule[0],c.rule[1],c.rule[2]);
+  doc.setLineWidth(0.012*spaceScale);
+  doc.line(margin,headerBottom,pageW-margin,headerBottom);
+  return headerBottom+t.ruleGap*spaceScale;
+}
+
+function renderEstimatePdfBuildingSummary(doc,item,spaceScale,margin,pageW,y){
+  var t=ESTIMATE_PDF_TYPE;
+  var fScale=estimatePdfFontScale(spaceScale);
+  var c=ESTIMATE_PDF_COLORS;
+  var textW=pageW-margin*2;
+  var pad=t.buildingCardPad*spaceScale;
+  var cardH=0.5*spaceScale;
+  doc.setFillColor(c.brandLight[0],c.brandLight[1],c.brandLight[2]);
+  doc.setDrawColor(c.brandMuted[0],c.brandMuted[1],c.brandMuted[2]);
+  doc.setLineWidth(0.01*spaceScale);
+  if(typeof doc.roundedRect==='function'){
+    doc.roundedRect(margin,y,textW,cardH,0.05*spaceScale,0.05*spaceScale,'FD');
+  }else{
+    doc.rect(margin,y,textW,cardH,'FD');
+  }
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(t.bodyFs*fScale*1.12);
+  doc.setTextColor(c.ink[0],c.ink[1],c.ink[2]);
+  doc.text(item.name||'Building',margin+pad,y+pad*1.35);
+  var sizeLine=[item.size,item.sqft].filter(Boolean).join('  ·  ');
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(t.bodyFs*fScale*0.92);
+  doc.setTextColor(c.inkMid[0],c.inkMid[1],c.inkMid[2]);
+  doc.text(sizeLine,margin+pad,y+pad*1.35+t.lineH*spaceScale*0.82);
+  return y+cardH+t.ruleGap*spaceScale*0.9;
+}
+
+function estimatePdfTextBaseline(rowTop,rowH){
+  return rowTop+rowH*0.76;
+}
+
+function renderEstimatePdfPriceTableHeader(doc,spaceScale,margin,pageW,rowTop){
+  var t=ESTIMATE_PDF_TYPE;
+  var lineH=t.lineH*spaceScale;
+  var fScale=estimatePdfFontScale(spaceScale);
+  var c=ESTIMATE_PDF_COLORS;
+  var textW=pageW-margin*2;
+  doc.setFillColor(240,235,228);
+  doc.rect(margin,rowTop,textW,lineH,'F');
+  var textBaseline=estimatePdfTextBaseline(rowTop,lineH);
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(t.sectionFs*fScale*0.85);
+  doc.setTextColor(c.inkSoft[0],c.inkSoft[1],c.inkSoft[2]);
+  doc.text('DESCRIPTION',margin+0.08*spaceScale,textBaseline);
+  doc.text('AMOUNT',pageW-margin-0.08*spaceScale,textBaseline,{align:'right'});
+  return rowTop+lineH+lineH*0.1;
+}
+
+function renderEstimatePdfPriceRow(doc,item,rowTop,lineH,margin,pageW,textW,bodyFs,c,striped,spaceScale){
+  if(striped){
+    doc.setFillColor(252,250,246);
+    doc.rect(margin,rowTop,textW,lineH,'F');
+  }
+  var textBaseline=estimatePdfTextBaseline(rowTop,lineH);
+  var pad=0.08*(spaceScale||1);
+  doc.setFont('helvetica',item.bold?'bold':'normal');
+  doc.setFontSize(bodyFs);
+  doc.setTextColor(c.ink[0],c.ink[1],c.ink[2]);
+  doc.text(String(item.label||''),margin+pad,textBaseline);
+  doc.text(String(item.value||''),pageW-margin-pad,textBaseline,{align:'right'});
+  return rowTop+lineH;
+}
+
+function renderEstimatePdfFooter(doc,s,spaceScale,margin,pageW,y){
+  var fScale=estimatePdfFontScale(spaceScale);
+  var c=ESTIMATE_PDF_COLORS;
+  var bizName=(s.bizName||'').trim();
+  var phone=(s.bizPhone||'').trim();
+  if(!bizName&&!phone) return y;
+  y+=0.1*spaceScale;
+  doc.setDrawColor(c.rule[0],c.rule[1],c.rule[2]);
+  doc.setLineWidth(0.008*spaceScale);
+  doc.line(margin,y,pageW-margin,y);
+  y+=0.16*spaceScale;
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(ESTIMATE_PDF_TYPE.bodyFs*fScale*0.88);
+  doc.setTextColor(c.inkSoft[0],c.inkSoft[1],c.inkSoft[2]);
+  var msg='Thank you for your business';
+  if(bizName) msg+=' — '+bizName;
+  if(phone) msg+='  ·  '+phone;
+  doc.text(msg,pageW/2,y,{align:'center'});
+  return y+0.12*spaceScale;
+}
+
+function renderEstimatePdfDisclaimer(doc,disclaimerText,spaceScale,margin,pageW,pageH,yStart){
+  if(!disclaimerText) return yStart;
+  var t=ESTIMATE_PDF_TYPE;
+  var fScale=estimatePdfFontScale(spaceScale);
+  var c=ESTIMATE_PDF_COLORS;
+  var lineH=t.lineH*spaceScale;
+  var bodyFs=t.bodyFs*fScale;
+  var textW=pageW-margin*2;
+  var wrapped=doc.splitTextToSize(String(disclaimerText),textW-0.1*spaceScale);
+  var blockH=0.14*spaceScale+wrapped.length*lineH*0.82+0.2*spaceScale;
+  var y=Math.max(yStart+0.12*spaceScale,pageH-margin-blockH-0.06*spaceScale);
+  doc.setDrawColor(c.rule[0],c.rule[1],c.rule[2]);
+  doc.setLineWidth(0.007*spaceScale);
+  doc.line(margin,y,pageW-margin,y);
+  y+=0.12*spaceScale;
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(t.sectionFs*fScale*0.88);
+  doc.setTextColor(c.inkSoft[0],c.inkSoft[1],c.inkSoft[2]);
+  doc.text('Disclaimer',margin+0.02*spaceScale,y);
+  y+=0.11*spaceScale;
+  doc.setFont('helvetica','italic');
+  doc.setFontSize(bodyFs*0.8);
+  doc.setTextColor(c.inkSoft[0],c.inkSoft[1],c.inkSoft[2]);
+  wrapped.forEach(function(ln){
+    doc.text(ln,margin+0.04*spaceScale,y);
+    y+=lineH*0.82;
   });
   return y;
 }
 
-function renderEstimatePdfLines(doc,lines,scale,margin,pageW,pageH){
-  var lineH=0.155*scale;
-  var bodyFs=8.5*scale;
-  var titleFs=14*scale;
-  var sectionFs=9.5*scale;
-  var y=margin;
+function renderEstimatePdfCustomerSection(doc,lines,startIdx,spaceScale,margin,pageW,y){
+  var t=ESTIMATE_PDF_TYPE;
+  var fScale=estimatePdfFontScale(spaceScale);
+  var lineH=t.lineH*spaceScale;
+  var bodyFs=t.bodyFs*fScale;
   var textW=pageW-margin*2;
-  lines.forEach(function(item){
-    if(item.kind==='title'){
-      doc.setFont('helvetica','bold');
-      doc.setFontSize(titleFs);
-      doc.setTextColor(0,0,0);
-      doc.text(item.text,margin,y);
-      y+=0.28*scale;
-      return;
-    }
-    if(item.kind==='section'){
-      doc.setFont('helvetica','bold');
-      doc.setFontSize(sectionFs);
-      doc.setTextColor(0,0,0);
-      doc.text(item.text,margin,y);
-      y+=0.22*scale;
-      return;
-    }
-    if(item.kind==='rule'){
-      doc.setDrawColor(0,0,0);
-      doc.setLineWidth(0.006*scale);
-      doc.line(margin,y,pageW-margin,y);
-      y+=0.12*scale;
-      return;
-    }
-    doc.setFont('helvetica',item.bold?'bold':'normal');
-    doc.setFontSize(bodyFs);
-    doc.setTextColor(0,0,0);
-    var wrapped=doc.splitTextToSize(String(item.text||''),textW);
-    wrapped.forEach(function(ln){
-      doc.text(ln,margin,y);
-      y+=lineH;
+  var rows=[];
+  var i=startIdx+1;
+  while(i<lines.length&&lines[i].kind!=='spacer'){
+    if(lines[i].kind==='body') rows.push(lines[i].text);
+    i++;
+  }
+  if(!rows.length) return {y:y,nextIdx:i+1};
+  var boxPad=t.customerPad*spaceScale;
+  var headerH=0.18*spaceScale;
+  var bodyH=rows.length*lineH*0.9;
+  var boxH=boxPad+headerH+bodyH+boxPad;
+  doc.setFillColor(ESTIMATE_PDF_COLORS.panel[0],ESTIMATE_PDF_COLORS.panel[1],ESTIMATE_PDF_COLORS.panel[2]);
+  doc.setDrawColor(ESTIMATE_PDF_COLORS.panelBorder[0],ESTIMATE_PDF_COLORS.panelBorder[1],ESTIMATE_PDF_COLORS.panelBorder[2]);
+  doc.setLineWidth(0.008*spaceScale);
+  if(typeof doc.roundedRect==='function'){
+    doc.roundedRect(margin,y,textW,boxH,0.05*spaceScale,0.05*spaceScale,'FD');
+  }else{
+    doc.rect(margin,y,textW,boxH,'FD');
+  }
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(t.sectionFs*fScale*0.82);
+  doc.setTextColor(ESTIMATE_PDF_COLORS.brand[0],ESTIMATE_PDF_COLORS.brand[1],ESTIMATE_PDF_COLORS.brand[2]);
+  doc.text('PREPARED FOR',margin+0.1*spaceScale,y+boxPad*0.85);
+  var ty=y+boxPad+headerH;
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(bodyFs*0.95);
+  doc.setTextColor(55,55,55);
+  rows.forEach(function(text){
+    var cWrapped=doc.splitTextToSize(String(text||''),textW-0.2*spaceScale);
+    cWrapped.forEach(function(ln){
+      doc.text(ln,margin+0.1*spaceScale,ty);
+      ty+=lineH*0.9;
     });
   });
+  return {y:y+boxH+t.ruleGap*spaceScale,nextIdx:i+1};
+}
+
+function renderEstimatePdfLines(doc,lines,spaceScale,margin,pageW,pageH,s){
+  var t=ESTIMATE_PDF_TYPE;
+  var fScale=estimatePdfFontScale(spaceScale);
+  var c=ESTIMATE_PDF_COLORS;
+  var lineH=t.lineH*spaceScale;
+  var bodyFs=t.bodyFs*fScale;
+  var y=renderEstimatePdfHeader(doc,s||loadSettings(),spaceScale,margin,pageW);
+  var textW=pageW-margin*2;
+  var disclaimerText='';
+  var priceRowIdx=0;
+  var showPriceHeader=false;
+  for(var idx=0;idx<lines.length;idx++){
+    var item=lines[idx];
+    if(item.kind==='disclaimer'){
+      disclaimerText=item.text||'';
+      continue;
+    }
+    if(item.kind==='customer'){
+      var cust=renderEstimatePdfCustomerSection(doc,lines,idx,spaceScale,margin,pageW,y);
+      y=cust.y;
+      idx=cust.nextIdx-1;
+      priceRowIdx=0;
+      continue;
+    }
+    if(item.kind==='spacer') continue;
+    if(item.kind==='building-summary'){
+      y=renderEstimatePdfBuildingSummary(doc,item,spaceScale,margin,pageW,y);
+      priceRowIdx=0;
+      continue;
+    }
+    if(item.kind==='price-table'){
+      showPriceHeader=true;
+      continue;
+    }
+    if(item.kind==='section'){
+      y+=t.sectionPreGap*spaceScale;
+      y=estimatePdfDrawSectionBand(doc,item.text,y+t.sectionBandH*spaceScale*0.38,spaceScale,margin,pageW,fScale);
+      priceRowIdx=0;
+      continue;
+    }
+    if(item.kind==='rule'){
+      doc.setDrawColor(c.rule[0],c.rule[1],c.rule[2]);
+      doc.setLineWidth(0.007*spaceScale);
+      doc.line(margin,y,pageW-margin,y);
+      y+=t.ruleGap*spaceScale;
+      continue;
+    }
+    if(item.kind==='feature'){
+      y+=0.06*spaceScale;
+      var featBaseline=estimatePdfTextBaseline(y,lineH*0.92);
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(bodyFs*0.94);
+      doc.setTextColor(c.inkMid[0],c.inkMid[1],c.inkMid[2]);
+      doc.text('-',margin+0.04*spaceScale,featBaseline);
+      doc.text(String(item.text||''),margin+0.18*spaceScale,featBaseline);
+      y+=lineH*0.92;
+      continue;
+    }
+    if(item.kind==='price-row'){
+      if(showPriceHeader){
+        y+=0.08*spaceScale;
+        y=renderEstimatePdfPriceTableHeader(doc,spaceScale,margin,pageW,y);
+        showPriceHeader=false;
+      }
+      y=renderEstimatePdfPriceRow(doc,item,y,lineH,margin,pageW,textW,bodyFs,c,priceRowIdx%2===1,spaceScale);
+      priceRowIdx++;
+      continue;
+    }
+    if(item.kind==='total-row'){
+      y+=0.08*spaceScale;
+      var accent=item.accent!==false;
+      var totalH=lineH*1.12;
+      var rowTop=y;
+      if(accent){
+        doc.setFillColor(c.brandLight[0],c.brandLight[1],c.brandLight[2]);
+        doc.setDrawColor(c.brandMuted[0],c.brandMuted[1],c.brandMuted[2]);
+        doc.setLineWidth(0.01*spaceScale);
+        if(typeof doc.roundedRect==='function'){
+          doc.roundedRect(margin,rowTop,textW,totalH,0.03*spaceScale,0.03*spaceScale,'FD');
+        }else{
+          doc.rect(margin,rowTop,textW,totalH,'FD');
+        }
+      }
+      var totalBaseline=estimatePdfTextBaseline(rowTop,totalH);
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(bodyFs*1.08);
+      doc.setTextColor(accent?c.brand[0]:c.ink[0],accent?c.brand[1]:c.ink[1],accent?c.brand[2]:c.ink[2]);
+      doc.text(String(item.label||''),margin+0.1*spaceScale,totalBaseline);
+      doc.text(String(item.value||''),pageW-margin-0.1*spaceScale,totalBaseline,{align:'right'});
+      y=rowTop+totalH;
+      continue;
+    }
+    doc.setFont('helvetica',item.bold?'bold':'normal');
+    doc.setFontSize(item.bold?bodyFs*1.04:bodyFs);
+    doc.setTextColor(c.ink[0],c.ink[1],c.ink[2]);
+    var wrapped=doc.splitTextToSize(String(item.text||''),textW);
+    wrapped.forEach(function(ln){
+      doc.text(ln,margin+0.04*spaceScale,y);
+      y+=lineH;
+    });
+  }
+  y=renderEstimatePdfFooter(doc,s||loadSettings(),spaceScale,margin,pageW,y);
+  renderEstimatePdfDisclaimer(doc,disclaimerText,spaceScale,margin,pageW,pageH,y);
   return y;
 }
 
@@ -15900,14 +16443,20 @@ async function generateEstimatePdfBlob(){
   var pageW=8.5;
   var pageH=11;
   var lines=buildEstimatePdfLines(q);
-  var avail=pageH-margin*2;
-  var scale=1;
-  var estH=measureEstimatePdfHeight(lines,scale,margin,pageW);
-  var contentH=estH-margin;
-  if(contentH>avail) scale=Math.max(0.62,avail/contentH);
+  var avail=pageH-margin*0.55;
+  var spaceScale=1;
+  var estH=measureEstimatePdfHeight(lines,spaceScale,margin,pageW,s);
+  var contentH=Math.max(0.1,estH);
+  var typ=ESTIMATE_PDF_TYPE;
+  if(contentH>avail){
+    spaceScale=Math.max(typ.minScale,avail/contentH);
+  }else{
+    var fillScale=(avail*typ.targetFill)/contentH;
+    spaceScale=Math.min(typ.maxSpaceScale,Math.max(1,fillScale));
+  }
   var doc=new jspdfLib.jsPDF({unit:'in',format:[pageW,pageH],orientation:'portrait'});
   await drawPdfLogoBackground(doc,s.logoData||'',pageW,pageH);
-  renderEstimatePdfLines(doc,lines,scale,margin,pageW,pageH);
+  renderEstimatePdfLines(doc,lines,spaceScale,margin,pageW,pageH,s);
   var bizName=s.bizName||'Your Business';
   var safeName=bizName.replace(/[^\w\-]+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'')||'Estimate';
   var fname='Estimate-'+safeName+'-'+new Date().toISOString().slice(0,10)+'.pdf';
@@ -16916,6 +17465,7 @@ function setCalcRTO(m){
   updateRTOPreviews();
   updateRTOLivePanel();
   renderCalcQuote();
+  try{ if(calcCurrentPage===1) renderReviewSummary(); }catch(_e){}
 }
 
 function updateRTOPreviews(){
@@ -17255,6 +17805,7 @@ function calcGoTo(n){
   if(n===1){
     var pay=(calcState.bosActive||calcPriceDeckView!=='rto')?'cash':'rto';
     setCalcPay(pay);
+    scheduleQuotePdfPreview();
   }
   try{ updateRevCalcTabVisibility(); }catch(_eRv){}
   try{ positionRevCalcTab(); }catch(_eRvPos){}
