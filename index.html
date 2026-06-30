@@ -3948,6 +3948,45 @@ select:focus {
 .cash-due-edit-btn--ok{background:var(--barn);color:var(--cream);}
 .cash-due-edit-btn--cancel{background:rgba(255,255,255,0.1);color:rgba(232,200,122,0.8);}
 #quoteAdResultBody{white-space:pre-wrap;font-size:0.88rem;line-height:1.5;color:rgba(245,240,232,0.92);max-height:42vh;overflow-y:auto;padding:10px;background:rgba(0,0,0,0.2);border-radius:8px;margin-top:10px;}
+/* ---- Contract Bridge ---- */
+.cb-steps { display:flex; gap:5px; margin-bottom:18px; }
+.cb-step-dot { flex:1; height:4px; border-radius:2px; background:rgba(232,200,122,0.18); transition:background .25s; }
+.cb-step-dot.done { background:var(--rust,#C4511F); }
+.cb-step-dot.cur { background:var(--wheat,#E8C87A); }
+.cb-title { font-family:'Bebas Neue',Impact,sans-serif; font-size:1.6rem; letter-spacing:2px; color:var(--wheat,#E8C87A); margin-bottom:4px; }
+.cb-sub { font-size:0.82rem; color:rgba(245,240,232,0.6); margin-bottom:18px; line-height:1.5; }
+.cb-opt { display:block; width:100%; text-align:left; background:rgba(255,255,255,0.05); border:1.5px solid rgba(232,200,122,0.22); border-radius:12px; padding:16px; margin-bottom:11px; cursor:pointer; color:var(--cream,#F5F0E8); transition:all .18s; }
+.cb-opt:active { transform:scale(0.99); }
+.cb-opt.sel { border-color:var(--rust,#C4511F); background:rgba(196,81,31,0.14); }
+.cb-opt-title { font-weight:600; font-size:1rem; margin-bottom:3px; }
+.cb-opt-sub { font-size:0.78rem; color:rgba(245,240,232,0.55); line-height:1.45; }
+.cb-opt-tag { display:inline-block; font-size:0.62rem; letter-spacing:1px; text-transform:uppercase; font-weight:700; padding:2px 7px; border-radius:5px; margin-top:7px; }
+.cb-opt-tag.no { background:rgba(122,158,135,0.2); color:var(--sage,#7A9E87); }
+.cb-opt-tag.yes { background:rgba(196,81,31,0.22); color:var(--wheat,#E8C87A); }
+.cb-summary { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:18px; }
+.cb-pill { font-size:0.72rem; background:rgba(255,255,255,0.06); border:1px solid rgba(232,200,122,0.2); border-radius:20px; padding:6px 12px; color:var(--cream,#F5F0E8); }
+.cb-pill b { color:var(--wheat,#E8C87A); }
+.btn-launch { width:100%; background:var(--rust,#C4511F); color:#fff; border:none; border-radius:11px; padding:16px; font-size:1.05rem; font-weight:700; letter-spacing:0.5px; cursor:pointer; box-shadow:0 4px 14px rgba(196,81,31,0.4); }
+.inv-warn { font-size:0.76rem; color:var(--rust,#C4511F); margin-top:6px; display:none; }
+.config-note { font-size:0.7rem; color:rgba(245,240,232,0.4); line-height:1.5; margin-top:18px; padding:12px; border:1px dashed rgba(232,200,122,0.18); border-radius:9px; }
+.fg-group { background:rgba(255,255,255,0.04); border:1.5px solid rgba(232,200,122,0.18); border-radius:12px; padding:6px 4px; margin-bottom:14px; }
+.fg-grouphead { font-family:'Bebas Neue',Impact,sans-serif; font-size:1rem; letter-spacing:2px; color:var(--wheat,#E8C87A); padding:8px 12px 6px; }
+.fg-row { display:flex; align-items:center; gap:10px; padding:10px 12px; border-top:1px solid rgba(232,200,122,0.08); cursor:pointer; }
+.fg-row:first-of-type { border-top:none; }
+.fg-row:active { background:rgba(196,81,31,0.12); }
+.fg-row.copied { background:rgba(122,158,135,0.16); }
+.fg-rl { flex:1; min-width:0; }
+.fg-k { font-size:0.66rem; letter-spacing:1.5px; text-transform:uppercase; color:rgba(232,200,122,0.6); margin-bottom:2px; }
+.fg-v { font-size:0.95rem; color:var(--cream,#F5F0E8); word-break:break-word; }
+.fg-v.empty { color:rgba(245,240,232,0.3); font-style:italic; }
+.fg-copy { flex-shrink:0; font-size:0.62rem; letter-spacing:1px; text-transform:uppercase; font-weight:700; color:var(--rust,#C4511F); background:rgba(196,81,31,0.12); border-radius:6px; padding:5px 9px; }
+.fg-row.copied .fg-copy { color:var(--sage,#7A9E87); background:rgba(122,158,135,0.2); }
+.signing-box { background:rgba(196,81,31,0.08); border:1.5px dashed rgba(196,81,31,0.45); border-radius:12px; padding:14px; margin-bottom:14px; }
+.signing-note { font-size:0.74rem; color:var(--wheat,#E8C87A); line-height:1.5; margin-bottom:12px; }
+.signing-note strong { color:var(--rust,#C4511F); }
+.sign-row { display:flex; gap:8px; align-items:flex-end; margin-bottom:10px; }
+.sign-row .field-group { flex:1; margin-bottom:0; }
+.sign-copy { flex-shrink:0; background:rgba(196,81,31,0.18); color:var(--wheat,#E8C87A); border:none; border-radius:8px; padding:11px 12px; font-size:0.7rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; cursor:pointer; }
 </style>
 </head>
 <body>
@@ -4044,7 +4083,7 @@ select:focus {
       </div>
       <div class="cc-hero-actions" id="homeHeroActions">
         <button type="button" class="cc-hero-btn cc-hero-btn-secondary" id="homeHeroResumeBtn" onclick="homeHeroResumeClick()">Resume <span aria-hidden="true">›</span></button>
-        <button type="button" class="cc-hero-btn cc-hero-btn-primary" onclick="homeHeroNewQuoteClick()">New quote +</button>
+        <button type="button" class="cc-hero-btn cc-hero-btn-primary" onclick="cbGo('cbStart')">Start Contract</button>
       </div>
     </div>
 
@@ -4189,7 +4228,7 @@ select:focus {
       <div class="cc-dock-buttons">
         <a id="dockRTOBtn" href="javascript:void(0)"
            class="cc-dock-side cc-dock-left"
-           onclick="var s=loadSettings();var u=s.rtoUrl||'';if(u){window.open(u,'_blank');}else{showToast('Set RTO URL in Settings');}return false;">
+           onclick="return openHomeRtoNavLink();">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:24px;height:24px;"><path d="M3 11.5L12 3l9 8.5V21a1 1 0 01-1 1H15v-6H9v6H4a1 1 0 01-1-1V11.5z" stroke="rgba(232,200,122,0.9)" stroke-width="1.6" fill="rgba(232,200,122,0.12)"/></svg>
           <div class="cc-dock-side-label">RTO LINK</div>
         </a>
@@ -5843,6 +5882,142 @@ select:focus {
   </div>
 </div>
 
+<!-- SCREEN CB1 — START -->
+<div class="screen" id="cbStart">
+  <div class="header">
+    <button class="back-btn" onclick="goTo('screenHome')">&#8592;</button>
+    <div class="header-title">CONTRACT BRIDGE</div>
+  </div>
+  <div style="padding:16px;padding-bottom:80px;">
+    <div class="cb-steps" id="cbSteps0"></div>
+    <div class="cb-title">Create Contract</div>
+    <div class="cb-sub">Bridge your quote &amp; customer data into RTOStreamline. Start a new contract below.</div>
+    <button class="cb-opt" onclick="cbGo('cbLink')">
+      <div class="cb-opt-title">&#65291; New Contract</div>
+      <div class="cb-opt-sub">Link a customer, choose the order &amp; contract type, then launch the Fill Guide.</div>
+    </button>
+    <div class="config-note">
+      RTOStreamline target: <b id="cbCfgUrl" style="color:var(--wheat)">loading&hellip;</b><br>
+      Field maps complete for Cash and RTO. The Fill Guide lets you tap-to-copy every field. Launch opens RTOStreamline in a new tab.
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN CB2 — LINK CUSTOMER -->
+<div class="screen" id="cbLink">
+  <div class="header">
+    <button class="back-btn" onclick="cbGo('cbStart')">&#8592;</button>
+    <div class="header-title">LINK CUSTOMER</div>
+  </div>
+  <div style="padding:16px;padding-bottom:80px;">
+    <div class="cb-steps" id="cbSteps1"></div>
+    <div class="cb-title">Link Customer</div>
+    <div class="cb-sub">Search by phone or name to pull from intake, or enter manually.</div>
+    <div class="section-head">Search</div>
+    <div class="row2">
+      <div class="field-group"><label class="field-label">Phone</label><input type="tel" id="cb_searchPhone" placeholder="(208) 555-0100"></div>
+      <div class="field-group"><label class="field-label">Name</label><input type="text" id="cb_searchName" placeholder="First Last"></div>
+    </div>
+    <button class="btn-secondary" style="margin-top:0;" onclick="cbSearchCustomer()">&#128269; Search Records</button>
+    <div id="cb_searchResults" style="margin-top:12px;"></div>
+    <div class="section-head">Customer Details</div>
+    <div class="field-group"><label class="field-label">Full Legal Name <span class="req">*</span></label><input type="text" id="cb_name" placeholder="First Middle Last"></div>
+    <div class="row2">
+      <div class="field-group"><label class="field-label">Phone <span class="req">*</span></label><input type="tel" id="cb_phone" placeholder="(208) 555-0100"></div>
+      <div class="field-group"><label class="field-label">Email</label><input type="email" id="cb_email" placeholder="email@example.com"></div>
+    </div>
+    <div class="field-group"><label class="field-label">Street Address</label><input type="text" id="cb_street" placeholder="Street address"></div>
+    <div class="row2">
+      <div class="field-group"><label class="field-label">City</label><input type="text" id="cb_city" placeholder="City"></div>
+      <div class="field-group"><label class="field-label">State</label><input type="text" id="cb_state" placeholder="ID" maxlength="2" style="text-transform:uppercase"></div>
+    </div>
+    <div class="field-group"><label class="field-label">ZIP</label><input type="text" id="cb_zip" placeholder="83617" maxlength="10"></div>
+    <button class="btn-primary" onclick="cbValidateLink()">Continue &#8594;</button>
+    <button class="btn-secondary" onclick="cbGo('cbStart')">&#8592; Back</button>
+  </div>
+</div>
+
+<!-- SCREEN CB3 — ORDER TYPE -->
+<div class="screen" id="cbOrder">
+  <div class="header">
+    <button class="back-btn" onclick="cbGo('cbLink')">&#8592;</button>
+    <div class="header-title">ORDER TYPE</div>
+  </div>
+  <div style="padding:16px;padding-bottom:80px;">
+    <div class="cb-steps" id="cbSteps2"></div>
+    <div class="cb-title">Order Type</div>
+    <div class="cb-sub">How is this building sourced? Controls whether an inventory number is required.</div>
+    <button class="cb-opt" data-order="Custom Shop Build" onclick="cbPickOrder(this)">
+      <div class="cb-opt-title">Custom Shop Build</div>
+      <div class="cb-opt-sub">Built to order at the shop.</div>
+      <span class="cb-opt-tag no">No inventory #</span>
+    </button>
+    <button class="cb-opt" data-order="Urban Structures" onclick="cbPickOrder(this)">
+      <div class="cb-opt-title">Urban Structures</div>
+      <div class="cb-opt-sub">Sourced through Urban Structures.</div>
+      <span class="cb-opt-tag no">No inventory #</span>
+    </button>
+    <button class="cb-opt" data-order="On Lot New" onclick="cbPickOrder(this)">
+      <div class="cb-opt-title">On Lot &#8212; New</div>
+      <div class="cb-opt-sub">New building already on the lot.</div>
+      <span class="cb-opt-tag yes">Inventory # required</span>
+    </button>
+    <button class="cb-opt" data-order="On Lot Used" onclick="cbPickOrder(this)">
+      <div class="cb-opt-title">On Lot &#8212; Used</div>
+      <div class="cb-opt-sub">Used / repo building on the lot.</div>
+      <span class="cb-opt-tag yes">Inventory # required</span>
+    </button>
+    <div class="field-group" id="cb_invWrap" style="display:none;margin-top:6px;">
+      <label class="field-label">Inventory Number <span class="req">*</span></label>
+      <input type="text" id="cb_inventory" placeholder="e.g. GSS-04821" oninput="cbCheckInv()">
+      <div class="inv-warn" id="cb_invWarn">Inventory number is required for on-lot buildings.</div>
+    </div>
+    <button class="btn-primary" onclick="cbValidateOrder()">Continue &#8594;</button>
+    <button class="btn-secondary" onclick="cbGo('cbLink')">&#8592; Back</button>
+  </div>
+</div>
+
+<!-- SCREEN CB4 — CONTRACT TYPE -->
+<div class="screen" id="cbType">
+  <div class="header">
+    <button class="back-btn" onclick="cbGo('cbOrder')">&#8592;</button>
+    <div class="header-title">CONTRACT TYPE</div>
+  </div>
+  <div style="padding:16px;padding-bottom:80px;">
+    <div class="cb-steps" id="cbSteps3"></div>
+    <div class="cb-title">Contract Type</div>
+    <div class="cb-sub">Choose the agreement type. This shapes which fields the Fill Guide produces.</div>
+    <button class="cb-opt" data-type="cash" onclick="cbPickType(this)">
+      <div class="cb-opt-title">&#128181; Cash</div>
+      <div class="cb-opt-sub">~90% auto-fills from quote + customer record. No financing fields.</div>
+    </button>
+    <button class="cb-opt" data-type="rto" onclick="cbPickType(this)">
+      <div class="cb-opt-title">&#128196; Rent-To-Own (RTO)</div>
+      <div class="cb-opt-sub">Pulls landlord, references, and employer from intake. Only ID/SSN/DOB collected at signing.</div>
+    </button>
+    <button class="btn-primary" onclick="cbValidateType()">Build Fill Guide &#8594;</button>
+    <button class="btn-secondary" onclick="cbGo('cbOrder')">&#8592; Back</button>
+  </div>
+</div>
+
+<!-- SCREEN CB5 — FILL GUIDE -->
+<div class="screen" id="cbGuide">
+  <div class="header">
+    <button class="back-btn" onclick="cbGo('cbType')">&#8592;</button>
+    <div class="header-title">FILL GUIDE</div>
+  </div>
+  <div style="padding:16px;padding-bottom:80px;">
+    <div class="cb-steps" id="cbSteps4"></div>
+    <div class="cb-title" id="cb_guideTitle">Fill Guide</div>
+    <div class="cb-sub">Tap any row to copy it, then paste into the matching RTOStreamline field.</div>
+    <div class="cb-summary" id="cb_guideSummary"></div>
+    <div id="cb_guideBody"></div>
+    <div id="cb_signingBody"></div>
+    <button class="btn-launch" onclick="cbLaunch()">&#128640; Launch RTOStreamline</button>
+    <button class="btn-secondary" onclick="cbReset()">&#10005; Finish &amp; Clear Contract</button>
+  </div>
+</div>
+
 <!-- ============================================================
      SCREEN: PURCHASE FORM
      ============================================================ -->
@@ -6665,7 +6840,11 @@ select:focus {
       <div class="setup-note" style="margin-top:-4px;margin-bottom:12px;">Synced to cloud settings so Firebase Functions can send texts and day-of reminders. Turn off automated SMS if you prefer manual messaging only.</div>
     </div>
 
-    <div class="field-group"><label class="field-label">RTO URL</label><input type="url" id="set_rtoUrl" placeholder="https://..."></div>
+    <div class="field-group"><label class="field-label">RTO Customer Link (Intake Form)</label><input type="url" id="set_rtoUrl" placeholder="https://..."></div>
+    <div class="setup-note" style="margin-top:-4px;margin-bottom:12px;">Used when customers tap <strong>Rent-To-Own</strong> on the intake form selector, CRM “copy RTO link”, and share links. Separate from the home nav bar RTO button below.</div>
+    <div class="field-group"><label class="field-label">RTO Nav Bar Link (Home)</label><input type="url" id="set_rtoNavUrl" placeholder="https://..."></div>
+    <div class="setup-note" style="margin-top:-4px;margin-bottom:12px;">Opens from the <strong>RTO LINK</strong> button on the home screen bottom nav (dealer / Streamline shortcut).</div>
+    <div class="field-group"><label class="field-label">RTOStreamline URL</label><input type="url" id="set_rtostreamlineUrl" placeholder="https://app.rtostreamline.com/..."></div>
     <div class="field-group"><label class="field-label">Interest URL</label><input type="url" id="set_interestUrl" placeholder="https://..."></div>
     <div class="field-group"><label class="field-label">Google Maps API Key</label><input type="text" id="set_mapsApiKey" placeholder="Used for mileage calculator"></div>
 
@@ -7949,7 +8128,7 @@ function crmComposeIntakeSmsForLead(lead){
 function crmCopyRtoLink(){
   var s=loadSettings();
   var u=(s.rtoUrl||'').trim();
-  if(!u){ showToast('Set RTO URL in Settings'); return; }
+  if(!u){ showToast('Set RTO Customer Link in Settings → Links & Cloud'); return; }
   if(navigator.clipboard&&navigator.clipboard.writeText){
     navigator.clipboard.writeText(u).then(function(){ showToast('RTO link copied'); },function(){ legacyCopy(u); });
   }else legacyCopy(u);
@@ -10356,6 +10535,22 @@ function applyBizInfoToHome(){
     wl.innerHTML=extraHtml||'<div style="padding:10px 16px;font-size:0.8rem;color:rgba(232,200,122,0.4);">Add websites in Settings</div>';
   }
   try{ renderHomeDashboard(); }catch(_e){}
+  applyHomeRtoNavLink(s);
+}
+function openHomeRtoNavLink(){
+  var s=loadSettings();
+  var u=(s.rtoNavUrl||'').trim();
+  if(u){ window.open(u,'_blank'); }
+  else { showToast('Set RTO Nav Bar Link in Settings → Links & Cloud'); }
+  return false;
+}
+function applyHomeRtoNavLink(s){
+  s=s||loadSettings();
+  var btn=document.getElementById('dockRTOBtn');
+  if(!btn) return;
+  var u=(s.rtoNavUrl||'').trim();
+  btn.style.opacity=u?'':'0.45';
+  btn.title=u?'Open RTO link':'Set RTO Nav Bar Link in Settings';
 }
 
 // ============================================================
@@ -10445,7 +10640,7 @@ function renderSettingsPricingForm(s){
 }
 function renderSettingsLinksCloudForm(s){
   s=s||{};
-  ['designerUrl','purchaseUrl','intakeFormUrl','appointmentPickBaseUrl','rtoUrl','interestUrl','crmUrl','mapsApiKey','firebaseApiKey','firebaseAuthDomain','firebaseProjectId','firebaseStorageBucket','firebaseMessagingSenderId','firebaseAppId','firebaseEmail','firebasePassword','twilioAccountSid','twilioAuthToken','twilioFromNumber','driveUploadUrl','driveUploadToken','driveFolderId','cfR2UploadUrl','cfR2UploadToken'].forEach(function(k){
+  ['designerUrl','purchaseUrl','intakeFormUrl','appointmentPickBaseUrl','rtoUrl','rtostreamlineUrl','rtoNavUrl','interestUrl','crmUrl','mapsApiKey','firebaseApiKey','firebaseAuthDomain','firebaseProjectId','firebaseStorageBucket','firebaseMessagingSenderId','firebaseAppId','firebaseEmail','firebasePassword','twilioAccountSid','twilioAuthToken','twilioFromNumber','driveUploadUrl','driveUploadToken','driveFolderId','cfR2UploadUrl','cfR2UploadToken'].forEach(function(k){
     var el=document.getElementById('set_'+k);
     if(el) el.value=s[k]||'';
   });
@@ -10943,7 +11138,7 @@ async function saveSettingsPricing(opts){
 }
 async function saveSettingsLinksCloud(opts){
   var s=loadSettings();
-  ['designerUrl','purchaseUrl','intakeFormUrl','appointmentPickBaseUrl','rtoUrl','interestUrl','crmUrl','mapsApiKey','firebaseApiKey','firebaseAuthDomain','firebaseProjectId','firebaseStorageBucket','firebaseMessagingSenderId','firebaseAppId','firebaseEmail','firebasePassword','twilioAccountSid','twilioAuthToken','twilioFromNumber','driveUploadUrl','driveUploadToken','driveFolderId','cfR2UploadUrl','cfR2UploadToken'].forEach(function(k){
+  ['designerUrl','purchaseUrl','intakeFormUrl','appointmentPickBaseUrl','rtoUrl','rtostreamlineUrl','rtoNavUrl','interestUrl','crmUrl','mapsApiKey','firebaseApiKey','firebaseAuthDomain','firebaseProjectId','firebaseStorageBucket','firebaseMessagingSenderId','firebaseAppId','firebaseEmail','firebasePassword','twilioAccountSid','twilioAuthToken','twilioFromNumber','driveUploadUrl','driveUploadToken','driveFolderId','cfR2UploadUrl','cfR2UploadToken'].forEach(function(k){
     var el=document.getElementById('set_'+k);
     if(el) s[k]=el.value.trim();
   });
@@ -13121,6 +13316,7 @@ function migrateSettingsAddresses(s){
   ['homeQuickTools','homeQuickActions'].forEach(function(k){
     if(Array.isArray(s[k])) s[k]=s[k].map(migrateHomeQuickStoredItem);
   });
+  if(s.rtoNavUrl===undefined&&s.rtoUrl) s.rtoNavUrl=s.rtoUrl;
   return s;
 }
 function loadSettings(){
@@ -27940,6 +28136,285 @@ function buildStyleRefTable(){
   tbl.innerHTML=html;
 }
 
+
+/* ===== CONTRACT BRIDGE ===== */
+var cbState = { order:null, inventory:'', type:null };
+
+function cbGo(id){
+  goTo(id);
+  if(id==='cbStart') cbInitNote();
+  if(id==='cbGuide') cbRenderGuide();
+}
+function cbInitNote(){
+  var url=(typeof loadSettings==='function'&&loadSettings().rtostreamlineUrl)||'(not set — add in Settings → Links & Cloud)';
+  var el=document.getElementById('cbCfgUrl');
+  if(el) el.textContent=url;
+}
+function cbRenderSteps(){
+  for(var i=0;i<=4;i++){
+    var c=document.getElementById('cbSteps'+i); if(!c) continue;
+    c.innerHTML='';
+    for(var j=0;j<5;j++){
+      var d=document.createElement('div');
+      d.className='cb-step-dot'+(j<i?' done':j===i?' cur':'');
+      c.appendChild(d);
+    }
+  }
+}
+cbRenderSteps();
+
+function cbCv(id){ var el=document.getElementById(id); return el?String(el.value||'').trim():''; }
+function cbNormPhone(p){ return String(p||'').replace(/\D/g,''); }
+function cbSetVal(id,v){ var el=document.getElementById(id); if(el) el.value=v||''; }
+
+function cbFetchCustomer(phone,name){
+  var has=function(id){ return !!document.getElementById(id); };
+  var rec=null;
+  if(has('r_name')){
+    var rName=cbCv('r_name'),rPhone=cbCv('r_phone');
+    var pm=phone&&rPhone&&cbNormPhone(rPhone)===cbNormPhone(phone);
+    var nm=name&&rName&&rName.toLowerCase().indexOf(name.toLowerCase())>=0;
+    if(rName&&(pm||nm||(!phone&&!name))){
+      var selfEmp=has('r_selfretired_btn')&&document.getElementById('r_selfretired_btn').classList.contains('active');
+      rec={
+        name:rName, phone:rPhone, email:cbCv('r_email'),
+        street:cbCv('r_cur_street'), city:cbCv('r_cur_city'), state:cbCv('r_cur_state'), zip:cbCv('r_cur_zip'),
+        rentOwn:(function(){var a=document.querySelector('[data-group="rentown"].active');return a?a.dataset.val:'';}()),
+        llName:cbCv('r_ll_name'), llPhone:cbCv('r_ll_phone'), llEmail:cbCv('r_ll_email'),
+        llStreet:cbCv('r_ll_street'), llCity:cbCv('r_ll_city'), llState:cbCv('r_ll_state'), llZip:cbCv('r_ll_zip'),
+        employer:cbCv('r_employer'), empPhone:cbCv('r_emp_phone'),
+        empStreet:cbCv('r_emp_street'), empCity:cbCv('r_emp_city'), empState:cbCv('r_emp_state'), empZip:cbCv('r_emp_zip'),
+        selfEmployed:selfEmp,
+        ref1Name:cbCv('r_ref1_name'), ref1Phone:cbCv('r_ref1_phone'),
+        ref2Name:cbCv('r_ref2_name'), ref2Phone:cbCv('r_ref2_phone'),
+        delStreet:cbCv('r_del_street'), delCity:cbCv('r_del_city'), delState:cbCv('r_del_state'), delZip:cbCv('r_del_zip'),
+        billStreet:cbCv('r_bill_street'), billCity:cbCv('r_bill_city'), billState:cbCv('r_bill_state'), billZip:cbCv('r_bill_zip')
+      };
+    }
+  }
+  if(!rec&&document.getElementById('c_custName')){
+    var cName=cbCv('c_custName');
+    if(cName) rec={name:cName, phone:cbCv('c_custPhone'), email:cbCv('c_custEmail'),
+      street:cbCv('c_custAddress'), city:cbCv('c_custCity'), state:cbCv('c_custState'), zip:cbCv('c_custZip')};
+  }
+  return rec;
+}
+function cbFetchQuote(){
+  if(typeof calcState!=='undefined'&&calcState&&calcState.type){
+    var typeName=(typeof NAMES!=='undefined'&&NAMES[calcState.type])?NAMES[calcState.type]:calcState.type;
+    var size=(calcState.width&&calcState.length)?(calcState.width+"' x "+calcState.length+"'"):'';
+    return{ buildingType:typeName, size:size, width:calcState.width||'', length:calcState.length||'',
+      payType:calcState.payType||'', rtoMonths:calcState.rtoMonths||'',
+      total:(typeof window.__cbQuoteTotal==='number')?window.__cbQuoteTotal:'' };
+  }
+  return null;
+}
+
+function cbSearchCustomer(){
+  var phone=cbCv('cb_searchPhone'), name=cbCv('cb_searchName');
+  if(!phone&&!name){ showToast('Enter a phone or name to search'); return; }
+  var rec=cbFetchCustomer(phone,name);
+  var box=document.getElementById('cb_searchResults');
+  if(!rec){
+    box.innerHTML='<div class="cb-opt" style="cursor:default;"><div class="cb-opt-sub">No matching record found. Enter manually below.</div></div>';
+    return;
+  }
+  box.innerHTML='<button class="cb-opt sel" onclick="cbApplyRecord()">'+
+    '<div class="cb-opt-title">'+(rec.name||'(no name)')+'</div>'+
+    '<div class="cb-opt-sub">'+[rec.phone,rec.email].filter(Boolean).join(' &middot; ')+'<br>'+
+    [rec.street,rec.city,rec.state,rec.zip].filter(Boolean).join(', ')+'</div>'+
+    '<span class="cb-opt-tag yes">Tap to use this record</span></button>';
+  cbState._pending=rec;
+}
+function cbApplyRecord(){
+  var r=cbState._pending; if(!r) return;
+  cbState.customer=r;
+  cbSetVal('cb_name',r.name); cbSetVal('cb_phone',r.phone); cbSetVal('cb_email',r.email);
+  cbSetVal('cb_street',r.street); cbSetVal('cb_city',r.city); cbSetVal('cb_state',r.state); cbSetVal('cb_zip',r.zip);
+  document.getElementById('cb_searchResults').innerHTML='';
+  showToast('Record linked');
+}
+function cbValidateLink(){
+  var name=cbCv('cb_name'), phone=cbCv('cb_phone');
+  if(!name){ showToast('Customer name is required'); return; }
+  if(!phone){ showToast('Phone is required'); return; }
+  var c=cbState.customer||{};
+  c.name=name; c.phone=phone; c.email=cbCv('cb_email');
+  c.street=cbCv('cb_street'); c.city=cbCv('cb_city'); c.state=cbCv('cb_state'); c.zip=cbCv('cb_zip');
+  cbState.customer=c;
+  cbGo('cbOrder');
+}
+
+var CB_NEEDS_INV={'On Lot New':true,'On Lot Used':true};
+function cbPickOrder(el){
+  document.querySelectorAll('#cbOrder .cb-opt').forEach(function(b){ b.classList.remove('sel'); });
+  el.classList.add('sel');
+  cbState.order=el.dataset.order;
+  var needs=!!CB_NEEDS_INV[cbState.order];
+  document.getElementById('cb_invWrap').style.display=needs?'block':'none';
+  if(!needs){ cbSetVal('cb_inventory',''); document.getElementById('cb_invWarn').style.display='none'; }
+}
+function cbCheckInv(){
+  if(!CB_NEEDS_INV[cbState.order]) return;
+  document.getElementById('cb_invWarn').style.display=cbCv('cb_inventory')?'none':'block';
+}
+function cbValidateOrder(){
+  if(!cbState.order){ showToast('Select an order type'); return; }
+  if(CB_NEEDS_INV[cbState.order]&&!cbCv('cb_inventory')){
+    document.getElementById('cb_invWarn').style.display='block';
+    showToast('Inventory number required'); return;
+  }
+  cbState.inventory=cbCv('cb_inventory');
+  cbGo('cbType');
+}
+
+function cbPickType(el){
+  document.querySelectorAll('#cbType .cb-opt').forEach(function(b){ b.classList.remove('sel'); });
+  el.classList.add('sel');
+  cbState.type=el.dataset.type;
+}
+function cbValidateType(){
+  if(!cbState.type){ showToast('Choose Cash or RTO'); return; }
+  cbGo('cbGuide');
+}
+
+function cbFgEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function cbFgAttr(v){ return cbFgEsc(v==null?'':String(v).trim()).replace(/"/g,'&quot;'); }
+function cbFgRow(label,value){
+  var v=(value==null?'':String(value).trim());
+  return '<div class="fg-row" data-copy="'+cbFgAttr(v)+'" onclick="cbFgCopy(this)">'+
+    '<div class="fg-rl"><div class="fg-k">'+cbFgEsc(label)+'</div>'+
+    '<div class="fg-v'+(v?'':' empty')+'">'+(v?cbFgEsc(v):'&#8212; not on file &#8212;')+'</div></div>'+
+    '<div class="fg-copy">'+(v?'Copy':'&#8212;')+'</div></div>';
+}
+function cbFgGroup(title,rows){
+  return '<div class="fg-group"><div class="fg-grouphead">'+cbFgEsc(title)+'</div>'+rows+'</div>';
+}
+function cbRenderGuide(){
+  var c=cbState.customer||{}, q=cbFetchQuote()||{}, isRTO=cbState.type==='rto';
+  document.getElementById('cb_guideTitle').textContent=(isRTO?'RTO':'Cash')+' Fill Guide';
+  var pills='<span class="cb-pill"><b>'+(isRTO?'RTO':'Cash')+'</b> contract</span>';
+  if(cbState.order) pills+='<span class="cb-pill">'+cbFgEsc(cbState.order)+'</span>';
+  if(cbState.inventory) pills+='<span class="cb-pill">Inv <b>'+cbFgEsc(cbState.inventory)+'</b></span>';
+  if(q.size) pills+='<span class="cb-pill">'+cbFgEsc(q.size)+'</span>';
+  document.getElementById('cb_guideSummary').innerHTML=pills;
+  var html=cbFgGroup('Customer',
+    cbFgRow('Full Legal Name',c.name)+cbFgRow('Phone',c.phone)+cbFgRow('Email',c.email)+
+    cbFgRow('Street Address',c.street)+cbFgRow('City',c.city)+cbFgRow('State',c.state)+cbFgRow('ZIP',c.zip));
+  var orderRows=cbFgRow('Order Type',cbState.order);
+  if(cbState.inventory) orderRows+=cbFgRow('Inventory #',cbState.inventory);
+  orderRows+=cbFgRow('Building Type',q.buildingType)+cbFgRow('Size',q.size);
+  if(isRTO) orderRows+=cbFgRow('RTO Term (months)',q.rtoMonths);
+  if(q.total!==''&&q.total!=null)
+    orderRows+=cbFgRow(isRTO?'Cash Price (reference)':'Total Price',(typeof fmt==='function')?fmt(q.total):('$'+q.total));
+  html+=cbFgGroup('Order &amp; Building',orderRows);
+  if(isRTO){
+    html+=cbFgGroup('Delivery &amp; Billing',
+      cbFgRow('Delivery Address',[c.delStreet,c.delCity,c.delState,c.delZip].filter(Boolean).join(', '))+
+      cbFgRow('Billing Address',[c.billStreet,c.billCity,c.billState,c.billZip].filter(Boolean).join(', ')));
+    if(c.rentOwn==='Rent'||c.llName||c.llPhone)
+      html+=cbFgGroup('Landlord',
+        cbFgRow('Landlord Name',c.llName)+cbFgRow('Landlord Phone',c.llPhone)+cbFgRow('Landlord Email',c.llEmail)+
+        cbFgRow('Landlord Address',[c.llStreet,c.llCity,c.llState,c.llZip].filter(Boolean).join(', ')));
+    html+=c.selfEmployed
+      ?cbFgGroup('Employment',cbFgRow('Employment Status','Self-Employed / Retired'))
+      :cbFgGroup('Employment',
+        cbFgRow('Employer Name',c.employer)+cbFgRow('Employer Phone',c.empPhone)+
+        cbFgRow('Employer Address',[c.empStreet,c.empCity,c.empState,c.empZip].filter(Boolean).join(', ')));
+    html+=cbFgGroup('References',
+      cbFgRow('Reference 1 — Name',c.ref1Name)+cbFgRow('Reference 1 — Phone',c.ref1Phone)+
+      cbFgRow('Reference 2 — Name',c.ref2Name)+cbFgRow('Reference 2 — Phone',c.ref2Phone));
+  }
+  document.getElementById('cb_guideBody').innerHTML=html;
+  var sb=document.getElementById('cb_signingBody');
+  if(isRTO){
+    var emp=c.selfEmployed?'':
+      '<div class="sign-row"><div class="field-group"><label class="field-label">Employer (if changed)</label>'+
+      '<input type="text" id="sgn_employer" autocomplete="off" placeholder="Confirm at signing"></div>'+
+      '<button class="sign-copy" onclick="cbFgCopyInput(\'sgn_employer\')">Copy</button></div>';
+    sb.innerHTML='<div class="signing-box">'+
+      '<div class="section-head" style="margin-top:0;">At Signing — Collect Manually</div>'+
+      '<div class="signing-note"><strong>Never stored.</strong> Wiped when you launch or finish.</div>'+
+      '<div class="sign-row"><div class="field-group"><label class="field-label">SSN</label><input type="text" id="sgn_ssn" inputmode="numeric" autocomplete="off" placeholder="XXX-XX-XXXX"></div><button class="sign-copy" onclick="cbFgCopyInput(\'sgn_ssn\')">Copy</button></div>'+
+      '<div class="sign-row"><div class="field-group"><label class="field-label">Date of Birth</label><input type="date" id="sgn_dob" autocomplete="off"></div><button class="sign-copy" onclick="cbFgCopyInput(\'sgn_dob\')">Copy</button></div>'+
+      '<div class="sign-row"><div class="field-group"><label class="field-label">Driver\'s License #</label><input type="text" id="sgn_dl" autocomplete="off" placeholder="DL number"></div><button class="sign-copy" onclick="cbFgCopyInput(\'sgn_dl\')">Copy</button></div>'+
+      '<div class="sign-row"><div class="field-group"><label class="field-label">DL State</label><input type="text" id="sgn_dlstate" maxlength="2" autocomplete="off" placeholder="ID" style="text-transform:uppercase"></div><button class="sign-copy" onclick="cbFgCopyInput(\'sgn_dlstate\')">Copy</button></div>'+
+      '<div class="sign-row"><div class="field-group"><label class="field-label">DL Issue Date</label><input type="date" id="sgn_dlissue" autocomplete="off"></div><button class="sign-copy" onclick="cbFgCopyInput(\'sgn_dlissue\')">Copy</button></div>'+
+      '<div class="sign-row"><div class="field-group"><label class="field-label">DL Expiration</label><input type="date" id="sgn_dlexp" autocomplete="off"></div><button class="sign-copy" onclick="cbFgCopyInput(\'sgn_dlexp\')">Copy</button></div>'+
+      emp+'</div>';
+  } else { sb.innerHTML=''; }
+}
+
+function cbClipboard(text){
+  if(navigator.clipboard&&navigator.clipboard.writeText) return navigator.clipboard.writeText(text);
+  return new Promise(function(res,rej){
+    try{ var ta=document.createElement('textarea'); ta.value=text; ta.style.cssText='position:fixed;opacity:0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); res(); }
+    catch(e){ rej(e); }
+  });
+}
+function cbFgCopy(row){
+  var v=row.getAttribute('data-copy')||'';
+  if(!v){ showToast('Nothing on file to copy'); return; }
+  cbClipboard(v).then(function(){
+    row.classList.add('copied'); showToast('Copied');
+    setTimeout(function(){ row.classList.remove('copied'); },1100);
+  }).catch(function(){ showToast('Copy failed — long-press to select'); });
+}
+function cbFgCopyInput(id){
+  var el=document.getElementById(id), v=el?String(el.value||'').trim():'';
+  if(!v){ showToast('Enter a value first'); return; }
+  cbClipboard(v).then(function(){ showToast('Copied'); }).catch(function(){ showToast('Copy failed'); });
+}
+
+var CB_ORDER_TO_CONDITION={'Custom Shop Build':'CSB','Urban Structures':'USOSB','On Lot New':'OLN','On Lot Used':'OLU'};
+function cbBuildAutofillPayload(){
+  var c=cbState.customer||{}, q=cbFetchQuote()||{}, isRTO=cbState.type==='rto', p={};
+  p.name=c.name||''; p.address=c.street||''; p.city=c.city||''; p.state=c.state||''; p.zip=c.zip||'';
+  p.cellPhone=c.phone||''; p.email=c.email||'';
+  p.deliveryAddress=c.delStreet||c.street||''; p.deliveryCity=c.delCity||c.city||'';
+  p.deliveryState=c.delState||c.state||''; p.deliveryZip=c.delZip||c.zip||'';
+  p.buildingCondition=CB_ORDER_TO_CONDITION[cbState.order]||'';
+  p.inventoryNum=cbState.inventory||'';
+  p.salesPrice=q.total?String(q.total):'';
+  p.width=q.width?String(q.width):''; p.length=q.length?String(q.length):'';
+  if(isRTO){
+    p.ownRent=(c.rentOwn==='Rent')?'Rent':'Own';
+    if(c.rentOwn==='Rent'){ p.landlord=c.llName||''; p.llPhone=c.llPhone||'';
+      p.llAddress=c.llStreet||''; p.llCity=c.llCity||''; p.llState=c.llState||''; p.llZip=c.llZip||''; }
+    if(!c.selfEmployed){ p.employer=c.employer||''; p.employerAddress=c.empStreet||'';
+      p.employerCity=c.empCity||''; p.employerState=c.empState||'';
+      p.employerZip=c.empZip||''; p.employerPhone=c.empPhone||''; }
+    p.ref1Name=c.ref1Name||''; p.ref1Phone=c.ref1Phone||'';
+    p.ref2Name=c.ref2Name||''; p.ref2Phone=c.ref2Phone||'';
+  }
+  return p;
+}
+function cbLaunch(){
+  var url=(typeof loadSettings==='function'&&loadSettings().rtostreamlineUrl)||'';
+  if(!url){ showToast('Set RTOStreamline URL in Settings → Links & Cloud'); return; }
+  cbState._autofillPayload=cbBuildAutofillPayload();
+  cbWipeSigning();
+  window.open(url,'rtostreamline');
+  showToast('RTOStreamline opened — use guide below');
+}
+function cbWipeSigning(){
+  ['sgn_ssn','sgn_dob','sgn_dl','sgn_dlstate','sgn_dlissue','sgn_dlexp','sgn_employer'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.value='';
+  });
+}
+function cbReset(silent){
+  cbWipeSigning();
+  cbState={order:null,inventory:'',type:null};
+  ['cb_searchPhone','cb_searchName','cb_name','cb_phone','cb_email','cb_street','cb_city','cb_state','cb_zip','cb_inventory']
+    .forEach(function(id){ cbSetVal(id,''); });
+  var sr=document.getElementById('cb_searchResults'); if(sr) sr.innerHTML='';
+  document.querySelectorAll('.cb-opt.sel').forEach(function(b){ b.classList.remove('sel'); });
+  var iw=document.getElementById('cb_invWrap'); if(iw) iw.style.display='none';
+  cbGo('cbStart');
+  if(!silent) showToast('Contract cleared');
+}
+/* ===== END CONTRACT BRIDGE ===== */
 
 </script>
 
