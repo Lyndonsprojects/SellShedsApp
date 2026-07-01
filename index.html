@@ -289,7 +289,14 @@ select option { background:var(--earth); color:var(--cream); }
 #screenCRM .crm-lead-card:last-child { border-bottom:none; }
 #screenCRM .crm-lead-card-head { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
 #screenCRM .crm-lead-card-name { font-size:0.86rem; font-weight:700; color:var(--wheat); }
-#screenCRM .crm-status-chip { font-size:0.62rem; letter-spacing:0.5px; text-transform:uppercase; padding:3px 7px; border-radius:999px; background:rgba(232,200,122,0.15); color:var(--wheat); flex-shrink:0; }
+#screenCRM .crm-status-chip,
+#screenCRMDetail .crm-status-chip { font-size:0.62rem; letter-spacing:0.5px; text-transform:uppercase; padding:3px 7px; border-radius:999px; background:rgba(232,200,122,0.15); color:var(--wheat); flex-shrink:0; }
+#screenCRM .crm-status-chip.status-ordered,
+#screenCRMDetail .crm-status-chip.status-ordered { background:rgba(122,158,135,0.28); color:#c8e6d4; }
+#screenCRM .crm-status-chip.status-delivered,
+#screenCRMDetail .crm-status-chip.status-delivered { background:rgba(100,100,120,0.35); color:rgba(232,200,122,0.9); }
+#screenCRM .crm-status-chip.status-lost,
+#screenCRMDetail .crm-status-chip.status-lost { background:rgba(196,81,31,0.25); color:#f0c4a8; }
 #screenCRM .crm-lead-quick { margin-top:8px; }
 #screenCRM .crm-action-select,
 #screenCRMDetail .crm-action-select {
@@ -334,6 +341,8 @@ select option { background:var(--earth); color:var(--cream); }
 }
 #screenCRMDetail .crm-detail-btn:active { opacity:0.88; }
 #screenCRMDetail .crm-detail-btn.primary { background:rgba(122,158,135,0.28); border-color:rgba(122,158,135,0.4); color:var(--wheat); }
+#screenCRMDetail .crm-detail-btn.danger { background:rgba(196,81,31,0.22); border-color:rgba(196,81,31,0.45); color:#f0c4a8; }
+#screenCRMDetail .crm-detail-delete-btn { width:100%; margin-top:8px; }
 #screenCRMDetail .crm-detail-dd-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
 #screenCRMDetail .crm-add-activity-card .field-group { margin-bottom:10px; }
 #screenCRMDetail .crm-add-activity-card .field-label,
@@ -3949,6 +3958,31 @@ select:focus {
 .cash-due-edit-btn--cancel{background:rgba(255,255,255,0.1);color:rgba(232,200,122,0.8);}
 #quoteAdResultBody{white-space:pre-wrap;font-size:0.88rem;line-height:1.5;color:rgba(245,240,232,0.92);max-height:42vh;overflow-y:auto;padding:10px;background:rgba(0,0,0,0.2);border-radius:8px;margin-top:10px;}
 /* ---- Contract Bridge ---- */
+/* ---- Contract Bridge: Building & Pricing + Merge ---- */
+.cb-src-toggle { display:flex; gap:8px; margin-bottom:16px; }
+.cb-src-btn { flex:1; text-align:center; background:rgba(255,255,255,0.05); border:1.5px solid rgba(232,200,122,0.22);
+  border-radius:10px; padding:12px 8px; cursor:pointer; color:var(--cream); font-size:0.85rem; font-weight:600; }
+.cb-src-btn.sel { border-color:var(--rust); background:rgba(196,81,31,0.14); color:var(--wheat); }
+.cb-inv-pick { max-height:240px; overflow-y:auto; margin-bottom:14px; }
+.cb-inv-item { display:block; width:100%; text-align:left; background:rgba(255,255,255,0.05);
+  border:1.5px solid rgba(232,200,122,0.18); border-radius:10px; padding:12px 14px; margin-bottom:8px; cursor:pointer; color:var(--cream); }
+.cb-inv-item.sel { border-color:var(--rust); background:rgba(196,81,31,0.14); }
+.cb-inv-item-title { font-weight:600; font-size:0.92rem; }
+.cb-inv-item-sub { font-size:0.75rem; color:rgba(245,240,232,0.55); margin-top:2px; }
+.cb-price-box { background:rgba(122,158,135,0.1); border:1.5px solid rgba(122,158,135,0.35); border-radius:12px;
+  padding:16px; margin:16px 0; text-align:center; }
+.cb-price-box .label { font-size:0.7rem; letter-spacing:2px; text-transform:uppercase; color:rgba(245,240,232,0.6); margin-bottom:4px; }
+.cb-price-box .amount { font-family:'Bebas Neue',Impact,sans-serif; font-size:2rem; color:var(--sage); letter-spacing:1px; }
+.cb-price-box .amount.zero { color:rgba(245,240,232,0.35); font-size:1.1rem; font-family:inherit; letter-spacing:normal; }
+.cb-merge-line { display:flex; align-items:center; gap:10px; padding:10px 12px; margin-bottom:8px;
+  background:rgba(255,255,255,0.05); border:1.5px solid rgba(232,200,122,0.2); border-radius:10px; cursor:pointer; }
+.cb-merge-line.sel { border-color:var(--rust); background:rgba(196,81,31,0.12); }
+.cb-merge-line input[type=checkbox] { width:18px; height:18px; flex-shrink:0; }
+.cb-merge-name { flex:1; font-size:0.85rem; }
+.cb-merge-meta { font-size:0.72rem; color:rgba(232,200,122,0.55); }
+#cbBuilding .sel-opts-section { margin-top:12px; }
+#cbBuilding .calc-price-deck-body { margin-top:12px; }
+
 .cb-steps { display:flex; gap:5px; margin-bottom:18px; }
 .cb-step-dot { flex:1; height:4px; border-radius:2px; background:rgba(232,200,122,0.18); transition:background .25s; }
 .cb-step-dot.done { background:var(--rust,#C4511F); }
@@ -5716,6 +5750,7 @@ select:focus {
           <option value="interested">Interested</option>
           <option value="ordered">Ordered</option>
           <option value="delivered">Delivered</option>
+          <option value="lost">Lost</option>
         </select>
       </div>
     </div>
@@ -5812,6 +5847,7 @@ select:focus {
       <span class="contacts-chip" data-filter="interested" onclick="contactsSetFilter('interested')">Interested</span>
       <span class="contacts-chip" data-filter="ordered" onclick="contactsSetFilter('ordered')">Ordered</span>
       <span class="contacts-chip" data-filter="delivered" onclick="contactsSetFilter('delivered')">Delivered</span>
+      <span class="contacts-chip" data-filter="lost" onclick="contactsSetFilter('lost')">Lost</span>
     </div>
     <div class="crm-list" id="contacts_leadList"></div>
     <div class="pb40"></div>
@@ -5977,14 +6013,126 @@ select:focus {
   </div>
 </div>
 
-<!-- SCREEN CB4 — CONTRACT TYPE -->
-<div class="screen" id="cbType">
+
+<!-- SCREEN CB — BUILDING & PRICING -->
+<div class="screen" id="cbBuilding">
   <div class="header">
     <button class="back-btn" onclick="cbGo('cbOrder')">&#8592;</button>
-    <div class="header-title">CONTRACT TYPE</div>
+    <div class="header-title">BUILDING &amp; PRICING</div>
   </div>
   <div style="padding:16px;padding-bottom:80px;">
     <div class="cb-steps" id="cbSteps3"></div>
+    <div class="cb-title">Building &amp; Pricing</div>
+    <div class="cb-sub" id="cb_bldSub">Price the building for this contract.</div>
+
+    <div class="cb-src-toggle" id="cb_srcToggle" style="display:none;">
+      <button type="button" class="cb-src-btn" id="cb_srcInvBtn" onclick="cbSetBuildingSource('inventory')">From Inventory</button>
+      <button type="button" class="cb-src-btn" id="cb_srcManBtn" onclick="cbSetBuildingSource('manual')">Price a Build</button>
+    </div>
+
+    <div id="cb_invPickWrap" style="display:none;">
+      <div class="cb-inv-pick" id="cb_invPickList"></div>
+      <div class="cb-price-box" id="cb_invPriceBox" style="display:none;">
+        <div class="label">Inventory Price</div>
+        <div class="amount zero" id="cb_invPrice">&#8212;</div>
+      </div>
+      <button type="button" class="btn-secondary" style="margin-top:8px;" onclick="cbSetBuildingSource('manual')">Switch to manual pricing</button>
+    </div>
+
+    <div id="cb_calcWrap">
+      <div class="field-group">
+        <label class="field-label">Building Type</label>
+        <select id="cb_calcTypeSelect" onchange="cb_setCalcType(this.value)" style="display:none;">
+          <option value="">Select type...</option>
+          <option value="UUTX">Utility</option>
+          <option value="USUTX">Side Utility</option>
+          <option value="UC">Cabin</option>
+          <option value="UCC">Center Cabin</option>
+          <option value="USC">Side Cabin</option>
+          <option value="UPC">Premier Cabin</option>
+          <option value="UG">Garage</option>
+          <option value="UPGS">Garden Shed</option>
+          <option value="UPCS">Cottage Shed</option>
+          <option value="ULB">Lofted Barn</option>
+          <option value="USLB">Side Lofted Barn</option>
+          <option value="ULBC">LB Cabin</option>
+          <option value="UCLBC">Ctr LB Cabin</option>
+          <option value="USLBC">Side LB Cabin</option>
+          <option value="UPLBC">Premier LB Cabin</option>
+          <option value="ULG">Lofted Garage</option>
+        </select>
+        <button type="button" class="style-picker-trigger" onclick="openStylePicker('cb_calcTypeSelect')" id="cb_calcTypeSelect_trigger">
+          <span class="spt-placeholder"><svg viewBox="0 0 24 24" fill="none" style="width:28px;height:28px;display:block;"><path fill="rgba(80,50,30,0.12)" stroke="#8B5E3C" stroke-width="1.6" d="M3 9.5L12 3l9 6.5V21H4a1 1 0 0 1-1-1V9.5z"/></svg></span>
+          <span class="spt-text"><span class="spt-placeholder-text">Select type...</span></span>
+          <span class="spt-arrow">▼</span>
+        </button>
+      </div>
+      <div class="row2">
+        <div class="field-group"><label class="field-label">Width</label>
+          <select id="cb_calcWidth" onchange="cb_onCalcWidthChange(this.value)">
+            <option value="">Width</option>
+            <option value="8">8'</option><option value="10">10'</option><option value="12">12'</option>
+            <option value="14">14'</option><option value="16">16'</option>
+          </select>
+        </div>
+        <div class="field-group"><label class="field-label">Length</label>
+          <select id="cb_calcLength" onchange="cb_onCalcLengthChange(this.value)"><option value="">Length</option></select>
+        </div>
+      </div>
+      <div class="sel-opts-section">
+        <div class="sel-opts-head">
+          <span class="sel-opts-title">SELECTED OPTIONS (<span id="cb_selOptsCount">0</span>)</span>
+          <button type="button" id="cb_addOptionBtn" class="sel-opts-add-btn" disabled onclick="cb_openOptionsSheet()">Add Options</button>
+        </div>
+        <div id="cb_optsSummary" class="sel-opts-grid opts-summary-wrap"></div>
+      </div>
+      <div class="cb-price-box">
+        <div class="label">Contract Sales Price</div>
+        <div class="amount zero" id="cb_quickSalePrice">&#8212;</div>
+      </div>
+      <div id="cb_priceBreakdown" style="font-size:0.78rem;line-height:1.55;color:var(--cream);margin-top:8px;"></div>
+      <div class="row2" style="margin-top:10px;">
+        <div class="field-group"><label class="field-label">Sale % off list</label>
+          <input type="number" id="cb_salePercent" min="0" max="100" step="0.1" placeholder="0" oninput="cb_onSaleInput(this)">
+        </div>
+        <div class="field-group"><label class="field-label">Dealer discount %</label>
+          <input type="number" id="cb_dealerDiscount" min="0" max="5" step="1" placeholder="0" oninput="cb_onDealerInput(this)">
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-primary" id="cb_bldNext" onclick="cbValidateBuilding()">Continue &#8594;</button>
+    <button class="btn-secondary" onclick="cbGo('cbOrder')">&#8592; Back</button>
+  </div>
+</div>
+
+<!-- SCREEN CB — OPTION MERGE (when &gt;6 option lines) -->
+<div class="screen" id="cbMerge">
+  <div class="header">
+    <button class="back-btn" onclick="cbGo('cbBuilding')">&#8592;</button>
+    <div class="header-title">COMBINE OPTIONS</div>
+  </div>
+  <div style="padding:16px;padding-bottom:80px;">
+    <div class="cb-steps" id="cbSteps3"></div>
+    <div class="cb-title">Combine Option Lines</div>
+    <div class="cb-sub">RTOStreamline has 6 priced option rows plus 2 free-text slots. Select lines to merge, then tap Combine Selected. Repeat until <strong>8 or fewer</strong> lines remain.</div>
+    <div id="cb_mergeCount" style="font-size:0.78rem;color:var(--wheat);margin-bottom:10px;"></div>
+    <div id="cb_mergeList"></div>
+    <div style="display:flex;gap:8px;margin-top:12px;">
+      <button type="button" class="btn-secondary" style="flex:1;margin-top:0;" onclick="cbMergeCombineSelected()">Combine Selected</button>
+      <button type="button" class="btn-primary" style="flex:1;margin-top:0;" id="cb_mergeContinueBtn" onclick="cbMergeContinue()">Continue &#8594;</button>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN CB4 — CONTRACT TYPE -->
+<div class="screen" id="cbType">
+  <div class="header">
+    <button class="back-btn" onclick="cbGo('cbBuilding')">&#8592;</button>
+    <div class="header-title">CONTRACT TYPE</div>
+  </div>
+  <div style="padding:16px;padding-bottom:80px;">
+    <div class="cb-steps" id="cbSteps4"></div>
     <div class="cb-title">Contract Type</div>
     <div class="cb-sub">Choose the agreement type. This shapes which fields the Fill Guide produces.</div>
     <button class="cb-opt" data-type="cash" onclick="cbPickType(this)">
@@ -5996,7 +6144,7 @@ select:focus {
       <div class="cb-opt-sub">Pulls landlord, references, and employer from intake. Only ID/SSN/DOB collected at signing.</div>
     </button>
     <button class="btn-primary" onclick="cbValidateType()">Build Fill Guide &#8594;</button>
-    <button class="btn-secondary" onclick="cbGo('cbOrder')">&#8592; Back</button>
+    <button class="btn-secondary" onclick="cbGo('cbBuilding')">&#8592; Back</button>
   </div>
 </div>
 
@@ -6007,7 +6155,7 @@ select:focus {
     <div class="header-title">FILL GUIDE</div>
   </div>
   <div style="padding:16px;padding-bottom:80px;">
-    <div class="cb-steps" id="cbSteps4"></div>
+    <div class="cb-steps" id="cbSteps5"></div>
     <div class="cb-title" id="cb_guideTitle">Fill Guide</div>
     <div class="cb-sub">Tap any row to copy it, then paste into the matching RTOStreamline field.</div>
     <div class="cb-summary" id="cb_guideSummary"></div>
@@ -6018,6 +6166,483 @@ select:focus {
   </div>
 </div>
 
+
+<!-- CB duplicate options sheet (Contract Bridge only) -->
+<div id="cb_optionsSheetOverlay" class="opt-sheet-overlay" onclick="if(event.target===this)cb_closeOptionsSheet()" aria-hidden="true"></div>
+      <div id="cb_optionsSheet" class="opt-sheet" role="dialog" aria-modal="true" aria-labelledby="optionsSheetTitle">
+        <div class="opt-sheet-head">
+          <h3 id="cb_optionsSheetTitle">Add option</h3>
+          <button type="button" class="opt-sheet-close" onclick="cb_closeOptionsSheet()" aria-label="Close">&#10005;</button>
+        </div>
+        <input type="search" id="cb_optionsSheetSearch" class="opt-sheet-search" placeholder="Search options&hellip;" autocomplete="off" oninput="cb_optWizardFilterSearch(this.value)">
+        <button type="button" class="opt-sheet-std-btn owp-opt-tile" id="cb_optSheetStdLink" onclick="cb_optWizardShowStdSection()" style="display:none;">Add standard options</button>
+        <div id="cb_optWizard" style="display:none !important;" class="opt-wizard">
+          <div class="opt-wiz-viewport">
+            <div id="cb_optWizPickerPane" class="opt-wiz-pane"></div>
+          </div>
+        </div>
+        <div id="cb_optionsSheetScroll" class="opt-sheet-scroll opt-sheet-legacy-list">
+          <div id="cb_removeStdSheetSection" class="opt-sheet-section" style="display:none;">
+            <div class="opt-sheet-section-title">Add standard options</div>
+            <p style="font-size:0.72rem;color:rgba(232,200,122,0.55);margin:0 0 8px;line-height:1.4;">Re-add standards you removed from the quote.</p>
+            <div id="cb_removeStdList"></div>
+          </div>
+      <!-- SIDING & EXTERIOR -->
+      <div class="opt-category">
+        <button class="opt-cat-header" onclick="cb_toggleCat('catExterior')">
+          <span>🏠 Siding &amp; Exterior</span>
+          <span class="opt-cat-count" id="cb_countExterior"></span>
+          <span class="opt-cat-arrow">▼</span>
+        </button>
+        <div class="opt-cat-body" id="cb_catExterior">
+
+          <!-- Metal Upgrade — auto from width -->
+          <div class="opt-row" id="cb_row_metal">
+            <div class="opt-row-toggle" onclick="cb_toggleOpt('metal')">
+              <div class="opt-check" id="cb_chk_metal"></div>
+              <div class="opt-info">
+                <div class="opt-name">Metal Upgrade</div>
+                <div class="opt-auto-price" id="cb_price_metal">$500–$1,100</div>
+              </div>
+            </div>
+            <div class="opt-detail" id="cb_detail_metal" style="display:none;">
+              <div class="opt-auto-note">💡 Price auto-set from building width</div>
+            </div>
+          </div>
+
+          <!-- Roof Felt — auto from length -->
+          <div class="opt-row" id="cb_row_rooffelt">
+            <div class="opt-row-toggle" onclick="cb_toggleOpt('rooffelt')">
+              <div class="opt-check" id="cb_chk_rooffelt"></div>
+              <div class="opt-info">
+                <div class="opt-name">Roof Felt</div>
+                <div class="opt-auto-price" id="cb_price_rooffelt">$17/lin ft</div>
+              </div>
+            </div>
+            <div class="opt-detail" id="cb_detail_rooffelt" style="display:none;">
+              <div class="opt-auto-note" id="cb_note_rooffelt">💡 Auto-calculated from building length</div>
+              <div class="opt-calc-preview" id="cb_prev_rooffelt"></div>
+            </div>
+          </div>
+
+          <!-- House Wrap -->
+          <div class="opt-row" id="cb_row_housewrap">
+            <div class="opt-row-toggle" onclick="cb_toggleOpt('housewrap')">
+              <div class="opt-check" id="cb_chk_housewrap"></div>
+              <div class="opt-info">
+                <div class="opt-name">House Wrap</div>
+                <div class="opt-auto-price" id="cb_price_housewrap">$17/lin ft</div>
+              </div>
+            </div>
+            <div class="opt-detail" id="cb_detail_housewrap" style="display:none;">
+              <div class="opt-auto-note" id="cb_note_housewrap">💡 Auto-calculated from building length</div>
+              <div class="opt-calc-preview" id="cb_prev_housewrap"></div>
+            </div>
+          </div>
+
+          <!-- Paint Upgrade (Two-Tone or Custom Paint) -->
+          <div class="opt-row" id="cb_row_paintupgrade">
+            <div class="opt-row-toggle" onclick="cb_toggleOpt('paintupgrade')">
+              <div class="opt-check" id="cb_chk_paintupgrade"></div>
+              <div class="opt-info">
+                <div class="opt-name">Paint Upgrade</div>
+                <div class="opt-auto-price" id="cb_price_paintupgrade">$200</div>
+              </div>
+            </div>
+            <div class="opt-detail" id="cb_detail_paintupgrade" style="display:none;">
+              <div id="cb_c_paintRows"></div>
+              <button type="button" onclick="cb_calcAddRow('paint')" style="-webkit-appearance:none;appearance:none;margin-top:6px;width:100%;padding:7px;background:rgba(196,81,31,0.12);border:1.5px dashed rgba(196,81,31,0.4);border-radius:8px;color:var(--wheat);font-size:0.82rem;letter-spacing:1px;cursor:pointer;">+ Add Paint Option</button>
+              <div class="opt-calc-preview" id="cb_prev_paintupgrade"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- STRUCTURE -->
+      <div class="opt-category">
+        <button class="opt-cat-header" onclick="cb_toggleCat('catStructure')">
+          <span>🏗️ Structure</span>
+          <span class="opt-cat-count" id="cb_countStructure"></span>
+          <span class="opt-cat-arrow">▼</span>
+        </button>
+        <div class="opt-cat-body" id="cb_catStructure">
+
+          <!-- Double Top Plate — auto from length -->
+          <div class="opt-row" id="cb_row_doubletopplate">
+            <div class="opt-row-toggle" onclick="cb_toggleOpt('doubletopplate')">
+              <div class="opt-check" id="cb_chk_doubletopplate"></div>
+              <div class="opt-info">
+                <div class="opt-name">Double Top Plate</div>
+                <div class="opt-auto-price" id="cb_price_doubletopplate">$5/lin ft</div>
+              </div>
+            </div>
+            <div class="opt-detail" id="cb_detail_doubletopplate" style="display:none;">
+              <div class="opt-auto-note" id="cb_note_doubletopplate">💡 Auto-calculated from building length</div>
+              <div class="opt-calc-preview" id="cb_prev_doubletopplate"></div>
+            </div>
+          </div>
+
+          <!-- 4" Eaves — flat $1,000 -->
+          <div class="opt-row" id="cb_row_4ineves">
+            <div class="opt-row-toggle" onclick="cb_toggleOpt('4ineves')">
+              <div class="opt-check" id="cb_chk_4ineves"></div>
+              <div class="opt-info">
+                <div class="opt-name">4″ Eaves</div>
+                <div class="opt-auto-price" id="cb_price_4ineves">$1,000</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tall Wall -->
+          <div class="opt-row" id="cb_row_tallwall">
+            <div class="opt-row-toggle" onclick="cb_toggleOpt('tallwall')">
+              <div class="opt-check" id="cb_chk_tallwall"></div>
+              <div class="opt-info">
+                <div class="opt-name">Tall Wall</div>
+                <div class="opt-auto-price" id="cb_price_tallwall">Select a lofted style to enable</div>
+              </div>
+            </div>
+            <div class="opt-detail" id="cb_detail_tallwall" style="display:none;">
+              <div class="opt-auto-note">💡 Price auto-set from width &amp; length</div>
+            </div>
+          </div>
+
+
+          <!-- 2x6 Upgrade — auto from length -->
+          <div class="opt-row" id="cb_row_2x6">
+            <div class="opt-row-toggle" onclick="cb_toggleOpt('2x6')">
+              <div class="opt-check" id="cb_chk_2x6"></div>
+              <div class="opt-info">
+                <div class="opt-name">2&#215;6 Upgrade</div>
+                <div class="opt-auto-price" id="cb_price_2x6">$35/lin ft</div>
+              </div>
+            </div>
+            <div class="opt-detail" id="cb_detail_2x6" style="display:none;">
+              <div class="opt-auto-note">💡 Default linear feet from building length</div>
+              <div id="cb_c_2x6Rows"></div>
+              <button type="button" onclick="cb_calcAddRow('x6')" style="-webkit-appearance:none;appearance:none;margin-top:6px;width:100%;padding:7px;background:rgba(196,81,31,0.12);border:1.5px dashed rgba(196,81,31,0.4);border-radius:8px;color:var(--wheat);font-size:0.82rem;letter-spacing:1px;cursor:pointer;">+ Add 2×6 Option</button>
+              <div class="opt-calc-preview" id="cb_prev_2x6"></div>
+            </div>
+          </div>
+
+          <!-- 16" OC Roof Trusses — auto from length -->
+          <div class="opt-row" id="cb_row_rooftrusses">
+            <div class="opt-row-toggle" onclick="cb_toggleOpt('rooftrusses')">
+              <div class="opt-check" id="cb_chk_rooftrusses"></div>
+              <div class="opt-info">
+                <div class="opt-name">16" OC Roof Trusses</div>
+                <div class="opt-auto-price" id="cb_price_rooftrusses">$25/lin ft</div>
+              </div>
+            </div>
+            <div class="opt-detail" id="cb_detail_rooftrusses" style="display:none;">
+              <div class="opt-auto-note" id="cb_note_rooftrusses">💡 Auto-calculated from building length (8–12' wide)</div>
+              <div class="opt-calc-preview" id="cb_prev_rooftrusses"></div>
+            </div>
+          </div>
+
+          <!-- 12" OC Floor Joists — auto from length -->
+          <div class="opt-row" id="cb_row_floorjoists">
+            <div class="opt-row-toggle" onclick="cb_toggleOpt('floorjoists')">
+              <div class="opt-check" id="cb_chk_floorjoists"></div>
+              <div class="opt-info">
+                <div class="opt-name">12" OC Floor Joists</div>
+                <div class="opt-auto-price" id="cb_price_floorjoists">$25/lin ft</div>
+              </div>
+            </div>
+            <div class="opt-detail" id="cb_detail_floorjoists" style="display:none;">
+              <div class="opt-auto-note" id="cb_note_floorjoists">💡 Auto-calculated from building length</div>
+              <div class="opt-calc-preview" id="cb_prev_floorjoists"></div>
+            </div>
+          </div>
+
+          <!-- Extra Porch -->
+          <div class="opt-row" id="cb_row_porch">
+            <div class="opt-row-toggle" id="cb_porch_toggle" onclick="if(CABIN_TYPES.indexOf(calcState.type)>=0)cb_toggleOpt('porch')">
+              <div class="opt-check" id="cb_chk_porch"></div>
+              <div class="opt-info">
+                <div class="opt-name">Extra Porch</div>
+                <div class="opt-desc" id="cb_price_porch">$75/lin ft</div>
+              </div>
+            </div>
+            <div class="opt-detail" id="cb_detail_porch" style="display:none;">
+              <div class="opt-field-row">
+                <label>Lin ft</label>
+                <input type="number" id="cb_c_porchFt" placeholder="Enter feet" min="1" oninput="cb_renderCalcQuote();cb_updateQuickPrice()">
+              </div>
+              <div class="opt-calc-preview" id="cb_prev_porch"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- DOORS & WINDOWS -->
+      <div class="opt-category">
+        <button class="opt-cat-header" onclick="cb_toggleCat('catDoors')">
+          <span>🚪 Doors &amp; Windows</span>
+          <span class="opt-cat-count" id="cb_countDoors"></span>
+          <span class="opt-cat-arrow">▼</span>
+        </button>
+        <div class="opt-cat-body" id="cb_catDoors">
+
+          <!-- Door Options -->
+          <div class="opt-row" id="cb_row_door36">
+            <div class="opt-row-toggle" onclick="cb_toggleOpt('door36')">
+              <div class="opt-check" id="cb_chk_door36"></div>
+              <div class="opt-info">
+                <div class="opt-name">Door Options</div>
+                <div class="opt-desc" id="cb_price_door36">$150–$475</div>
+              </div>
+            </div>
+            <div class="opt-detail" id="cb_detail_door36" style="display:none;">
+              <div id="cb_c_doorRows"></div>
+              <button type="button" onclick="cb_calcAddRow('doors')" style="-webkit-appearance:none;appearance:none;margin-top:6px;width:100%;padding:7px;background:rgba(196,81,31,0.12);border:1.5px dashed rgba(196,81,31,0.4);border-radius:8px;color:var(--wheat);font-size:0.82rem;letter-spacing:1px;cursor:pointer;">+ Add Door</button>
+            </div>
+          </div>
+
+          <!-- Windows (Standard + Vinyl combined) -->
+          <div class="opt-row" id="cb_row_window">
+            <div class="opt-row-toggle" onclick="cb_toggleOpt('window')">
+              <div class="opt-check" id="cb_chk_window"></div>
+              <div class="opt-info">
+                <div class="opt-name">Windows</div>
+                <div class="opt-desc" id="cb_price_window">$115–$400 each</div>
+              </div>
+            </div>
+            <div class="opt-detail" id="cb_detail_window" style="display:none;">
+              <div id="cb_c_windowRows"></div>
+              <button type="button" onclick="cb_calcAddRow('windows')" style="-webkit-appearance:none;appearance:none;margin-top:6px;width:100%;padding:7px;background:rgba(196,81,31,0.12);border:1.5px dashed rgba(196,81,31,0.4);border-radius:8px;color:var(--wheat);font-size:0.82rem;letter-spacing:1px;cursor:pointer;">+ Add Window</button>
+            </div>
+          </div>
+
+          <!-- Garage / Rollup Door -->
+          <div class="opt-row" id="cb_row_garagedoor">
+            <div class="opt-row-toggle" onclick="cb_toggleOpt('garagedoor')">
+              <div class="opt-check" id="cb_chk_garagedoor"></div>
+              <div class="opt-info">
+                <div class="opt-name">Garage / Rollup Door</div>
+                <div class="opt-desc" id="cb_price_garagedoor">$525–$1,890</div>
+              </div>
+            </div>
+            <div class="opt-detail" id="cb_detail_garagedoor" style="display:none;">
+              <div id="cb_c_garageRows"></div>
+              <button type="button" onclick="cb_calcAddRow('garage')" style="-webkit-appearance:none;appearance:none;margin-top:6px;width:100%;padding:7px;background:rgba(196,81,31,0.12);border:1.5px dashed rgba(196,81,31,0.4);border-radius:8px;color:var(--wheat);font-size:0.82rem;letter-spacing:1px;cursor:pointer;">+ Add Garage Door</button>
+            </div>
+          </div>
+
+          <!-- Cutouts -->
+          <div class="opt-row" id="cb_row_cutouts">
+            <div class="opt-row-toggle" onclick="cb_toggleOpt('cutouts')">
+              <div class="opt-check" id="cb_chk_cutouts"></div>
+              <div class="opt-info">
+                <div class="opt-name">Cutouts</div>
+                <div class="opt-desc" id="cb_price_cutouts">$50–$125 each</div>
+              </div>
+            </div>
+            <div class="opt-detail" id="cb_detail_cutouts" style="display:none;">
+              <div id="cb_c_cutoutRows"></div>
+              <button type="button" onclick="cb_calcAddRow('cutouts')" style="-webkit-appearance:none;appearance:none;margin-top:6px;width:100%;padding:7px;background:rgba(196,81,31,0.12);border:1.5px dashed rgba(196,81,31,0.4);border-radius:8px;color:var(--wheat);font-size:0.82rem;letter-spacing:1px;cursor:pointer;">+ Add Cutout</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- INTERIOR -->
+      <div class="opt-category">
+        <button class="opt-cat-header" onclick="cb_toggleCat('catInterior')">
+          <span>🪚 Interior</span>
+          <span class="opt-cat-count" id="cb_countInterior"></span>
+          <span class="opt-cat-arrow">▼</span>
+        </button>
+        <div class="opt-cat-body" id="cb_catInterior">
+
+          <!-- 3/4" Flooring — auto from size -->
+          <div class="opt-row" id="cb_row_flooring">
+            <div class="opt-row-toggle" onclick="cb_toggleOpt('flooring')">
+              <div class="opt-check" id="cb_chk_flooring"></div>
+              <div class="opt-info">
+                <div class="opt-name">¾" Flooring Upgrade</div>
+                <div class="opt-auto-price" id="cb_price_flooring">$2/sq ft</div>
+              </div>
+            </div>
+            <div class="opt-detail" id="cb_detail_flooring" style="display:none;">
+              <div class="opt-auto-note" id="cb_note_flooring">💡 Sq ft auto-calculated from building size</div>
+              <div class="opt-field-row">
+                <label>Sq ft <span class="opt-override">(override)</span></label>
+                <input type="number" id="cb_c_flooringSqFt" placeholder="Auto" min="1" oninput="cb_renderCalcQuote();cb_updateQuickPrice()">
+              </div>
+              <div class="opt-calc-preview" id="cb_prev_flooring"></div>
+            </div>
+          </div>
+
+          <!-- Shelves / Workbench -->
+          <div class="opt-row" id="cb_row_shelves">
+            <div class="opt-row-toggle" onclick="cb_toggleOpt('shelves')">
+              <div class="opt-check" id="cb_chk_shelves"></div>
+              <div class="opt-info">
+                <div class="opt-name">Shelves / Workbench</div>
+                <div class="opt-desc" id="cb_price_shelves">$25/lin ft</div>
+              </div>
+            </div>
+            <div class="opt-detail" id="cb_detail_shelves" style="display:none;">
+              <div class="opt-field-row">
+                <label>Lin ft</label>
+                <input type="number" id="cb_c_shelvesLinFt" placeholder="Enter feet" min="1" oninput="cb_renderCalcQuote();cb_updateQuickPrice()">
+              </div>
+              <div class="opt-calc-preview" id="cb_prev_shelves"></div>
+            </div>
+          </div>
+
+          <!-- Interior Walls -->
+          <div class="opt-row" id="cb_row_intwall">
+            <div class="opt-row-toggle" onclick="cb_toggleOpt('intwall')">
+              <div class="opt-check" id="cb_chk_intwall"></div>
+              <div class="opt-info">
+                <div class="opt-name">Interior Walls</div>
+                <div class="opt-desc" id="cb_price_intwall">$25–$45/lin ft</div>
+              </div>
+            </div>
+            <div class="opt-detail" id="cb_detail_intwall" style="display:none;">
+              <div id="cb_c_intwallRows"></div>
+              <button type="button" onclick="cb_calcAddRow('intwall')" style="-webkit-appearance:none;appearance:none;margin-top:6px;width:100%;padding:7px;background:rgba(196,81,31,0.12);border:1.5px dashed rgba(196,81,31,0.4);border-radius:8px;color:var(--wheat);font-size:0.82rem;letter-spacing:1px;cursor:pointer;">+ Add Interior Wall</button>
+              <div class="opt-calc-preview" id="cb_prev_intwall"></div>
+            </div>
+          </div>
+
+          <!-- OSB Interior Walls (wizard-managed) -->
+          <input type="hidden" id="cb_c_osbIntwallFt" value="">
+
+          <!-- Extra Loft -->
+          <div class="opt-row" id="cb_row_loft">
+            <div class="opt-row-toggle" onclick="cb_toggleOpt('loft')">
+              <div class="opt-check" id="cb_chk_loft"></div>
+              <div class="opt-info">
+                <div class="opt-name">Extra Loft</div>
+                <div class="opt-desc" id="cb_price_loft">$30/lin ft</div>
+              </div>
+            </div>
+            <div class="opt-detail" id="cb_detail_loft" style="display:none;">
+              <div class="opt-field-row">
+                <label>Lin ft</label>
+                <input type="number" id="cb_c_loftFt" placeholder="Enter feet" min="1" oninput="cb_renderCalcQuote();cb_updateQuickPrice()">
+              </div>
+              <div class="opt-calc-preview" id="cb_prev_loft"></div>
+            </div>
+          </div>
+
+          <!-- Drop Loft -->
+          <div class="opt-row" id="cb_row_droploft">
+            <div class="opt-row-toggle" onclick="cb_toggleOpt('droploft')">
+              <div class="opt-check" id="cb_chk_droploft"></div>
+              <div class="opt-info">
+                <div class="opt-name">Drop Loft</div>
+                <div class="opt-desc" id="cb_price_droploft">$200</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+
+      <!-- Insulation -->
+      <div class="opt-category">
+        <button class="opt-cat-header" onclick="cb_toggleCat('catInsulation')">
+          <span>🧱 Insulation</span>
+          <span class="opt-cat-count" id="cb_countInsulation"></span>
+          <span class="opt-cat-arrow">▼</span>
+        </button>
+        <div class="opt-cat-body" id="cb_catInsulation">
+
+          <div class="opt-row" id="cb_row_ins_roof">
+            <div class="opt-row-toggle" onclick="cb_toggleOpt('ins_roof')">
+              <div class="opt-check" id="cb_chk_ins_roof"></div>
+              <div class="opt-info">
+                <div class="opt-name">Roof</div>
+                <div class="opt-auto-price" id="cb_price_ins_roof">—</div>
+              </div>
+            </div>
+            <div class="opt-detail" id="cb_detail_ins_roof" style="display:none;">
+              <div class="opt-auto-note">💡 Uses PDF price by style + size. If not found, enter manual price.</div>
+              <div class="opt-field-row">
+                <label>Manual Price</label>
+                <input type="number" id="cb_c_manual_ins_roof" placeholder="Enter manual price if needed" min="0" step="1" oninput="cb_renderCalcQuote();cb_updateQuickPrice()">
+              </div>
+              <div class="opt-calc-preview" id="cb_prev_ins_roof"></div>
+            </div>
+          </div>
+
+          <div class="opt-row" id="cb_row_ins_wallsroof">
+            <div class="opt-row-toggle" onclick="cb_toggleOpt('ins_wallsroof')">
+              <div class="opt-check" id="cb_chk_ins_wallsroof"></div>
+              <div class="opt-info">
+                <div class="opt-name">Walls and Roof Deck</div>
+                <div class="opt-auto-price" id="cb_price_ins_wallsroof">—</div>
+              </div>
+            </div>
+            <div class="opt-detail" id="cb_detail_ins_wallsroof" style="display:none;">
+              <div class="opt-auto-note">💡 Uses PDF price by style + size. If not found, enter manual price.</div>
+              <div class="opt-field-row">
+                <label>Manual Price</label>
+                <input type="number" id="cb_c_manual_ins_wallsroof" placeholder="Enter manual price if needed" min="0" step="1" oninput="cb_renderCalcQuote();cb_updateQuickPrice()">
+              </div>
+              <div class="opt-calc-preview" id="cb_prev_ins_wallsroof"></div>
+            </div>
+          </div>
+
+          <div class="opt-row" id="cb_row_ins_floor_foamboard">
+            <div class="opt-row-toggle" onclick="cb_toggleOpt('ins_floor_foamboard')">
+              <div class="opt-check" id="cb_chk_ins_floor_foamboard"></div>
+              <div class="opt-info">
+                <div class="opt-name">Floor - 2&quot; Foam Board</div>
+                <div class="opt-auto-price" id="cb_price_ins_floor_foamboard">—</div>
+              </div>
+            </div>
+            <div class="opt-detail" id="cb_detail_ins_floor_foamboard" style="display:none;">
+              <div class="opt-auto-note">💡 Uses PDF price by size. If not found, enter manual price.</div>
+              <div class="opt-field-row">
+                <label>Manual Price</label>
+                <input type="number" id="cb_c_manual_ins_floor_foamboard" placeholder="Enter manual price if needed" min="0" step="1" oninput="cb_renderCalcQuote();cb_updateQuickPrice()">
+              </div>
+              <div class="opt-calc-preview" id="cb_prev_ins_floor_foamboard"></div>
+            </div>
+          </div>
+
+          <div class="opt-row" id="cb_row_ins_floor_sprayfoam">
+            <div class="opt-row-toggle" onclick="cb_toggleOpt('ins_floor_sprayfoam')">
+              <div class="opt-check" id="cb_chk_ins_floor_sprayfoam"></div>
+              <div class="opt-info">
+                <div class="opt-name">Floor - 2&quot; Spray Foam</div>
+                <div class="opt-auto-price" id="cb_price_ins_floor_sprayfoam">—</div>
+              </div>
+            </div>
+            <div class="opt-detail" id="cb_detail_ins_floor_sprayfoam" style="display:none;">
+              <div class="opt-auto-note">💡 Uses PDF price by size. If not found, enter manual price.</div>
+              <div class="opt-field-row">
+                <label>Manual Price</label>
+                <input type="number" id="cb_c_manual_ins_floor_sprayfoam" placeholder="Enter manual price if needed" min="0" step="1" oninput="cb_renderCalcQuote();cb_updateQuickPrice()">
+              </div>
+              <div class="opt-calc-preview" id="cb_prev_ins_floor_sprayfoam"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+        </div>
+        <div class="opt-sheet-footer opt-sheet-footer-wizard">
+          <button type="button" class="btn-secondary" id="cb_optWizBackBtn" onclick="optWizardHideStdSection()" style="display:none;">&#8592; Options</button>
+          <button type="button" class="btn-primary" id="cb_optWizDoneBtn" onclick="optSheetDone()">Done</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Step 1: Review your quote -->
+  
 <!-- ============================================================
      SCREEN: PURCHASE FORM
      ============================================================ -->
@@ -7514,6 +8139,7 @@ var fbLeadsUnsub=null;
 var fbAppointmentsUnsub=null;
 var crmActivitiesUnsub=null;
 var crmState={leads:[],selectedLeadId:'',activities:[],intentNewLead:false};
+var crmPurgeLastRunMs=0;
 var contactsListState={filter:'all'};
 var SETTINGS_LOCAL_KEY='gss_settings';
 var SETTINGS_CLOUD_COLLECTION='appSettings';
@@ -7871,21 +8497,71 @@ async function invUploadPhotoToDrive(dataUrl,kind,serialNumber){
 }
 function crmNormalizeStatus(s){
   var v=String(s||'').toLowerCase();
-  if(v==='interested'||v==='ordered'||v==='delivered') return v;
+  if(v==='interested'||v==='ordered'||v==='delivered'||v==='lost') return v;
   if(v==='won') return 'ordered';
-  if(v==='new'||v==='contacted'||v==='quoted'||v==='lost'||v==='') return 'interested';
+  if(v==='new'||v==='contacted'||v==='quoted'||v==='') return 'interested';
   return 'interested';
 }
 function crmStatusToFirestore(s){
-  var norm=crmNormalizeStatus(s);
-  if(norm==='ordered') return 'won';
-  if(norm==='delivered') return 'won';
-  return 'new';
+  return crmNormalizeStatus(s);
 }
 function crmStatusDisplayLabel(norm){
   if(norm==='ordered') return 'Ordered';
   if(norm==='delivered') return 'Delivered';
+  if(norm==='lost') return 'Lost';
   return 'Interested';
+}
+function crmOptionalTsToIso(v){
+  if(!v) return '';
+  if(typeof v==='string') return v;
+  if(v&&typeof v.toDate==='function') return v.toDate().toISOString();
+  if(v&&v._seconds) return new Date(v._seconds*1000).toISOString();
+  if(v&&v.seconds) return new Date(v.seconds*1000).toISOString();
+  var d=new Date(v);
+  return isNaN(d.getTime())?'':d.toISOString();
+}
+function crmLostDaysRemaining(lead){
+  if(crmNormalizeStatus(lead.status)!=='lost') return null;
+  var lostAt=lead.lostAt;
+  if(!lostAt) return 30;
+  var ms=new Date(lostAt).getTime();
+  if(!isFinite(ms)) return 30;
+  var remain=30-Math.floor((Date.now()-ms)/86400000);
+  return Math.max(0,remain);
+}
+function crmStatusChipClass(lead){
+  return 'status-'+crmNormalizeStatus(lead.status);
+}
+function crmStatusChipLabel(lead){
+  var norm=crmNormalizeStatus(lead.status);
+  var label=crmStatusDisplayLabel(norm);
+  if(norm==='lost'){
+    var days=crmLostDaysRemaining(lead);
+    if(days!==null) label+=' · deletes in '+days+'d';
+  }
+  return label;
+}
+function crmNormPhoneDigits(phone){
+  var d=String(phone||'').replace(/\D/g,'');
+  if(d.length>=10) return d.slice(-10);
+  return d;
+}
+function crmNormEmailKey(email){
+  var e=String(email||'').trim().toLowerCase();
+  return e.indexOf('@')>0?e:'';
+}
+function crmFindDuplicateLead(contact,excludeId){
+  var leads=crmState.leads||[];
+  var phone=crmNormPhoneDigits(contact&&contact.phone);
+  var email=crmNormEmailKey(contact&&contact.email);
+  if(!phone&&!email) return null;
+  for(var i=0;i<leads.length;i++){
+    var lead=leads[i];
+    if(excludeId&&lead.id===excludeId) continue;
+    if(phone&&crmNormPhoneDigits(lead.contact&&lead.contact.phone)===phone) return lead;
+    if(email&&crmNormEmailKey(lead.contact&&lead.contact.email)===email) return lead;
+  }
+  return null;
 }
 function leadTouchMs(lead){
   var u=0, lm=0;
@@ -7940,7 +8616,9 @@ function openFollowups(){
 }
 async function crmLeadsBootstrap(){
   if(!(await firebaseEnsureAuthed())) return false;
-  await crmFetchLeadsOnce();
+  if(!fbLeadsUnsub){
+    await crmFetchLeadsOnce();
+  }
   await crmEnsureLeadsListener();
   return true;
 }
@@ -7999,7 +8677,7 @@ function contactsRenderList(){
     return;
   }
   wrap.innerHTML=filtered.map(function(lead){
-    var st=crmStatusDisplayLabel(crmNormalizeStatus(lead.status));
+    var st=crmStatusChipLabel(lead);
     var esc=function(t){return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/'/g,'&#39;');};
     var id=esc(lead.id);
     return '<div class="crm-lead-item" onclick="navigateToLeadInCrm(\''+id+'\')">'+
@@ -8020,7 +8698,7 @@ function followupsRenderList(){
   var esc=function(t){return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/'/g,'&#39;');};
   wrap.innerHTML=leads.slice(0,60).map(function(lead){
     var id=esc(lead.id);
-    var st=crmStatusDisplayLabel(crmNormalizeStatus(lead.status));
+    var st=crmStatusChipLabel(lead);
     return '<div class="crm-lead-item" onclick="navigateToLeadInCrm(\''+id+'\')">'+
       '<div style="font-size:0.84rem;font-weight:700;color:var(--wheat);">'+esc((lead.contact&&lead.contact.name)||'Unnamed')+'</div>'+
       '<div style="font-size:0.72rem;color:rgba(245,240,232,0.75);margin-top:2px;">'+st+' · '+esc(formatLeadTouchShort(lead))+'</div>'+
@@ -8150,9 +8828,11 @@ function crmMapLeadFromDoc(doc){
   d.id=(doc&&doc.id)||d.id||'';
   d.createdAt=firebaseTsToIso(d.createdAt);
   d.updatedAt=firebaseTsToIso(d.updatedAt);
+  d.lostAt=crmOptionalTsToIso(d.lostAt);
   return d;
 }
 function crmOnLeadsDataUpdated(){
+  void crmPurgeExpiredLostLeads();
   if(crmState.selectedLeadId){
     var active=crmState.leads.find(function(l){return l.id===crmState.selectedLeadId;});
     var detailActive=document.getElementById('screenCRMDetail');
@@ -8216,15 +8896,16 @@ function crmDetailToolbarHtml(leadId){
         '<option value="interested">Interested</option>'+
         '<option value="ordered">Ordered</option>'+
         '<option value="delivered">Delivered</option>'+
+        '<option value="lost">Lost</option>'+
       '</select>'+
       '<select class="crm-action-select" aria-label="More actions" onchange="crmDetailMorePick(this)">'+
         '<option value="">More actions…</option>'+
         '<option value="intake">Send intake form</option>'+
         '<option value="rto">Copy RTO link</option>'+
         '<option value="note">Add quick note</option>'+
-        '<option value="delete">Delete lead</option>'+
       '</select>'+
     '</div>'+
+    '<button type="button" class="crm-detail-btn danger crm-detail-delete-btn" onclick="crmDeleteLeadById(\''+id+'\')">Delete Lead</button>'+
   '</div>';
 }
 function crmDetailStatusPick(sel){
@@ -8238,7 +8919,6 @@ function crmDetailMorePick(sel){
   var v=sel?sel.value:'';
   if(sel) sel.value='';
   if(!v||!leadId) return;
-  if(v==='delete'){ void crmDeleteLeadById(leadId); return; }
   crmRunListAction(leadId,v);
 }
 function crmActionSelectHtml(leadId){
@@ -8254,8 +8934,10 @@ function crmActionSelectHtml(leadId){
   html+='<option value="status:interested">Mark interested</option>';
   html+='<option value="status:ordered">Mark ordered</option>';
   html+='<option value="status:delivered">Mark delivered</option>';
+  html+='<option value="status:lost">Mark lost</option>';
   html+='</optgroup>';
   html+='<option value="note">Add quick note</option>';
+  html+='<option value="delete">Delete lead</option>';
   html+='</select>';
   return html;
 }
@@ -8267,6 +8949,7 @@ function crmRunListAction(leadId, action){
     return;
   }
   if(action==='note'){ crmQuickNote(leadId); return; }
+  if(action==='delete'){ void crmDeleteLeadById(leadId); return; }
   if(!lead){ showToast('Lead not found — refresh'); return; }
   if(action==='text') crmComposeSmsForLead(lead);
   else if(action==='email') crmComposeEmailForLead(lead);
@@ -8284,7 +8967,21 @@ function crmQuickStatus(leadId, status){
   void (async function(){
     try{
       if(!(await firebaseEnsureAuthed())){ showToastForFirebaseCRMBlock(); return; }
-      await crmUpdateLead(leadId,{status:crmStatusToFirestore(status)});
+      var norm=crmNormalizeStatus(status);
+      var patch={status:crmStatusToFirestore(status)};
+      var existing=crmGetLeadById(leadId);
+      var oldNorm=existing?crmNormalizeStatus(existing.status):'';
+      if(norm==='lost'&&oldNorm!=='lost'){
+        patch.lostAt=firebase.firestore.FieldValue.serverTimestamp();
+      }else if(norm!=='lost'){
+        patch.lostAt=firebase.firestore.FieldValue.delete();
+      }
+      await crmUpdateLead(leadId,patch);
+      if(norm==='lost'&&oldNorm!=='lost'){
+        try{
+          await crmAddActivity(leadId,{channel:'other',direction:'note',body:'Marked as lost — will auto-delete in 30 days',createdBy:loadSettings().contactName||'sales'});
+        }catch(_e){}
+      }
       showToast('Status updated');
     }catch(e){
       showToast('Could not update status');
@@ -8318,8 +9015,7 @@ async function crmDetailInit(){
     goTo('screenHome');
     return;
   }
-  await crmFetchLeadsOnce();
-  await crmEnsureLeadsListener();
+  await crmLeadsBootstrap();
   if(!crmState.selectedLeadId){
     goTo('screenCRM');
     return;
@@ -8342,7 +9038,8 @@ function crmRenderDetailView(){
     mount.innerHTML='<div class="crm-muted">Lead not found.</div>';
     return;
   }
-  var st=crmStatusDisplayLabel(crmNormalizeStatus(lead.status));
+  var st=crmStatusChipLabel(lead);
+  var chipCls=crmStatusChipClass(lead);
   var name=(lead.contact&&lead.contact.name)||'Unnamed Lead';
   var phone=(lead.contact&&lead.contact.phone)||'—';
   var email=(lead.contact&&lead.contact.email)||'—';
@@ -8355,7 +9052,7 @@ function crmRenderDetailView(){
     '<div class="crm-detail-card">'+
       '<div class="crm-detail-card-head">'+
         '<div class="crm-detail-card-name">'+crmEsc(name)+'</div>'+
-        '<span class="crm-status-chip">'+crmEsc(st)+'</span>'+
+        '<span class="crm-status-chip '+chipCls+'">'+crmEsc(st)+'</span>'+
       '</div>'+
       crmDetailSumRow('Phone',phone)+
       crmDetailSumRow('Email',email)+
@@ -8467,12 +9164,13 @@ function crmRenderLeadList(){
   }
   wrap.innerHTML=leads.map(function(lead){
     var id=crmEsc(lead.id);
-    var st=crmStatusDisplayLabel(crmNormalizeStatus(lead.status));
+    var st=crmStatusChipLabel(lead);
+    var chipCls=crmStatusChipClass(lead);
     var name=(lead.contact&&lead.contact.name)||'Unnamed Lead';
     return '<div class="crm-lead-card" onclick="crmOpenDetail(\''+id+'\')">'+
       '<div class="crm-lead-card-head">'+
         '<div class="crm-lead-card-name">'+crmEsc(name)+'</div>'+
-        '<span class="crm-status-chip">'+crmEsc(st)+'</span>'+
+        '<span class="crm-status-chip '+chipCls+'">'+crmEsc(st)+'</span>'+
       '</div>'+
       '<div class="crm-lead-quick" onclick="event.stopPropagation()">'+
         crmActionSelectHtml(lead.id)+
@@ -8558,10 +9256,30 @@ function crmBuildLeadPayloadFromForm(opts){
 }
 async function crmCreateLead(payload){
   if(!(await firebaseEnsureAuthed())) throw new Error('Firebase not ready');
+  var dup=crmFindDuplicateLead(payload.contact);
+  if(dup){
+    var mergePatch=Object.assign({},payload);
+    delete mergePatch.createdAt;
+    var existingNorm=crmNormalizeStatus(dup.status);
+    if(existingNorm!=='ordered'&&existingNorm!=='delivered'){
+      mergePatch.status=crmStatusToFirestore('interested');
+      mergePatch.lostAt=firebase.firestore.FieldValue.delete();
+    }
+    await crmUpdateLead(dup.id,mergePatch);
+    try{
+      await crmAddActivity(dup.id,{
+        channel:(payload.conversation&&payload.conversation.channel)||'other',
+        direction:'inbound',
+        body:'Duplicate submission — merged into existing lead',
+        createdBy:'system'
+      });
+    }catch(_e){}
+    return {id:dup.id,merged:true};
+  }
   payload.createdAt=firebase.firestore.FieldValue.serverTimestamp();
   payload.updatedAt=firebase.firestore.FieldValue.serverTimestamp();
   var ref=await fbDb.collection('leads').add(payload);
-  return ref.id;
+  return {id:ref.id,merged:false};
 }
 async function crmUpdateLead(leadId,patch){
   if(!(await firebaseEnsureAuthed())) throw new Error('Firebase not ready');
@@ -8586,7 +9304,21 @@ async function crmSaveLeadFromForm(){
       showToast('Name or phone required');
       return;
     }
+    var formStatusEl=document.getElementById('crm_status');
+    var newNorm=crmNormalizeStatus(formStatusEl?formStatusEl.value:'interested');
     if(isUpdate){
+      var dup=crmFindDuplicateLead(payload.contact,crmState.selectedLeadId);
+      if(dup){
+        showToast('Another lead already uses that phone/email');
+        return;
+      }
+      var existing=crmGetLeadById(crmState.selectedLeadId);
+      var oldNorm=existing?crmNormalizeStatus(existing.status):'';
+      if(newNorm==='lost'&&oldNorm!=='lost'){
+        payload.lostAt=firebase.firestore.FieldValue.serverTimestamp();
+      }else if(newNorm!=='lost'){
+        payload.lostAt=firebase.firestore.FieldValue.delete();
+      }
       await crmUpdateLead(crmState.selectedLeadId,payload);
       crmState.intentNewLead=false;
       await crmFetchLeadsOnce();
@@ -8595,12 +9327,18 @@ async function crmSaveLeadFromForm(){
       crmRenderDetailView();
       await crmWatchActivities(crmState.selectedLeadId);
     }else{
-      var id=await crmCreateLead(payload);
+      if(newNorm==='lost'){
+        payload.lostAt=firebase.firestore.FieldValue.serverTimestamp();
+      }
+      var result=await crmCreateLead(payload);
+      var id=result.id;
       crmState.intentNewLead=false;
       crmState.selectedLeadId=id;
-      await crmAddActivity(id,{channel:payload.conversation.channel||'other',direction:'note',body:'Lead created manually'});
+      if(!result.merged){
+        await crmAddActivity(id,{channel:payload.conversation.channel||'other',direction:'note',body:'Lead created manually'});
+      }
       await crmFetchLeadsOnce();
-      showToast('Lead saved to cloud');
+      showToast(result.merged?'Merged with existing lead':'Lead saved to cloud');
       goTo('screenCRMDetail');
       crmRenderDetailView();
       await crmWatchActivities(id);
@@ -8670,6 +9408,35 @@ async function crmAddActivityFromForm(){
     showToast('Could not add activity');
   }
 }
+async function crmPurgeExpiredLostLeads(){
+  var now=Date.now();
+  if(now-crmPurgeLastRunMs<900000) return;
+  crmPurgeLastRunMs=now;
+  if(!(await firebaseEnsureAuthed())) return;
+  var leads=crmState.leads||[];
+  var toDelete=[];
+  for(var i=0;i<leads.length;i++){
+    var lead=leads[i];
+    if(crmNormalizeStatus(lead.status)!=='lost') continue;
+    if(!lead.lostAt) continue;
+    var ms=new Date(lead.lostAt).getTime();
+    if(!isFinite(ms)) continue;
+    if(Date.now()-ms>=30*86400000) toDelete.push(lead.id);
+  }
+  for(var j=0;j<toDelete.length;j++){
+    try{
+      await crmDeleteLead(toDelete[j]);
+      if(crmState.selectedLeadId===toDelete[j]){
+        crmClearLeadForm();
+        crmState.selectedLeadId='';
+        var detailActive=document.getElementById('screenCRMDetail');
+        if(detailActive&&detailActive.classList.contains('active')) goTo('screenCRM');
+      }
+    }catch(e){
+      console.log('Purge lead failed:',e);
+    }
+  }
+}
 async function crmRefreshLeads(){
   if(!(await firebaseEnsureAuthed())){ showToastForFirebaseCRMBlock(); return; }
   var ok=await crmFetchLeadsOnce();
@@ -8682,12 +9449,10 @@ async function crmRefreshLeads(){
   }
 }
 async function crmInit(){
-  if(!(await firebaseEnsureAuthed())){
+  if(!(await crmLeadsBootstrap())){
     showToastForFirebaseCRMBlock();
     return;
   }
-  await crmFetchLeadsOnce();
-  await crmEnsureLeadsListener();
   crmRenderLeadList();
 }
 
@@ -17004,7 +17769,8 @@ async function quoteShareSaveToCrm(){
     status:crmStatusToFirestore('new')
   };
   if(addr||city||state||zip) payload.deliveryAddress={street:addr,city:city,state:state,zip:zip};
-  return await crmCreateLead(payload);
+  var result=await crmCreateLead(payload);
+  return result.id;
 }
 
 async function quoteShareLogActivityAfterSend(method){
@@ -17104,7 +17870,8 @@ async function quoteShareLogToCrmAfterSend(method){
       source:'calculator',
       status:crmStatusToFirestore('new')
     };
-    var newId=await crmCreateLead(payload);
+    var newIdResult=await crmCreateLead(payload);
+    var newId=newIdResult.id;
     await crmAddActivity(newId,{channel:'email',direction:'outbound',body:body.slice(0,900),createdBy:loadSettings().contactName||'sales'});
   }catch(e){
     console.log('Quote share CRM log failed:',e);
@@ -25314,18 +26081,19 @@ function buildLeadPayloadFromIntake(type){
     notes:map.notes||'Submitted via intake form',
     conversation:{channel:'form',lastMessageAt:now,lastDirection:'inbound',summary:'Submitted '+type+' intake form'},
     source:type,
-    status:'new'
+    status:crmStatusToFirestore('interested')
   };
 }
 
 async function saveIntakeLead(type,messageText){
   if(!(await firebaseEnsureAuthed())) return null;
   var payload=buildLeadPayloadFromIntake(type);
-  var leadId=await crmCreateLead(payload);
+  var result=await crmCreateLead(payload);
+  var leadId=result.id;
   await crmAddActivity(leadId,{
     channel:'form',
     direction:'inbound',
-    body:'Form submitted ('+type+'). '+(messageText||'').slice(0,220),
+    body:(result.merged?'Duplicate form — merged. ':'')+'Form submitted ('+type+'). '+(messageText||'').slice(0,220),
     createdBy:'system'
   });
   return leadId;
@@ -28138,11 +28906,1220 @@ function buildStyleRefTable(){
 
 
 /* ===== CONTRACT BRIDGE ===== */
-var cbState = { order:null, inventory:'', type:null };
+var cbState = { order:null, inventory:'', type:null, customer:null, building:null, _pending:null };
+var cbCalcState = null;
+var cbOptionsSheetOpen = false;
+var cbMergeWorking = null;
+var _CB_CALC_MULTI_KEY={doors:'multiDoors',windows:'multiWindows',garage:'multiGarage',cutouts:'multiCutouts',x6:'multi2x6',intwall:'multiIntwall',paint:'multiPaint'};
+var _CB_CALC_MULTI_CONTAINER={doors:'cb_c_doorRows',windows:'cb_c_windowRows',garage:'cb_c_garageRows',cutouts:'cb_c_cutoutRows',x6:'cb_c_2x6Rows',intwall:'cb_c_intwallRows',paint:'cb_c_paintRows'};
+var _CB_CALC_MULTI_ADDON={doors:'door36',windows:'window',garage:'garagedoor',cutouts:'cutouts',x6:'2x6',intwall:'intwall',paint:'paintupgrade'};
+
+function cb_resetCalcState(){
+  cbCalcState={type:null,width:null,length:null,payType:'cash',rtoMonths:36,addons:{},addonQty:{},addonExcluded:{},saleActive:false,salePercent:0,dealerDiscount:0,taxMode:'standard',taxRate:0,bosActive:false,quickTaxActive:false,quickDealerActive:false,assurancePlan:2,costReduction:0,qpvShowTax:false,multiDoors:[],multiWindows:[],multiGarage:[],multiCutouts:[],multiCustom:[],multi2x6:[],multiIntwall:[],multiPaint:[],osbIntwallFtManual:false,stdRemoved:{},stdHidden:{},cashDownPayment:null};
+}
+cb_resetCalcState();
+
+function cb_gv(id){var el=document.getElementById(id);return el?el.value:'';}
+function cb_gn(id,def){var v=parseFloat(cb_gv(id));return isNaN(v)||v<=0?def:v;}
+function cb_isAddonExcluded(key){return !!(cbCalcState.addonExcluded&&cbCalcState.addonExcluded[key]);}
+function cb_calcAddonActive(key){return !!(cbCalcState.addons&&cbCalcState.addons[key]);}
+function cb_newMultiRow(type){
+  var l=cbCalcState.length||'';
+  if(type==='x6'||type==='intwall') return {type:'',linft:l};
+  if(type==='paint') return {type:''};
+  return {type:'',qty:1,customSize:'',customPrice:''};
+}
+function cb_insulationIsBlocked(key){
+  if(!/^ins_/.test(key)) return false;
+  if(cbCalcState.addons&&cbCalcState.addons[key]) return false;
+  var conflict=_insulationConflictKey(key);
+  return conflict?!!(cbCalcState.addons&&cbCalcState.addons[conflict]):false;
+}
+function cb_insulationOnSelect(key){
+  var conflict=_insulationConflictKey(key);
+  if(conflict&&cbCalcState.addons[conflict]){
+    cbCalcState.addons[conflict]=false;
+    var chk=document.getElementById('cb_chk_'+conflict);
+    var detail=document.getElementById('cb_detail_'+conflict);
+    if(chk) chk.classList.remove('on');
+    if(detail) detail.style.display='none';
+    var el=document.getElementById('cb_c_manual_'+conflict);
+    if(el) el.value='';
+  }
+  cb_updateInsulationAvailability();
+}
+function cb_updateInsulationAvailability(){
+  ['ins_roof','ins_wallsroof','ins_floor_foamboard','ins_floor_sprayfoam'].forEach(function(key){
+    var row=document.getElementById('cb_row_'+key);
+    if(!row) return;
+    var blocked=cb_insulationIsBlocked(key);
+    var priceEl=document.getElementById('cb_price_'+key);
+    if(blocked){
+      row.style.opacity='0.45';
+      row.style.pointerEvents='none';
+      row.setAttribute('data-ins-blocked','1');
+      if(priceEl){
+        var conflict=_insulationConflictKey(key);
+        priceEl.textContent=conflict?_insulationShortLabel(conflict)+' selected':'Unavailable';
+        priceEl.style.fontSize='0.72rem';
+      }
+    } else {
+      row.style.opacity='';
+      row.style.pointerEvents='';
+      row.removeAttribute('data-ins-blocked');
+      if(priceEl) priceEl.style.fontSize='';
+    }
+  });
+}
+function cb_refreshOsbIntwallFtDefault(force){
+  if(!cbCalcState.addons.osb_intwall) return;
+  if(cbCalcState.osbIntwallFtManual&&!force) return;
+  var ft=typeof computeOsbInteriorWallLinFt==='function'?computeOsbInteriorWallLinFt(cbCalcState):0;
+  var el=document.getElementById('cb_c_osbIntwallFt');
+  if(el&&ft>0) el.value=String(ft);
+}
+function cb_calcBuildingIsComplete(){
+  return !!(cbCalcState.type&&cbCalcState.width&&cbCalcState.length&&PRICING[cbCalcState.width]&&PRICING[cbCalcState.width][cbCalcState.length]&&PRICING[cbCalcState.width][cbCalcState.length][cbCalcState.type]);
+}
+function cb_calcHasPricedBuilding(){ return cb_calcBuildingIsComplete(); }
+function cb_hideStdOption(stdId){
+  if(!cbCalcState.stdRemoved) cbCalcState.stdRemoved={};
+  var items=STD_OPTIONS[cbCalcState.type]||[];
+  var it=items.find?items.find(function(x){return x.id===stdId;}):null;
+  if(!it){ for(var i=0;i<items.length;i++){ if(items[i].id===stdId){ it=items[i]; break; } } }
+  var maxQ=it?(it.qty||1):1;
+  var cur=cbCalcState.stdRemoved[stdId]||0;
+  cbCalcState.stdRemoved[stdId]=Math.min(maxQ,cur+1);
+  cb_updateQuickPrice();
+  cb_renderOptsSummary();
+}
+function cb_afterOptsSummaryChange(hostId){
+  cb_updateQuickPrice();
+  cb_renderOptsSummary();
+  cb_updateCatCounts();
+}
+function cb_renderOptsSummary(){ cb_renderOptsSummaryInto('cb_optsSummary'); }
+function cb_updateAddOptionBtnState(){
+  var btn=document.getElementById('cb_addOptionBtn');
+  if(!btn) return;
+  var ok=cb_calcBuildingIsComplete();
+  btn.disabled=!ok;
+  if(!ok) btn.setAttribute('aria-disabled','true'); else btn.removeAttribute('aria-disabled');
+}
+function cb_syncDimensionBasedOptionFields(){
+  var w=cbCalcState.width||0, l=cbCalcState.length||0, sq=(w&&l)?w*l:0;
+  var linftFieldMap={rooffelt:'cb_c_rooffeltFt',housewrap:'cb_c_housewrapFt',rooftrusses:'cb_c_rooftrussft',floorjoists:'cb_c_floorjoistFt',shelves:'cb_c_shelvesLinFt',loft:'cb_c_loftFt',porch:'cb_c_porchFt'};
+  Object.keys(linftFieldMap).forEach(function(key){
+    if(!cbCalcState.addons[key]) return;
+    var el=document.getElementById(linftFieldMap[key]);
+    if(el) el.value=l>0?String(l):'';
+  });
+  if(cbCalcState.addons.flooring){
+    var fl=document.getElementById('cb_c_flooringSqFt');
+    if(fl) fl.value=sq>0?String(sq):'';
+  }
+  if(cbCalcState.multi2x6&&cbCalcState.multi2x6.length){
+    cbCalcState.multi2x6.forEach(function(row){ if(row&&row.type) row.linft=l>0?String(l):''; });
+    try{ cb_calcRenderRows('x6'); }catch(_e){}
+  }
+  cb_refreshOsbIntwallFtDefault(false);
+  cb_updateAutoWidthPrices();
+}
+function cb_syncCalcTypeTrigger(typeCode){
+  var trigger=document.getElementById('cb_calcTypeSelect_trigger');
+  if(!trigger) return;
+  var item=(Array.isArray(STYLE_DATA)?STYLE_DATA:[]).find(function(s){return s.code===typeCode;});
+  if(!item){
+    trigger.innerHTML='<span class="spt-placeholder"><svg viewBox="0 0 24 24" fill="none" style="width:28px;height:28px;display:block;"><path fill="rgba(80,50,30,0.12)" stroke="#8B5E3C" stroke-width="1.6" d="M3 9.5L12 3l9 6.5V21H4a1 1 0 0 1-1-1V9.5z"/></svg></span><span class="spt-text"><span class="spt-placeholder-text">Select type...</span></span><span class="spt-arrow">▼</span>';
+    return;
+  }
+  trigger.innerHTML='<img class="spt-thumb" src="'+item.img+'" alt="'+item.name+'"><span class="spt-text"><span class="spt-name">'+item.name+'</span><span class="spt-code">'+item.code+'</span></span><span class="spt-arrow">▼</span>';
+}
+function cb_setCalcType(code){
+  cbCalcState.type=code||null;
+  cbCalcState.stdRemoved={};
+  cbCalcState.stdHidden={};
+  cb_syncCalcTypeTrigger(code||null);
+  if(cbCalcState.width) cb_onCalcWidthChange(String(cbCalcState.width));
+  cb_updateAutoWidthPrices();
+  cb_updateAddOptionBtnState();
+  cb_updateQuickPrice();
+  cb_renderOptsSummary();
+}
+function cb_onCalcWidthChange(val){
+  var prevLength=cbCalcState.length;
+  cbCalcState.width=val?parseInt(val,10):null;
+  var ls=document.getElementById('cb_calcLength');
+  if(!ls) return;
+  ls.innerHTML='<option value="">Length</option>';
+  if(cbCalcState.width){
+    for(var ln=8;ln<=60;ln+=2){
+      var o=document.createElement('option');
+      o.value=ln;
+      var row=PRICING[cbCalcState.width]&&PRICING[cbCalcState.width][ln];
+      var hasPrice=cbCalcState.type&&row&&row[cbCalcState.type];
+      o.textContent=ln+"'"+(cbCalcState.type&&!hasPrice?' —':'');
+      ls.appendChild(o);
+    }
+  }
+  if(prevLength&&cbCalcState.width&&cbCalcState.type&&PRICING[cbCalcState.width]&&PRICING[cbCalcState.width][prevLength]&&PRICING[cbCalcState.width][prevLength][cbCalcState.type]){
+    cbCalcState.length=prevLength;
+    ls.value=String(prevLength);
+  } else {
+    cbCalcState.length=null;
+    ls.value='';
+  }
+  cb_syncDimensionBasedOptionFields();
+  cb_updateQuickPrice();
+  cb_updateAddOptionBtnState();
+}
+function cb_onCalcLengthChange(val){
+  cbCalcState.length=val?parseInt(val,10):null;
+  cb_syncDimensionBasedOptionFields();
+  cb_updateAutoWidthPrices();
+  cb_updateQuickPrice();
+  cb_updateAddOptionBtnState();
+}
+function cb_onSaleInput(el){
+  var v=parseFloat(el&&el.value);
+  cbCalcState.salePercent=isNaN(v)||v<0?0:Math.min(v,100);
+  cbCalcState.saleActive=cbCalcState.salePercent>0;
+  cb_updateQuickPrice();
+}
+function cb_onDealerInput(el){
+  var v=parseFloat(el&&el.value);
+  cbCalcState.dealerDiscount=isNaN(v)||v<0?0:Math.min(v,5);
+  cbCalcState.quickDealerActive=cbCalcState.dealerDiscount>0;
+  cb_updateQuickPrice();
+}
+function cb_updateQuickPrice(){
+  var priceEl=document.getElementById('cb_quickSalePrice');
+  var breakdown=document.getElementById('cb_priceBreakdown');
+  if(!priceEl) return;
+  if(!cb_calcHasPricedBuilding()){
+    priceEl.textContent='\u2014';
+    priceEl.classList.add('zero');
+    if(breakdown) breakdown.innerHTML='';
+    return;
+  }
+  var qSnap=null;
+  try{ qSnap=cb_getCalcQuoteSnapshot(); }catch(_e){}
+  var priceToShow=qSnap?Math.ceil(qSnap.subtotal||0):0;
+  priceEl.textContent=(typeof fmt==='function')?fmt(priceToShow):('$'+priceToShow);
+  priceEl.classList.remove('zero');
+  if(breakdown&&qSnap){
+    breakdown.innerHTML='Base '+(typeof fmt==='function'?fmt(qSnap.base):qSnap.base)+
+      ' &middot; Options '+(typeof fmt==='function'?fmt(qSnap.addonTotal):qSnap.addonTotal)+
+      (qSnap.saleAmount?' &middot; Sale -'+(typeof fmt==='function'?fmt(qSnap.saleAmount):qSnap.saleAmount):'')+
+      (qSnap.stdCredit?' &middot; Std credit -'+(typeof fmt==='function'?fmt(qSnap.stdCredit):qSnap.stdCredit):'');
+  }
+}
+function cb_ensureCalcOptsSheetDetails(){
+  Object.keys(cbCalcState.addons||{}).forEach(function(k){
+    if(!cbCalcState.addons[k]) return;
+    var d=document.getElementById('cb_detail_'+k);
+    if(d) d.style.display='block';
+    var chk=document.getElementById('cb_chk_'+k);
+    if(chk) chk.classList.add('on');
+  });
+  ['doors','windows','garage','cutouts','x6','intwall','paint'].forEach(function(t){ cb_calcRenderRows(t); });
+  cb_updateCatCounts();
+  cb_updateAutoWidthPrices();
+  cb_updateInsulationAvailability();
+}
+function cb_openOptionsSheet(){
+  if(!cb_calcBuildingIsComplete()){ showToast('Select building style and size first'); return; }
+  var ov=document.getElementById('cb_optionsSheetOverlay');
+  var sh=document.getElementById('cb_optionsSheet');
+  if(!ov||!sh) return;
+  if(ov.parentElement!==document.body){ document.body.appendChild(ov); document.body.appendChild(sh); }
+  ov.classList.add('open');
+  sh.classList.add('open');
+  ov.setAttribute('aria-hidden','false');
+  document.body.style.overflow='hidden';
+  cbOptionsSheetOpen=true;
+  cb_ensureCalcOptsSheetDetails();
+  var si=document.getElementById('cb_optionsSheetSearch');
+  if(si) si.value='';
+}
+function cb_closeOptionsSheet(){
+  var ov=document.getElementById('cb_optionsSheetOverlay');
+  var sh=document.getElementById('cb_optionsSheet');
+  if(ov){ ov.classList.remove('open'); ov.setAttribute('aria-hidden','true'); }
+  if(sh) sh.classList.remove('open');
+  document.body.style.overflow='';
+  cbOptionsSheetOpen=false;
+  cb_updateQuickPrice();
+  cb_renderOptsSummary();
+}
+function cb_optWizardFilterSearch(q){
+  var sheet=document.getElementById('cb_optionsSheet');
+  if(!sheet) return;
+  var qq=(q||'').trim().toLowerCase();
+  var rows=sheet.querySelectorAll('.opt-row');
+  if(!qq){ rows.forEach(function(row){ row.style.display=''; }); sheet.querySelectorAll('.opt-category').forEach(function(cat){ cat.style.display=''; }); return; }
+  rows.forEach(function(row){
+    var name=(row.querySelector('.opt-name')||{}).textContent||'';
+    row.style.display=name.toLowerCase().indexOf(qq)>=0?'':'none';
+  });
+  sheet.querySelectorAll('.opt-category').forEach(function(cat){
+    var vis=false;
+    cat.querySelectorAll('.opt-row').forEach(function(r){ if(r.style.display!=='none') vis=true; });
+    cat.style.display=vis?'':'none';
+  });
+}
+function cb_optWizardShowStdSection(){}
+
+function cb_toggleCat(id){
+  var body=document.getElementById('cb_'+id);
+  var header=body.previousElementSibling;
+  body.classList.toggle('open');
+  header.classList.toggle('open');
+}
+
+function cb_toggleOpt(key){
+  if(/^ins_/.test(key)&&cb_insulationIsBlocked(key)&&!cbCalcState.addons[key]){
+    var conflict=_insulationConflictKey(key);
+    showToast(conflict?_insulationShortLabel(conflict)+' is already selected':'Not available with current insulation');
+    return;
+  }
+  if(/^ins_/.test(key)&&!cbCalcState.addons[key]) cb_insulationOnSelect(key);
+  cbCalcState.addons[key]=!cbCalcState.addons[key];
+  var chk=document.getElementById('cb_chk_'+key);
+  var detail=document.getElementById('cb_detail_'+key);
+  if(chk) chk.classList.toggle('on',cbCalcState.addons[key]);
+  if(detail) detail.style.display=cbCalcState.addons[key]?'block':'none';
+  var multiMap={door36:'doors',window:'windows',garagedoor:'garage',cutouts:'cutouts','2x6':'x6',intwall:'intwall',paintupgrade:'paint'};
+  var mKey=multiMap[key];
+  if(mKey){
+    if(cbCalcState.addons[key]){
+      var stateKey=_CB_CALC_MULTI_KEY[mKey];
+      if(!cbCalcState[stateKey]) cbCalcState[stateKey]=[];
+      if(cbCalcState[stateKey].length===0){
+        cb_calcAddRow(mKey);
+        return;
+      }
+    } else {
+      cbCalcState[_CB_CALC_MULTI_KEY[mKey]]=[];
+      cb_calcRenderRows(mKey);
+    }
+  }
+  if(key==='osb_intwall'&&!cbCalcState.addons[key]){
+    cbCalcState.osbIntwallFtManual=false;
+    var _osbEl=document.getElementById('cb_c_osbIntwallFt');
+    if(_osbEl) _osbEl.value='';
+    var _ssOsb=document.getElementById('ss_c_osbIntwallFt');
+    if(_ssOsb) _ssOsb.value='';
+  }
+  cb_updateCatCounts();
+  cb_refreshOsbIntwallFtDefault(false);
+  cb_updateAutoWidthPrices();
+  cb_updateInsulationAvailability();
+  cb_updateQuickPrice();
+  if(key==='tallwall') { if(cbCalcState.addons['garagedoor']) cb_calcRenderRows('garage'); }
+  if(false) try{ renderReviewSummary(); }catch(_e){}
+  try{ cb_renderOptsSummary(); }catch(_e){}
+}
+
+function cb_calcRenderRows(type){
+  var arr=cbCalcState[_CB_CALC_MULTI_KEY[type]];
+  var container=document.getElementById(_CB_CALC_MULTI_CONTAINER[type]);
+  if(!container) return;
+  if(!arr||arr.length===0){container.innerHTML='';return;}
+  var html='';
+  arr.forEach(function(item,idx){
+    html+='<div style="background:rgba(255,255,255,0.04);border:1px solid rgba(196,81,31,0.2);border-radius:8px;padding:8px 10px;margin-bottom:6px;">';
+    // Row header: type select + remove button
+    html+='<div style="display:flex;align-items:center;gap:6px;">';
+    if(type==='doors'){
+      html+='<select style="flex:1;" onchange="cb_calcRowChange(\'doors\','+idx+',\'type\',this.value)">'+_buildSelectHTML(_DOOR_OPTS,item.type,'Select style')+'</select>';
+    } else if(type==='windows'){
+      html+='<select style="flex:1;" onchange="cb_calcRowChange(\'windows\','+idx+',\'type\',this.value)">'+_buildSelectHTML(_WIN_OPTS,item.type,'Select window')+'</select>';
+    } else if(type==='garage'){
+      html+='<select style="flex:1;" onchange="cb_calcRowChange(\'garage\','+idx+',\'type\',this.value)">'+_buildSelectHTML(_GARAGE_TYPE_OPTS,item.type,'Select type')+'</select>';
+    } else if(type==='cutouts'){
+      html+='<select style="flex:1;" onchange="cb_calcRowChange(\'cutouts\','+idx+',\'type\',this.value)">'+_buildSelectHTML(_CUTOUT_OPTS,item.type,'Select type')+'</select>';
+    } else if(type==='x6'){
+      html+='<select style="flex:1;" onchange="cb_calcRowChange(\'x6\','+idx+',\'type\',this.value)">'+_buildSelectHTML(_X6_TYPE_OPTS,item.type,'Select apply to')+'</select>';
+    } else if(type==='intwall'){
+      html+='<select style="flex:1;" onchange="cb_calcRowChange(\'intwall\','+idx+',\'type\',this.value)">'+_buildSelectHTML(_INTWALL_TYPE_OPTS,item.type,'Select type')+'</select>';
+    } else if(type==='paint'){
+      html+='<select style="flex:1;" onchange="cb_calcRowChange(\'paint\','+idx+',\'type\',this.value)">'+_buildSelectHTML(_PAINT_TYPE_OPTS,item.type,'Select type')+'</select>';
+    }
+    html+='<button type="button" onclick="cb_calcRemoveRow(\''+type+'\','+idx+')" style="-webkit-appearance:none;appearance:none;background:rgba(196,81,31,0.2);border:none;border-radius:6px;color:var(--wheat);width:28px;height:28px;font-size:1rem;cursor:pointer;flex-shrink:0;">\u00d7</button>';
+    html+='</div>';
+    if(type==='x6'||type==='intwall'){
+      html+='<div class="opt-field-row" style="margin-top:6px;"><label>Lin ft</label>';
+      html+='<input type="number" value="'+(item.linft!==undefined&&item.linft!==''?item.linft:(cbCalcState.length||''))+'" min="0" step="0.01" style="width:90px;" onchange="cb_calcRowChange(\''+type+'\','+idx+',\'linft\',this.value)" oninput="cb_calcRowChange(\''+type+'\','+idx+',\'linft\',this.value)">';
+      html+='</div>';
+    } else if(type!=='garage'&&type!=='paint'){
+      html+='<div class="opt-field-row" style="margin-top:6px;"><label>Qty</label>';
+      html+='<input type="number" value="'+(item.qty||1)+'" min="1" style="width:70px;" onchange="cb_calcRowChange(\''+type+'\','+idx+',\'qty\',this.value)">';
+      html+='</div>';
+    }
+    // Garage: size sub-select
+    if(type==='garage'&&item.type){
+      html+=_buildGarageSizeHTML(item.type,item.customSize);
+    }
+    // Windows: custom vinyl fields
+    if(type==='windows'&&item.type==='custom_vinyl'){
+      html+='<div class="opt-field-row" style="margin-top:6px;"><label>Size</label>';
+      html+='<input type="text" placeholder="e.g. 30x36&quot;" value="'+(item.customSize||'')+'" style="flex:1;box-sizing:border-box;" oninput="cb_calcRowChange(\'windows\','+idx+',\'customSize\',this.value)">';
+      html+='</div>';
+      html+='<div class="opt-field-row"><label>Price</label>';
+      html+='<input type="number" placeholder="Enter price" min="0" value="'+(item.customPrice||'')+'" oninput="cb_calcRowChange(\'windows\','+idx+',\'customPrice\',this.value)">';
+      html+='</div>';
+    }
+    html+='</div>';
+  });
+  container.innerHTML=html;
+}
+
+function cb_calcRowChange(type,idx,field,val){
+  var arr=cbCalcState[_CB_CALC_MULTI_KEY[type]];
+  if(!arr||!arr[idx]) return;
+  if(field==='qty') val=Math.max(1,parseInt(val)||1);
+  arr[idx][field]=val;
+  // If garage type changes, reset size
+  if(type==='garage'&&field==='type') arr[idx].customSize='';
+  cb_calcRenderRows(type);
+  cb_updateCatCounts();
+  cb_refreshOsbIntwallFtDefault(false);
+  cb_updateAutoWidthPrices();
+  cb_updateQuickPrice();
+  if(false) try{ renderReviewSummary(); }catch(_e){}
+}
+
+function cb_calcAddRow(type){
+  var stateKey=_CB_CALC_MULTI_KEY[type];
+  if(!stateKey) return;
+  if(!cbCalcState[stateKey]) cbCalcState[stateKey]=[];
+  cbCalcState[stateKey].push(cb_newMultiRow(type));
+  cb_calcRenderRows(type);
+  cb_updateCatCounts();
+  cb_refreshOsbIntwallFtDefault(false);
+  cb_updateAutoWidthPrices();
+  cb_updateQuickPrice();
+  if(false) try{ renderReviewSummary(); }catch(_e){}
+}
+
+function cb_calcRemoveRow(type,idx){
+  var arr=cbCalcState[_CB_CALC_MULTI_KEY[type]];
+  if(!arr) return;
+  arr.splice(idx,1);
+  // If all rows removed, uncheck the parent option
+  if(arr.length===0){
+    var addonKey=_CB_CALC_MULTI_ADDON[type];
+    if(addonKey&&cbCalcState.addons[addonKey]){
+      cbCalcState.addons[addonKey]=false;
+      var chk=document.getElementById('cb_chk_'+addonKey);
+      var detail=document.getElementById('cb_detail_'+addonKey);
+      if(chk) chk.classList.remove('on');
+      if(detail) detail.style.display='none';
+    }
+  }
+  cb_calcRenderRows(type);
+  cb_updateCatCounts();
+  cb_refreshOsbIntwallFtDefault(false);
+  cb_updateAutoWidthPrices();
+  cb_updateQuickPrice();
+  if(false) try{ renderReviewSummary(); }catch(_e){}
+}
+
+function cb_getStdRemovedTotal(){
+  if(!cbCalcState.type||!cbCalcState.stdRemoved) return 0;
+  var items=STD_OPTIONS[cbCalcState.type]||[];
+  var total=0;
+  for(var i=0;i<items.length;i++){
+    total+=(cbCalcState.stdRemoved[items[i].id]||0)*items[i].credit;
+  }
+  return total;
+}
+
+function cb_calcAddons(forDisplay){
+  forDisplay=!!forDisplay;
+  var w=cbCalcState.width||0;
+  var l=cbCalcState.length||0;
+  var total=0; var lines=[];
+  var _nrto=getNonRtoOptions();
+  function _aq(k){ return Math.max(1,parseInt((cbCalcState.addonQty||{})[k])||1); }
+  function add(label,val,optKey,multiIdx){
+    if(val<=0) return;
+    var exKey=_addonExcludeKey(optKey,multiIdx);
+    var excluded=optKey&&cb_isAddonExcluded(exKey);
+    if(excluded&&!forDisplay) return;
+    if(!excluded) total+=val;
+    lines.push({
+      label:label,val:val,
+      nonRto:optKey?!!_nrto[optKey]:false,
+      sourceKey:optKey||null,
+      multiIdx:(multiIdx===undefined||multiIdx===null)?null:multiIdx,
+      excluded:!!excluded
+    });
+  }
+  if(cb_calcAddonActive('metal')){
+    var p=getMetalBasePrice(w);
+    if(p>0) add('Metal Upgrade ('+w+"\' width)",p,'metal');
+    var totalSurcharge=getMetalShopSurcharge(cbCalcState.type,w,l);
+    if(totalSurcharge>0){
+      var isCabin=CABIN_TYPES.indexOf(cbCalcState.type)>=0;
+      var cabinFlat=isCabin?getSettingVal('cabinFlat',0):0;
+      add('Metal Shop Surcharge'+(isCabin&&cabinFlat>0?' (incl. cabin flat)':''),totalSurcharge,'shopSurcharge');
+    }
+  }
+  if(cbCalcState.addons['shelves']){
+    var cft=cb_gn('cb_c_shelvesLinFt',0);
+    add('Shelves/Workbench ('+cft+' lin ft)',cft*getOptionLinFtRate('shelves')*_aq('shelves'),'shelves');
+  }
+  if(cbCalcState.addons['tallwall']){
+    var p=getOptionFlatPrice('tallwall',{w:w,l:l});
+    add('Tall Wall ('+w+"\' wide)",p*_aq('tallwall'),'tallwall');
+  }
+  if(cbCalcState.addons['door36']){
+    cbCalcState.multiDoors.forEach(function(row,idx){
+      var p=getOptionVariantPrice('door36',row.type);
+      var q=Math.max(1,parseInt(row.qty)||1);
+      var labels={'150':'70\u2033 Double Door','300':'Fiberglass French Door','400':'6 Panel Door','450':'9 Lite Door','475':'4 Lite Door'};
+      var lbl=labels[row.type]||'Door Upgrade';
+      if(p>0) add(lbl+(q>1?' ('+q+'x)':''),p*q,'door36',idx);
+    });
+  }
+  if(cbCalcState.addons['window']){
+    cbCalcState.multiWindows.forEach(function(row,idx){
+      var q=Math.max(1,parseInt(row.qty)||1);
+      if(row.type==='custom_vinyl'){
+        var cvP=parseFloat(row.customPrice)||0;
+        var cvS=row.customSize||'';
+        var cvLbl='Custom Vinyl Window'+(cvS?' ('+cvS+')':'');
+        if(cvP>0) add(cvLbl+(q>1?' ('+q+'x)':''),cvP*q,'vinylwindow',idx);
+      } else {
+        var wP=getOptionVariantPrice('window',row.type);
+        var wLbl=wP>=375?'Vinyl Window':'Window';
+        var wKey=wP>=375?'vinylwindow':'window';
+        if(wP>0) add(wLbl+(q>1?' ('+q+'x)':''),wP*q,wKey,idx);
+      }
+    });
+  }
+  if(cbCalcState.addons['garagedoor']){
+    cbCalcState.multiGarage.forEach(function(row,idx){
+      var gSub=row.type||'sectional';
+      var sz=getOptionVariantPrice('garagedoor',row.customSize,gSub);
+      var gOpts=row.type==='rollup'?_GARAGE_ROLLUP_OPTS:_GARAGE_SECTIONAL_OPTS;
+      var lbl=_optLabelFromOpts(gOpts,row.customSize);
+      if(!lbl) lbl=row.type==='rollup'?'Rollup Door':'Sectional Garage Door';
+      var optKey=row.type==='rollup'?'rollupdoor':'garagedoor';
+      var gq=Math.max(1,parseInt(row.qty)||1);
+      if(sz>0) add(lbl+(gq>1?' ('+gq+'x)':''),sz*gq,optKey,idx);
+    });
+  }
+  if(cbCalcState.addons['cutouts']){
+    cbCalcState.multiCutouts.forEach(function(row,idx){
+      var p=getOptionVariantPrice('cutouts',row.type);
+      var q=Math.max(1,parseInt(row.qty)||1);
+      var lbl={'50':'Window/AC Cutout','75':'Walk Thru Door Cutout','125':'Garage/Double Door Cutout'}[row.type]||'Cutout';
+      if(p>0) add(lbl+(q>1?' ('+q+'x)':''),p*q,'cutouts',idx);
+    });
+  }
+  if(cbCalcState.addons['intwall']){
+    (cbCalcState.multiIntwall||[]).forEach(function(row,idx){
+      if(!row.type) return;
+      var ft=parseFloat(row.linft)||0;
+      var r=_intwallLinFtRate(row.type);
+      if(r&&ft) add(_intwallLineLabel(row.type,ft),r*ft,'intwall',idx);
+    });
+  }
+  if(cbCalcState.addons['osb_intwall']){var osbFt=cb_gn('cb_c_osbIntwallFt',0);add('OSB Interior Walls ('+osbFt+' lin ft)',osbFt*getOsbIntwallRate()*_aq('osb_intwall'),'osb_intwall');}
+  (cbCalcState.multiCustom||[]).forEach(function(row,idx){
+    var val=row.mode==='linft'?(parseFloat(row.price)||0)*(parseFloat(row.linFt)||0):(parseFloat(row.price)||0)*Math.max(1,parseInt(row.qty)||1);
+    if(val>0) add(row.name||'Custom Option',val,(row.id&&String(row.id).indexOf('user_')===0)?row.id:'custom',idx);
+  });
+  if(cbCalcState.addons['2x6']){
+    (cbCalcState.multi2x6||[]).forEach(function(row,idx){
+      if(!row.type) return;
+      var ft=parseFloat(row.linft)||l||0;
+      var r=_x6LinFtRate(row.type);
+      if(r&&ft) add(_x6LineLabel(row.type,ft),r*ft,'2x6',idx);
+    });
+  }
+  if(cbCalcState.addons['flooring']){var sq=cb_gn('cb_c_flooringSqFt',0)||((w&&l)?w*l:0);add('¾" Flooring ('+sq+' sqft)',sq*getOptionSqFtRate('flooring')*_aq('flooring'),'flooring');}
+  if(cbCalcState.addons['rooftrusses']){var ft=cb_gn('cb_c_rooftrussft',0)||l;add('16" OC Trusses ('+ft+' ft)',ft*getOptionLinFtRate('rooftrusses')*_aq('rooftrusses'),'rooftrusses');}
+  if(cbCalcState.addons['floorjoists']){var ft=cb_gn('cb_c_floorjoistFt',0)||l;add('12" OC Floor Joists ('+ft+' ft)',ft*getOptionLinFtRate('floorjoists')*_aq('floorjoists'),'floorjoists');}
+  if(cbCalcState.addons['doubletopplate']){var ft=l;add('Double Top Plate ('+ft+' ft)',ft*getOptionLinFtRate('doubletopplate')*_aq('doubletopplate'),'doubletopplate');}
+  if(cbCalcState.addons['4ineves']){add('4″ Eaves',getOptionFlatPrice('4ineves')*_aq('4ineves'),'4ineves');}
+  if(cbCalcState.addons['housewrap']){var ft=cb_gn('cb_c_housewrapFt',0)||l;add('House Wrap ('+ft+' ft)',ft*getOptionLinFtRate('housewrap')*_aq('housewrap'),'housewrap');}
+  if(cbCalcState.addons['rooffelt']){var ft=cb_gn('cb_c_rooffeltFt',0)||l;add('Roof Felt ('+ft+' ft)',ft*getOptionLinFtRate('rooffelt')*_aq('rooffelt'),'rooffelt');}
+  if(cbCalcState.addons['loft']){var ft=cb_gn('cb_c_loftFt',0);add('Extra Loft ('+ft+' ft)',ft*getOptionLinFtRate('loft')*_aq('loft'),'loft');}
+  if(cbCalcState.addons['droploft']){add('Drop Loft',getOptionFlatPrice('droploft')*_aq('droploft'),'droploft');}
+  if(cbCalcState.addons['porch']){var ft=cb_gn('cb_c_porchFt',0);add('Extra Porch ('+ft+' ft)',ft*getOptionLinFtRate('porch')*_aq('porch'),'porch');}
+  ['ins_roof','ins_wallsroof','ins_floor_foamboard','ins_floor_sprayfoam'].forEach(function(k){
+    if(!cbCalcState.addons[k]) return;
+    var manualEl=document.getElementById('cb_c_manual_'+k);
+    var resolved=getInsulationPriceResolved(k,cbCalcState.type,w,l,manualEl&&manualEl.value);
+    if(resolved.price>0) add(getInsOptionLabel(k),resolved.price,k);
+  });
+  if(cbCalcState.addons['paintupgrade']){
+    (cbCalcState.multiPaint||[]).forEach(function(row,idx){
+      if(!row.type) return;
+      var p=_paintRowPrice(row.type,w);
+      if(p>0){
+        var sk=row.type==='twotone'?'twotone':'custompaint';
+        add(_paintLineLabel(row.type,w),p,sk,idx);
+      }
+    });
+  }
+  // Split into RTO and Non-RTO totals
+  var nonRtoTotal=lines.filter(function(l){return l.nonRto;}).reduce(function(a,b){return a+b.val;},0);
+  var rtoTotal=total-nonRtoTotal;
+  return{total:total,lines:lines,nonRtoTotal:nonRtoTotal,rtoTotal:rtoTotal};
+}
+
+function cb_getCalcSubtotal(){
+  var _pw=PRICING[cbCalcState.width],_pl=_pw?_pw[cbCalcState.length]:null;
+  var base=_pl?_pl[cbCalcState.type]:null;
+  if(!base) return 0;
+  var _ar=cb_calcAddons();
+  var salePct=cbCalcState.saleActive?Math.min(cbCalcState.salePercent,100):0;
+  var saleAmount=saleAmountListPct(base,salePct);
+  var bosAmt=cbCalcState.bosActive?Math.ceil(base*0.30):0;
+  var stdCredit=cb_getStdRemovedTotal();
+  var dealerPct=(cbCalcState.quickDealerActive&&cbCalcState.dealerDiscount>0)?cbCalcState.dealerDiscount:0;
+  var dealerAmount=dealerPct>0?Math.ceil(base*(dealerPct/100)):0;
+  var saleBase=(base-saleAmount+bosAmt)-stdCredit-dealerAmount;
+  var _sub=Math.round((saleBase+_ar.total)*100)/100;
+  if(cbCalcState.payType==='rto'){
+    var _ap=cbCalcState.assurancePlan||2;
+    _sub+=ASSURANCE_COST[_ap]||0;
+  }
+  return Math.round(_sub*100)/100;
+}
+
+function cb_getCalcQuoteSnapshot(){
+  var _pw=PRICING[cbCalcState.width],_pl=_pw?_pw[cbCalcState.length]:null;
+  var base=_pl?_pl[cbCalcState.type]:null;
+  if(!base) return null;
+
+  var _ar=cb_calcAddons();
+  var addonTotal=_ar.total;
+  var addonLines=_ar.lines;
+  var nonRtoTotal=_ar.nonRtoTotal||0;
+
+  var salePct=cbCalcState.saleActive?Math.min(cbCalcState.salePercent,100):0;
+  var saleAmount=saleAmountListPct(base,salePct);
+  var bosAmt=cbCalcState.bosActive?Math.ceil(base*0.30):0;
+  var stdCredit=cb_getStdRemovedTotal();
+  var dealerPct=(cbCalcState.quickDealerActive&&cbCalcState.dealerDiscount>0)?cbCalcState.dealerDiscount:0;
+  var dealerAmount=dealerPct>0?Math.ceil(base*(dealerPct/100)):0;
+  var saleBase=(base - saleAmount + bosAmt) - stdCredit - dealerAmount;
+  var subtotal=Math.round((saleBase+addonTotal)*100)/100;
+
+  var taxRate=0;
+  if(isCalcTaxShown()){
+    taxRate=cbCalcState.taxMode==='standard'?getSettingVal('taxRate',0):cbCalcState.taxRate;
+  }
+  var assurancePlan=cbCalcState.assurancePlan||2;
+  var assuranceCost=ASSURANCE_COST[assurancePlan]||0;
+  var subtotalWithAssurance=cbCalcState.payType==='rto'?subtotal+assuranceCost:subtotal;
+  var taxAmount=Math.round(subtotalWithAssurance*(taxRate/100)*100)/100;
+  var grandTotal=Math.round((subtotalWithAssurance+taxAmount)*100)/100;
+
+  var rtoDown=RTO_DOWN[cbCalcState.width]||100;
+  var manualCR=cbCalcState.costReduction||0;
+  var effectiveCR=manualCR+nonRtoTotal;
+  var rtoData=calcRTOData(subtotalWithAssurance, cbCalcState.width||0, taxRate, assurancePlan, effectiveCR);
+  var rtoDownDisplay=cbCalcState.payType==='rto'
+    ?(rtoData.cr>0?'$'+rtoData.totalReceived.toLocaleString()+(rtoData.securityDeposit>0?' (incl. $'+rtoData.securityDeposit+' deposit)':''):'$'+rtoDown)
+    :'$'+rtoDown;
+
+  var _discSet=loadSettings();
+  var _discRaw=(_discSet.quoteDisclaimer||'').trim();
+  var disclaimerText=_discRaw||'*Prices subject to change without notice. This estimate is valid until the end of the current month and does not constitute a binding contract.';
+
+  return {
+    base:base,
+    addonTotal:addonTotal,
+    addonLines:addonLines,
+    nonRtoTotal:nonRtoTotal,
+    salePct:salePct,
+    saleAmount:saleAmount,
+    bosAmt:bosAmt,
+    stdCredit:stdCredit,
+    dealerPct:dealerPct,
+    dealerAmount:dealerAmount,
+    saleBase:saleBase,
+    subtotal:subtotal,
+    taxRate:taxRate,
+    assurancePlan:assurancePlan,
+    assuranceCost:assuranceCost,
+    subtotalWithAssurance:subtotalWithAssurance,
+    taxAmount:taxAmount,
+    grandTotal:grandTotal,
+    rtoDown:rtoDown,
+    manualCR:manualCR,
+    effectiveCR:effectiveCR,
+    rtoData:rtoData,
+    rtoMonthly:rtoData.monthly,
+    rtoTaxPerMonth:rtoData.monthlyTax,
+    rtoDownDisplayText:rtoDownDisplay,
+    disclaimerText:disclaimerText
+  };
+}
+
+function cb_updateAutoWidthPrices(){
+  
+  var w=cbCalcState.width||0;
+  var l=cbCalcState.length||0;
+  var metalP=getMetalBasePrice(w);
+  var pmEl=document.getElementById('cb_price_metal');
+  var metalHint=formatOptionHintFromCfg(getOptionConfig('metal'));
+  if(pmEl) pmEl.textContent=metalP?fmt(metalP)+' ('+w+"\' width)":(metalHint||'$500–$1,100');
+  var shFt=cb_gn('cb_c_shelvesLinFt',0);
+  var shRate=getOptionLinFtRate('shelves');
+  var shP=shFt*shRate;
+  var prevS=document.getElementById('cb_prev_shelves');
+  if(prevS) prevS.textContent=shP&&cbCalcState.addons['shelves']?'→ '+fmt(shP)+' ('+shFt+' lin ft)':'';
+  var twP=getOptionFlatPrice('tallwall',{w:w,l:l});
+  var ptEl=document.getElementById('cb_price_tallwall');
+  var _twIsLofted=LOFTED_TYPES.indexOf(cbCalcState.type)>=0;
+  if(ptEl){
+    if(!_twIsLofted&&cbCalcState.type) ptEl.textContent='Select a lofted style to enable';
+    else ptEl.textContent=twP?fmt(twP)+' ('+w+"\'"+(l?' × '+l+"\'":'')+')':(formatOptionHintFromCfg(getOptionConfig('tallwall'))||'$500–$1,000');
+  }
+  var ttPrice=_paintRowPrice('twotone',w);
+  var pttEl=document.getElementById('cb_price_twotone');
+  if(pttEl) pttEl.textContent=ttPrice?fmt(ttPrice)+' ('+w+"\\' wide)":'$100–$500';
+  var pcpEl=document.getElementById('cb_price_custpaint');
+  if(pcpEl) pcpEl.textContent=_fmtOptMoney(_paintRowPrice('custpaint',w))||'$200';
+  var ppuEl=document.getElementById('cb_price_paintupgrade');
+  var paintTotal=0;
+  (cbCalcState.multiPaint||[]).forEach(function(row){ if(row.type) paintTotal+=_paintRowPrice(row.type,w); });
+  if(ppuEl) ppuEl.textContent=paintTotal?fmt(paintTotal):(formatOptionHintFromCfg(getOptionConfig('paintupgrade'))||'$200+');
+  var prevPU=document.getElementById('cb_prev_paintupgrade');
+  if(prevPU) prevPU.textContent=paintTotal&&cbCalcState.addons['paintupgrade']?'→ '+fmt(paintTotal):'';
+  var sqFt=cb_gn('cb_c_flooringSqFt',0)||((w&&l)?w*l:0);
+  var sqRate=getOptionSqFtRate('flooring');
+  var flP=sqFt*sqRate;
+  var pfEl=document.getElementById('cb_price_flooring');
+  if(pfEl) pfEl.textContent=sqFt?fmt(flP)+' ('+sqFt+' sq ft)':(_fmtOptMoney(sqRate)+'/sq ft');
+  var prevF=document.getElementById('cb_prev_flooring');
+  if(prevF) prevF.textContent=flP&&cbCalcState.addons['flooring']?'→ '+fmt(flP):'';
+  var trFt=cb_gn('cb_c_rooftrussft',0)||l;
+  var trRate=getOptionLinFtRate('rooftrusses');
+  var trP=trFt*trRate;
+  var prtEl=document.getElementById('cb_price_rooftrusses');
+  if(prtEl) prtEl.textContent=trFt?fmt(trP)+' ('+trFt+' lin ft)':(_fmtOptMoney(trRate)+'/lin ft');
+  var prevRT=document.getElementById('cb_prev_rooftrusses');
+  if(prevRT) prevRT.textContent=trP&&cbCalcState.addons['rooftrusses']?'→ '+fmt(trP):'';
+  var joFt=cb_gn('cb_c_floorjoistFt',0)||l;
+  var joRate=getOptionLinFtRate('floorjoists');
+  var joP=joFt*joRate;
+  var pfjEl=document.getElementById('cb_price_floorjoists');
+  if(pfjEl) pfjEl.textContent=joFt?fmt(joP)+' ('+joFt+' lin ft)':(_fmtOptMoney(joRate)+'/lin ft');
+  var prevFJ=document.getElementById('cb_prev_floorjoists');
+  if(prevFJ) prevFJ.textContent=joP&&cbCalcState.addons['floorjoists']?'→ '+fmt(joP):'';
+  var dtpFt=l;
+  var dtpRate=getOptionLinFtRate('doubletopplate');
+  var dtpP=dtpFt*dtpRate;
+  var pdtpEl=document.getElementById('cb_price_doubletopplate');
+  if(pdtpEl) pdtpEl.textContent=dtpFt?fmt(dtpP)+' ('+dtpFt+' lin ft)':(_fmtOptMoney(dtpRate)+'/lin ft');
+  var prevDTP=document.getElementById('cb_prev_doubletopplate');
+  if(prevDTP) prevDTP.textContent=dtpP&&cbCalcState.addons['doubletopplate']?'→ '+fmt(dtpP):'';
+  var hwFt=cb_gn('cb_c_housewrapFt',0)||l;
+  var hwRate=getOptionLinFtRate('housewrap');
+  var hwP=hwFt*hwRate;
+  var prevHW=document.getElementById('cb_prev_housewrap');
+  if(prevHW) prevHW.textContent=hwP&&cbCalcState.addons['housewrap']?'→ '+fmt(hwP):'';
+  var phwEl=document.getElementById('cb_price_housewrap');
+  if(phwEl) phwEl.textContent=hwFt?fmt(hwP)+' ('+hwFt+' lin ft)':(_fmtOptMoney(hwRate)+'/lin ft');
+  var rfFt=cb_gn('cb_c_rooffeltFt',0)||l;
+  var rfRate=getOptionLinFtRate('rooffelt');
+  var rfP=rfFt*rfRate;
+  var prfEl=document.getElementById('cb_price_rooffelt');
+  if(prfEl) prfEl.textContent=rfFt?fmt(rfP)+' ('+rfFt+' lin ft)':(_fmtOptMoney(rfRate)+'/lin ft');
+  var prevRF=document.getElementById('cb_prev_rooffelt');
+  if(prevRF) prevRF.textContent=rfP&&cbCalcState.addons['rooffelt']?'→ '+fmt(rfP):'';
+  var intwallTotal=0;
+  (cbCalcState.multiIntwall||[]).forEach(function(row){
+    if(!row.type) return;
+    var ft=parseFloat(row.linft)||0;
+    var rate=_intwallLinFtRate(row.type);
+    if(rate&&ft) intwallTotal+=rate*ft;
+  });
+  var prevIW=document.getElementById('cb_prev_intwall');
+  if(prevIW) prevIW.textContent=intwallTotal&&cbCalcState.addons['intwall']?'→ '+fmt(intwallTotal):'';
+  var osbFt=cb_gn('cb_c_osbIntwallFt',0);
+  var prevOsb=document.getElementById('cb_prev_osb_intwall');
+  if(prevOsb) prevOsb.textContent=osbFt&&cbCalcState.addons['osb_intwall']?'→ '+fmt(osbFt*getOsbIntwallRate())+' ('+osbFt+' lin ft)':'';
+  var x6Total=0;
+  (cbCalcState.multi2x6||[]).forEach(function(row){
+    if(!row.type) return;
+    var ft=parseFloat(row.linft)||l||0;
+    x6Total+=_x6LinFtRate(row.type)*ft;
+  });
+  var p2x6El=document.getElementById('cb_price_2x6');
+  if(p2x6El) p2x6El.textContent=x6Total?fmt(x6Total):(formatOptionHintFromCfg(getOptionConfig('2x6'))||'$35–$120/lin ft');
+  var prevX6=document.getElementById('cb_prev_2x6');
+  if(prevX6) prevX6.textContent=x6Total&&cbCalcState.addons['2x6']?'→ '+fmt(x6Total):'';
+  var lft=cb_gn('cb_c_loftFt',0);
+  var loftRate=getOptionLinFtRate('loft');
+  var prevL=document.getElementById('cb_prev_loft');
+  if(prevL) prevL.textContent=lft&&cbCalcState.addons['loft']?'→ '+fmt(lft*loftRate):'';
+  var pft=cb_gn('cb_c_porchFt',0);
+  var porchRate=getOptionLinFtRate('porch');
+  var prevP=document.getElementById('cb_prev_porch');
+  if(prevP) prevP.textContent=pft&&cbCalcState.addons['porch']?'→ '+fmt(pft*porchRate):'';
+  var porchEl=document.getElementById('cb_price_porch');
+  if(porchEl) porchEl.textContent=pft?fmt(pft*porchRate)+' ('+pft+' lin ft)':(_fmtOptMoney(porchRate)+'/lin ft');
+  var plftEl=document.getElementById('cb_price_loft');
+  if(plftEl) plftEl.textContent=lft?fmt(lft*loftRate)+' ('+lft+' lin ft)':(_fmtOptMoney(loftRate)+'/lin ft');
+  var p4e=document.getElementById('cb_price_4ineves');
+  if(p4e&&!cbCalcState.addons['4ineves']) p4e.textContent=formatOptionHintFromCfg(getOptionConfig('4ineves'))||'$1,000';
+  _setOptHintEl('cb_price_shelves','shelves','$25/lin ft');
+  _setOptHintEl('cb_price_intwall','intwall','$25–$45/lin ft');
+  _setOptHintEl('cb_price_door36','door36','$150–$475');
+  _setOptHintEl('cb_price_window','window','$115–$400 each');
+  _setOptHintEl('cb_price_garagedoor','garagedoor','$525–$1,890');
+  _setOptHintEl('cb_price_cutouts','cutouts','$50–$125 each');
+  _setOptHintEl('cb_price_droploft','droploft','$200');
+  _setOptLinFtNoteEl('cb_note_rooffelt','rooffelt');
+  _setOptLinFtNoteEl('cb_note_housewrap','housewrap');
+  _setOptLinFtNoteEl('cb_note_doubletopplate','doubletopplate');
+  _setOptLinFtNoteEl('cb_note_floorjoists','floorjoists');
+  var noteRt=document.getElementById('cb_note_rooftrusses');
+  if(noteRt){
+    var rtNoteRate=_fmtOptMoney(getOptionLinFtRate('rooftrusses'));
+    noteRt.textContent='💡 Auto-calculated from building length'+(rtNoteRate?' ('+rtNoteRate+'/lin ft · 8–12\' wide)':' (8–12\' wide)');
+  }
+  var noteFl=document.getElementById('cb_note_flooring');
+  if(noteFl){
+    var flNoteRate=_fmtOptMoney(getOptionSqFtRate('flooring'));
+    noteFl.textContent='💡 Sq ft auto-calculated from building size'+(flNoteRate?' ('+flNoteRate+'/sq ft)':'');
+  }
+
+  // Update insulation preview prices on step 0
+  var w2=cbCalcState.width||0, l2=cbCalcState.length||0;
+  var calcMissingIns=[];
+  ['ins_roof','ins_wallsroof','ins_floor_foamboard','ins_floor_sprayfoam'].forEach(function(k){
+    var priceEl=document.getElementById('cb_price_'+k);
+    var prevEl=document.getElementById('cb_prev_'+k);
+    if(!priceEl) return;
+    var manualEl=document.getElementById('cb_c_manual_'+k);
+    var resolved=getInsulationPriceResolved(k,cbCalcState.type,w2,l2,manualEl&&manualEl.value);
+    if(resolved.price>0){
+      priceEl.textContent='$'+resolved.price.toLocaleString('en-US');
+      if(prevEl) prevEl.textContent=resolved.source==='table'?'PDF table match ('+w2+"' x "+l2+"')":'Manual price used';
+    }else{
+      priceEl.textContent='—';
+      if(prevEl) prevEl.textContent='No PDF size match. Enter manual price.';
+      if(cbCalcState.addons[k]) calcMissingIns.push(getInsOptionLabel(k));
+    }
+  });
+  notifyMissingInsulation('cb',calcMissingIns);
+  // Update metal price to show surcharge
+  var metalPriceEl=document.getElementById('cb_price_metal');
+  if(metalPriceEl&&w2){
+    var baseMetalP=getMetalBasePrice(w2);
+    var totalMetal=baseMetalP+getMetalShopSurcharge(cbCalcState.type,w2,l2);
+    metalPriceEl.textContent=totalMetal>0?'$'+totalMetal.toLocaleString():'—';
+  }
+  cb_updateInsulationAvailability();
+}
+
+function cb_updateCatCounts(){
+  var cats={
+    countExterior:['metal','rooffelt','housewrap','paintupgrade'],
+    countDoors:['door36','window','garagedoor','cutouts'],
+    countInterior:['shelves','intwall','osb_intwall','loft','droploft'],
+    countStructure:['tallwall','flooring','2x6','rooftrusses','floorjoists','porch','doubletopplate','4ineves'],
+    countInsulation:['ins_roof','ins_wallsroof','ins_floor_foamboard','ins_floor_sprayfoam']
+  };
+  // Multi-type keys: sum actual quantities across configured rows
+  function _sumQty(arr){ return arr.reduce(function(acc,r){ return r.type?acc+Math.max(1,parseInt(r.qty)||1):acc; },0); }
+  function _sumLinftRows(arr){
+    return (arr||[]).reduce(function(acc,r){ return r.type?acc+1:acc; },0);
+  }
+  var _multiQtys={
+    door36:   _sumQty(cbCalcState.multiDoors),
+    window:   _sumQty(cbCalcState.multiWindows),
+    garagedoor: cbCalcState.multiGarage.reduce(function(acc,r){ return acc+(r.type&&r.customSize?Math.max(1,parseInt(r.qty)||1):0); },0),
+    cutouts:  _sumQty(cbCalcState.multiCutouts),
+    '2x6':    _sumLinftRows(cbCalcState.multi2x6),
+    intwall:  _sumLinftRows(cbCalcState.multiIntwall),
+    paintupgrade: _sumLinftRows(cbCalcState.multiPaint)
+  };
+  var _multiKeys=['door36','window','garagedoor','cutouts','2x6','intwall','paintupgrade'];
+  var _customCount=(cbCalcState.multiCustom||[]).length;
+  Object.keys(cats).forEach(function(id){
+    var n=cats[id].reduce(function(acc,k){
+      if(_multiKeys.indexOf(k)>=0) return acc+(_multiQtys[k]||0);
+      return acc+(cbCalcState.addons[k]?(Math.max(1,parseInt((cbCalcState.addonQty||{})[k])||1)):0);
+    },0);
+    if(id==='countInterior') n+=_customCount;
+    var el=document.getElementById('cb_'+id);
+    if(el){el.textContent=n?n+' added':'';el.classList.toggle('has-items',n>0);}
+  });
+}
+
+function cb_renderOptsSummaryInto(hostId){
+  var host=document.getElementById(hostId);
+  if(!host) return;
+  var useCards=hostId==='cb_optsSummary';
+  host.innerHTML='';
+  var ca=cb_calcAddons(useCards);
+  var stdItems=STD_OPTIONS[cbCalcState.type]||[];
+  var stdHidden=cbCalcState.stdHidden||{};
+  var visibleStd=stdItems.filter(function(it){ return !stdHidden[it.id]; });
+  var countEl=document.getElementById('cb_selOptsCount');
+  var totalCount=visibleStd.length+ca.lines.length;
+
+  if(useCards){
+    if(countEl) countEl.textContent=String(totalCount);
+    if(!visibleStd.length&&!ca.lines.length){
+      var emptyC=document.createElement('div');
+      emptyC.className='sel-opts-empty';
+      emptyC.textContent=cbCalcState.type?'No options yet — tap Add Options.':'Select a building type first.';
+      host.appendChild(emptyC);
+      return;
+    }
+    visibleStd.forEach(function(it){
+      var rq=cbCalcState.stdRemoved&&cbCalcState.stdRemoved[it.id];
+      var removed=rq>0;
+      var lbl=it.label+(it.qty>1?' ('+it.qty+'×)':'');
+      _appendSelOptCard(host,hostId,false,{
+        isStd:true,stdId:it.id,label:lbl,included:!removed,excluded:removed,
+        priceText:removed?('-'+fmt((rq||1)*it.credit)):'Std',
+        showRemove:true,
+        onRemove:function(){
+          var doHide=function(){ cb_hideStdOption(it.id); };
+          doHide();
+          cb_afterOptsSummaryChange(hostId);
+        }
+      });
+    });
+    ca.lines.forEach(function(l){
+      (function(l){
+        var exKey=_addonExcludeKey(l.sourceKey,l.multiIdx);
+        _appendSelOptCard(host,hostId,false,{
+          isStd:false,exKey:exKey,label:l.label,included:!l.excluded,excluded:!!l.excluded,
+          priceText:'+'+fmt(l.val),showRemove:true,
+          onRemove:function(){
+            var sk=l.sourceKey;
+            var mt2=_summaryMultiTypeForKey(sk);
+            var doRemove=function(){
+              if(sk==='shopSurcharge'||sk==='metal'){ cb_toggleOpt('metal'); }
+              else if(mt2!==null&&l.multiIdx!==null){
+                if(mt2==='custom'){
+                  if(cbCalcState.multiCustom) cbCalcState.multiCustom.splice(l.multiIdx,1);
+                } else { cb_calcRemoveRow(mt2,l.multiIdx); }
+              }
+              else if(sk==='twotone'||sk==='custompaint'){ cb_toggleOpt('paintupgrade'); }
+              else if(sk&&cbCalcState.addons[sk]){ cb_toggleOpt(sk); }
+              else if(sk&&sk.indexOf('ins_')===0){ cb_toggleOpt(sk); }
+              if(cbCalcState.addonExcluded&&cbCalcState.addonExcluded[exKey]) delete cbCalcState.addonExcluded[exKey];
+            };
+            doRemove();
+            cb_afterOptsSummaryChange(hostId);
+          }
+        });
+      })(l);
+    });
+    return;
+  }
+
+  var stdRows=[];
+  stdItems.forEach(function(it){
+    var rq=cbCalcState.stdRemoved&&cbCalcState.stdRemoved[it.id];
+    if(!rq||rq<=0) return;
+    stdRows.push({it:it,rq:rq});
+  });
+
+  if(!ca.lines.length&&!stdRows.length){
+    var empty=document.createElement('div');
+    empty.style.fontSize='0.78rem';
+    empty.style.color='rgba(232,200,122,0.45)';
+    empty.style.padding='6px 2px 2px';
+    empty.textContent='No options selected yet.';
+    host.appendChild(empty);
+    return;
+  }
+
+  ca.lines.forEach(function(l){
+    (function(l){
+      var row=document.createElement('div');
+      row.className='opts-summary-row';
+      var name=document.createElement('div');
+      name.className='os-name';
+      name.textContent=l.label;
+      row.appendChild(name);
+
+      var mt=_summaryMultiTypeForKey(l.sourceKey);
+      if(mt==='custom'&&l.multiIdx!==null){
+        var carr=cbCalcState.multiCustom||[];
+        var crow=carr[l.multiIdx];
+        if(crow&&crow.mode==='total'){
+          var qvC=document.createElement('input');
+          qvC.type='number';
+          qvC.className='os-qty';
+          qvC.min='1';
+          qvC.step='1';
+          qvC.value=String(Math.max(1,parseInt(crow.qty)||1));
+          qvC.onchange=function(){
+            var doCh=function(){
+              if(cbCalcState.multiCustom&&cbCalcState.multiCustom[l.multiIdx]){
+                cbCalcState.multiCustom[l.multiIdx].qty=Math.max(1,parseInt(qvC.value)||1);
+              }
+            };
+            doCh();
+            cb_afterOptsSummaryChange(hostId);
+          };
+          row.appendChild(qvC);
+        }else{
+          var phC=document.createElement('div');
+          phC.style.width='52px'; phC.style.flexShrink='0';
+          row.appendChild(phC);
+        }
+      }else if(mt!==null&&l.multiIdx!==null){
+        if(_summaryUsesLinft(mt)){
+          var lfv=document.createElement('input');
+          lfv.type='number';
+          lfv.className='os-qty';
+          lfv.min='0';
+          lfv.step='0.01';
+          var larr=cbCalcState[_CB_CALC_MULTI_KEY[mt]];
+          var curLin=larr&&larr[l.multiIdx]?larr[l.multiIdx].linft:'';
+          lfv.value=String(curLin!==undefined&&curLin!==''?curLin:'');
+          lfv.onchange=function(){
+            cb_calcRowChange(mt,l.multiIdx,'linft',this.value);
+            cb_afterOptsSummaryChange(hostId);
+          };
+          row.appendChild(lfv);
+        } else if(mt==='paint'){
+          var phP=document.createElement('div');
+          phP.style.width='52px'; phP.style.flexShrink='0';
+          row.appendChild(phP);
+        } else {
+        var qv=document.createElement('input');
+        qv.type='number';
+        qv.className='os-qty';
+        qv.min='1';
+        qv.step='1';
+        var arr=cbCalcState[_CB_CALC_MULTI_KEY[mt]];
+        var cur=arr&&arr[l.multiIdx]?Math.max(1,parseInt(arr[l.multiIdx].qty)||1):1;
+        qv.value=String(cur);
+        qv.onchange=function(){
+          cb_calcRowChange(mt,l.multiIdx,'qty',this.value);
+          cb_afterOptsSummaryChange(hostId);
+        };
+        row.appendChild(qv);
+        }
+      }else{
+        var ph=document.createElement('div');
+        ph.style.width='52px';
+        ph.style.flexShrink='0';
+        row.appendChild(ph);
+      }
+
+      var price=document.createElement('div');
+      price.className='os-price';
+      price.textContent=fmt(l.val);
+      row.appendChild(price);
+
+      var xb=document.createElement('button');
+      xb.type='button';
+      xb.className='os-x';
+      xb.setAttribute('aria-label','Remove');
+      xb.textContent='\u2715';
+      xb.onclick=function(){
+        var sk=l.sourceKey;
+        var mt2=_summaryMultiTypeForKey(sk);
+        var doRemove=function(){
+          if(sk==='shopSurcharge'||sk==='metal'){ cb_toggleOpt('metal'); }
+          else if(mt2!==null&&l.multiIdx!==null){
+            if(mt2==='custom'){
+              if(cbCalcState.multiCustom) cbCalcState.multiCustom.splice(l.multiIdx,1);
+            } else {
+              cb_calcRemoveRow(mt2,l.multiIdx);
+            }
+          }
+          else if(sk==='twotone'||sk==='custompaint'){ cb_toggleOpt('paintupgrade'); }
+          else if(sk&&cbCalcState.addons[sk]){ cb_toggleOpt(sk); }
+          else if(sk&&sk.indexOf('ins_')===0){ cb_toggleOpt(sk); }
+        };
+        doRemove();
+        cb_afterOptsSummaryChange(hostId);
+      };
+      row.appendChild(xb);
+      host.appendChild(row);
+    })(l);
+  });
+
+  if(stdRows.length){
+    var sub=document.createElement('div');
+    sub.className='opts-summary-sub';
+    sub.textContent='Standards removed';
+    host.appendChild(sub);
+    stdRows.forEach(function(sr){
+      (function(it,rq){
+        var row=document.createElement('div');
+        row.className='opts-summary-row removed-std';
+        var name=document.createElement('div');
+        name.className='os-name';
+        name.textContent='Standard removed: '+it.label+(rq>1?' ('+rq+'×)':'');
+        row.appendChild(name);
+        var ph=document.createElement('div');
+        ph.style.width='52px';
+        row.appendChild(ph);
+        var cred=document.createElement('div');
+        cred.className='os-price';
+        cred.textContent='-'+fmt(rq*it.credit);
+        row.appendChild(cred);
+        var rb=document.createElement('button');
+        rb.type='button';
+        rb.className='os-x';
+        rb.textContent='Restore';
+        rb.style.fontSize='0.72rem';
+        rb.style.width='auto';
+        rb.style.padding='6px 8px';
+        rb.onclick=function(){
+          var doRestore=function(){
+            cbCalcState.stdRemoved[it.id]=0;
+          };
+          doRestore();
+          cb_afterOptsSummaryChange(hostId);
+        };
+        row.appendChild(rb);
+        host.appendChild(row);
+      })(sr.it,sr.rq);
+    });
+  }
+}
+
+
+// Force CB pricing to cash contract sales price (no RTO assurance/tax toggles)
+(function(){
+  var _orig=cb_getCalcQuoteSnapshot;
+  cb_getCalcQuoteSnapshot=function(){
+    var savedPay=cbCalcState.payType, savedTax=cbCalcState.quickTaxActive, savedQpv=cbCalcState.qpvShowTax;
+    cbCalcState.payType='cash';
+    cbCalcState.quickTaxActive=false;
+    cbCalcState.qpvShowTax=false;
+    var r=_orig();
+    cbCalcState.payType=savedPay;
+    cbCalcState.quickTaxActive=savedTax;
+    cbCalcState.qpvShowTax=savedQpv;
+    return r;
+  };
+})();
+
+var RTOSTREAMLINE_FIELD_MAP_CASH = {
+  name:              '#ctl00_MainContent_txtxName',
+  address:           '#ctl00_MainContent_txtxAddress',
+  city:              '#ctl00_MainContent_txtxCity',
+  state:             '#ctl00_MainContent_ddlxState',
+  zip:               '#ctl00_MainContent_txtxZip',
+  cellPhone:         '#ctl00_MainContent_txtxCellPhone',
+  homePhone:         '#ctl00_MainContent_txtxHomePhone',
+  workPhone:         '#ctl00_MainContent_txtxWorkPhone',
+  email:             '#ctl00_MainContent_txtxEmail',
+  ssnLast4:          '#ctl00_MainContent_txtxSSN',
+  deliveryAddress:   '#ctl00_MainContent_txtxDeliveryAddress',
+  deliveryCity:      '#ctl00_MainContent_txtxDeliveryCity',
+  deliveryState:     '#ctl00_MainContent_ddlxDeliveryState',
+  deliveryZip:       '#ctl00_MainContent_txtxDeliveryZip',
+  directions:        '#ctl00_MainContent_txtxDirections',
+  buildingCondition: '#ctl00_MainContent_ddlxBuildingCondition',
+  buildingStyle:     '#ctl00_MainContent_ddlxBuildingStyle',
+  sidingType:        '#ctl00_MainContent_ddlxSidingType',
+  inventoryNum:      '#ctl00_MainContent_txtxSerNum1',
+  sidingUpperColor:  '#ctl00_MainContent_ddlxSidingUpperColor',
+  sidingLowerColor:  '#ctl00_MainContent_ddlxSidingLowerColor',
+  roofColor:         '#ctl00_MainContent_ddlxRoofColor',
+  trimColor:         '#ctl00_MainContent_ddlxTrimColor',
+  width:             '#ctl00_MainContent_ddlxWid1',
+  length:            '#ctl00_MainContent_ddlxLen1',
+  salesPrice:        '#ctl00_MainContent_txtxPretaxPrice',
+  opt1:'#ctl00_MainContent_ddlxOptions1', opt1qty:'#ctl00_MainContent_txtxOptions1Qty', opt1price:'#ctl00_MainContent_txtxOptions1Price',
+  opt2:'#ctl00_MainContent_ddlxOptions2', opt2qty:'#ctl00_MainContent_txtxOptions2Qty', opt2price:'#ctl00_MainContent_txtxOptions2Price',
+  opt3:'#ctl00_MainContent_ddlxOptions3', opt3qty:'#ctl00_MainContent_txtxOptions3Qty', opt3price:'#ctl00_MainContent_txtxOptions3Price',
+  opt4:'#ctl00_MainContent_ddlxOptions4', opt4qty:'#ctl00_MainContent_txtxOptions4Qty', opt4price:'#ctl00_MainContent_txtxOptions4Price',
+  opt5:'#ctl00_MainContent_ddlxOptions5', opt5qty:'#ctl00_MainContent_txtxOptions5Qty', opt5price:'#ctl00_MainContent_txtxOptions5Price',
+  opt6:'#ctl00_MainContent_ddlxOptions6', opt6qty:'#ctl00_MainContent_txtxOptions6Qty', opt6price:'#ctl00_MainContent_txtxOptions6Price',
+  opt7:'#ctl00_MainContent_ddlxOptions7', opt8:'#ctl00_MainContent_ddlxOptions8'
+};
+var RTOSTREAMLINE_FIELD_MAP_RTO = {
+  name:              '#ctl00_MainContent_txtSaShName',
+  address:           '#ctl00_MainContent_txtSaShAddress',
+  city:              '#ctl00_MainContent_txtSaShCityState',
+  state:             '#ctl00_MainContent_ddlSaShState',
+  zip:               '#ctl00_MainContent_txtSaShZip',
+  cellPhone:         '#ctl00_MainContent_txtCellPhone',
+  homePhone:         '#ctl00_MainContent_txtSaShPhone',
+  workPhone:         '#ctl00_MainContent_txtWorkPhone',
+  email:             '#ctl00_MainContent_txtEmail',
+  deliveryName:      '#ctl00_MainContent_txtDeliveryName',
+  deliveryAddress:   '#ctl00_MainContent_txtDeliveryAddress',
+  deliveryCity:      '#ctl00_MainContent_txtDeliveryCity',
+  deliveryState:     '#ctl00_MainContent_ddlDeliveryState',
+  deliveryZip:       '#ctl00_MainContent_txtDeliveryZip',
+  directions:        '#ctl00_MainContent_txtDirections',
+  // At-signing identity — NEVER included in the autofill payload (see cbBuildAutofillPayload)
+  ssn:               '#ctl00_MainContent_txtSsn',
+  dob:               '#ctl00_MainContent_dpDOB',
+  dl:                '#ctl00_MainContent_txtDL',
+  dlState:           '#ctl00_MainContent_ddlDLState',
+  dlIssue:           '#ctl00_MainContent_dpDLIssue',
+  dlExp:             '#ctl00_MainContent_dpDLExp',
+  ownRent:           '#ctl00_MainContent_ddlOwnRent',
+  landlord:          '#ctl00_MainContent_txtLandlord',
+  llPhone:           '#ctl00_MainContent_txtLLHomePhone',
+  llAddress:         '#ctl00_MainContent_txtLLAddress',
+  llCity:            '#ctl00_MainContent_txtLLCity',
+  llState:           '#ctl00_MainContent_ddlLLState',
+  llZip:             '#ctl00_MainContent_txtLLZip',
+  salesPrice:        '#ctl00_MainContent_txtPretaxPrice',
+  buildingCondition: '#ctl00_MainContent_ddlBuildingCondition',
+  sidingType:        '#ctl00_MainContent_ddlSidingType',
+  buildingStyle:     '#ctl00_MainContent_ddlBuildingStyle',
+  inventoryNum:      '#ctl00_MainContent_txtSerNum1',
+  sidingUpperColor:  '#ctl00_MainContent_ddlSidingUpperColor',
+  sidingLowerColor:  '#ctl00_MainContent_ddlSidingLowerColor',
+  roofColor:         '#ctl00_MainContent_ddlRoofColor',
+  trimColor:         '#ctl00_MainContent_ddlTrimColor',
+  width:             '#ctl00_MainContent_ddlWid1',
+  length:            '#ctl00_MainContent_ddlLen1',
+  purchaseType:      '#ctl00_MainContent_ddlpmtFactor',   // 108.00=36mo, 120.00=48mo, 220.00=60mo
+  opt1:'#ctl00_MainContent_ddlOptions1', opt1qty:'#ctl00_MainContent_txtOptions1Qty', opt1price:'#ctl00_MainContent_txtOptions1Price',
+  opt2:'#ctl00_MainContent_ddlOptions2', opt2qty:'#ctl00_MainContent_txtOptions2Qty', opt2price:'#ctl00_MainContent_txtOptions2Price',
+  opt3:'#ctl00_MainContent_ddlOptions3', opt3qty:'#ctl00_MainContent_txtOptions3Qty', opt3price:'#ctl00_MainContent_txtOptions3Price',
+  opt4:'#ctl00_MainContent_ddlOptions4', opt4qty:'#ctl00_MainContent_txtOptions4Qty', opt4price:'#ctl00_MainContent_txtOptions4Price',
+  opt5:'#ctl00_MainContent_ddlOptions5', opt5qty:'#ctl00_MainContent_txtOptions5Qty', opt5price:'#ctl00_MainContent_txtOptions5Price',
+  opt6:'#ctl00_MainContent_ddlOptions6', opt6qty:'#ctl00_MainContent_txtOptions6Qty', opt6price:'#ctl00_MainContent_txtOptions6Price',
+  opt7:'#ctl00_MainContent_ddlOptions7', opt8:'#ctl00_MainContent_ddlOptions8',
+  employer:          '#ctl00_MainContent_txtEmployer',
+  employerAddress:   '#ctl00_MainContent_txtEmployerAddress',
+  employerCity:      '#ctl00_MainContent_txtEmployerCity',
+  employerState:     '#ctl00_MainContent_ddlEmployerState',
+  employerZip:       '#ctl00_MainContent_txtEmployerZip',
+  employerPhone:     '#ctl00_MainContent_txtEmployerPhone',
+  ref1Name:          '#ctl00_MainContent_txtRef1',
+  ref1Phone:         '#ctl00_MainContent_txtRef1Phone',
+  ref2Name:          '#ctl00_MainContent_txtRef2',
+  ref2Phone:         '#ctl00_MainContent_txtRef2Phone'
+};
+var CB_BOOKMARKLET_KEY = 'cb_pending_payload';
+
+function cbFieldMap(){
+  return (cbState.type === 'rto') ? RTOSTREAMLINE_FIELD_MAP_RTO : RTOSTREAMLINE_FIELD_MAP_CASH;
+}
+
+
+var CB_NEEDS_INV={'On Lot New':true,'On Lot Used':true};
+var CB_ORDER_TO_CONDITION={'Custom Shop Build':'CSB','Urban Structures':'USOSB','On Lot New':'OLN','On Lot Used':'OLU'};
 
 function cbGo(id){
   goTo(id);
   if(id==='cbStart') cbInitNote();
+  if(id==='cbBuilding') cbInitBuildingScreen();
+  if(id==='cbMerge') cbRenderMergeScreen();
   if(id==='cbGuide') cbRenderGuide();
 }
 function cbInitNote(){
@@ -28151,10 +30128,10 @@ function cbInitNote(){
   if(el) el.textContent=url;
 }
 function cbRenderSteps(){
-  for(var i=0;i<=4;i++){
+  for(var i=0;i<=5;i++){
     var c=document.getElementById('cbSteps'+i); if(!c) continue;
     c.innerHTML='';
-    for(var j=0;j<5;j++){
+    for(var j=0;j<6;j++){
       var d=document.createElement('div');
       d.className='cb-step-dot'+(j<i?' done':j===i?' cur':'');
       c.appendChild(d);
@@ -28199,16 +30176,6 @@ function cbFetchCustomer(phone,name){
   }
   return rec;
 }
-function cbFetchQuote(){
-  if(typeof calcState!=='undefined'&&calcState&&calcState.type){
-    var typeName=(typeof NAMES!=='undefined'&&NAMES[calcState.type])?NAMES[calcState.type]:calcState.type;
-    var size=(calcState.width&&calcState.length)?(calcState.width+"' x "+calcState.length+"'"):'';
-    return{ buildingType:typeName, size:size, width:calcState.width||'', length:calcState.length||'',
-      payType:calcState.payType||'', rtoMonths:calcState.rtoMonths||'',
-      total:(typeof window.__cbQuoteTotal==='number')?window.__cbQuoteTotal:'' };
-  }
-  return null;
-}
 
 function cbSearchCustomer(){
   var phone=cbCv('cb_searchPhone'), name=cbCv('cb_searchName');
@@ -28245,7 +30212,6 @@ function cbValidateLink(){
   cbGo('cbOrder');
 }
 
-var CB_NEEDS_INV={'On Lot New':true,'On Lot Used':true};
 function cbPickOrder(el){
   document.querySelectorAll('#cbOrder .cb-opt').forEach(function(b){ b.classList.remove('sel'); });
   el.classList.add('sel');
@@ -28265,6 +30231,246 @@ function cbValidateOrder(){
     showToast('Inventory number required'); return;
   }
   cbState.inventory=cbCv('cb_inventory');
+  cbGo('cbBuilding');
+}
+
+function cbInitBuildingScreen(){
+  var onLot=cbState.order==='On Lot New'||cbState.order==='On Lot Used';
+  var toggle=document.getElementById('cb_srcToggle');
+  if(toggle) toggle.style.display=onLot?'flex':'none';
+  if(!onLot){
+    cbSetBuildingSource('manual');
+  } else if(!cbState._bldSource){
+    cbSetBuildingSource('inventory');
+  } else {
+    cbSetBuildingSource(cbState._bldSource);
+  }
+}
+function cbSetBuildingSource(src){
+  cbState._bldSource=src;
+  var invBtn=document.getElementById('cb_srcInvBtn');
+  var manBtn=document.getElementById('cb_srcManBtn');
+  if(invBtn) invBtn.classList.toggle('active',src==='inventory');
+  if(manBtn) manBtn.classList.toggle('active',src==='manual');
+  var invWrap=document.getElementById('cb_invPickWrap');
+  var calcWrap=document.getElementById('cb_calcWrap');
+  if(src==='inventory'){
+    if(invWrap) invWrap.style.display='block';
+    if(calcWrap) calcWrap.style.display='none';
+    cbRenderInventoryPickList();
+  } else {
+    if(invWrap) invWrap.style.display='none';
+    if(calcWrap) calcWrap.style.display='block';
+    cb_resetCalcState();
+    cbSetVal('cb_calcTypeSelect','');
+    cbSetVal('cb_calcWidth','');
+    cbSetVal('cb_calcLength','');
+    var ls=document.getElementById('cb_calcLength');
+    if(ls) ls.innerHTML='<option value="">Length</option>';
+    cb_updateQuickPrice();
+    cb_renderOptsSummary();
+    cb_updateAddOptionBtnState();
+  }
+}
+function cbFetchInventoryList(){
+  return (invState.items||[]).filter(function(it){
+    return invNormalizeUnitStatus(it.unitStatus)==='available';
+  }).map(function(it){
+    var styleCode=invGetStyleCodeFromInput(it.style);
+    var sz=invParseSizeToParts(it.size)||{};
+    var price=(it.priceData&&it.priceCalcConfirmed&&it.priceData.finalTotal!=null)?it.priceData.finalTotal:'';
+    var styleName=(typeof NAMES!=='undefined'&&NAMES[styleCode])?NAMES[styleCode]:(it.style||'');
+    var label=[styleName, sz.width&&sz.length?(sz.width+"' x "+sz.length+"'"):it.size].filter(Boolean).join(' · ');
+    var sub=[it.serialNumber?'S/N '+it.serialNumber:'', it.id?'ID '+it.id:'', price!==''?((typeof fmt==='function')?fmt(price):'$'+price):''].filter(Boolean).join(' · ');
+    return {id:it.id, item:it, styleCode:styleCode, styleName:styleName, width:sz.width||'', length:sz.length||'', price:price, label:label, sub:sub};
+  });
+}
+function cbRenderInventoryPickList(){
+  var host=document.getElementById('cb_invPickList');
+  if(!host) return;
+  var list=cbFetchInventoryList();
+  if(!list.length){
+    host.innerHTML='<div class="cb-opt" style="cursor:default;"><div class="cb-opt-sub">No available inventory units found.</div></div>';
+    return;
+  }
+  host.innerHTML=list.map(function(row,idx){
+    return '<button type="button" class="cb-inv-item'+(cbState._invPickId===row.id?' sel':'')+'" onclick="cbPickInventory('+idx+')">'+
+      '<div class="cb-inv-title">'+row.label+'</div><div class="cb-inv-sub">'+row.sub+'</div></button>';
+  }).join('');
+}
+function cb_restoreCalcSessionToCb(entry){
+  if(!entry||!entry.state) return;
+  var saved=JSON.parse(JSON.stringify(entry.state));
+  cb_resetCalcState();
+  cbCalcState=Object.assign(cbCalcState,saved);
+  cbCalcState.payType='cash';
+  cbCalcState.addons=Object.assign({},saved.addons||{});
+  cbCalcState.stdRemoved=Object.assign({},saved.stdRemoved||{});
+  ['multiDoors','multiWindows','multiGarage','multiCutouts','multiCustom','multi2x6','multiIntwall','multiPaint'].forEach(function(k){
+    cbCalcState[k]=Array.isArray(saved[k])?saved[k]:[];
+  });
+  var typeSel=document.getElementById('cb_calcTypeSelect');
+  if(typeSel) typeSel.value=cbCalcState.type||'';
+  cb_syncCalcTypeTrigger(cbCalcState.type||null);
+  var wSel=document.getElementById('cb_calcWidth');
+  if(wSel) wSel.value=cbCalcState.width?String(cbCalcState.width):'';
+  cb_onCalcWidthChange(cbCalcState.width?String(cbCalcState.width):'');
+  var lSel=document.getElementById('cb_calcLength');
+  if(lSel) lSel.value=cbCalcState.length?String(cbCalcState.length):'';
+  cb_onCalcLengthChange(cbCalcState.length?String(cbCalcState.length):'');
+  var controls=entry.controls||{};
+  Object.keys(controls).forEach(function(id){
+    var cbId=id.indexOf('c_')===0?('cb_'+id):id;
+    var el=document.getElementById(cbId);
+    if(!el) return;
+    if(el.type==='checkbox'||el.type==='radio') el.checked=!!controls[id];
+    else el.value=controls[id];
+  });
+  Object.keys(cbCalcState.addons||{}).forEach(function(key){
+    var isOn=!!cbCalcState.addons[key];
+    var chk=document.getElementById('cb_chk_'+key);
+    var detail=document.getElementById('cb_detail_'+key);
+    if(chk) chk.classList.toggle('on',isOn);
+    if(detail) detail.style.display=isOn?'block':'none';
+  });
+  ['doors','windows','garage','cutouts','x6','intwall','paint'].forEach(function(t){ cb_calcRenderRows(t); });
+  cb_updateCatCounts();
+  cb_updateAutoWidthPrices();
+  cb_updateInsulationAvailability();
+  cb_updateQuickPrice();
+  cb_renderOptsSummary();
+}
+function cbPickInventory(idx){
+  var list=cbFetchInventoryList();
+  var row=list[idx];
+  if(!row) return;
+  cbState._invPickId=row.id;
+  cbRenderInventoryPickList();
+  var price=row.price;
+  var box=document.getElementById('cb_invPriceBox');
+  var pel=document.getElementById('cb_invPrice');
+  if(box) box.style.display='block';
+  if(pel){
+    if(price!==''){ pel.textContent=(typeof fmt==='function')?fmt(price):('$'+price); pel.classList.remove('zero'); }
+    else { pel.textContent='\u2014'; pel.classList.add('zero'); }
+  }
+  var opts=[];
+  if(row.item&&row.item.calcSession){
+    cbSetBuildingSource('manual');
+    cb_restoreCalcSessionToCb(row.item.calcSession);
+    opts=cb_buildGroupedOptions();
+    var q=cb_getCalcQuoteSnapshot();
+    if(q) price=Math.ceil(q.subtotal);
+  }
+  cbState.building={
+    source:'inventory', styleCode:row.styleCode, styleName:row.styleName,
+    width:row.width, length:row.length, price:price, options:opts, mergedOptions:null
+  };
+}
+function cb_buildGroupedOptions(){
+  var groups=[];
+  function mergeLine(name,qty,unitPrice,total){
+    for(var i=0;i<groups.length;i++){
+      if(groups[i].name===name && Math.abs(groups[i].unitPrice-unitPrice)<0.01){
+        groups[i].qty += qty; groups[i].total += total; return;
+      }
+    }
+    groups.push({name:name, qty:qty, unitPrice:unitPrice, total:total});
+  }
+  var ca=cb_calcAddons(true);
+  (ca.lines||[]).forEach(function(l){
+    if(l.excluded) return;
+    var qty=1;
+    var m=l.label.match(/\((\d+)x\)\s*$/);
+    if(m) qty=parseInt(m[1],10)||1;
+    var name=l.label.replace(/\s*\(\d+x\)\s*$/,'').trim();
+    var unitPrice=qty?Math.round((l.val/qty)*100)/100:l.val;
+    mergeLine(name,qty,unitPrice,l.val);
+  });
+  var stdItems=STD_OPTIONS[cbCalcState.type]||[];
+  stdItems.forEach(function(it){
+    var rq=cbCalcState.stdRemoved&&cbCalcState.stdRemoved[it.id];
+    if(!rq||rq<=0) return;
+    mergeLine('Std removed: '+it.label, -rq, it.credit, -(rq*it.credit));
+  });
+  return groups;
+}
+function cbFinalizeBuildingFromManual(){
+  if(!cb_calcBuildingIsComplete()){ showToast('Select building type, width, and length'); return false; }
+  var q=cb_getCalcQuoteSnapshot();
+  if(!q) { showToast('Could not price this build'); return false; }
+  var opts=cb_buildGroupedOptions();
+  cbState.building={
+    source:'manual',
+    styleCode:cbCalcState.type,
+    styleName:(typeof NAMES!=='undefined'&&NAMES[cbCalcState.type])?NAMES[cbCalcState.type]:cbCalcState.type,
+    width:cbCalcState.width, length:cbCalcState.length,
+    price:Math.ceil(q.subtotal), options:opts, mergedOptions:null
+  };
+  return true;
+}
+function cbValidateBuilding(){
+  if(cbState._bldSource==='inventory'){
+    if(!cbState.building||cbState.building.source!=='inventory'){
+      showToast('Select an inventory unit'); return;
+    }
+    if(cbState.building.price===''||cbState.building.price==null){
+      showToast('Selected unit has no confirmed price'); return;
+    }
+  } else {
+    if(!cbFinalizeBuildingFromManual()) return;
+  }
+  var lines=cbState.building.options||[];
+  if(lines.length>6){
+    cbMergeWorking=lines.map(function(l,i){ return Object.assign({id:'m'+i, selected:false}, l); });
+    cbGo('cbMerge');
+    return;
+  }
+  cbState.building.mergedOptions=lines.slice(0,8);
+  while(cbState.building.mergedOptions.length<8) cbState.building.mergedOptions.push({name:'',qty:'',unitPrice:'',total:''});
+  cbGo('cbType');
+}
+function cbRenderMergeScreen(){
+  if(!cbMergeWorking) cbMergeWorking=(cbState.building.options||[]).map(function(l,i){ return Object.assign({id:'m'+i, selected:false}, l); });
+  var host=document.getElementById('cb_mergeList');
+  var cnt=document.getElementById('cb_mergeCount');
+  if(cnt) cnt.textContent=cbMergeWorking.length+' line'+(cbMergeWorking.length===1?'':'s')+' — need 8 or fewer';
+  if(!host) return;
+  host.innerHTML=cbMergeWorking.map(function(line,idx){
+    return '<label class="cb-merge-line"><input type="checkbox" '+(line.selected?'checked':'')+' onchange="cbMergeToggle('+idx+',this.checked)">'+
+      '<span class="cb-merge-name">'+String(line.name||'').replace(/</g,'&lt;')+'</span>'+
+      '<span class="cb-merge-meta">qty '+line.qty+' · '+(typeof fmt==='function'?fmt(line.total):line.total)+'</span></label>';
+  }).join('');
+  var btn=document.getElementById('cb_mergeContinueBtn');
+  if(btn) btn.disabled=cbMergeWorking.length>8;
+}
+function cbMergeToggle(idx,on){ if(cbMergeWorking&&cbMergeWorking[idx]) cbMergeWorking[idx].selected=!!on; }
+function cbMergeCombineSelected(){
+  if(!cbMergeWorking) return;
+  var sel=[];
+  cbMergeWorking.forEach(function(l,i){ if(l.selected) sel.push(i); });
+  if(sel.length<2){ showToast('Select at least 2 lines to combine'); return; }
+  sel.sort(function(a,b){ return b-a; });
+  var first=cbMergeWorking[sel[sel.length-1]];
+  var combined={id:'m'+Date.now(), name:'', qty:0, unitPrice:0, total:0, selected:false};
+  var names=[];
+  sel.forEach(function(i){
+    var l=cbMergeWorking[i];
+    names.push(l.name);
+    combined.qty += parseFloat(l.qty)||0;
+    combined.total += parseFloat(l.total)||0;
+  });
+  combined.name=names.join(' + ');
+  combined.unitPrice=combined.qty?Math.round((combined.total/combined.qty)*100)/100:combined.total;
+  sel.forEach(function(i){ cbMergeWorking.splice(i,1); });
+  cbMergeWorking.push(combined);
+  cbRenderMergeScreen();
+}
+function cbMergeContinue(){
+  if(!cbMergeWorking||cbMergeWorking.length>8){ showToast('Combine lines until 8 or fewer remain'); return; }
+  cbState.building.mergedOptions=cbMergeWorking.map(function(l){ return {name:l.name,qty:l.qty,unitPrice:l.unitPrice,total:l.total}; });
+  while(cbState.building.mergedOptions.length<8) cbState.building.mergedOptions.push({name:'',qty:'',unitPrice:'',total:''});
+  cbMergeWorking=null;
   cbGo('cbType');
 }
 
@@ -28291,22 +30497,28 @@ function cbFgGroup(title,rows){
   return '<div class="fg-group"><div class="fg-grouphead">'+cbFgEsc(title)+'</div>'+rows+'</div>';
 }
 function cbRenderGuide(){
-  var c=cbState.customer||{}, q=cbFetchQuote()||{}, isRTO=cbState.type==='rto';
+  var c=cbState.customer||{}, b=cbState.building||{}, isRTO=cbState.type==='rto';
   document.getElementById('cb_guideTitle').textContent=(isRTO?'RTO':'Cash')+' Fill Guide';
   var pills='<span class="cb-pill"><b>'+(isRTO?'RTO':'Cash')+'</b> contract</span>';
   if(cbState.order) pills+='<span class="cb-pill">'+cbFgEsc(cbState.order)+'</span>';
   if(cbState.inventory) pills+='<span class="cb-pill">Inv <b>'+cbFgEsc(cbState.inventory)+'</b></span>';
-  if(q.size) pills+='<span class="cb-pill">'+cbFgEsc(q.size)+'</span>';
+  if(b.width&&b.length) pills+='<span class="cb-pill">'+cbFgEsc(b.width+"' x "+b.length+"'")+'</span>';
   document.getElementById('cb_guideSummary').innerHTML=pills;
   var html=cbFgGroup('Customer',
     cbFgRow('Full Legal Name',c.name)+cbFgRow('Phone',c.phone)+cbFgRow('Email',c.email)+
     cbFgRow('Street Address',c.street)+cbFgRow('City',c.city)+cbFgRow('State',c.state)+cbFgRow('ZIP',c.zip));
   var orderRows=cbFgRow('Order Type',cbState.order);
   if(cbState.inventory) orderRows+=cbFgRow('Inventory #',cbState.inventory);
-  orderRows+=cbFgRow('Building Type',q.buildingType)+cbFgRow('Size',q.size);
-  if(isRTO) orderRows+=cbFgRow('RTO Term (months)',q.rtoMonths);
-  if(q.total!==''&&q.total!=null)
-    orderRows+=cbFgRow(isRTO?'Cash Price (reference)':'Total Price',(typeof fmt==='function')?fmt(q.total):('$'+q.total));
+  orderRows+=cbFgRow('Building Type',b.styleName||b.styleCode)+cbFgRow('Size',(b.width&&b.length)?(b.width+"' x "+b.length+"'"):'' );
+  if(b.price!==''&&b.price!=null)
+    orderRows+=cbFgRow('Sales Price',(typeof fmt==='function')?fmt(b.price):('$'+b.price));
+  var merged=b.mergedOptions||b.options||[];
+  merged.forEach(function(line,idx){
+    if(!line||!line.name) return;
+    var n=idx+1;
+    var detail=line.name+(line.qty?(' · qty '+line.qty):'')+(line.total!=null&&line.total!==''?(' · '+(typeof fmt==='function'?fmt(line.total):line.total)):'' );
+    orderRows+=cbFgRow('Option '+n,detail);
+  });
   html+=cbFgGroup('Order &amp; Building',orderRows);
   if(isRTO){
     html+=cbFgGroup('Delivery &amp; Billing',
@@ -28367,17 +30579,27 @@ function cbFgCopyInput(id){
   cbClipboard(v).then(function(){ showToast('Copied'); }).catch(function(){ showToast('Copy failed'); });
 }
 
-var CB_ORDER_TO_CONDITION={'Custom Shop Build':'CSB','Urban Structures':'USOSB','On Lot New':'OLN','On Lot Used':'OLU'};
 function cbBuildAutofillPayload(){
-  var c=cbState.customer||{}, q=cbFetchQuote()||{}, isRTO=cbState.type==='rto', p={};
+  var c=cbState.customer||{}, b=cbState.building||{}, isRTO=(cbState.type==='rto'), p={};
   p.name=c.name||''; p.address=c.street||''; p.city=c.city||''; p.state=c.state||''; p.zip=c.zip||'';
   p.cellPhone=c.phone||''; p.email=c.email||'';
   p.deliveryAddress=c.delStreet||c.street||''; p.deliveryCity=c.delCity||c.city||'';
   p.deliveryState=c.delState||c.state||''; p.deliveryZip=c.delZip||c.zip||'';
   p.buildingCondition=CB_ORDER_TO_CONDITION[cbState.order]||'';
   p.inventoryNum=cbState.inventory||'';
-  p.salesPrice=q.total?String(q.total):'';
-  p.width=q.width?String(q.width):''; p.length=q.length?String(q.length):'';
+  p.buildingStyle=b.styleCode||'';
+  p.width=b.width?String(b.width):''; p.length=b.length?String(b.length):'';
+  p.salesPrice=(b.price!=null&&b.price!=='')?String(b.price):'';
+  var opts=b.mergedOptions||b.options||[];
+  for(var i=0;i<8;i++){
+    var line=opts[i], n=i+1;
+    if(!line||!line.name){ if(n>=7) p['opt'+n]=''; continue; }
+    p['opt'+n]=line.name||'';
+    if(n<=6){
+      p['opt'+n+'qty']=line.qty!=null&&line.qty!==''?String(line.qty):'';
+      p['opt'+n+'price']=line.unitPrice!=null&&line.unitPrice!==''?String(line.unitPrice):'';
+    }
+  }
   if(isRTO){
     p.ownRent=(c.rentOwn==='Rent')?'Rent':'Own';
     if(c.rentOwn==='Rent'){ p.landlord=c.llName||''; p.llPhone=c.llPhone||'';
@@ -28393,10 +30615,15 @@ function cbBuildAutofillPayload(){
 function cbLaunch(){
   var url=(typeof loadSettings==='function'&&loadSettings().rtostreamlineUrl)||'';
   if(!url){ showToast('Set RTOStreamline URL in Settings → Links & Cloud'); return; }
-  cbState._autofillPayload=cbBuildAutofillPayload();
+  var payload=cbBuildAutofillPayload();
+  var mapKey=(cbState.type==='rto')?'rto':'cash';
+  var bundle={map:mapKey,data:payload};
+  var json=JSON.stringify(bundle);
+  try{ localStorage.setItem(CB_BOOKMARKLET_KEY,json); }catch(e){}
+  cbClipboard(json).catch(function(){});
   cbWipeSigning();
   window.open(url,'rtostreamline');
-  showToast('RTOStreamline opened — use guide below');
+  showToast('Payload copied — paste into bookmarklet on first use');
 }
 function cbWipeSigning(){
   ['sgn_ssn','sgn_dob','sgn_dl','sgn_dlstate','sgn_dlissue','sgn_dlexp','sgn_employer'].forEach(function(id){
@@ -28405,8 +30632,10 @@ function cbWipeSigning(){
 }
 function cbReset(silent){
   cbWipeSigning();
-  cbState={order:null,inventory:'',type:null};
-  ['cb_searchPhone','cb_searchName','cb_name','cb_phone','cb_email','cb_street','cb_city','cb_state','cb_zip','cb_inventory']
+  cbState={order:null,inventory:'',type:null,customer:null,building:null,_pending:null};
+  cbMergeWorking=null;
+  cb_resetCalcState();
+  ['cb_searchPhone','cb_searchName','cb_name','cb_phone','cb_email','cb_street','cb_city','cb_state','cb_zip','cb_inventory','cb_salePercent','cb_dealerDiscount']
     .forEach(function(id){ cbSetVal(id,''); });
   var sr=document.getElementById('cb_searchResults'); if(sr) sr.innerHTML='';
   document.querySelectorAll('.cb-opt.sel').forEach(function(b){ b.classList.remove('sel'); });
@@ -28414,6 +30643,16 @@ function cbReset(silent){
   cbGo('cbStart');
   if(!silent) showToast('Contract cleared');
 }
+
+document.addEventListener('input',function(e){
+  var id=e.target&&e.target.id;
+  if(!id||id.indexOf('cb_c_')!==0) return;
+  if(id==='cb_c_osbIntwallFt') cbCalcState.osbIntwallFtManual=true;
+  cb_updateAutoWidthPrices();
+  cb_updateQuickPrice();
+  cb_renderOptsSummary();
+});
+
 /* ===== END CONTRACT BRIDGE ===== */
 
 </script>
