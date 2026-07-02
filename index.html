@@ -1341,7 +1341,8 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
   display:flex; flex-direction:column; min-height:0;
 }
 #rtoStreamlineCalcCard {
-  display:block !important; background:var(--calc-panel-bg); border:none; border-radius:0;
+  display:flex !important; flex-direction:column; min-height:0;
+  background:var(--calc-panel-bg); border:none; border-radius:0;
   padding:0; margin:0; color:#fff;
 }
 #calcPriceDeckViewport .qpv-l,
@@ -3389,11 +3390,39 @@ select:focus {
   color: var(--wheat);
 }
 
+#screenSalesSheet.screen.active { padding-top:0; }
+#screenSalesSheet .calc-page-inner { padding:0; }
+#screenSalesSheet .calc-page-head {
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  margin-bottom:4px; flex-wrap:nowrap;
+}
+#screenSalesSheet .calc-page-head .page-title { margin-bottom:0; line-height:1.05; flex:1; min-width:0; font-size:1.35rem; color:var(--wheat); }
+#screenSalesSheet .gss-list-wrap:has(#ss_width) .gss-list-trigger,
+#screenSalesSheet .gss-list-wrap:has(#ss_length) .gss-list-trigger {
+  min-height:42px; font-size:0.9rem; border-radius:8px;
+  border:1.5px solid rgba(232,200,122,0.25); background:rgba(255,255,255,0.08); color:var(--cream);
+}
+#screenSalesSheet .gss-list-wrap:has(#ss_width) .gss-list-trigger.is-placeholder,
+#screenSalesSheet .gss-list-wrap:has(#ss_length) .gss-list-trigger.is-placeholder {
+  color:rgba(232,200,122,0.55);
+}
+#screenSalesSheet .gss-list-wrap:has(#ss_width) .gss-list-trigger::before,
+#screenSalesSheet .gss-list-wrap:has(#ss_length) .gss-list-trigger::before {
+  content:''; display:inline-block; width:18px; height:18px; margin-right:6px; opacity:0.7; flex-shrink:0;
+  background:center/contain no-repeat;
+}
+#screenSalesSheet .gss-list-wrap:has(#ss_width) .gss-list-trigger::before {
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23E8C87A' stroke-width='2'%3E%3Cpath d='M4 12h16M4 6h10M4 18h14'/%3E%3C/svg%3E");
+}
+#screenSalesSheet .gss-list-wrap:has(#ss_length) .gss-list-trigger::before {
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23E8C87A' stroke-width='2'%3E%3Cpath d='M12 4v16M6 10h12M8 18h8'/%3E%3C/svg%3E");
+}
+
 /* -- Page titles on Sales Sheet pages match calc style -- */
 #screenSalesSheet .page-title {
   font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
   font-size: 1.6rem;
-  color: var(--barn);
+  color: var(--wheat);
   letter-spacing: 2px;
   margin-bottom: 2px;
 }
@@ -4482,6 +4511,10 @@ select:focus {
         </div>
         <div id="rtoStreamlineCalcCard" class="calc-price-pane calc-price-pane--rto calc-price-pane--detail">
         <div class="rto-hero-block quick-price-price-center">
+          <div id="rtoSaleRow" class="cash-sale-row" hidden>
+            <span class="cash-price-lbl">List Price</span>
+            <span id="rtoBasePrice" class="quick-price-base"></span>
+          </div>
           <span class="cash-price-lbl">Total Price</span>
           <div id="rtoHeroTotal" class="quick-price-amount">—</div>
         </div>
@@ -7051,15 +7084,13 @@ select:focus {
     <div id="ssdot2" class="ss-dot" onclick="ssGoStep(2)">3</div>
   </div>
 
-  <!-- PAGE 0: Building + Colors -->
-  <div id="sspage0" style="display:block;padding:16px;">
-    <div class="page-title">Building &amp; Colors</div>
-    <div class="page-sub">Select style, size, and colors — then go to step 2 for options and pricing</div>
-
-    <div class="field-group"><label class="field-label">Flyer contact (by lot)</label>
-      <select id="ss_sheetLotContact"></select>
-      <p style="font-size:0.68rem;color:rgba(232,200,122,0.55);margin:6px 0 0;line-height:1.35;">Uses contacts linked to the chosen lot in Settings (Business &amp; lots). Default follows the lot marked Main location.</p>
+  <!-- PAGE 0: Building + Options (matches price calculator flow) -->
+  <div id="sspage0" class="calc-page active" style="display:block;padding:16px;">
+    <div class="calc-page-inner">
+    <div class="calc-page-head">
+      <div class="page-title">Building &amp; Options</div>
     </div>
+    <div class="page-sub">Select style, size, and colors — add options and review pricing below</div>
 
     <div id="ss_plateStrip" style="display:none;margin:0 0 14px;padding:12px;border-radius:10px;border:1.5px solid rgba(232,200,122,0.28);background:rgba(232,200,122,0.06);">
       <div class="field-label" style="margin-bottom:8px;">Serial plate</div>
@@ -7199,6 +7230,22 @@ select:focus {
       <button type="button" class="style-picker-trigger" onclick="openColorPicker('ss_trim','Trim Color',TRIM_COLOR_DATA)" id="ss_trim_trigger"><span class="spt-placeholder"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:28px;height:28px;display:block;"><rect x="2" y="2" width="20" height="20" rx="1.5" fill="rgba(80,50,30,0.07)" stroke="#8B5E3C" stroke-width="1.6"/><rect x="5.5" y="5.5" width="13" height="13" rx="0.5" fill="rgba(80,50,30,0.12)" stroke="#8B5E3C" stroke-width="1.3"/></svg></span><span class="spt-text"><span class="spt-placeholder-text">Select...</span></span><span class="spt-arrow">▼</span></button>
     </div>
 
+    <div class="sel-opts-section">
+      <div class="sel-opts-head">
+        <span class="sel-opts-title">SELECTED OPTIONS (<span id="ssSelOptsCount">0</span>)</span>
+        <button type="button" id="ssAddOptionBtn" class="sel-opts-add-btn" disabled onclick="openSsOptionsSheet()">Add Options</button>
+      </div>
+      <div id="ss_optsSummary" class="sel-opts-grid opts-summary-wrap"></div>
+    </div>
+
+    <div id="ss_stdPanel" style="display:none;margin-bottom:12px;background:rgba(232,200,122,0.08);border:1.5px solid rgba(232,200,122,0.3);border-radius:8px;padding:12px;">
+      <div style="font-size:0.78rem;font-weight:700;color:var(--wheat);margin-bottom:6px;">Standard options (tap to remove; use menu when quantity &gt; 1)</div>
+      <div id="ss_stdList" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+    </div>
+    <div id="ss_stdEmpty" style="display:none;font-size:0.8rem;color:rgba(232,200,122,0.55);margin-bottom:10px;">No standard options for this type.</div>
+
+    <div id="ssPriceDeckMount"></div>
+
     <div id="ss_optsHidden" aria-hidden="true" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">
       <input type="number" id="ss_c_rooffeltFt" value="">
       <input type="number" id="ss_c_housewrapFt" value="">
@@ -7227,47 +7274,20 @@ select:focus {
       <div id="ss_paintRows"></div>
     </div>
 
+    </div><!-- /calc-page-inner -->
   </div><!-- end sspage0 -->
 
-  <!-- PAGE 1: Options & pricing (matches calculator “review estimate” step) -->
+  <!-- PAGE 1: QR & flyer contact -->
   <div id="sspage1" style="display:none;padding:16px;">
-    <div class="page-title">Options &amp; Pricing</div>
+    <div class="page-title">QR &amp; Contact</div>
+    <div class="page-sub">Optional QR codes and flyer contact info for the printed sheet</div>
 
-    <div id="ss_optsSummary" class="opts-summary-wrap"></div>
-    <button type="button" class="btn-primary" style="margin-top:4px;padding:12px;width:100%;" onclick="openSsOptionsSheet()">+ Add Option</button>
-
-    <div style="border-top:1px solid rgba(232,200,122,0.15);margin:16px 0 12px;"></div>
-
-    <!-- Std options panel -->
-    <div id="ss_stdPanel" style="display:none;margin-bottom:12px;background:rgba(232,200,122,0.08);border:1.5px solid rgba(232,200,122,0.3);border-radius:8px;padding:12px;">
-      <div style="font-size:0.78rem;font-weight:700;color:var(--wheat);margin-bottom:6px;">Standard options (tap to remove; use menu when quantity &gt; 1)</div>
-      <div id="ss_stdList" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
-    </div>
-    <div id="ss_stdEmpty" style="display:none;font-size:0.8rem;color:rgba(232,200,122,0.55);margin-bottom:10px;">No standard options for this type.</div>
-
-    <!-- Combined price card + Price Breakdown (mirrors calculator after sync; sale % here; no tax on sheet) -->
-    <div id="ss_quickPriceMirror" style="display:none;margin-bottom:12px;">
-      <div style="background:var(--earth);border-radius:10px;padding:14px 16px;margin:0 0 10px;border:1.5px solid rgba(232,200,122,0.22);border-top:3px solid var(--barn);">
-        <div id="ss_combinedPriceTitle" style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:0.95rem;letter-spacing:2px;text-transform:uppercase;color:var(--wheat);opacity:0.85;margin-bottom:10px;line-height:1.25;">Select size and style</div>
-        <div id="ss_saleControlsRow" style="display:flex;align-items:center;justify-content:flex-start;flex-wrap:wrap;gap:10px;margin-bottom:10px;">
-          <div class="tog-wrap" onclick="ssMirrorToggleQuickSale()" style="flex-shrink:0;">
-            <div class="tog-track" id="ss_saleTrack"><div class="tog-thumb"></div></div>
-            <span class="tog-label">Sale %</span>
-          </div>
-          <div id="ss_quickSaleInputWrap" style="display:none;flex:1 1 200px;min-width:0;align-items:center;">
-            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;width:100%;">
-              <select id="ss_quickSalePctSel" onchange="ssMirrorOnQuickSaleSelect(this)" style="flex:1;min-width:120px;max-width:220px;min-height:38px;line-height:1.2;box-sizing:border-box;padding:0 10px;font-size:0.9rem;border-radius:8px;border:1.5px solid rgba(232,200,122,0.25);background:rgba(255,255,255,0.1);color:var(--cream);"></select>
-              <input type="number" id="ss_quickSalePct" min="0" max="100" step="0.1" placeholder="%" title="Custom % off list" style="display:none;width:76px;min-height:38px;line-height:1.2;box-sizing:border-box;padding:0 8px;font-size:0.9rem;border-radius:8px;border:none;background:rgba(255,255,255,0.15);color:white;text-align:center;" oninput="ssMirrorOnQuickSaleInput(this)">
-              <span style="color:var(--wheat);font-size:0.9rem;font-weight:600;line-height:1.2;white-space:nowrap;">% off list</span>
-            </div>
-          </div>
-        </div>
-        <div id="ss_priceSummaryBase" style="font-size:0.78rem;color:var(--sky);opacity:0.75;margin-bottom:6px;"></div>
-        <div id="ss_priceSummaryFinal" style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:2.2rem;letter-spacing:2px;color:white;line-height:1;"></div>
+    <div class="row2">
+      <div class="field-group"><label class="field-label" for="ss_flyerContactName">Flyer contact name</label>
+        <input type="text" id="ss_flyerContactName" placeholder="e.g. Lyndon" autocomplete="off">
       </div>
-      <div style="background:rgba(255,255,255,0.05);border:1.5px solid rgba(232,200,122,0.25);border-radius:10px;padding:12px 14px;">
-        <div style="font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;font-size:0.95rem;letter-spacing:2px;color:var(--wheat);margin-bottom:10px;">Price Breakdown</div>
-        <div id="ss_qp_rtoBody" class="qpv-grid"></div>
+      <div class="field-group"><label class="field-label" for="ss_flyerContactPhone">Flyer phone</label>
+        <input type="tel" id="ss_flyerContactPhone" placeholder="e.g. 208-555-1234" autocomplete="off">
       </div>
     </div>
 
@@ -11627,7 +11647,6 @@ function settingsAfterLocalSave(s){
   initEmailJS();
 initFormspreeNotes();
   fbApp=null; fbDb=null; fbAuth=null; fbReady=false;
-  try{ populateLotContactPickSelect('ss_sheetLotContact'); }catch(_eSsPop){}
   try{ populateLotContactPickSelect('adLotContact'); }catch(_eAdPop){}
   try{ applyAppointmentsHomeVisibility(); }catch(_eApVis){}
   try{
@@ -12481,10 +12500,13 @@ function formatFlyerContactCallLine(fc){
   return nm;
 }
 function getSalesSheetFlyerContactDisplay(s){
-  s=s||loadSettings();
-  var sel=document.getElementById('ss_sheetLotContact');
-  var raw=sel?String(sel.value||'').trim():'';
-  return resolveFlyerContactFromLotPick(s, raw);
+  var nm=String((document.getElementById('ss_flyerContactName')||{}).value||'').trim();
+  var ph=String((document.getElementById('ss_flyerContactPhone')||{}).value||'').trim();
+  if(!nm&&!ph) return {contactName:'',bizPhone:'',block:''};
+  var phoneLine=ph?normalizePhoneTenDigits(ph):'';
+  if(nm&&phoneLine) return {contactName:nm,bizPhone:phoneLine,block:nm+'<br>'+phoneLine};
+  if(nm) return {contactName:nm,bizPhone:'',block:nm};
+  return {contactName:'',bizPhone:phoneLine,block:phoneLine};
 }
 function populateLotContactPickSelect(selectId, preserveVal){
   var sel=document.getElementById(selectId);
@@ -13019,7 +13041,7 @@ function updateAppBottomNav(){
       return;
     }
     primBtn.disabled=false;
-    primBtn.setAttribute('aria-label',ssCurrentStep===0?'Next: Options and pricing':(ssCurrentStep===1?'Next: Review':'Generate sales sheet'));
+    primBtn.setAttribute('aria-label',ssCurrentStep===0?'Next: QR and contact':(ssCurrentStep===1?'Next: Review':'Generate sales sheet'));
     if(ssCurrentStep===2) appBottomNavSetPrimaryVisual({mode:'text', text:'GENERATE'});
     return;
   }
@@ -13071,7 +13093,7 @@ function isSettingsAreaScreen(id){
 }
 function insideSettingsTree(currentId){
   if(!currentId) return false;
-  if(currentId==='screenSettings') return true;
+  if(currentId==='screenSettings'||currentId==='screenDocsAdmin') return true;
   if(currentId.indexOf('screenSettings')===0 && currentId!=='screenSettings') return true;
   return false;
 }
@@ -13148,6 +13170,9 @@ function goTo(screenId){
     appNavHistory.push(currentId);
     if(appNavHistory.length>APP_NAV_HISTORY_MAX) appNavHistory.shift();
   }
+  if(currentId==='screenSalesSheet'&&screenId!=='screenSalesSheet'){
+    try{ ssUnmountCalcPriceDeck(); }catch(_eSsUd){}
+  }
   if(currentId==='screenCalc'&&screenId==='screenHome'){
     var snapshot=captureCalcSession();
     if(snapshot) pushCalcHistoryEntry(snapshot);
@@ -13214,6 +13239,7 @@ function goTo(screenId){
     }
     try{ renderSsOptsSummary(); }catch(_eSsNav){}
     try{ ssRefreshSalesSheetTriggersFromDom(); }catch(_eSsTrig){}
+    if(typeof ssCurrentStep==='number'&&ssCurrentStep===0) try{ ssMountCalcPriceDeck(); }catch(_eSsMd){}
     try{ updateAppBottomNav(); }catch(_eSsNav2){}
   }
   if(screenId==='screenDocs') docsLoadDocuments();
@@ -15163,6 +15189,10 @@ function renderCalcRTOStreamlineBlank(){
   if(rtoGrid) rtoGrid.innerHTML='';
   if(rtoTotal) rtoTotal.textContent='—';
   if(rtoMo) rtoMo.textContent='—';
+  var rtoSaleRowBlank=document.getElementById('rtoSaleRow');
+  var rtoBaseElBlank=document.getElementById('rtoBasePrice');
+  if(rtoSaleRowBlank) rtoSaleRowBlank.hidden=true;
+  if(rtoBaseElBlank) rtoBaseElBlank.textContent='';
   ['36','48','60'].forEach(function(m){
     var v=document.getElementById('rtoChipVal'+m);
     if(v) v.textContent='—';
@@ -15209,18 +15239,24 @@ function updateQuickPrice(){
   var saleRow=document.getElementById('cashSaleRow');
   var saleSaveRow=document.getElementById('quickSaleSaveRow');
   var saveEl=document.getElementById('quickSaveAmt');
+  var rtoSaleRow=document.getElementById('rtoSaleRow');
+  var rtoBaseEl=document.getElementById('rtoBasePrice');
   if(calcState.saleActive){
     baseEl.textContent='$'+base.toLocaleString();
     baseEl.hidden=false;
     if(saveEl) saveEl.textContent='You save '+fmt(Math.ceil(saleAmt));
     if(saleRow) saleRow.hidden=false;
     if(saleSaveRow) saleSaveRow.hidden=false;
+    if(rtoBaseEl) rtoBaseEl.textContent='$'+base.toLocaleString();
+    if(rtoSaleRow) rtoSaleRow.hidden=false;
   }else{
     baseEl.textContent='';
     baseEl.hidden=true;
     if(saveEl) saveEl.textContent='';
     if(saleRow) saleRow.hidden=true;
     if(saleSaveRow) saleSaveRow.hidden=true;
+    if(rtoBaseEl) rtoBaseEl.textContent='';
+    if(rtoSaleRow) rtoSaleRow.hidden=true;
   }
   var qSnap=null;
   try{ qSnap=getCalcQuoteSnapshot(); }catch(_eQ){}
@@ -15248,6 +15284,12 @@ function updateQuickPrice(){
   updateRTOPreviews();
   try{ renderOptsSummary(); }catch(_e3){}
   try{ renderReviewSummary(); }catch(_eR3){}
+  try{
+    if(document.getElementById('screenSalesSheet')&&document.getElementById('screenSalesSheet').classList.contains('active')){
+      var ssHp=document.getElementById('ss_salePct');
+      if(ssHp) ssHp.value=calcState.saleActive?String(calcState.salePercent):'0';
+    }
+  }catch(_eSs){}
 }
 
 function combineBizAddressFromSettings(s){
@@ -21655,6 +21697,10 @@ function _afterOptsSummaryHostChange(hostId){
     updateRevNrtoBanner();
     return;
   }
+  if(hostId==='ss_optsSummary'){
+    try{ syncSsOptionsFromCalc(); }catch(_eSs){}
+    return;
+  }
   updateQuickPrice();
   if(calcCurrentPage===1) try{ renderReviewSummary(); }catch(_e){}
   renderOptsSummary();
@@ -21710,13 +21756,13 @@ function _renderOptsSummaryInto(hostId){
   var host=document.getElementById(hostId);
   if(!host) return;
   var isRev=hostId==='rev_optsSummary';
-  var useCards=hostId==='optsSummary';
+  var useCards=hostId==='optsSummary'||hostId==='ss_optsSummary';
   host.innerHTML='';
   var ca=calcAddons(useCards);
   var stdItems=STD_OPTIONS[calcState.type]||[];
   var stdHidden=calcState.stdHidden||{};
   var visibleStd=stdItems.filter(function(it){ return !stdHidden[it.id]; });
-  var countEl=document.getElementById('selOptsCount');
+  var countEl=document.getElementById(hostId==='ss_optsSummary'?'ssSelOptsCount':(hostId==='cb_optsSummary'?'cb_selOptsCount':'selOptsCount'));
   var totalCount=visibleStd.length+ca.lines.length;
 
   if(useCards){
@@ -21961,165 +22007,24 @@ function renderOptsSummary(){
 function renderSsOptsSummary(){
   var host=document.getElementById('ss_optsSummary');
   if(!host) return;
-  host.innerHTML='';
   var t=(document.getElementById('ss_type')||{}).value||'';
   var w=parseInt((document.getElementById('ss_width')||{}).value,10)||0;
   var l=parseInt((document.getElementById('ss_length')||{}).value,10)||0;
-  var sa=(w&&l&&t)?ssGetAddonLines(w,l,t):{lines:[],total:0};
-  var stdItems=STD_OPTIONS[t]||[];
-  var stdRows=[];
-  stdItems.forEach(function(it){
-    var maxQ=it.qty||1;
-    var rq=ssNormalizeStdRemovedCount(ssStdRemoved&&ssStdRemoved[it.id],maxQ);
-    if(rq>0) stdRows.push({it:it,rq:rq});
-  });
-  if(!sa.lines.length&&!stdRows.length){
+  var addBtn=document.getElementById('ssAddOptionBtn');
+  if(!t||!w||!l){
+    host.innerHTML='';
+    var cnt=document.getElementById('ssSelOptsCount');
+    if(cnt) cnt.textContent='0';
+    if(addBtn) addBtn.disabled=true;
     var empty=document.createElement('div');
-    empty.style.fontSize='0.78rem';
-    empty.style.color='rgba(232,200,122,0.45)';
-    empty.style.padding='6px 2px 2px';
-    empty.textContent='No options selected yet.';
+    empty.className='sel-opts-empty';
+    empty.textContent='Select a building type first.';
     host.appendChild(empty);
     return;
   }
-  sa.lines.forEach(function(l){
-    (function(l){
-      var row=document.createElement('div');
-      row.className='opts-summary-row';
-      var name=document.createElement('div');
-      name.className='os-name';
-      name.textContent=l.label;
-      row.appendChild(name);
-      var mt=_summaryMultiTypeForKey(l.sourceKey);
-      if(mt==='custom'&&l.multiIdx!==null){
-        var crow=(ssMulti.custom||[])[l.multiIdx];
-        if(crow&&crow.mode==='total'){
-          var qvC=document.createElement('input');
-          qvC.type='number'; qvC.className='os-qty'; qvC.min='1'; qvC.step='1';
-          qvC.value=String(Math.max(1,parseInt(crow.qty)||1));
-          qvC.onchange=function(){
-            if(ssMulti.custom&&ssMulti.custom[l.multiIdx]) ssMulti.custom[l.multiIdx].qty=Math.max(1,parseInt(qvC.value)||1);
-            ssCalcPrice(); renderSsOptsSummary();
-          };
-          row.appendChild(qvC);
-        }else{
-          var phC=document.createElement('div');
-          phC.style.width='52px'; phC.style.flexShrink='0';
-          row.appendChild(phC);
-        }
-      }else if(mt!==null&&l.multiIdx!==null){
-        if(_summaryUsesLinft(mt)){
-          var lfv=document.createElement('input');
-          lfv.type='number';
-          lfv.className='os-qty';
-          lfv.min='0';
-          lfv.step='0.01';
-          var ssKey=_SS_MULTI_KEY[mt]||mt;
-          var larr=ssMulti[ssKey];
-          var curLin=larr&&larr[l.multiIdx]?larr[l.multiIdx].linft:'';
-          lfv.value=String(curLin!==undefined&&curLin!==''?curLin:'');
-          lfv.onchange=function(){
-            ssRowChange(mt,l.multiIdx,'linft',this.value);
-            renderSsOptsSummary();
-          };
-          row.appendChild(lfv);
-        } else if(mt==='paint'){
-          var phP=document.createElement('div');
-          phP.style.width='52px'; phP.style.flexShrink='0';
-          row.appendChild(phP);
-        } else {
-        var qv=document.createElement('input');
-        qv.type='number';
-        qv.className='os-qty';
-        qv.min='1';
-        qv.step='1';
-        var ssKey2=_SS_MULTI_KEY[mt]||mt;
-        var arr=ssMulti[ssKey2];
-        var cur=arr&&arr[l.multiIdx]?Math.max(1,parseInt(arr[l.multiIdx].qty)||1):1;
-        qv.value=String(cur);
-        qv.onchange=function(){
-          ssRowChange(mt,l.multiIdx,'qty',this.value);
-          renderSsOptsSummary();
-        };
-        row.appendChild(qv);
-        }
-      }else{
-        var ph=document.createElement('div');
-        ph.style.width='52px';
-        ph.style.flexShrink='0';
-        row.appendChild(ph);
-      }
-      var price=document.createElement('div');
-      price.className='os-price';
-      price.textContent=fmt(l.val);
-      row.appendChild(price);
-      var xb=document.createElement('button');
-      xb.type='button';
-      xb.className='os-x';
-      xb.setAttribute('aria-label','Remove');
-      xb.textContent='\u2715';
-      xb.onclick=function(){
-        var sk=l.sourceKey;
-        var mt2=_summaryMultiTypeForKey(sk);
-        if(sk==='shopSurcharge'||sk==='metal'){ ssToggle('metal'); }
-        else if(mt2!==null&&l.multiIdx!==null){
-          if(mt2==='custom'){
-            if(ssMulti.custom) ssMulti.custom.splice(l.multiIdx,1);
-            calcState.multiCustom=JSON.parse(JSON.stringify(ssMulti.custom||[]));
-          } else {
-            ssRemoveRow(mt2,l.multiIdx);
-          }
-        }
-        else if(sk==='twotone'||sk==='custompaint'){ ssToggle('paintupgrade'); }
-        else if(sk==='vinylwindow'||sk==='window'){ ssToggle('window'); }
-        else if(sk==='rollupdoor'||sk==='garagedoor'){ ssToggle('garagedoor'); }
-        else if(sk&&ssAddons.hasOwnProperty(sk)){ ssToggle(sk); }
-        else if(sk&&sk.indexOf('ins_')===0){ ssToggle(sk); }
-        ssCalcPrice();
-        renderSsOptsSummary();
-      };
-      row.appendChild(xb);
-      host.appendChild(row);
-    })(l);
-  });
-  if(stdRows.length){
-    var sub=document.createElement('div');
-    sub.className='opts-summary-sub';
-    sub.textContent='Standards removed';
-    host.appendChild(sub);
-    stdRows.forEach(function(sr){
-      (function(it,rq){
-        var row=document.createElement('div');
-        row.className='opts-summary-row removed-std';
-        var name=document.createElement('div');
-        name.className='os-name';
-        name.textContent='Standard removed: '+it.label+(rq>1?' ('+rq+'×)':'');
-        row.appendChild(name);
-        var ph=document.createElement('div');
-        ph.style.width='52px';
-        row.appendChild(ph);
-        var cred=document.createElement('div');
-        cred.className='os-price';
-        cred.textContent='-'+fmt(rq*(it.credit||0));
-        row.appendChild(cred);
-        var rb=document.createElement('button');
-        rb.type='button';
-        rb.className='os-x';
-        rb.textContent='Restore';
-        rb.style.fontSize='0.72rem';
-        rb.style.width='auto';
-        rb.style.padding='6px 8px';
-        rb.onclick=function(){
-          ssStdRemoved[it.id]=0;
-          try{ ssRebuildStdPanel(); }catch(_e){}
-          ssCalcPrice();
-          renderSsOptsSummary();
-        };
-        row.appendChild(rb);
-        host.appendChild(row);
-      })(sr.it,sr.rq);
-    });
-  }
+  if(!syncCalcFromSsOptions()) return;
+  if(addBtn) addBtn.disabled=false;
+  _renderOptsSummaryInto('ss_optsSummary');
 }
 
 function toggleStdRemove(itemId){
@@ -26747,6 +26652,29 @@ function ssConfirmSalesSheetEdit(){
   ssGoStep(1);
 }
 
+var _calcPriceDeckHome=null;
+function ssEnsureCalcPriceDeckHome(){
+  if(_calcPriceDeckHome) return;
+  var deck=document.getElementById('calcPriceDeck');
+  if(!deck||!deck.parentNode) return;
+  _calcPriceDeckHome={parent:deck.parentNode,next:deck.nextSibling};
+}
+function ssMountCalcPriceDeck(){
+  ssEnsureCalcPriceDeckHome();
+  var deck=document.getElementById('calcPriceDeck');
+  var mount=document.getElementById('ssPriceDeckMount');
+  if(!deck||!mount||mount.contains(deck)) return;
+  mount.appendChild(deck);
+  try{ syncCalcPriceDeckHeight(); }catch(_eH){}
+}
+function ssUnmountCalcPriceDeck(){
+  var deck=document.getElementById('calcPriceDeck');
+  if(!deck||!_calcPriceDeckHome) return;
+  var h=_calcPriceDeckHome;
+  if(h.next&&h.next.parentNode===h.parent) h.parent.insertBefore(deck,h.next);
+  else h.parent.appendChild(deck);
+}
+
 function ssGoStep(n){
   if(typeof ssSalesPhase==='string'&&ssSalesPhase==='pick') return;
   if(n>=1){
@@ -26769,6 +26697,12 @@ function ssGoStep(n){
       dot.classList.toggle('done',i<n);
     }
   }
+  if(n===0){
+    try{ ssMountCalcPriceDeck(); }catch(_eMd){}
+    try{ ssCalcPrice(); }catch(_eCp){}
+  }else{
+    try{ ssUnmountCalcPriceDeck(); }catch(_eUd){}
+  }
   if(n===1||n===2){
     ssRebuildStdPanel();
     ssCalcPrice();
@@ -26777,7 +26711,6 @@ function ssGoStep(n){
   if(n===2){ ssFillReviewSheetPreview(); }
   window.scrollTo(0,0);
   try{ updateAppBottomNav(); }catch(_e){}
-  if(n===0) try{ populateLotContactPickSelect('ss_sheetLotContact'); }catch(_eSsLc){}
 }
 
 /** Shared HTML for Review step and confirm modal (requires valid type/size in DOM). */
@@ -27232,18 +27165,11 @@ function ssCalcPrice(){
   var w=parseInt(document.getElementById('ss_width').value)||0;
   var l=parseInt(document.getElementById('ss_length').value)||0;
 
-  var qm=document.getElementById('ss_quickPriceMirror');
-
   ssUpdateOptionPrices();
 
+  var addBtn=document.getElementById('ssAddOptionBtn');
   if(!t||!w||!l||!PRICING[w]||!PRICING[w][l]||!PRICING[w][l][t]){
-    if(qm) qm.style.display='none';
-    var st0=document.getElementById('ss_combinedPriceTitle');
-    var sb0=document.getElementById('ss_priceSummaryBase');
-    var sf0=document.getElementById('ss_priceSummaryFinal');
-    if(st0) st0.textContent='Select size and style';
-    if(sb0) sb0.textContent='';
-    if(sf0) sf0.innerHTML='';
+    if(addBtn) addBtn.disabled=true;
     ssClearPriceLabels();
     try{ renderSsOptsSummary(); }catch(_rss0){}
     return;
@@ -27256,7 +27182,8 @@ function ssCalcPrice(){
   var discountedBase=ssDiscountedBaseCents(baseRaw,stdCredit,pct);
   var finalPrice=discountedBase+addons.total;
 
-  try{ ssRefreshQuickPriceMirror(); }catch(_eSsQp){}
+  try{ renderSsOptsSummary(); }catch(_rss){}
+  try{ ssMountCalcPriceDeck(); }catch(_eMd){}
 
   // Update individual option price labels
   var keys=['metal','rooffelt','housewrap','paintupgrade','tallwall','flooring','2x6',
@@ -27281,45 +27208,6 @@ function ssCalcPrice(){
     var sum=found.reduce(function(a,b){return a+b.val;},0);
     el.textContent=sum>0?'+$'+sum.toLocaleString():'+—';
   });
-
-  // Update combined price card (title, base line, final — no tax on sales sheet)
-  var sl=document.getElementById('ss_combinedPriceTitle');
-  var sb=document.getElementById('ss_priceSummaryBase');
-  var sf=document.getElementById('ss_priceSummaryFinal');
-  if(sl){
-    var nm=String(NAMES[t]||t).toUpperCase();
-    sl.textContent=nm+' '+w+"' × "+l+"' Price";
-  }
-  if(sb){
-    var parts=[];
-    parts.push('Base: $'+baseRaw.toLocaleString());
-    if(stdCredit>0) parts.push('-$'+stdCredit+' std credit');
-    if(addons.total>0) parts.push('+$'+addons.total.toLocaleString()+' options');
-    sb.textContent=parts.join('  ');
-  }
-  if(sf){
-    if(pct>0) sf.innerHTML='<span style="font-size:1rem;opacity:0.7;">SALE </span>$'+finalPrice.toLocaleString();
-    else sf.textContent='$'+finalPrice.toLocaleString();
-  }
-  try{ renderSsOptsSummary(); }catch(_rss){}
-}
-
-function ssRefreshQuickPriceMirror(){
-  var mount=document.getElementById('ss_quickPriceMirror');
-  if(!mount) return;
-  var t=document.getElementById('ss_type').value;
-  var w=parseInt(document.getElementById('ss_width').value)||0;
-  var l=parseInt(document.getElementById('ss_length').value)||0;
-  if(!t||!w||!l||!PRICING[w]||!PRICING[w][l]||!PRICING[w][l][t]){
-    mount.style.display='none';
-    return;
-  }
-  if(!syncCalcFromSsOptions()){ mount.style.display='none'; return; }
-  try{ syncSaleUIFromState(); }catch(_eSyn){}
-  try{ renderCalcRTOStreamlineFromState(); }catch(_eR){}
-  var ssr=document.getElementById('ss_qp_rtoBody');
-  if(ssr) ssr.innerHTML=buildQPVStreamlineHtml(true);
-  mount.style.display='block';
 }
 
 function ssClearPriceLabels(){
@@ -27445,19 +27333,19 @@ function ssPrint(){
   var w=window.open('','_blank');
   if(!w){ showToast('Popup blocked — allow popups to print'); return; }
   var doc='<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Sales Sheet</title><style>';
-  doc+='@page{size:letter portrait;margin:0.35in;}';
+  doc+='@page{size:letter portrait;margin:0;}';
   doc+='html,body{width:8.5in;height:11in;margin:0;padding:0;overflow:hidden;background:#fff;color:#111;}';
-  doc+='body{font-family:Georgia,serif;font-size:11pt;color:#111;background:#fff;box-sizing:border-box;padding:0.35in 0.4in;}';
-  doc+='#ssPrintRoot{overflow:hidden;word-wrap:break-word;background:#fff;color:#111;width:100%;height:10.2in;position:relative;}';
-  doc+='.ss-flyer-root{position:relative;min-height:10.2in;max-height:10.2in;overflow:hidden;background:#fff!important;color:#111!important;}';
+  doc+='body{font-family:Georgia,serif;font-size:11pt;color:#111;background:#fff;box-sizing:border-box;padding:0.2in 0.3in;}';
+  doc+='#ssPrintRoot{overflow:hidden;word-wrap:break-word;background:#fff;color:#111;width:100%;height:10.6in;position:relative;}';
+  doc+='.ss-flyer-root{position:relative;height:10.6in;min-height:10.6in;max-height:10.6in;overflow:hidden;background:#fff!important;color:#111!important;}';
   doc+='.ss-flyer-watermark{position:absolute;inset:0;background-position:center;background-repeat:no-repeat;background-size:cover;opacity:0.09;pointer-events:none;z-index:0;-webkit-print-color-adjust:exact;print-color-adjust:exact;}';
   doc+='.ss-flyer-content{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;justify-content:space-between;transform-origin:top center;}';
   doc+='.ss-flyer-root .ss-flyer-accent{color:#c0392b!important;}';
-  doc+='@media print{button,.no-print{display:none!important;}html,body{width:8.5in;height:11in;margin:0;padding:0.35in 0.4in;background:#fff!important;}#ssPrintRoot{background:#fff!important;}}';
+  doc+='@media print{button,.no-print{display:none!important;}html,body{width:8.5in;height:11in;margin:0;padding:0.2in 0.3in;background:#fff!important;}#ssPrintRoot{background:#fff!important;}}';
   doc+='</style></head><body><div id="ssPrintRoot">';
   doc+=html;
   doc+='</div><p class="no-print" style="margin-top:16px;text-align:center;"><button type="button" onclick="window.print()" style="padding:10px 24px;font-size:14px;cursor:pointer;">Print / Save as PDF</button></p>';
-  doc+='<script>window.addEventListener("load",function(){var root=document.querySelector(".ss-flyer-content");if(!root)return;var maxH=Math.round(10.15*96);var h=root.scrollHeight;if(h>maxH){var s=maxH/h;root.style.transform="scale("+s+")";root.style.width=(100/s)+"%";}});<\/script>';
+  doc+='<script>window.addEventListener("load",function(){var root=document.querySelector(".ss-flyer-content");if(!root)return;var maxH=Math.round(10.55*96);var h=root.scrollHeight;if(h>maxH){var s=maxH/h;root.style.transform="scale("+s+")";root.style.width=(100/s)+"%";}});<\/script>';
   doc+='</body></html>';
   w.document.open();
   w.document.write(doc);
@@ -28638,6 +28526,8 @@ function initGssListSelectors(){
   [
     {id:'calcWidth',title:'Width'},
     {id:'calcLength',title:'Length'},
+    {id:'ss_width',title:'Width'},
+    {id:'ss_length',title:'Length'},
     {id:'c_quickSalePctSel',title:'Sale %'},
     {id:'calcQuickTaxSelect',title:'Tax %'},
     {id:'calcQuickDealer',title:'Dealer discount'},
