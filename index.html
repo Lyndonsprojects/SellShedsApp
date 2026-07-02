@@ -237,38 +237,90 @@ select option { background:var(--earth); color:var(--cream); }
   padding-bottom:4px; border-bottom:1px solid rgba(196,81,31,0.2);
 }
 #screenInventory .inv-section-label em { font-style:normal; color:rgba(232,200,122,0.85); }
-#screenInventory .inv-list-stack { display:flex; flex-direction:column; gap:10px; }
+#screenInventory .inv-list-stack { display:flex; flex-direction:column; gap:12px; }
 #screenInventory .inv-card {
-  border:1.5px solid rgba(232,200,122,0.2); border-radius:10px; padding:0;
-  background:rgba(255,255,255,0.04);
+  border:1.5px solid rgba(232,200,122,0.22); border-radius:12px; padding:0;
+  background:rgba(255,255,255,0.045); overflow:hidden;
+  border-left-width:4px;
 }
+#screenInventory .inv-card--available { border-left-color:var(--sage); }
+#screenInventory .inv-card--sold { border-left-color:var(--rust); }
+#screenInventory .inv-card--delivered { border-left-color:rgba(140,140,160,0.85); }
 #screenInventory details.inv-card > summary {
-  list-style:none; display:flex; align-items:center; gap:10px; padding:10px 12px;
+  list-style:none; display:flex; align-items:center; gap:12px; padding:12px 14px;
   cursor:pointer; user-select:none; -webkit-tap-highlight-color:transparent;
 }
 #screenInventory details.inv-card > summary::-webkit-details-marker { display:none; }
-#screenInventory .inv-card-sum-visual { flex-shrink:0; width:56px; height:56px; border-radius:8px; overflow:hidden;
-  border:1px solid rgba(232,200,122,0.28); background:rgba(0,0,0,0.2); display:flex; align-items:center; justify-content:center; }
+#screenInventory .inv-card-sum-visual { flex-shrink:0; width:72px; height:72px; border-radius:10px; overflow:hidden;
+  border:1.5px solid rgba(232,200,122,0.3); background:rgba(0,0,0,0.25); display:flex; align-items:center; justify-content:center; }
 #screenInventory .inv-card-front-thumb { width:100%; height:100%; object-fit:cover; display:block; }
-#screenInventory .inv-card-thumb-ph { font-size:0.62rem; color:rgba(232,200,122,0.45); text-align:center; line-height:1.2; padding:4px; }
+#screenInventory .inv-card-thumb-ph { font-size:0.65rem; color:rgba(232,200,122,0.45); text-align:center; line-height:1.25; padding:6px; }
 #screenInventory .inv-card-sum-text { flex:1; min-width:0; text-align:left; }
-#screenInventory .inv-card-sum-text .inv-status-pill { margin-bottom:4px; }
-#screenInventory .inv-card-loc { font-size:0.82rem; font-weight:700; color:var(--wheat); line-height:1.25; }
-#screenInventory .inv-card-style { font-size:0.74rem; color:rgba(200,221,232,0.85); margin-top:3px; line-height:1.25; }
-#screenInventory .inv-card-size { font-size:0.72rem; color:rgba(245,240,232,0.72); margin-top:2px; line-height:1.25; }
-#screenInventory .inv-card-sum-chev { flex-shrink:0; font-size:0.7rem; color:rgba(232,200,122,0.55); transition:transform 0.2s ease; padding:4px; }
+#screenInventory .inv-card-sum-text .inv-status-pill { margin-bottom:5px; }
+#screenInventory .inv-card-loc { font-size:0.88rem; font-weight:700; color:var(--wheat); line-height:1.2; letter-spacing:0.2px; }
+#screenInventory .inv-card-spec-row { display:flex; flex-wrap:wrap; align-items:center; gap:4px; margin-top:4px; font-size:0.78rem; line-height:1.3; }
+#screenInventory .inv-card-size { font-weight:700; color:var(--cream); }
+#screenInventory .inv-card-spec-sep { color:rgba(232,200,122,0.4); }
+#screenInventory .inv-card-style { color:rgba(200,221,232,0.88); }
+#screenInventory .inv-card-serial-line { font-size:0.7rem; color:rgba(245,240,232,0.58); margin-top:3px; font-family:ui-monospace,monospace; letter-spacing:0.3px; }
+#screenInventory .inv-card-buyer { font-size:0.72rem; color:rgba(240,196,168,0.92); margin-top:4px; font-weight:600; }
+#screenInventory .inv-card-sum-price { flex-shrink:0; font-size:1rem; font-weight:800; color:var(--wheat); text-align:right; line-height:1.15; padding-left:6px; }
+#screenInventory .inv-card-sum-chev { flex-shrink:0; font-size:0.75rem; color:rgba(232,200,122,0.55); transition:transform 0.2s ease; padding:4px; }
 #screenInventory details.inv-card[open] > summary .inv-card-sum-chev { transform:rotate(180deg); }
-#screenInventory .inv-card-body { padding:0 12px 12px; border-top:1px solid rgba(232,200,122,0.12); }
-#screenInventory .inv-card-body-inner { padding-top:10px; }
-#screenInventory .inv-card-actions { display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
-#screenInventory .inv-card-actions button { flex:1; min-width:88px; }
-#screenInventory .inv-status-pill {
-  display:inline-block; font-size:0.62rem; font-weight:700; letter-spacing:0.8px; text-transform:uppercase;
-  padding:3px 8px; border-radius:6px; margin-bottom:6px;
+#screenInventory .inv-card-body { padding:0 14px 14px; border-top:1px solid rgba(232,200,122,0.12); background:rgba(0,0,0,0.12); }
+#screenInventory .inv-card-body-inner { padding-top:12px; }
+#screenInventory .inv-card-section { margin-bottom:12px; }
+#screenInventory .inv-card-section-title { font-size:0.64rem; letter-spacing:1.4px; text-transform:uppercase; color:rgba(232,200,122,0.62); margin-bottom:6px; font-weight:700; }
+#screenInventory .inv-card-detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px 12px; }
+#screenInventory .inv-card-detail-grid div { font-size:0.76rem; color:var(--cream); line-height:1.35; }
+#screenInventory .inv-card-detail-grid strong { display:block; font-size:0.62rem; letter-spacing:0.6px; text-transform:uppercase; color:rgba(232,200,122,0.55); margin-bottom:2px; font-weight:600; }
+#screenInventory .inv-card-photos { display:flex; gap:8px; flex-wrap:wrap; }
+#screenInventory .inv-card-photos img { width:64px; height:64px; object-fit:cover; border-radius:8px; border:1px solid rgba(232,200,122,0.25); }
+#screenInventory .inv-card-pricing-box { padding:10px 12px; border-radius:8px; background:rgba(255,255,255,0.04); border:1px solid rgba(232,200,122,0.18); font-size:0.76rem; color:rgba(245,240,232,0.9); line-height:1.5; }
+#screenInventory .inv-card-actions-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:4px; }
+#screenInventory .inv-card-act-btn {
+  -webkit-appearance:none; appearance:none; border:none; border-radius:8px; padding:10px 8px;
+  font-size:0.72rem; font-weight:600; cursor:pointer; color:var(--wheat); text-align:center; line-height:1.2;
 }
-#screenInventory .inv-status-pill.available { background:rgba(122,158,135,0.28); color:#c8e6d4; }
-#screenInventory .inv-status-pill.sold { background:rgba(196,81,31,0.25); color:#f0c4a8; }
-#screenInventory .inv-status-pill.delivered { background:rgba(100,100,120,0.35); color:rgba(232,200,122,0.9); }
+#screenInventory .inv-card-act--edit { background:rgba(122,158,135,0.28); }
+#screenInventory .inv-card-act--status { background:rgba(232,200,122,0.18); }
+#screenInventory .inv-card-act--sheet { background:rgba(200,221,232,0.14); }
+#screenInventory .inv-card-act--market { background:rgba(139,46,13,0.22); }
+#screenInventory .inv-card-act--fb { background:rgba(66,103,178,0.22); }
+#screenInventory .inv-card-act--quote { background:rgba(232,200,122,0.12); }
+#screenInventory .inv-card-act--del { background:rgba(196,81,31,0.22); grid-column:1/-1; }
+#screenInventory .inv-status-pill {
+  display:inline-block; font-size:0.62rem; font-weight:700; letter-spacing:0.9px; text-transform:uppercase;
+  padding:4px 10px; border-radius:999px;
+}
+#screenInventory .inv-status-pill.available { background:rgba(122,158,135,0.35); color:#d4f0de; }
+#screenInventory .inv-status-pill.sold { background:rgba(196,81,31,0.32); color:#f5d4bc; }
+#screenInventory .inv-status-pill.delivered { background:rgba(100,100,120,0.4); color:rgba(232,200,122,0.95); }
+#screenInventory .inv-upload-warn {
+  margin-bottom:10px; padding:8px 10px; border-radius:8px; font-size:0.74rem; line-height:1.4;
+  background:rgba(196,81,31,0.15); border:1px solid rgba(196,81,31,0.35); color:rgba(245,220,200,0.95);
+}
+.inv-status-menu {
+  position:fixed; z-index:140; display:none; flex-direction:column; gap:4px; min-width:160px;
+  padding:6px; border-radius:10px; background:var(--earth); border:1.5px solid rgba(232,200,122,0.35);
+  box-shadow:0 8px 24px rgba(0,0,0,0.45);
+}
+.inv-status-menu.open { display:flex; }
+.inv-status-menu button {
+  -webkit-appearance:none; appearance:none; border:none; border-radius:7px; padding:10px 12px;
+  font-size:0.8rem; font-weight:600; text-align:left; cursor:pointer; color:var(--cream); background:rgba(255,255,255,0.06);
+}
+.inv-status-menu button:hover, .inv-status-menu button:focus { background:rgba(232,200,122,0.15); }
+#invSoldCustomerModalOverlay { z-index:135; }
+#invSoldCustomerModalOverlay .inv-sold-lead-pick {
+  max-height:140px; overflow-y:auto; margin-top:8px; border:1px solid rgba(232,200,122,0.2); border-radius:8px;
+}
+#invSoldCustomerModalOverlay .inv-sold-lead-opt {
+  display:block; width:100%; text-align:left; padding:8px 10px; border:none; border-bottom:1px solid rgba(232,200,122,0.1);
+  background:transparent; color:var(--cream); font-size:0.78rem; cursor:pointer;
+}
+#invSoldCustomerModalOverlay .inv-sold-lead-opt:last-child { border-bottom:none; }
+#invSoldCustomerModalOverlay .inv-sold-lead-opt.selected { background:rgba(122,158,135,0.22); }
 .inv-add-modal-overlay { z-index:105; }
 #screenInventory .inv-wizard-step { display:none; }
 #screenInventory .inv-wizard-step.active { display:block; }
@@ -276,7 +328,6 @@ select option { background:var(--earth); color:var(--cream); }
 #screenInventory .inv-wizard-dots { font-size:0.7rem; color:rgba(232,200,122,0.65); flex:1; text-align:center; }
 #invPromoModalOverlay { z-index:125; }
 #invFacebookPromoModalOverlay { z-index:127; }
-#invPriceModalOverlay { z-index:130; }
 #screenCRM .crm-list,
 #screenCRMDetail .crm-list,
 #screenContacts .crm-list,
@@ -5345,14 +5396,7 @@ select:focus {
       </div>
 
     <div id="inv_wizardStep0" class="inv-wizard-step active" data-inv-step="0">
-      <div class="field-group">
-        <label class="field-label">Status</label>
-        <select id="inv_unitStatus">
-          <option value="available">Available</option>
-          <option value="sold">Sold</option>
-          <option value="delivered">Delivered</option>
-        </select>
-      </div>
+      <div class="section-head">Select lot</div>
       <div class="field-group">
         <label class="field-label">Lot location <span class="req">*</span></label>
         <select id="inv_lotLocation"></select>
@@ -5360,19 +5404,20 @@ select:focus {
     </div>
 
     <div id="inv_wizardStep1" class="inv-wizard-step" data-inv-step="1">
-      <div class="section-head">Serial plate</div>
+      <div class="section-head">Serial plate photo</div>
+      <div class="inv-upload-warn inv-wizard-upload-warn" style="display:none;" aria-live="polite"></div>
       <div class="inv-file-inp-wrap" aria-hidden="true">
         <input type="file" id="inv_serialPhotoCamera" accept="image/*" capture="environment" onchange="invHandlePhoto(this,'plate')">
         <input type="file" id="inv_serialPhotoLibrary" accept="image/*" onchange="invHandlePhoto(this,'plate')">
       </div>
-      <div class="inv-photo-pick" style="margin-bottom:10px;" role="button" tabindex="0" onclick="invPickPhotoDirect('plate')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();invPickPhotoDirect('plate');}">
+      <div class="inv-photo-pick" style="margin-bottom:10px;" role="button" tabindex="0" onclick="invOpenPhotoSourcePicker('plate')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();invOpenPhotoSourcePicker('plate');}">
         <div class="upload-icon">📷</div>
-        <div class="upload-label">Serial plate photo</div>
+        <div class="upload-label">Take picture or upload serial plate</div>
         <div class="upload-preview" id="inv_serialPreview"></div>
       </div>
       <div class="inv-inline-actions">
-        <button class="btn-secondary" style="margin-top:0;padding:10px 12px;" onclick="invRunOcrFromPhoto()">Auto read serial plate</button>
-        <div id="inv_ocrStatus" class="inv-ocr-status">Waiting for serial plate photo</div>
+        <button type="button" class="btn-secondary" style="margin-top:0;padding:10px 12px;" onclick="invOpenPhotoSourcePicker('plate')">Retake / rescan</button>
+        <div id="inv_ocrStatus" class="inv-ocr-status">Take or upload a serial plate photo — reading starts automatically</div>
       </div>
     </div>
 
@@ -5431,26 +5476,26 @@ select:focus {
     </div>
 
     <div id="inv_wizardStep3" class="inv-wizard-step" data-inv-step="3">
-      <div class="section-head">Price (calculator + options)</div>
+      <div class="section-head">Price from reading</div>
       <div style="background:rgba(255,255,255,0.04);border:1.5px solid rgba(232,200,122,0.25);border-radius:10px;padding:10px 12px;">
-        <div id="inv_priceSummary" style="font-size:0.78rem;color:rgba(232,200,122,0.78);line-height:1.45;">Price not calculated yet.</div>
-        <div id="inv_calcQuotePreview" style="font-size:0.76rem;color:var(--cream);line-height:1.45;margin-top:8px;">Syncing calculator…</div>
+        <div id="inv_priceSummary" style="font-size:0.78rem;color:rgba(232,200,122,0.78);line-height:1.45;">Price loads automatically from style and size.</div>
+        <div id="inv_calcQuotePreview" style="font-size:0.76rem;color:var(--cream);line-height:1.45;margin-top:8px;white-space:pre-line;">Syncing calculator…</div>
         <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px;">
           <button type="button" class="btn-secondary" style="margin-top:0;padding:10px 12px;" onclick="openInventoryOptionsSheet()">+ Add option (same as Price Calculator)</button>
           <button type="button" class="btn-primary" style="margin-top:0;padding:10px 12px;font-size:1rem;" onclick="invConfirmFullCalcPrice()">Confirm quote price</button>
-          <button type="button" class="btn-secondary" style="margin-top:0;padding:8px 10px;font-size:0.78rem;" onclick="invOpenPriceModal()">Simple list price (legacy)</button>
         </div>
-        <div id="inv_priceStatus" class="inv-ocr-status" style="margin-top:8px;">Confirm price before continuing.</div>
+        <div id="inv_priceStatus" class="inv-ocr-status" style="margin-top:8px;">Review the loaded price, then confirm before continuing.</div>
       </div>
     </div>
 
     <div id="inv_wizardStep4" class="inv-wizard-step" data-inv-step="4">
       <div class="section-head">Front corner photo</div>
+      <div class="inv-upload-warn inv-wizard-upload-warn" style="display:none;" aria-live="polite"></div>
       <div class="inv-file-inp-wrap" aria-hidden="true">
         <input type="file" id="inv_frontPhotoCamera" accept="image/*" capture="environment" onchange="invHandlePhoto(this,'front')">
         <input type="file" id="inv_frontPhotoLibrary" accept="image/*" onchange="invHandlePhoto(this,'front')">
       </div>
-      <div class="inv-photo-pick" role="button" tabindex="0" onclick="invPickPhotoDirect('front')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();invPickPhotoDirect('front');}">
+      <div class="inv-photo-pick" role="button" tabindex="0" onclick="invOpenPhotoSourcePicker('front')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();invOpenPhotoSourcePicker('front');}">
         <div class="upload-icon">📸</div>
         <div class="upload-label">Front corner photo</div>
         <div class="upload-preview" id="inv_frontPreview"></div>
@@ -5464,7 +5509,7 @@ select:focus {
         <label class="field-label">Jump back to edit</label>
         <select id="inv_wizardEditJump">
           <option value="">Choose a step…</option>
-          <option value="0">Location &amp; status</option>
+          <option value="0">Lot location</option>
           <option value="1">Serial plate photo</option>
           <option value="2">Details &amp; OCR</option>
           <option value="3">Price</option>
@@ -5494,61 +5539,6 @@ select:focus {
     </div>
   </div>
 
-  <div class="photo-modal-overlay" id="invPriceModalOverlay">
-    <div class="photo-modal">
-      <div class="inv-modal-header-row">
-        <h3>Inventory Price Calculator</h3>
-        <button type="button" class="inv-modal-x-btn" onclick="invClosePriceModal()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      </div>
-      <div class="inv-grid2">
-        <div class="modal-field">
-          <label>Style Code</label>
-          <select id="inv_price_style"></select>
-        </div>
-        <div class="modal-field">
-          <label>Sale %</label>
-          <input type="number" id="inv_price_salePct" min="0" max="100" step="0.5" placeholder="0">
-        </div>
-      </div>
-      <div class="inv-grid2">
-        <div class="modal-field">
-          <label>Width</label>
-          <select id="inv_price_width"></select>
-        </div>
-        <div class="modal-field">
-          <label>Length</label>
-          <select id="inv_price_length"></select>
-        </div>
-      </div>
-      <div class="inv-grid2">
-        <div class="modal-field">
-          <label>Tax Mode</label>
-          <select id="inv_price_taxMode">
-            <option value="standard">Standard (Settings)</option>
-            <option value="custom">Custom Tax %</option>
-            <option value="none">No Tax</option>
-          </select>
-        </div>
-        <div class="modal-field">
-          <label>Tax %</label>
-          <input type="number" id="inv_price_taxRate" min="0" step="0.01" placeholder="6.00">
-        </div>
-      </div>
-      <div class="modal-field">
-        <label>Manual Adjustment (+/-)</label>
-        <input type="number" id="inv_price_adjust" step="1" placeholder="0">
-      </div>
-      <div style="background:rgba(255,255,255,0.04);border:1.5px solid rgba(232,200,122,0.2);border-radius:8px;padding:10px 12px;">
-        <div style="font-size:0.7rem;color:rgba(232,200,122,0.78);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">Quote-Style Price</div>
-        <div id="inv_priceBreakdown" style="font-size:0.82rem;line-height:1.6;color:var(--cream);">Select style and size, then calculate.</div>
-      </div>
-      <div style="display:flex;gap:8px;margin-top:10px;">
-        <button class="btn-secondary" style="margin-top:0;" onclick="invCalculatePrice()">Calculate</button>
-        <button class="btn-primary" style="margin-top:0;font-size:1rem;" onclick="invUseCalculatedPrice()">Use This Price</button>
-      </div>
-    </div>
-  </div>
-
   <div class="photo-modal-overlay" id="invAdPromoModalOverlay" aria-hidden="true" onclick="if(event.target===this)invCloseAdPromoModal()">
     <div class="photo-modal" role="dialog" aria-modal="true" aria-labelledby="invAdPromoTitle" onclick="event.stopPropagation()">
       <div class="inv-modal-header-row">
@@ -5573,6 +5563,37 @@ select:focus {
       <button type="button" class="btn-secondary" style="margin-top:0;width:100%;" onclick="invPromoChooseMarketplace()">Marketplace listing</button>
       <button type="button" class="btn-secondary" style="margin-top:0;width:100%;" onclick="invPromoChooseFacebook()">Facebook post</button>
       <button type="button" class="btn-secondary" style="margin-top:0;width:100%;" onclick="invClosePromoModal()">Not now</button>
+    </div>
+  </div>
+
+  <div id="invStatusMenu" class="inv-status-menu" aria-hidden="true" role="menu">
+    <button type="button" role="menuitem" onclick="invStatusMenuPick('available')">Available</button>
+    <button type="button" role="menuitem" onclick="invStatusMenuPick('sold')">Sold</button>
+    <button type="button" role="menuitem" onclick="invStatusMenuPick('delivered')">Delivered</button>
+  </div>
+
+  <div class="photo-modal-overlay" id="invSoldCustomerModalOverlay" aria-hidden="true" onclick="if(event.target===this)invCloseSoldCustomerModal()">
+    <div class="photo-modal" role="dialog" aria-modal="true" aria-labelledby="invSoldCustomerTitle" onclick="event.stopPropagation()">
+      <div class="inv-modal-header-row">
+        <h3 id="invSoldCustomerTitle">Customer for sold unit</h3>
+        <button type="button" class="inv-modal-x-btn" onclick="invCloseSoldCustomerModal()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <p style="font-size:0.78rem;color:rgba(232,200,122,0.75);line-height:1.45;margin:0 0 10px;">Search existing CRM leads or enter new customer info. This links the sale to your CRM.</p>
+      <div class="field-group">
+        <label class="field-label">Search CRM leads</label>
+        <input type="search" id="inv_soldLeadSearch" placeholder="Name or phone…" oninput="invSoldCustomerSearch()">
+      </div>
+      <div id="inv_soldLeadResults" class="inv-sold-lead-pick" style="display:none;"></div>
+      <div class="field-group" style="margin-top:10px;">
+        <label class="field-label">Customer name <span class="req">*</span></label>
+        <input type="text" id="inv_soldName" placeholder="Full name">
+      </div>
+      <div class="inv-grid2">
+        <div class="field-group"><label class="field-label">Phone</label><input type="tel" id="inv_soldPhone" placeholder="(208) 555-0100"></div>
+        <div class="field-group"><label class="field-label">Email</label><input type="email" id="inv_soldEmail" placeholder="name@email.com"></div>
+      </div>
+      <button type="button" class="btn-primary" style="margin-top:0;width:100%;" onclick="invConfirmSoldCustomer()">Confirm sold &amp; link customer</button>
+      <button type="button" class="btn-secondary" style="margin-top:8px;width:100%;" onclick="invCloseSoldCustomerModal()">Cancel</button>
     </div>
   </div>
 
@@ -10306,6 +10327,9 @@ function invRenderWizardStep(){
     else next.textContent='Next';
   }
   if(save) save.style.display=invState.wizardStep===INV_WIZARD_LAST_STEP?'inline-flex':'none';
+  if(invState.wizardStep===1||invState.wizardStep===4){
+    try{ invUpdateUploadConfigWarning(); }catch(_uw){}
+  }
   if(invState.wizardStep===3){
     try{ invRefreshCalcQuotePreview(); }catch(_e){}
   }
@@ -10378,10 +10402,6 @@ function invWizardNext(){
       showToast('Confirm the quote price first');
       return;
     }
-    if(!invState.editId&&invState.priceData.source!=='fullCalc'){
-      showToast('Use “Confirm quote price” for new inventory (or legacy list price)');
-      return;
-    }
   }else if(invState.wizardStep===4){
     /* front photo optional — same as prior app */
   }
@@ -10400,6 +10420,7 @@ function invOpenAddModal(){
   invState.wizardStep=0;
   invState.promoPendingItem=null;
   invRenderWizardStep();
+  try{ invUpdateUploadConfigWarning(); }catch(_uw){}
   var o=document.getElementById('invAddEditModalOverlay');
   if(o){
     o.classList.add('open');
@@ -10494,6 +10515,264 @@ function invCopyInventoryQuoteFromBtn(btn){
     }catch(e2){ fail(); }
   }
 }
+function invItemById(id){
+  return (invState.items||[]).find(function(it){return it.id===id;})||null;
+}
+function invUpdateUploadConfigWarning(){
+  var ready=cfR2ConfigReady(cfR2ConfigFromSettings())||driveConfigReady(driveConfigFromSettings());
+  var msg=ready?'':'Photo upload is not configured. Add Cloudflare R2 (recommended) or Google Drive in Settings before saving — photos are stripped of metadata automatically when uploaded.';
+  document.querySelectorAll('.inv-wizard-upload-warn').forEach(function(el){
+    if(ready){
+      el.style.display='none';
+      el.textContent='';
+    }else{
+      el.style.display='block';
+      el.textContent=msg;
+    }
+  });
+}
+function invCardActionFromBtn(btn){
+  var id=btn&&btn.getAttribute('data-id');
+  var action=btn&&btn.getAttribute('data-action');
+  if(!id||!action) return;
+  var it=invItemById(id);
+  if(!it) return;
+  if(action==='edit') invEditItem(id);
+  else if(action==='salesSheet') invRunSalesSheetFor(it);
+  else if(action==='marketplace') invRunMarketplaceFor(it);
+  else if(action==='facebook') invRunFacebookFor(it);
+  else if(action==='quote') invCopyInventoryQuoteFromBtn(btn);
+  else if(action==='delete') invDeleteItem(id);
+}
+function invRunSalesSheetFor(it){
+  if(!it) return;
+  if(!it.calcSession){
+    showToast('No saved calculator session — edit unit and confirm quote price');
+    return;
+  }
+  try{
+    restoreCalcSession(it.calcSession);
+    if(!openSalesSheetReviewFromSyncedCalc()) return;
+  }catch(e){
+    showToast('Could not open sales sheet');
+  }
+}
+function invRunMarketplaceFor(it){
+  if(!it) return;
+  invOpenAdPromoModal(it);
+}
+function invRunFacebookFor(it){
+  if(!it) return;
+  if(!it.calcSession){
+    showToast('No saved calculator session — edit unit and confirm quote price');
+    return;
+  }
+  try{
+    restoreCalcSession(it.calcSession);
+    try{ setCalcPay('cash'); }catch(_e){}
+    try{ updateQuickPrice(); }catch(_e2){}
+    copyFacebookPost();
+  }catch(e){
+    showToast('Could not build Facebook post');
+  }
+}
+function invOpenStatusMenu(btn){
+  var id=btn&&btn.getAttribute('data-id');
+  if(!id) return;
+  invState.statusMenuItemId=id;
+  var menu=document.getElementById('invStatusMenu');
+  if(!menu) return;
+  var rect=btn.getBoundingClientRect();
+  menu.style.top=Math.min(window.innerHeight-140,rect.bottom+6)+'px';
+  menu.style.left=Math.max(8,Math.min(window.innerWidth-176,rect.left))+'px';
+  menu.classList.add('open');
+  menu.setAttribute('aria-hidden','false');
+}
+function invCloseStatusMenu(){
+  var menu=document.getElementById('invStatusMenu');
+  if(menu){
+    menu.classList.remove('open');
+    menu.setAttribute('aria-hidden','true');
+  }
+  invState.statusMenuItemId=null;
+}
+function invStatusMenuPick(newStatus){
+  var id=invState.statusMenuItemId;
+  invCloseStatusMenu();
+  if(!id) return;
+  invCardStatusPick(id,newStatus);
+}
+function invCardStatusPick(itemId,newStatus){
+  newStatus=invNormalizeUnitStatus(newStatus);
+  var item=invItemById(itemId);
+  if(!item) return;
+  var cur=invNormalizeUnitStatus(item.unitStatus);
+  if(newStatus===cur) return;
+  if(newStatus==='sold'){
+    invState.soldCustomerPending={itemId:itemId,previousStatus:cur,selectedLeadId:''};
+    invOpenSoldCustomerModal(itemId);
+    return;
+  }
+  invApplyStatusChange(itemId,newStatus,newStatus==='available');
+}
+async function invApplyStatusChange(itemId,newStatus,clearSoldInfo){
+  var item=invItemById(itemId);
+  if(!item) return;
+  var now=new Date().toISOString();
+  var patch={unitStatus:newStatus};
+  if(clearSoldInfo){
+    patch.soldTo=null;
+    patch.soldAt=null;
+  }
+  if(cloudReady()){
+    try{
+      var cloudPatch={unitStatus:newStatus};
+      if(clearSoldInfo){
+        cloudPatch.soldTo=firebase.firestore.FieldValue.delete();
+        cloudPatch.soldAt=firebase.firestore.FieldValue.delete();
+      }
+      await invUpdateItemCloud(itemId,cloudPatch);
+      showToast('Status updated');
+      return;
+    }catch(e){
+      console.log('Status update failed:',e);
+      showToast('Could not update status');
+      return;
+    }
+  }
+  item.unitStatus=newStatus;
+  item.updatedAt=now;
+  if(clearSoldInfo){
+    item.soldTo=null;
+    item.soldAt=null;
+  }
+  if(!invPersist()) return;
+  invRenderList();
+  showToast('Status updated');
+}
+function invOpenSoldCustomerModal(itemId){
+  var item=invItemById(itemId);
+  if(!item) return;
+  try{ crmEnsureLeadsListener(); }catch(_crm){}
+  if(!invState.soldCustomerPending) invState.soldCustomerPending={itemId:itemId,previousStatus:invNormalizeUnitStatus(item.unitStatus),selectedLeadId:''};
+  var title=document.getElementById('invSoldCustomerTitle');
+  if(title) title.textContent='Customer for '+[item.size,item.style].filter(Boolean).join(' ');
+  var nameEl=document.getElementById('inv_soldName');
+  var phoneEl=document.getElementById('inv_soldPhone');
+  var emailEl=document.getElementById('inv_soldEmail');
+  var searchEl=document.getElementById('inv_soldLeadSearch');
+  if(nameEl) nameEl.value=(item.soldTo&&item.soldTo.name)||'';
+  if(phoneEl) phoneEl.value=(item.soldTo&&item.soldTo.phone)||'';
+  if(emailEl) emailEl.value=(item.soldTo&&item.soldTo.email)||'';
+  if(searchEl) searchEl.value='';
+  invSoldCustomerSearch();
+  var m=document.getElementById('invSoldCustomerModalOverlay');
+  if(m){ m.classList.add('open'); m.setAttribute('aria-hidden','false'); }
+}
+function invCloseSoldCustomerModal(){
+  var m=document.getElementById('invSoldCustomerModalOverlay');
+  if(m){ m.classList.remove('open'); m.setAttribute('aria-hidden','true'); }
+  invState.soldCustomerPending=null;
+}
+function invSoldCustomerSearch(){
+  var q=(document.getElementById('inv_soldLeadSearch')||{}).value||'';
+  q=String(q).trim().toLowerCase();
+  var wrap=document.getElementById('inv_soldLeadResults');
+  if(!wrap) return;
+  var leads=(crmState&&crmState.leads)?crmState.leads:[];
+  var hits=!q?[]:leads.filter(function(lead){
+    var name=((lead.contact&&lead.contact.name)||'').toLowerCase();
+    var phone=((lead.contact&&lead.contact.phone)||'').replace(/\D/g,'');
+    var qDigits=q.replace(/\D/g,'');
+    return name.indexOf(q)>=0||(qDigits&&phone.indexOf(qDigits)>=0);
+  }).slice(0,8);
+  if(!hits.length){
+    wrap.style.display='none';
+    wrap.innerHTML='';
+    return;
+  }
+  wrap.style.display='block';
+  var sel=invState.soldCustomerPending&&invState.soldCustomerPending.selectedLeadId||'';
+  wrap.innerHTML=hits.map(function(lead){
+    var label=[lead.contact&&lead.contact.name,lead.contact&&lead.contact.phone].filter(Boolean).join(' · ');
+    return '<button type="button" class="inv-sold-lead-opt'+(sel===lead.id?' selected':'')+'" data-lead-id="'+invEscapeAttr(lead.id)+'" onclick="invSoldCustomerPickLead(this)">'+invEscapeHtml(label||lead.id)+'</button>';
+  }).join('');
+}
+function invSoldCustomerPickLead(btn){
+  var leadId=btn&&btn.getAttribute('data-lead-id');
+  if(!leadId) return;
+  var lead=(crmState.leads||[]).find(function(l){return l.id===leadId;});
+  if(!lead) return;
+  if(!invState.soldCustomerPending) return;
+  invState.soldCustomerPending.selectedLeadId=leadId;
+  var nameEl=document.getElementById('inv_soldName');
+  var phoneEl=document.getElementById('inv_soldPhone');
+  var emailEl=document.getElementById('inv_soldEmail');
+  if(nameEl) nameEl.value=(lead.contact&&lead.contact.name)||'';
+  if(phoneEl) phoneEl.value=(lead.contact&&lead.contact.phone)||'';
+  if(emailEl) emailEl.value=(lead.contact&&lead.contact.email)||'';
+  invSoldCustomerSearch();
+}
+async function invConfirmSoldCustomer(){
+  var pending=invState.soldCustomerPending;
+  if(!pending||!pending.itemId) return;
+  var name=invGetValue('inv_soldName');
+  var phone=invGetValue('inv_soldPhone');
+  var email=invGetValue('inv_soldEmail');
+  if(!name){
+    showToast('Customer name is required');
+    return;
+  }
+  var item=invItemById(pending.itemId);
+  if(!item) return;
+  var summary=[item.size,item.style,item.serialNumber].filter(Boolean).join(' · ');
+  var soldTo={leadId:'',name:name,phone:phone,email:email};
+  try{
+    if(!(await firebaseEnsureAuthed())) throw new Error('Firebase not ready');
+    if(pending.selectedLeadId){
+      await crmUpdateLead(pending.selectedLeadId,{
+        contact:{name:name,phone:phone,email:email},
+        buildingInterest:{inventoryId:pending.itemId,summary:summary},
+        status:crmStatusToFirestore('ordered')
+      });
+      soldTo.leadId=pending.selectedLeadId;
+    }else{
+      var created=await crmCreateLead({
+        contact:{name:name,phone:phone,email:email},
+        buildingInterest:{inventoryId:pending.itemId,summary:summary},
+        notes:'Marked sold from inventory',
+        conversation:{channel:'inPerson',lastMessageAt:new Date().toISOString(),lastDirection:'note',summary:'Sold from inventory'},
+        status:crmStatusToFirestore('ordered'),
+        source:'inventorySold'
+      });
+      soldTo.leadId=created.id;
+    }
+    var nowIso=new Date().toISOString();
+    await invUpdateItemCloud(pending.itemId,{
+      unitStatus:'sold',
+      soldTo:soldTo,
+      soldAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    item.unitStatus='sold';
+    item.soldTo=soldTo;
+    item.soldAt=nowIso;
+    item.updatedAt=nowIso;
+    invPersist();
+    invCloseSoldCustomerModal();
+    invRenderList();
+    showToast('Marked sold — customer linked in CRM');
+  }catch(e){
+    console.log('Sold customer save failed:',e);
+    showToast('Could not save sold status');
+  }
+}
+document.addEventListener('click',function(e){
+  var menu=document.getElementById('invStatusMenu');
+  if(!menu||!menu.classList.contains('open')) return;
+  if(menu.contains(e.target)) return;
+  if(e.target&&e.target.closest&&e.target.closest('[onclick*="invOpenStatusMenu"]')) return;
+  invCloseStatusMenu();
+});
 function invRenderItemCard(item){
   var st=invNormalizeUnitStatus(item.unitStatus);
   var idAttr=invEscapeAttr(item.id||'');
@@ -10504,18 +10783,18 @@ function invRenderItemCard(item){
   var loc=invEscapeHtml(item.lotLocation||'No lot location');
   var sty=invEscapeHtml(item.style||'—');
   var sz=invEscapeHtml(item.size||'—');
+  var serial=invEscapeHtml(item.serialNumber||'—');
   var summaryPrice=(item.priceData&&item.priceData.finalTotal!=null)?'<div class="inv-card-sum-price">'+invFmt(item.priceData.finalTotal)+'</div>':'';
-
-  var colorParts=[];
-  if(item.roofColor) colorParts.push('Roof: '+invEscapeHtml(item.roofColor));
-  if(item.wallColor) colorParts.push('Wall: '+invEscapeHtml(item.wallColor));
-  if(item.trimColor) colorParts.push('Trim: '+invEscapeHtml(item.trimColor));
-  var colorLine=colorParts.length?'<div style="font-size:0.72rem;color:rgba(245,240,232,0.65);margin-top:4px;">'+colorParts.join(' · ')+'</div>':'';
-  var dateLine=item.buildDate?'<div style="font-size:0.7rem;color:rgba(232,200,122,0.62);margin-top:3px;">Build: '+invEscapeHtml(item.buildDate)+'</div>':'';
-  var priceLine=item.priceData&&item.priceData.finalTotal?'<div style="font-size:0.78rem;color:var(--wheat);margin-top:4px;">Price: '+invFmt(item.priceData.finalTotal)+'</div>':'';
-  var btnStyle='-webkit-appearance:none;appearance:none;border:none;border-radius:6px;padding:7px 10px;font-size:0.72rem;cursor:pointer;';
+  var buyerLine='';
+  if(st==='sold'&&item.soldTo&&item.soldTo.name){
+    buyerLine='<div class="inv-card-buyer">Buyer: '+invEscapeHtml(item.soldTo.name)+'</div>';
+  }
+  var buildVal=item.buildDate?invEscapeHtml(item.buildDate):'—';
+  var roofVal=item.roofColor?invEscapeHtml(item.roofColor):'—';
+  var wallVal=item.wallColor?invEscapeHtml(item.wallColor):'—';
+  var trimVal=item.trimColor?invEscapeHtml(item.trimColor):'—';
   var saleEditor='';
-  if(item.priceData&&item.priceData.baseRaw){
+  if(item.priceData&&item.priceData.baseRaw!=null){
     var curPct=item.priceData.salePct||0;
     var draft=invCardDrafts[item.id];
     if(draft&&draft.salePct!=null) curPct=draft.salePct;
@@ -10523,59 +10802,60 @@ function invRenderItemCard(item){
     var saleOpts=[0,5,10,15,20,25,30,35,40].map(function(p){
       return '<option value="'+p+'"'+(Math.abs(curPct-p)<0.01?' selected':'')+'>'+(p?p+'% off list':'No sale')+'</option>';
     }).join('');
-    saleEditor='<div style="margin-top:8px;padding:8px;border:1px solid rgba(232,200,122,0.2);border-radius:8px;background:rgba(255,255,255,0.03);">'+
-      '<div style="font-size:0.66rem;letter-spacing:1px;color:rgba(232,200,122,0.7);text-transform:uppercase;margin-bottom:6px;">Sale discount</div>'+
+    saleEditor='<div class="inv-card-section"><div class="inv-card-section-title">Sale discount</div>'+
       '<select data-id="'+idAttr+'" onchange="invCardSaleDraftChange(this)" onclick="event.stopPropagation()" style="width:100%;margin-bottom:8px;">'+saleOpts+'</select>'+
-      '<button type="button" data-id="'+idAttr+'" onclick="event.stopPropagation();invCardSaveSaleFromBtn(this)" style="'+btnStyle+'background:'+(dirty?'rgba(122,158,135,0.45)':'rgba(122,158,135,0.2)')+';color:var(--wheat);width:100%;opacity:'+(dirty?'1':'0.55')+';"'+(dirty?'':' disabled')+'>Save sale change</button>'+
-      '</div>';
+      '<button type="button" class="inv-card-act-btn inv-card-act--edit" data-id="'+idAttr+'" onclick="event.stopPropagation();invCardSaveSaleFromBtn(this)" style="width:100%;opacity:'+(dirty?'1':'0.55')+';"'+(dirty?'':' disabled')+'>Save sale change</button></div>';
   }
-  var rtosQuick='';
-  if(item.priceData&&item.priceData.baseRaw){
+  var pricingBox='';
+  if(item.priceData&&item.priceData.baseRaw!=null){
     var saleDiscount=item.priceData.saleAmt||0;
     var salePrice=item.priceData.baseRaw-saleDiscount;
-    var imgLinks=[];
-    if(item.plateImage) imgLinks.push('<a href="'+invEscapeAttr(item.plateImage)+'" target="_blank" rel="noopener" style="color:var(--sky);text-decoration:none;">Plate Photo</a>');
-    if(item.frontImage) imgLinks.push('<a href="'+invEscapeAttr(item.frontImage)+'" target="_blank" rel="noopener" style="color:var(--sky);text-decoration:none;">Front Photo</a>');
-    rtosQuick='<div style="margin-top:8px;padding:8px;border:1px solid rgba(232,200,122,0.2);border-radius:8px;background:rgba(255,255,255,0.03);">'+
-      '<div style="font-size:0.66rem;letter-spacing:1px;color:rgba(232,200,122,0.7);text-transform:uppercase;margin-bottom:4px;">Quick view</div>'+
-      '<div style="font-size:0.74rem;color:rgba(245,240,232,0.88);line-height:1.45;">'+
-      'Full Serial: <strong>'+invEscapeHtml(item.serialNumber||'—')+'</strong><br>'+
-      'List Price: <strong>'+invFmt(item.priceData.baseRaw||0)+'</strong><br>'+
-      'Sale Discount: <strong>'+invFmt(saleDiscount)+'</strong><br>'+
-      'Sale Price: <strong>'+invFmt(salePrice)+'</strong><br>'+
-      'Colors: <strong>'+invEscapeHtml([item.roofColor,item.wallColor,item.trimColor].filter(Boolean).join(' / ')||'—')+'</strong><br>'+
-      'Pictures: '+(imgLinks.length?imgLinks.join(' · '):'—')+
+    pricingBox='<div class="inv-card-section"><div class="inv-card-section-title">Pricing</div><div class="inv-card-pricing-box">'+
+      'List: <strong>'+invFmt(item.priceData.baseRaw)+'</strong><br>'+
+      (saleDiscount?('Discount: <strong>-'+invFmt(saleDiscount)+'</strong><br>'):'')+
+      'Sale: <strong>'+invFmt(salePrice)+'</strong><br>'+
+      'Total (incl. tax): <strong style="color:var(--wheat);">'+invFmt(item.priceData.finalTotal||salePrice)+'</strong>'+
       '</div></div>';
   }
   var plateU=String(item.plateImage||'').trim();
   var frontU=String(item.frontImage||'').trim();
-  var thumbs='<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">'+
-    (plateU?'<img src="'+invEscapeAttr(plateU)+'" alt="Serial plate" style="width:54px;height:54px;object-fit:cover;border-radius:6px;border:1px solid rgba(232,200,122,0.25);">':'')+
-    (frontU?'<img src="'+invEscapeAttr(frontU)+'" alt="Front" style="width:54px;height:54px;object-fit:cover;border-radius:6px;border:1px solid rgba(232,200,122,0.25);">':'')+
-    '</div>';
-
-  var actions='<div class="inv-card-actions">'+
-    '<button type="button" data-id="'+idAttr+'" onclick="invCopyInventoryQuoteFromBtn(this)" style="'+btnStyle+'background:rgba(232,200,122,0.18);color:var(--wheat);">Copy quote</button>'+
-    '<button type="button" data-id="'+idAttr+'" onclick="invEditFromBtn(this)" style="'+btnStyle+'background:rgba(122,158,135,0.25);color:var(--wheat);">Edit</button>'+
-    '<button type="button" data-id="'+idAttr+'" onclick="invDeleteFromBtn(this)" style="'+btnStyle+'background:rgba(196,81,31,0.25);color:var(--wheat);">Delete</button>'+
-    '</div>';
-
-  return '<details class="inv-card">'+
+  var photos='<div class="inv-card-section"><div class="inv-card-section-title">Photos</div><div class="inv-card-photos">'+
+    (plateU?'<a href="'+invEscapeAttr(plateU)+'" target="_blank" rel="noopener"><img src="'+invEscapeAttr(plateU)+'" alt="Serial plate"></a>':'')+
+    (frontU?'<a href="'+invEscapeAttr(frontU)+'" target="_blank" rel="noopener"><img src="'+invEscapeAttr(frontU)+'" alt="Front"></a>':'')+
+    ((!plateU&&!frontU)?'<span style="font-size:0.74rem;color:rgba(232,200,122,0.55);">No photos</span>':'')+
+    '</div></div>';
+  var actions='<div class="inv-card-section"><div class="inv-card-section-title">Actions</div><div class="inv-card-actions-grid">'+
+    '<button type="button" class="inv-card-act-btn inv-card-act--edit" data-id="'+idAttr+'" data-action="edit" onclick="event.stopPropagation();invCardActionFromBtn(this)">Edit</button>'+
+    '<button type="button" class="inv-card-act-btn inv-card-act--status" data-id="'+idAttr+'" onclick="event.stopPropagation();invOpenStatusMenu(this)">Status</button>'+
+    '<button type="button" class="inv-card-act-btn inv-card-act--sheet" data-id="'+idAttr+'" data-action="salesSheet" onclick="event.stopPropagation();invCardActionFromBtn(this)">Sales sheet</button>'+
+    '<button type="button" class="inv-card-act-btn inv-card-act--market" data-id="'+idAttr+'" data-action="marketplace" onclick="event.stopPropagation();invCardActionFromBtn(this)">Marketplace</button>'+
+    '<button type="button" class="inv-card-act-btn inv-card-act--fb" data-id="'+idAttr+'" data-action="facebook" onclick="event.stopPropagation();invCardActionFromBtn(this)">Facebook post</button>'+
+    '<button type="button" class="inv-card-act-btn inv-card-act--quote" data-id="'+idAttr+'" data-action="quote" onclick="event.stopPropagation();invCardActionFromBtn(this)">Copy quote</button>'+
+    '<button type="button" class="inv-card-act-btn inv-card-act--del" data-id="'+idAttr+'" data-action="delete" onclick="event.stopPropagation();invCardActionFromBtn(this)">Delete</button>'+
+    '</div></div>';
+  return '<details class="inv-card inv-card--'+st+'">'+
     '<summary class="inv-card-summary" aria-label="Show or hide unit details">'+
       sumVisual+
       '<span class="inv-card-sum-text">'+
-        '<span class="inv-status-pill '+st+'">'+(invUnitStatusDisplay(st).toUpperCase())+'</span>'+
+        '<span class="inv-status-pill '+st+'">'+invUnitStatusDisplay(st)+'</span>'+
         '<div class="inv-card-loc">'+loc+'</div>'+
-        '<div class="inv-card-style">'+sty+'</div>'+
-        '<div class="inv-card-size">'+sz+'</div>'+
-        summaryPrice+
+        '<div class="inv-card-spec-row"><span class="inv-card-size">'+sz+'</span><span class="inv-card-spec-sep">·</span><span class="inv-card-style">'+sty+'</span></div>'+
+        '<div class="inv-card-serial-line">'+serial+'</div>'+
+        buyerLine+
       '</span>'+
+      summaryPrice+
       '<span class="inv-card-sum-chev" aria-hidden="true">▾</span>'+
     '</summary>'+
     '<div class="inv-card-body"><div class="inv-card-body-inner">'+
-      '<div style="font-size:0.86rem;font-weight:700;color:var(--wheat);">Serial: '+invEscapeHtml(item.serialNumber||'—')+'</div>'+
-      priceLine+colorLine+dateLine+saleEditor+thumbs+rtosQuick+
-      actions+
+      '<div class="inv-card-section"><div class="inv-card-section-title">Details</div>'+
+      '<div class="inv-card-detail-grid">'+
+        '<div><strong>Serial</strong>'+serial+'</div>'+
+        '<div><strong>Build date</strong>'+buildVal+'</div>'+
+        '<div><strong>Roof</strong>'+roofVal+'</div>'+
+        '<div><strong>Wall</strong>'+wallVal+'</div>'+
+        '<div style="grid-column:1/-1;"><strong>Trim</strong>'+trimVal+'</div>'+
+      '</div></div>'+
+      photos+pricingBox+saleEditor+actions+
     '</div></div></details>';
 }
 function invRenderLotPageReadOnlyCard(item){
@@ -10586,32 +10866,39 @@ function invRenderLotPageReadOnlyCard(item){
     : '<span class="inv-card-sum-visual"><span class="inv-card-thumb-ph">No<br>photo</span></span>';
   var sty=invEscapeHtml(item.style||'—');
   var sz=invEscapeHtml(item.size||'—');
-  var colorParts=[];
-  if(item.roofColor) colorParts.push('Roof: '+invEscapeHtml(item.roofColor));
-  if(item.wallColor) colorParts.push('Wall: '+invEscapeHtml(item.wallColor));
-  if(item.trimColor) colorParts.push('Trim: '+invEscapeHtml(item.trimColor));
-  var colorLine=colorParts.length?'<div style="font-size:0.72rem;color:rgba(245,240,232,0.65);margin-top:4px;">'+colorParts.join(' · ')+'</div>':'';
-  var dateLine=item.buildDate?'<div style="font-size:0.7rem;color:rgba(232,200,122,0.62);margin-top:3px;">Build: '+invEscapeHtml(item.buildDate)+'</div>':'';
-  var priceLine=item.priceData&&item.priceData.finalTotal?'<div style="font-size:0.78rem;color:var(--wheat);margin-top:4px;">Price: '+invFmt(item.priceData.finalTotal)+'</div>':'';
+  var serial=invEscapeHtml(item.serialNumber||'—');
+  var summaryPrice=(item.priceData&&item.priceData.finalTotal!=null)?'<div class="inv-card-sum-price">'+invFmt(item.priceData.finalTotal)+'</div>':'';
+  var buyerLine='';
+  if(st==='sold'&&item.soldTo&&item.soldTo.name){
+    buyerLine='<div class="inv-card-buyer">Buyer: '+invEscapeHtml(item.soldTo.name)+'</div>';
+  }
+  var buildVal=item.buildDate?invEscapeHtml(item.buildDate):'—';
   var plateU=String(item.plateImage||'').trim();
   var frontU=String(item.frontImage||'').trim();
-  var thumbs='<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">'+
-    (plateU?'<img src="'+invEscapeAttr(plateU)+'" alt="Serial plate" style="width:54px;height:54px;object-fit:cover;border-radius:6px;border:1px solid rgba(232,200,122,0.25);">':'')+
-    (frontU?'<img src="'+invEscapeAttr(frontU)+'" alt="Front" style="width:54px;height:54px;object-fit:cover;border-radius:6px;border:1px solid rgba(232,200,122,0.25);">':'')+
-    '</div>';
-  return '<details class="inv-card">'+
+  var photos='<div class="inv-card-section"><div class="inv-card-section-title">Photos</div><div class="inv-card-photos">'+
+    (plateU?'<img src="'+invEscapeAttr(plateU)+'" alt="Serial plate">':'')+
+    (frontU?'<img src="'+invEscapeAttr(frontU)+'" alt="Front">':'')+
+    ((!plateU&&!frontU)?'<span style="font-size:0.74rem;color:rgba(232,200,122,0.55);">No photos</span>':'')+
+    '</div></div>';
+  return '<details class="inv-card inv-card--'+st+'">'+
     '<summary class="inv-card-summary" aria-label="Show or hide unit details">'+
       sumVisual+
       '<span class="inv-card-sum-text">'+
-        '<span class="inv-status-pill '+st+'">'+(invUnitStatusDisplay(st).toUpperCase())+'</span>'+
-        '<div class="inv-card-style">'+sty+'</div>'+
-        '<div class="inv-card-size">'+sz+'</div>'+
+        '<span class="inv-status-pill '+st+'">'+invUnitStatusDisplay(st)+'</span>'+
+        '<div class="inv-card-spec-row"><span class="inv-card-size">'+sz+'</span><span class="inv-card-spec-sep">·</span><span class="inv-card-style">'+sty+'</span></div>'+
+        '<div class="inv-card-serial-line">'+serial+'</div>'+
+        buyerLine+
       '</span>'+
+      summaryPrice+
       '<span class="inv-card-sum-chev" aria-hidden="true">▾</span>'+
     '</summary>'+
     '<div class="inv-card-body"><div class="inv-card-body-inner">'+
-      '<div style="font-size:0.86rem;font-weight:700;color:var(--wheat);">Serial: '+invEscapeHtml(item.serialNumber||'—')+'</div>'+
-      priceLine+colorLine+dateLine+thumbs+
+      '<div class="inv-card-section"><div class="inv-card-section-title">Details</div>'+
+      '<div class="inv-card-detail-grid">'+
+        '<div><strong>Serial</strong>'+serial+'</div>'+
+        '<div><strong>Build date</strong>'+buildVal+'</div>'+
+      '</div></div>'+
+      photos+
     '</div></div></details>';
 }
 function invRenderSection(headerHtml,items,emptyHint){
@@ -10648,7 +10935,9 @@ async function watchInventoryCloud(){
         plateThumb:d.photoUrls&&d.photoUrls.plateThumb||'',
         frontImage:d.photoUrls&&d.photoUrls.front||'',
         frontThumb:d.photoUrls&&d.photoUrls.frontThumb||'',
-        unitStatus:invNormalizeUnitStatus(d.unitStatus)
+        unitStatus:invNormalizeUnitStatus(d.unitStatus),
+        soldTo:d.soldTo||null,
+        soldAt:firebaseTsToIso(d.soldAt)
       };
     });
     invRenderList();
@@ -10714,7 +11003,7 @@ function lotPagesCollectInventorySales(addr){
     if(!isFinite(amt)) amt=0;
     var title=[it.size,it.style].filter(Boolean).join(' · ')||'Sold unit';
     if(it.serialNumber) title+=' · '+it.serialNumber;
-    out.push({source:'inventory',id:'inv_'+String(it.id||''),soldDate:it.updatedAt||it.createdAt||'',amount:amt,title:title,style:it.style||'',size:it.size||'',serial:it.serialNumber||'',invId:it.id});
+    out.push({source:'inventory',id:'inv_'+String(it.id||''),soldDate:it.soldAt||it.updatedAt||it.createdAt||'',amount:amt,title:title,style:it.style||'',size:it.size||'',serial:it.serialNumber||'',invId:it.id});
   });
   return out;
 }
@@ -24771,7 +25060,9 @@ var invState={
   wizardStep:0,
   calcSession:null,
   promoPendingItem:null,
-  adPromoPendingItem:null
+  adPromoPendingItem:null,
+  soldCustomerPending:null,
+  statusMenuItemId:null
 };
 var invPhotoPickerKind=null;
 var invCardDrafts={};
@@ -24789,7 +25080,7 @@ function invCardSaleDraftChange(sel){
   var savedPct=(item&&item.priceData)?(item.priceData.salePct||0):0;
   var newPct=parseFloat(sel.value)||0;
   invCardDrafts[id]={salePct:newPct,dirty:Math.abs(newPct-savedPct)>0.001};
-  var btn=sel.parentElement&&sel.parentElement.querySelector('[onclick*="invCardSaveSaleFromBtn"]');
+  var btn=sel.parentElement&&sel.parentElement.querySelector('[data-id="'+id+'"][onclick*="invCardSaveSaleFromBtn"]');
   if(btn){
     btn.disabled=!invCardDrafts[id].dirty;
     btn.style.opacity=invCardDrafts[id].dirty?'1':'0.55';
@@ -24864,18 +25155,7 @@ function invPickInventoryPhotoSource(source){
 
 async function invInit(){
   await invLoad();
-  invPopulatePriceModalOptions();
   invUpdatePriceSummary();
-  var modal=document.getElementById('invPriceModalOverlay');
-  if(modal&&!modal.dataset.bound){
-    modal.addEventListener('click',function(e){if(e.target===modal) invClosePriceModal();});
-    modal.dataset.bound='1';
-  }
-  var modeSel=document.getElementById('inv_price_taxMode');
-  if(modeSel&&!modeSel.dataset.bound){
-    modeSel.addEventListener('change',invHandleTaxModeChange);
-    modeSel.dataset.bound='1';
-  }
   invRenderList();
 }
 
@@ -25296,173 +25576,6 @@ function invParseSizeToParts(sizeVal){
   return null;
 }
 
-function invPopulatePriceModalOptions(){
-  var styleSel=document.getElementById('inv_price_style');
-  var widthSel=document.getElementById('inv_price_width');
-  var lengthSel=document.getElementById('inv_price_length');
-  if(!styleSel||!widthSel||!lengthSel) return;
-  if(!styleSel.options.length){
-    styleSel.innerHTML='<option value="">Select style code</option>';
-    Object.keys(NAMES||{}).forEach(function(code){
-      var o=document.createElement('option');
-      o.value=code;
-      o.textContent=code+' — '+NAMES[code];
-      styleSel.appendChild(o);
-    });
-  }
-  if(!widthSel.options.length){
-    widthSel.innerHTML='<option value="">Width</option>';
-    var widths=Object.keys(PRICING||{}).map(function(w){return parseInt(w,10);}).filter(Boolean).sort(function(a,b){return a-b;});
-    widths.forEach(function(w){
-      var o=document.createElement('option');
-      o.value=w;
-      o.textContent=w+"'";
-      widthSel.appendChild(o);
-    });
-    widthSel.onchange=function(){invPopulatePriceLengths(parseInt(widthSel.value,10)||0);};
-  }
-  invPopulatePriceLengths(parseInt(widthSel.value,10)||0);
-}
-
-function invPopulatePriceLengths(width){
-  var lengthSel=document.getElementById('inv_price_length');
-  if(!lengthSel) return;
-  var prev=parseInt(lengthSel.value,10)||0;
-  lengthSel.innerHTML='<option value="">Length</option>';
-  if(!width||!PRICING[width]) return;
-  Object.keys(PRICING[width]).map(function(l){return parseInt(l,10);}).filter(Boolean).sort(function(a,b){return a-b;}).forEach(function(l){
-    var o=document.createElement('option');
-    o.value=l;
-    o.textContent=l+"'";
-    lengthSel.appendChild(o);
-  });
-  if(prev&&PRICING[width]&&PRICING[width][prev]) lengthSel.value=String(prev);
-}
-
-function invHandleTaxModeChange(){
-  var mode=(document.getElementById('inv_price_taxMode')||{}).value||'standard';
-  var tax=document.getElementById('inv_price_taxRate');
-  if(!tax) return;
-  if(mode==='none'){
-    tax.value='0';
-    tax.disabled=true;
-  }else if(mode==='standard'){
-    tax.value=String(getSettingVal('taxRate',0)||0);
-    tax.disabled=true;
-  }else{
-    tax.disabled=false;
-  }
-}
-
-function invOpenPriceModal(){
-  invPopulatePriceModalOptions();
-  var styleCode=invGetStyleCodeFromInput(invGetValue('inv_style'));
-  var sz=invParseSizeToParts(invGetValue('inv_size'));
-  var styleSel=document.getElementById('inv_price_style');
-  var widthSel=document.getElementById('inv_price_width');
-  var lengthSel=document.getElementById('inv_price_length');
-  if(styleCode&&styleSel&&NAMES[styleCode]) styleSel.value=styleCode;
-  if(sz&&widthSel){
-    widthSel.value=String(sz.width);
-    invPopulatePriceLengths(sz.width);
-    if(lengthSel&&PRICING[sz.width]&&PRICING[sz.width][sz.length]) lengthSel.value=String(sz.length);
-  }
-  var modeSel=document.getElementById('inv_price_taxMode');
-  if(modeSel&&!modeSel.value) modeSel.value='standard';
-  invHandleTaxModeChange();
-  var b=document.getElementById('inv_priceBreakdown');
-  if(b) b.textContent='Select style and size, then calculate.';
-  document.getElementById('invPriceModalOverlay').classList.add('open');
-  try{ invRefreshCalcQuotePreview(); }catch(_e){}
-}
-
-function invClosePriceModal(){
-  var m=document.getElementById('invPriceModalOverlay');
-  if(m) m.classList.remove('open');
-}
-
-function invComputePriceData(){
-  var styleCode=(document.getElementById('inv_price_style')||{}).value||'';
-  var width=parseInt((document.getElementById('inv_price_width')||{}).value,10)||0;
-  var length=parseInt((document.getElementById('inv_price_length')||{}).value,10)||0;
-  var salePct=parseFloat((document.getElementById('inv_price_salePct')||{}).value)||0;
-  var taxMode=(document.getElementById('inv_price_taxMode')||{}).value||'standard';
-  var customTax=parseFloat((document.getElementById('inv_price_taxRate')||{}).value)||0;
-  var adjust=parseFloat((document.getElementById('inv_price_adjust')||{}).value)||0;
-  if(!styleCode||!width||!length) return {error:'Select style, width, and length'};
-  if(!PRICING[width]||!PRICING[width][length]||!PRICING[width][length][styleCode]) return {error:'No price found for selected style/size'};
-  var baseRaw=PRICING[width][length][styleCode];
-  var sp=Math.max(0,Math.min(100,salePct));
-  var saleAmt=saleAmountListPct(baseRaw,sp);
-  var subtotal=Math.round((baseRaw-saleAmt+adjust)*100)/100;
-  if(subtotal<0) subtotal=0;
-  var taxRate=taxMode==='none'?0:(taxMode==='standard'?parseFloat(getSettingVal('taxRate',0)||0):customTax);
-  taxRate=isNaN(taxRate)?0:taxRate;
-  var taxAmt=taxRate>0?Math.round(subtotal*(taxRate/100)*100)/100:0;
-  var finalTotal=Math.round((subtotal+taxAmt)*100)/100;
-  return {
-    styleCode:styleCode,
-    styleName:(NAMES&&NAMES[styleCode])?NAMES[styleCode]:styleCode,
-    width:width,
-    length:length,
-    baseRaw:baseRaw,
-    salePct:sp,
-    saleAmt:saleAmt,
-    adjust:adjust,
-    subtotal:subtotal,
-    taxMode:taxMode,
-    taxRate:taxRate,
-    taxAmt:taxAmt,
-    finalTotal:finalTotal,
-    calculatedAt:new Date().toISOString()
-  };
-}
-
-function invRenderPriceBreakdown(data){
-  var b=document.getElementById('inv_priceBreakdown');
-  if(!b) return;
-  if(!data||data.error){
-    b.textContent=(data&&data.error)?data.error:'Unable to calculate.';
-    return;
-  }
-  b.innerHTML=
-    '<div>Base Price: <strong>'+invFmt(data.baseRaw)+'</strong></div>'+
-    (data.salePct>0?'<div>Sale Discount ('+data.salePct+'%): <strong>-'+invFmt(data.saleAmt)+'</strong></div>':'')+
-    (data.adjust?'<div>Manual Adjustment: <strong>'+(data.adjust>=0?'+':'')+invFmt(data.adjust)+'</strong></div>':'')+
-    '<div>Subtotal: <strong>'+invFmt(data.subtotal)+'</strong></div>'+
-    '<div>Tax ('+data.taxRate+'%): <strong>'+invFmt(data.taxAmt)+'</strong></div>'+
-    '<div style="margin-top:6px;">Final Total: <strong style="color:var(--wheat);">'+invFmt(data.finalTotal)+'</strong></div>';
-}
-
-function invCalculatePrice(){
-  var data=invComputePriceData();
-  invState.lastPriceCalc=data.error?null:data;
-  invRenderPriceBreakdown(data);
-  if(data.error){
-    showToast(data.error);
-    return;
-  }
-  showToast('Price calculated');
-}
-
-function invUseCalculatedPrice(){
-  if(!invState.lastPriceCalc){
-    invCalculatePrice();
-    if(!invState.lastPriceCalc) return;
-  }
-  invState.priceData=Object.assign({},invState.lastPriceCalc,{source:'listModal'});
-  invState.calcSession=null;
-  invState.priceCalcConfirmed=true;
-  invUpdatePriceSummary();
-  invSetPriceStatus('Price calculated and confirmed.');
-  var styleEl=document.getElementById('inv_style');
-  var sizeEl=document.getElementById('inv_size');
-  if(styleEl&&!styleEl.value) styleEl.value=invState.priceData.styleName;
-  if(sizeEl&&!sizeEl.value) sizeEl.value=invState.priceData.width+'x'+invState.priceData.length;
-  invClosePriceModal();
-  showToast('Inventory price confirmed');
-}
-
 function invRenderList(){
   var wrap=document.getElementById('inv_listWrap');
   if(!wrap) return;
@@ -25496,8 +25609,6 @@ function invClearForm(){
   var lotEl=document.getElementById('inv_lotLocation');
   if(lotEl) lotEl.innerHTML='';
   invPopulateLotLocationSelect('');
-  var stEl=document.getElementById('inv_unitStatus');
-  if(stEl) stEl.value='available';
   ['inv_serialPhotoCamera','inv_serialPhotoLibrary','inv_frontPhotoCamera','inv_frontPhotoLibrary'].forEach(function(fid){
     var fi=document.getElementById(fid);
     if(fi) fi.value='';
@@ -25511,7 +25622,7 @@ function invClearForm(){
   invResetPriceState();
   invSetPreview('inv_serialPreview','');
   invSetPreview('inv_frontPreview','');
-  invUpdateOcrStatus('Waiting for serial plate photo');
+  invUpdateOcrStatus('Take or upload a serial plate photo — reading starts automatically');
   try{ invRenderWizardStep(); }catch(_w){}
 }
 
@@ -25526,7 +25637,11 @@ async function invSaveItem(){
   var roofColor=invGetValue('inv_roofColor');
   var wallColor=invGetValue('inv_wallColor');
   var trimColor=invGetValue('inv_trimColor');
-  var unitStatus=invNormalizeUnitStatus((document.getElementById('inv_unitStatus')||{}).value);
+  var unitStatus='available';
+  if(invState.editId){
+    var prevForStatus=invState.items.find(function(it){return it.id===invState.editId;});
+    unitStatus=invNormalizeUnitStatus(prevForStatus?prevForStatus.unitStatus:'available');
+  }
   if(invState.ocrHasResult&&!invState.ocrConfirmed&&!invState.ocrRejected){
     invUpdateOcrStatus('Confirm or reject OCR read before saving.');
     showToast('Confirm or reject OCR read before saving');
@@ -25536,12 +25651,6 @@ async function invSaveItem(){
     invSetPriceStatus('Calculate and confirm price before saving.');
     showToast('Calculate and confirm price before saving');
     return;
-  }
-  if(invState.wizardActive&&!invState.editId){
-    if(!invState.priceData||invState.priceData.source!=='fullCalc'){
-      showToast('Confirm the full quote price (green button) before saving a new unit');
-      return;
-    }
   }
   if(!lotLocation||!serialNumber||!size||!style){
     showToast('Lot, serial, size, and style are required');
@@ -25598,6 +25707,8 @@ async function invSaveItem(){
         },
         updatedAt:firebase.firestore.FieldValue.serverTimestamp()
       };
+      if(prevItem&&prevItem.soldTo) payload.soldTo=prevItem.soldTo;
+      if(prevItem&&prevItem.soldAt) payload.soldAt=prevItem.soldAt;
       if(invState.editId) await invUpdateItemCloud(docId,payload);
       else await invCreateItemCloud(docId,payload);
       var prevCloud=invState.editId?invState.items.find(function(it){return it.id===invState.editId;}):null;
@@ -25620,7 +25731,9 @@ async function invSaveItem(){
         plateImage:(plateImageValue||'').trim(),
         plateThumb:(plateRes.thumbUrl||'').trim(),
         frontImage:(frontImageValue||'').trim(),
-        frontThumb:(frontRes.thumbUrl||'').trim()
+        frontThumb:(frontRes.thumbUrl||'').trim(),
+        soldTo:(prevCloud&&prevCloud.soldTo)||(prevItem&&prevItem.soldTo)||null,
+        soldAt:(prevCloud&&prevCloud.soldAt)||(prevItem&&prevItem.soldAt)||null
       };
       if(invState.editId){
         invState.items=invState.items.map(function(it){ return it.id===docId?localCloudItem:it; });
@@ -25668,7 +25781,9 @@ async function invSaveItem(){
         plateImage:invState.images.plate||'',
         plateThumb:(item.plateThumb||''),
         frontImage:invState.images.front||'',
-        frontThumb:(item.frontThumb||'')
+        frontThumb:(item.frontThumb||''),
+        soldTo:item.soldTo||null,
+        soldAt:item.soldAt||null
       };
     });
   }else{
@@ -25721,8 +25836,6 @@ function invEditItem(id){
   var item=invState.items.find(function(it){return it.id===id;});
   if(!item) return;
   invState.editId=item.id;
-  var st=document.getElementById('inv_unitStatus');
-  if(st) st.value=invNormalizeUnitStatus(item.unitStatus);
   invPopulateLotLocationSelect(item.lotLocation||'');
   document.getElementById('inv_serialNumber').value=item.serialNumber||'';
   document.getElementById('inv_size').value=item.size||'';
@@ -25742,7 +25855,7 @@ function invEditItem(id){
   invResetOcrState();
   invSetPreview('inv_serialPreview',invState.images.plate);
   invSetPreview('inv_frontPreview',invState.images.front);
-  invUpdateOcrStatus(invState.images.plate?'Serial plate photo ready.':'Waiting for serial plate photo');
+  invUpdateOcrStatus(invState.images.plate?'Serial plate photo ready.':'Take or upload a serial plate photo — reading starts automatically');
   var ttl=document.getElementById('invAddEditTitle');
   if(ttl) ttl.textContent='Edit inventory';
   invState.wizardActive=true;
@@ -25857,33 +25970,13 @@ function invHydrateAdFromInventoryItem(it){
 function invPromoChooseSalesSheet(){
   var it=invState.promoPendingItem;
   invClosePromoModal();
-  if(!it||!it.calcSession){
-    showToast('No saved calculator session on this unit — re-save price using Confirm quote price');
-    return;
-  }
-  try{
-    restoreCalcSession(it.calcSession);
-    if(!openSalesSheetReviewFromSyncedCalc()) return;
-  }catch(e){
-    showToast('Could not open sales sheet');
-  }
+  invRunSalesSheetFor(it);
 }
 
 function invPromoChooseFacebook(){
   var it=invState.promoPendingItem;
   invClosePromoModal();
-  if(!it||!it.calcSession){
-    showToast('No saved calculator session — use Confirm quote price when saving inventory');
-    return;
-  }
-  try{
-    restoreCalcSession(it.calcSession);
-    try{ setCalcPay('cash'); }catch(_e){}
-    try{ updateQuickPrice(); }catch(_e2){}
-    copyFacebookPost();
-  }catch(e){
-    showToast('Could not build Facebook post');
-  }
+  invRunFacebookFor(it);
 }
 
 function invOpenAdPromoModal(it){
@@ -25971,8 +26064,7 @@ async function invAdPromoGenerate(){
 async function invPromoChooseMarketplace(){
   var it=invState.promoPendingItem;
   invClosePromoModal();
-  if(!it) return;
-  invOpenAdPromoModal(it);
+  invRunMarketplaceFor(it);
 }
 
 function invDeleteItem(id){
