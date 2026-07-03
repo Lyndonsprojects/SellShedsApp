@@ -4289,6 +4289,7 @@ select:focus {
 .cb-inv-item.sel { border-color:var(--rust); background:rgba(196,81,31,0.14); }
 .cb-inv-item-title { font-weight:600; font-size:0.92rem; }
 .cb-inv-item-sub { font-size:0.75rem; color:rgba(245,240,232,0.55); margin-top:2px; }
+.cb-page-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:4px; flex-wrap:nowrap; }
 .cb-price-box { background:rgba(122,158,135,0.1); border:1.5px solid rgba(122,158,135,0.35); border-radius:12px;
   padding:16px; margin:16px 0; text-align:center; }
 .cb-price-box .label { font-size:0.7rem; letter-spacing:2px; text-transform:uppercase; color:rgba(245,240,232,0.6); margin-bottom:4px; }
@@ -4323,10 +4324,22 @@ select:focus {
 .btn-launch { width:100%; background:var(--rust,#C4511F); color:#fff; border:none; border-radius:11px; padding:16px; font-size:1.05rem; font-weight:700; letter-spacing:0.5px; cursor:pointer; box-shadow:0 4px 14px rgba(196,81,31,0.4); }
 .inv-warn { font-size:0.76rem; color:var(--rust,#C4511F); margin-top:6px; display:none; }
 .config-note { font-size:0.7rem; color:rgba(245,240,232,0.4); line-height:1.5; margin-top:18px; padding:12px; border:1px dashed rgba(232,200,122,0.18); border-radius:9px; }
-.cb-bm-install { margin-top:12px; padding:12px; border:1px dashed rgba(232,200,122,0.25); border-radius:9px; }
-.cb-bm-link { display:inline-block; padding:10px 16px; background:var(--rust,#C4511F); color:#fff !important; border-radius:8px; font-weight:700; text-decoration:none !important; margin:8px 0; font-size:0.85rem; cursor:grab; }
-.cb-bm-link:active { cursor:grabbing; opacity:0.9; }
-.cb-bm-steps { font-size:0.72rem; color:rgba(245,240,232,0.55); line-height:1.55; margin-top:8px; }
+.pb-hint { font-size:0.78rem; color:rgba(232,200,122,0.6); line-height:1.55; margin-bottom:12px; }
+.pb-search { width:100%; box-sizing:border-box; margin-bottom:12px; padding:12px 14px; border-radius:10px; border:1.5px solid rgba(232,200,122,0.22); background:rgba(0,0,0,0.2); color:var(--cream); font-size:1rem; }
+.pb-group { background:rgba(255,255,255,0.04); border:1.5px solid rgba(232,200,122,0.18); border-radius:12px; padding:6px 4px; margin-bottom:14px; }
+.pb-grouphead { font-family:'Bebas Neue',Impact,sans-serif; font-size:1rem; letter-spacing:2px; color:var(--wheat,#E8C87A); padding:8px 12px 6px; }
+.pb-row { display:flex; align-items:center; gap:10px; padding:14px 12px; min-height:52px; border-top:1px solid rgba(232,200,122,0.08); cursor:pointer; -webkit-tap-highlight-color:transparent; }
+.pb-row:first-of-type { border-top:none; }
+.pb-row:active { background:rgba(196,81,31,0.12); }
+.pb-row.copied { background:rgba(122,158,135,0.16); }
+.pb-row.empty { opacity:0.55; cursor:default; }
+.pb-rl { flex:1; min-width:0; }
+.pb-k { font-size:0.68rem; letter-spacing:1.5px; text-transform:uppercase; color:rgba(245,240,232,0.5); margin-bottom:3px; }
+.pb-v { font-size:0.95rem; color:var(--cream); line-height:1.35; word-break:break-word; }
+.pb-v.empty { font-style:italic; color:rgba(245,240,232,0.35); font-size:0.82rem; }
+.pb-copy { flex:0 0 auto; font-size:0.72rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--wheat); background:rgba(232,200,122,0.12); border-radius:7px; padding:8px 12px; }
+.pb-row.copied .pb-copy { color:var(--sage,#7A9E87); background:rgba(122,158,135,0.2); }
+.pb-count { font-size:0.72rem; color:rgba(232,200,122,0.55); margin-bottom:10px; }
 .fg-group { background:rgba(255,255,255,0.04); border:1.5px solid rgba(232,200,122,0.18); border-radius:12px; padding:6px 4px; margin-bottom:14px; }
 .fg-grouphead { font-family:'Bebas Neue',Impact,sans-serif; font-size:1rem; letter-spacing:2px; color:var(--wheat,#E8C87A); padding:8px 12px 6px; }
 .fg-row { display:flex; align-items:center; gap:10px; padding:10px 12px; border-top:1px solid rgba(232,200,122,0.08); cursor:pointer; }
@@ -4441,7 +4454,7 @@ select:focus {
       </div>
       <div class="cc-hero-actions" id="homeHeroActions">
         <button type="button" class="cc-hero-btn cc-hero-btn-secondary" id="homeHeroResumeBtn" onclick="homeHeroResumeClick()">Resume <span aria-hidden="true">›</span></button>
-        <button type="button" class="cc-hero-btn cc-hero-btn-primary" onclick="cbGo('cbStart')">Start Contract</button>
+        <button type="button" class="cc-hero-btn cc-hero-btn-primary" onclick="cbStartNew()">Start Contract</button>
       </div>
     </div>
 
@@ -6203,7 +6216,6 @@ select:focus {
 <!-- SCREEN CB1 — START -->
 <div class="screen" id="cbStart">
   <div class="header">
-    <button class="back-btn" onclick="goTo('screenHome')">&#8592;</button>
     <div class="header-title">CONTRACT BRIDGE</div>
   </div>
   <div style="padding:16px;padding-bottom:80px;">
@@ -6216,16 +6228,14 @@ select:focus {
     </button>
     <div class="config-note">
       RTOStreamline target: <b id="cbCfgUrl" style="color:var(--wheat)">loading&hellip;</b><br>
-      Install the autofill bookmarklet once (Settings &rarr; Links &amp; Cloud), then tap <strong>Launch RTOStreamline</strong> on the Fill Guide and click the bookmarklet on each RTOStreamline page (login, dashboard, contract form).
+      On the Fill Guide, tap <strong>Copy all &amp; open Paste Board</strong> to copy every field at once, then paste into RTOStreamline on any device.
     </div>
-    <div class="cb-bm-install" id="cbBmInstallStart"></div>
   </div>
 </div>
 
 <!-- SCREEN CB2 — LINK CUSTOMER -->
 <div class="screen" id="cbLink">
   <div class="header">
-    <button class="back-btn" onclick="cbGo('cbStart')">&#8592;</button>
     <div class="header-title">LINK CUSTOMER</div>
   </div>
   <div style="padding:16px;padding-bottom:80px;">
@@ -6251,15 +6261,12 @@ select:focus {
       <div class="field-group"><label class="field-label">State</label><input type="text" id="cb_state" placeholder="ID" maxlength="2" style="text-transform:uppercase"></div>
     </div>
     <div class="field-group"><label class="field-label">ZIP</label><input type="text" id="cb_zip" placeholder="83617" maxlength="10"></div>
-    <button class="btn-primary" onclick="cbValidateLink()">Continue &#8594;</button>
-    <button class="btn-secondary" onclick="cbGo('cbStart')">&#8592; Back</button>
   </div>
 </div>
 
 <!-- SCREEN CB3 — ORDER TYPE -->
 <div class="screen" id="cbOrder">
   <div class="header">
-    <button class="back-btn" onclick="cbGo('cbLink')">&#8592;</button>
     <div class="header-title">ORDER TYPE</div>
   </div>
   <div style="padding:16px;padding-bottom:80px;">
@@ -6291,8 +6298,6 @@ select:focus {
       <input type="text" id="cb_inventory" placeholder="e.g. GSS-04821" oninput="cbCheckInv()">
       <div class="inv-warn" id="cb_invWarn">Inventory number is required for on-lot buildings.</div>
     </div>
-    <button class="btn-primary" onclick="cbValidateOrder()">Continue &#8594;</button>
-    <button class="btn-secondary" onclick="cbGo('cbLink')">&#8592; Back</button>
   </div>
 </div>
 
@@ -6300,12 +6305,16 @@ select:focus {
 <!-- SCREEN CB — BUILDING & PRICING -->
 <div class="screen" id="cbBuilding">
   <div class="header">
-    <button class="back-btn" onclick="cbGo('cbOrder')">&#8592;</button>
     <div class="header-title">BUILDING &amp; PRICING</div>
   </div>
   <div style="padding:16px;padding-bottom:80px;">
     <div class="cb-steps" id="cbSteps3"></div>
-    <div class="cb-title">Building &amp; Pricing</div>
+    <div class="cb-page-head">
+      <div class="cb-title" style="margin-bottom:0;">Building &amp; Pricing</div>
+      <button type="button" class="calc-reset-inline" onclick="cb_clearBuildingUI()" aria-label="Reset calculator">Reset
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><polyline points="3 3 3 9 9 9"/></svg>
+      </button>
+    </div>
     <div class="cb-sub" id="cb_bldSub">Price the building for this contract.</div>
 
     <div class="cb-src-toggle" id="cb_srcToggle" style="display:none;">
@@ -6384,15 +6393,12 @@ select:focus {
       </div>
     </div>
 
-    <button class="btn-primary" id="cb_bldNext" onclick="cbValidateBuilding()">Continue &#8594;</button>
-    <button class="btn-secondary" onclick="cbGo('cbOrder')">&#8592; Back</button>
   </div>
 </div>
 
 <!-- SCREEN CB — OPTION MERGE (when &gt;6 option lines) -->
 <div class="screen" id="cbMerge">
   <div class="header">
-    <button class="back-btn" onclick="cbGo('cbBuilding')">&#8592;</button>
     <div class="header-title">COMBINE OPTIONS</div>
   </div>
   <div style="padding:16px;padding-bottom:80px;">
@@ -6403,7 +6409,6 @@ select:focus {
     <div id="cb_mergeList"></div>
     <div style="display:flex;gap:8px;margin-top:12px;">
       <button type="button" class="btn-secondary" style="flex:1;margin-top:0;" onclick="cbMergeCombineSelected()">Combine Selected</button>
-      <button type="button" class="btn-primary" style="flex:1;margin-top:0;" id="cb_mergeContinueBtn" onclick="cbMergeContinue()">Continue &#8594;</button>
     </div>
   </div>
 </div>
@@ -6411,7 +6416,6 @@ select:focus {
 <!-- SCREEN CB4 — CONTRACT TYPE -->
 <div class="screen" id="cbType">
   <div class="header">
-    <button class="back-btn" onclick="cbGo('cbBuilding')">&#8592;</button>
     <div class="header-title">CONTRACT TYPE</div>
   </div>
   <div style="padding:16px;padding-bottom:80px;">
@@ -6426,26 +6430,39 @@ select:focus {
       <div class="cb-opt-title">&#128196; Rent-To-Own (RTO)</div>
       <div class="cb-opt-sub">Pulls landlord, references, and employer from intake. Only ID/SSN/DOB collected at signing.</div>
     </button>
-    <button class="btn-primary" onclick="cbValidateType()">Build Fill Guide &#8594;</button>
-    <button class="btn-secondary" onclick="cbGo('cbBuilding')">&#8592; Back</button>
   </div>
 </div>
 
 <!-- SCREEN CB5 — FILL GUIDE -->
 <div class="screen" id="cbGuide">
   <div class="header">
-    <button class="back-btn" onclick="cbGo('cbType')">&#8592;</button>
     <div class="header-title">FILL GUIDE</div>
   </div>
   <div style="padding:16px;padding-bottom:80px;">
     <div class="cb-steps" id="cbSteps5"></div>
     <div class="cb-title" id="cb_guideTitle">Fill Guide</div>
-    <div class="cb-sub">Tap any row to copy it, or use <strong>Launch RTOStreamline</strong> with your Autofill bookmarklet to fill fields automatically.</div>
+    <div class="cb-sub">Tap any row to copy one field, or use <strong>Copy all &amp; open Paste Board</strong> to copy everything and paste into RTOStreamline field by field.</div>
     <div class="cb-summary" id="cb_guideSummary"></div>
     <div id="cb_guideBody"></div>
     <div id="cb_signingBody"></div>
-    <button class="btn-launch" onclick="cbLaunch()">&#128640; Launch RTOStreamline</button>
+    <button class="btn-primary" onclick="cbCopyAllOpenPasteBoard()">Copy all &amp; open Paste Board</button>
+    <button class="btn-secondary" style="margin-top:8px;" onclick="cbOpenRTOStreamline()">Open RTOStreamline</button>
     <button class="btn-secondary" onclick="cbReset()">&#10005; Finish &amp; Clear Contract</button>
+  </div>
+</div>
+
+<!-- SCREEN CB6 — PASTE BOARD -->
+<div class="screen" id="cbPasteBoard">
+  <div class="header">
+    <div class="header-title">PASTE BOARD</div>
+  </div>
+  <div style="padding:16px;padding-bottom:80px;">
+    <div class="cb-title" id="cb_pbTitle">Paste Board</div>
+    <div class="pb-hint" id="cb_pbHint">All fields were copied to your clipboard. Keep this screen open, switch to RTOStreamline, tap a field below to copy that value, then paste.</div>
+    <div class="pb-count" id="cb_pbCount"></div>
+    <input type="search" id="cb_pbSearch" class="pb-search" placeholder="Search fields&hellip;" autocomplete="off" oninput="cbFilterPasteBoard(this.value)">
+    <div id="cb_pbList"></div>
+    <button class="btn-secondary" style="margin-top:12px;" onclick="cbOpenRTOStreamline()">Open RTOStreamline</button>
   </div>
 </div>
 
@@ -7741,8 +7758,7 @@ select:focus {
     <div class="field-group"><label class="field-label">RTOStreamline URL</label><input type="url" id="set_rtostreamlineUrl" placeholder="https://app.rtostreamline.com/..."></div>
     <div class="field-group"><label class="field-label">RTOStreamline Username</label><input type="text" id="set_rtostreamlineUsername" placeholder="Dealer login username" autocomplete="off"></div>
     <div class="field-group"><label class="field-label">RTOStreamline Password</label><input type="password" id="set_rtostreamlinePassword" placeholder="Saved locally — not synced to cloud" autocomplete="off"></div>
-    <div class="setup-note" style="margin-top:-4px;margin-bottom:12px;">Used by the Contract Bridge bookmarklet to auto-fill the login form. Stored on this device only (same as Firebase staff password).</div>
-    <div class="cb-bm-install" id="cbBmInstallSettings"></div>
+    <div class="setup-note" style="margin-top:-4px;margin-bottom:12px;">Optional login reference for RTOStreamline. Stored on this device only (not synced to cloud).</div>
     <div class="field-group"><label class="field-label">Interest URL</label><input type="url" id="set_interestUrl" placeholder="https://..."></div>
     <div class="field-group"><label class="field-label">Google Maps API Key</label><input type="text" id="set_mapsApiKey" placeholder="Used for mileage calculator"></div>
 
@@ -11948,7 +11964,6 @@ function renderSettingsLinksCloudForm(s){
     var el=document.getElementById('set_'+k);
     if(el) el.value=s[k]||'';
   });
-  try{ cbRefreshBookmarkletInstallUI(); }catch(_eBmUi){}
   var crmChip=document.getElementById('set_crmChip');
   var crmWrap=document.getElementById('set_crmUrlWrap');
   if(crmChip){crmChip.textContent=s.crmEnabled?'On':'Off';crmChip.classList.toggle('active',!!s.crmEnabled);}
@@ -13121,6 +13136,8 @@ function mileageResultsPanelVisible(){
 function appBottomNavBackAction(){
   var active=document.querySelector('.screen.active');
   var sid=active?active.id:'';
+  if(sid==='cbStart'){ appNavSkipHistoryPush=true; goTo('screenHome'); return; }
+  if(typeof CB_STEP_BACK!=='undefined' && CB_STEP_BACK[sid]){ cbGo(CB_STEP_BACK[sid]); return; }
   if(sid==='screenCalc'){
     if(typeof calcCurrentPage==='number' && calcCurrentPage>0){
       calcGoTo(calcCurrentPage-1);
@@ -13157,6 +13174,7 @@ function appBottomNavBackAction(){
 function appBottomNavPrimaryAction(){
   var active=document.querySelector('.screen.active');
   var sid=active?active.id:'';
+  if(typeof CB_STEP_PRIMARY!=='undefined' && CB_STEP_PRIMARY[sid]){ CB_STEP_PRIMARY[sid](); return; }
   if(sid==='screenCalc'){
     if(typeof calcCurrentPage==='number'){
       if(calcCurrentPage===0) calcGoTo(1);
@@ -13263,6 +13281,27 @@ function updateAppBottomNav(){
 
   var active=document.querySelector('.screen.active');
   var sid=active?active.id:'';
+
+  if(typeof CB_STEP_PRIMARY!=='undefined' && CB_STEP_PRIMARY[sid]){
+    if(sid==='cbGuide'){
+      appBottomNavSetPrimaryVisual({mode:'text', text:'COPY ALL'});
+      primBtn.setAttribute('aria-label','Copy all fields and open Paste Board');
+    }else if(sid==='cbPasteBoard'){
+      appBottomNavSetPrimaryVisual({mode:'text', text:'OPEN RTO'});
+      primBtn.setAttribute('aria-label','Open RTOStreamline');
+    }else if(sid==='cbStart'){
+      appBottomNavSetPrimaryVisual({mode:'text-arrow', text:'START'});
+      primBtn.setAttribute('aria-label','Start new contract');
+    }else if(sid==='cbMerge'){
+      appBottomNavSetPrimaryVisual({mode:'text-arrow', text:'NEXT'});
+      primBtn.disabled=!!(typeof cbMergeWorking!=='undefined' && cbMergeWorking && cbMergeWorking.length>8);
+      primBtn.setAttribute('aria-label','Continue');
+    }else{
+      appBottomNavSetPrimaryVisual({mode:'text-arrow', text:'NEXT'});
+      primBtn.setAttribute('aria-label','Continue');
+    }
+    return;
+  }
 
   if(sid==='screenCalc'){
     if(calcCurrentPage===0){
@@ -29457,7 +29496,6 @@ document.addEventListener('DOMContentLoaded', function() {
   initCalcAdvancedTools();
   try{ updateAddOptionBtnState(); }catch(_eAddOpt){}
   try{ initPhoneFormatListeners(); }catch(_phInit){}
-  try{ cbRefreshBookmarkletInstallUI(); }catch(_cbBmInit){}
   (async function firebaseBootstrapAuth(){
     try{
       await firebaseEnsureAuthed();
@@ -30801,108 +30839,7 @@ function cb_renderOptsSummaryInto(hostId){
   };
 })();
 
-var RTOSTREAMLINE_FIELD_MAP_CASH = {
-  name:              '#ctl00_MainContent_txtxName',
-  address:           '#ctl00_MainContent_txtxAddress',
-  city:              '#ctl00_MainContent_txtxCity',
-  state:             '#ctl00_MainContent_ddlxState',
-  zip:               '#ctl00_MainContent_txtxZip',
-  cellPhone:         '#ctl00_MainContent_txtxCellPhone',
-  homePhone:         '#ctl00_MainContent_txtxHomePhone',
-  workPhone:         '#ctl00_MainContent_txtxWorkPhone',
-  email:             '#ctl00_MainContent_txtxEmail',
-  ssnLast4:          '#ctl00_MainContent_txtxSSN',
-  deliveryAddress:   '#ctl00_MainContent_txtxDeliveryAddress',
-  deliveryCity:      '#ctl00_MainContent_txtxDeliveryCity',
-  deliveryState:     '#ctl00_MainContent_ddlxDeliveryState',
-  deliveryZip:       '#ctl00_MainContent_txtxDeliveryZip',
-  directions:        '#ctl00_MainContent_txtxDirections',
-  buildingCondition: '#ctl00_MainContent_ddlxBuildingCondition',
-  buildingStyle:     '#ctl00_MainContent_ddlxBuildingStyle',
-  sidingType:        '#ctl00_MainContent_ddlxSidingType',
-  inventoryNum:      '#ctl00_MainContent_txtxSerNum1',
-  sidingUpperColor:  '#ctl00_MainContent_ddlxSidingUpperColor',
-  sidingLowerColor:  '#ctl00_MainContent_ddlxSidingLowerColor',
-  roofColor:         '#ctl00_MainContent_ddlxRoofColor',
-  trimColor:         '#ctl00_MainContent_ddlxTrimColor',
-  width:             '#ctl00_MainContent_ddlxWid1',
-  length:            '#ctl00_MainContent_ddlxLen1',
-  salesPrice:        '#ctl00_MainContent_txtxPretaxPrice',
-  opt1:'#ctl00_MainContent_ddlxOptions1', opt1qty:'#ctl00_MainContent_txtxOptions1Qty', opt1price:'#ctl00_MainContent_txtxOptions1Price',
-  opt2:'#ctl00_MainContent_ddlxOptions2', opt2qty:'#ctl00_MainContent_txtxOptions2Qty', opt2price:'#ctl00_MainContent_txtxOptions2Price',
-  opt3:'#ctl00_MainContent_ddlxOptions3', opt3qty:'#ctl00_MainContent_txtxOptions3Qty', opt3price:'#ctl00_MainContent_txtxOptions3Price',
-  opt4:'#ctl00_MainContent_ddlxOptions4', opt4qty:'#ctl00_MainContent_txtxOptions4Qty', opt4price:'#ctl00_MainContent_txtxOptions4Price',
-  opt5:'#ctl00_MainContent_ddlxOptions5', opt5qty:'#ctl00_MainContent_txtxOptions5Qty', opt5price:'#ctl00_MainContent_txtxOptions5Price',
-  opt6:'#ctl00_MainContent_ddlxOptions6', opt6qty:'#ctl00_MainContent_txtxOptions6Qty', opt6price:'#ctl00_MainContent_txtxOptions6Price',
-  opt7:'#ctl00_MainContent_ddlxOptions7', opt8:'#ctl00_MainContent_ddlxOptions8'
-};
-var RTOSTREAMLINE_FIELD_MAP_RTO = {
-  name:              '#ctl00_MainContent_txtSaShName',
-  address:           '#ctl00_MainContent_txtSaShAddress',
-  city:              '#ctl00_MainContent_txtSaShCityState',
-  state:             '#ctl00_MainContent_ddlSaShState',
-  zip:               '#ctl00_MainContent_txtSaShZip',
-  cellPhone:         '#ctl00_MainContent_txtCellPhone',
-  homePhone:         '#ctl00_MainContent_txtSaShPhone',
-  workPhone:         '#ctl00_MainContent_txtWorkPhone',
-  email:             '#ctl00_MainContent_txtEmail',
-  deliveryName:      '#ctl00_MainContent_txtDeliveryName',
-  deliveryAddress:   '#ctl00_MainContent_txtDeliveryAddress',
-  deliveryCity:      '#ctl00_MainContent_txtDeliveryCity',
-  deliveryState:     '#ctl00_MainContent_ddlDeliveryState',
-  deliveryZip:       '#ctl00_MainContent_txtDeliveryZip',
-  directions:        '#ctl00_MainContent_txtDirections',
-  // At-signing identity — NEVER included in the autofill payload (see cbBuildAutofillPayload)
-  ssn:               '#ctl00_MainContent_txtSsn',
-  dob:               '#ctl00_MainContent_dpDOB',
-  dl:                '#ctl00_MainContent_txtDL',
-  dlState:           '#ctl00_MainContent_ddlDLState',
-  dlIssue:           '#ctl00_MainContent_dpDLIssue',
-  dlExp:             '#ctl00_MainContent_dpDLExp',
-  ownRent:           '#ctl00_MainContent_ddlOwnRent',
-  landlord:          '#ctl00_MainContent_txtLandlord',
-  llPhone:           '#ctl00_MainContent_txtLLHomePhone',
-  llAddress:         '#ctl00_MainContent_txtLLAddress',
-  llCity:            '#ctl00_MainContent_txtLLCity',
-  llState:           '#ctl00_MainContent_ddlLLState',
-  llZip:             '#ctl00_MainContent_txtLLZip',
-  salesPrice:        '#ctl00_MainContent_txtPretaxPrice',
-  buildingCondition: '#ctl00_MainContent_ddlBuildingCondition',
-  sidingType:        '#ctl00_MainContent_ddlSidingType',
-  buildingStyle:     '#ctl00_MainContent_ddlBuildingStyle',
-  inventoryNum:      '#ctl00_MainContent_txtSerNum1',
-  sidingUpperColor:  '#ctl00_MainContent_ddlSidingUpperColor',
-  sidingLowerColor:  '#ctl00_MainContent_ddlSidingLowerColor',
-  roofColor:         '#ctl00_MainContent_ddlRoofColor',
-  trimColor:         '#ctl00_MainContent_ddlTrimColor',
-  width:             '#ctl00_MainContent_ddlWid1',
-  length:            '#ctl00_MainContent_ddlLen1',
-  purchaseType:      '#ctl00_MainContent_ddlpmtFactor',   // 108.00=36mo, 120.00=48mo, 220.00=60mo
-  opt1:'#ctl00_MainContent_ddlOptions1', opt1qty:'#ctl00_MainContent_txtOptions1Qty', opt1price:'#ctl00_MainContent_txtOptions1Price',
-  opt2:'#ctl00_MainContent_ddlOptions2', opt2qty:'#ctl00_MainContent_txtOptions2Qty', opt2price:'#ctl00_MainContent_txtOptions2Price',
-  opt3:'#ctl00_MainContent_ddlOptions3', opt3qty:'#ctl00_MainContent_txtOptions3Qty', opt3price:'#ctl00_MainContent_txtOptions3Price',
-  opt4:'#ctl00_MainContent_ddlOptions4', opt4qty:'#ctl00_MainContent_txtOptions4Qty', opt4price:'#ctl00_MainContent_txtOptions4Price',
-  opt5:'#ctl00_MainContent_ddlOptions5', opt5qty:'#ctl00_MainContent_txtOptions5Qty', opt5price:'#ctl00_MainContent_txtOptions5Price',
-  opt6:'#ctl00_MainContent_ddlOptions6', opt6qty:'#ctl00_MainContent_txtOptions6Qty', opt6price:'#ctl00_MainContent_txtOptions6Price',
-  opt7:'#ctl00_MainContent_ddlOptions7', opt8:'#ctl00_MainContent_ddlOptions8',
-  employer:          '#ctl00_MainContent_txtEmployer',
-  employerAddress:   '#ctl00_MainContent_txtEmployerAddress',
-  employerCity:      '#ctl00_MainContent_txtEmployerCity',
-  employerState:     '#ctl00_MainContent_ddlEmployerState',
-  employerZip:       '#ctl00_MainContent_txtEmployerZip',
-  employerPhone:     '#ctl00_MainContent_txtEmployerPhone',
-  ref1Name:          '#ctl00_MainContent_txtRef1',
-  ref1Phone:         '#ctl00_MainContent_txtRef1Phone',
-  ref2Name:          '#ctl00_MainContent_txtRef2',
-  ref2Phone:         '#ctl00_MainContent_txtRef2Phone'
-};
-var CB_BOOKMARKLET_KEY = 'cb_pending_payload';
-var CB_STYLE_TO_RTO = {
-  UUTX:'UTIL', USUTX:'SUTIL', UC:'CAB', UCC:'DCAB', USC:'CNTRCAB', UPC:'PCAB',
-  UG:'GARG', UPGS:'PGARD', UPCS:'PCTG', ULB:'LBAR', USLB:'SLBAR', ULBC:'LBCAB',
-  UCLBC:'CLBCAB', USLBC:'SLBCAB', UPLBC:'PLBCAB', ULG:'LBGARG'
-};
-var CB_RTO_TERM_TO_FACTOR = {'36 months':'108.00','48 months':'120.00','60 months':'220.00'};
+var CB_PASTEBOARD_KEY = 'cb_paste_board_v1';
 var CB_MANUAL_GUIDE_FIELDS = [
   {key:'ssn',label:'SSN (full)',when:'rto'},
   {key:'dob',label:'Date of Birth',when:'rto'},
@@ -30912,13 +30849,21 @@ var CB_MANUAL_GUIDE_FIELDS = [
   {key:'dlExp',label:'DL Expiration',when:'rto'}
 ];
 
-function cbFieldMap(){
-  return (cbState.type === 'rto') ? RTOSTREAMLINE_FIELD_MAP_RTO : RTOSTREAMLINE_FIELD_MAP_CASH;
-}
-
-
 var CB_NEEDS_INV={'On Lot New':true,'On Lot Used':true};
-var CB_ORDER_TO_CONDITION={'Custom Shop Build':'CSB','Urban Structures':'USOSB','On Lot New':'OLN','On Lot Used':'OLU'};
+
+// Contract Bridge wizard navigation, driven by the global bottom nav bar.
+var CB_STEP_BACK={cbLink:'cbStart',cbOrder:'cbLink',cbBuilding:'cbOrder',cbMerge:'cbBuilding',cbType:'cbBuilding',cbGuide:'cbType',cbPasteBoard:'cbGuide'};
+var CB_STEP_PRIMARY={
+  cbStart:function(){ cbGo('cbLink'); },
+  cbLink:function(){ cbValidateLink(); },
+  cbOrder:function(){ cbValidateOrder(); },
+  cbBuilding:function(){ cbValidateBuilding(); },
+  cbMerge:function(){ cbMergeContinue(); },
+  cbType:function(){ cbValidateType(); },
+  cbGuide:function(){ cbCopyAllOpenPasteBoard(); },
+  cbPasteBoard:function(){ cbOpenRTOStreamline(); }
+};
+function cbIsWizardScreen(id){ return id==='cbStart'||CB_STEP_BACK.hasOwnProperty(id)||id==='cbPasteBoard'; }
 
 function cbGo(id){
   goTo(id);
@@ -30926,12 +30871,12 @@ function cbGo(id){
   if(id==='cbBuilding') cbInitBuildingScreen();
   if(id==='cbMerge') cbRenderMergeScreen();
   if(id==='cbGuide') cbRenderGuide();
+  if(id==='cbPasteBoard') cbRenderPasteBoard();
 }
 function cbInitNote(){
   var url=(typeof loadSettings==='function'&&loadSettings().rtostreamlineUrl)||'(not set — add in Settings → Links & Cloud)';
   var el=document.getElementById('cbCfgUrl');
   if(el) el.textContent=url;
-  try{ cbRefreshBookmarkletInstallUI(); }catch(_eBm){}
 }
 function cbRenderSteps(){
   for(var i=0;i<=5;i++){
@@ -31073,16 +31018,37 @@ function cbSetBuildingSource(src){
   } else {
     if(invWrap) invWrap.style.display='none';
     if(calcWrap) calcWrap.style.display='block';
-    cb_resetCalcState();
-    cbSetVal('cb_calcTypeSelect','');
-    cbSetVal('cb_calcWidth','');
-    cbSetVal('cb_calcLength','');
-    var ls=document.getElementById('cb_calcLength');
-    if(ls) ls.innerHTML='<option value="">Length</option>';
-    cb_updateQuickPrice();
-    cb_renderOptsSummary();
-    cb_updateAddOptionBtnState();
+    cb_syncBuildingUIFromState();
   }
+}
+// Re-sync every visible control on the manual build calculator to match cbCalcState.
+// Guarantees no stale/pre-filled fields that the calculator doesn't recognize.
+function cb_syncBuildingUIFromState(){
+  var t=cbCalcState.type||'';
+  cbSetVal('cb_calcTypeSelect',t);
+  try{ cb_syncCalcTypeTrigger(t||null); }catch(_eT){}
+  var w=cbCalcState.width, l=cbCalcState.length;
+  var wsel=document.getElementById('cb_calcWidth');
+  if(wsel) wsel.value=w?String(w):'';
+  cbCalcState.length=l;
+  try{ cb_onCalcWidthChange(w?String(w):''); }catch(_eW){}
+  var lsel=document.getElementById('cb_calcLength');
+  if(lsel) lsel.value=cbCalcState.length?String(cbCalcState.length):'';
+  cbSetVal('cb_salePercent',(cbCalcState.saleActive&&cbCalcState.salePercent)?String(cbCalcState.salePercent):'');
+  cbSetVal('cb_dealerDiscount',(cbCalcState.quickDealerActive&&cbCalcState.dealerDiscount)?String(cbCalcState.dealerDiscount):'');
+  try{ cb_updateQuickPrice(); }catch(_eQ){}
+  try{ cb_renderOptsSummary(); }catch(_eR){}
+  try{ cb_updateAddOptionBtnState(); }catch(_eA){}
+}
+// Reset button on the build screen — wipe the manual calculator back to a blank slate.
+function cb_clearBuildingUI(){
+  cb_resetCalcState();
+  cb_syncBuildingUIFromState();
+  showToast('Calculator cleared');
+}
+// Start a brand-new contract from the home screen — always a clean slate.
+function cbStartNew(){
+  cbReset(true);
 }
 function cbFetchInventoryList(){
   return (invState.items||[]).filter(function(it){
@@ -31263,6 +31229,7 @@ function cbRenderMergeScreen(){
   }).join('');
   var btn=document.getElementById('cb_mergeContinueBtn');
   if(btn) btn.disabled=cbMergeWorking.length>8;
+  try{ updateAppBottomNav(); }catch(_eMN){}
 }
 function cbMergeToggle(idx,on){ if(cbMergeWorking&&cbMergeWorking[idx]) cbMergeWorking[idx].selected=!!on; }
 function cbMergeCombineSelected(){
@@ -31403,7 +31370,7 @@ function cbRenderGuide(){
       '<button class="sign-copy" onclick="cbFgCopyInput(\'sgn_employer\')">Copy</button></div>';
     sb.innerHTML='<div class="signing-box">'+
       '<div class="section-head" style="margin-top:0;">At Signing — Collect Manually</div>'+
-      '<div class="signing-note"><strong>Never stored.</strong> Wiped when you launch or finish.</div>'+
+      '<div class="signing-note"><strong>Never stored.</strong> Wiped when you finish &amp; clear the contract.</div>'+
       '<div class="sign-row"><div class="field-group"><label class="field-label">SSN</label><input type="text" id="sgn_ssn" inputmode="numeric" autocomplete="off" placeholder="XXX-XX-XXXX"></div><button class="sign-copy" onclick="cbFgCopyInput(\'sgn_ssn\')">Copy</button></div>'+
       '<div class="sign-row"><div class="field-group"><label class="field-label">Date of Birth</label><input type="date" id="sgn_dob" autocomplete="off"></div><button class="sign-copy" onclick="cbFgCopyInput(\'sgn_dob\')">Copy</button></div>'+
       '<div class="sign-row"><div class="field-group"><label class="field-label">Driver\'s License #</label><input type="text" id="sgn_dl" autocomplete="off" placeholder="DL number"></div><button class="sign-copy" onclick="cbFgCopyInput(\'sgn_dl\')">Copy</button></div>'+
@@ -31436,137 +31403,194 @@ function cbFgCopyInput(id){
   cbClipboard(v).then(function(){ showToast('Copied'); }).catch(function(){ showToast('Copy failed'); });
 }
 
-function cbBuildAutofillPayload(){
-  var c=cbState.customer||{}, b=cbState.building||{}, isRTO=(cbState.type==='rto'), p={}, meta=cbGatherBuildingMeta();
-  p.name=c.name||''; p.address=c.street||''; p.city=c.city||''; p.state=(c.state||'').toUpperCase(); p.zip=c.zip||'';
-  p.cellPhone=c.phone||''; p.homePhone=c.homePhone||''; p.workPhone=c.workPhone||''; p.email=c.email||'';
-  p.deliveryAddress=c.delStreet||c.street||''; p.deliveryCity=c.delCity||c.city||'';
-  p.deliveryState=(c.delState||c.state||'').toUpperCase(); p.deliveryZip=c.delZip||c.zip||'';
-  p.directions=meta.directions||'';
-  p.buildingCondition=CB_ORDER_TO_CONDITION[cbState.order]||'';
-  p.inventoryNum=cbState.inventory||'';
-  p.buildingStyle=CB_STYLE_TO_RTO[b.styleCode]||b.styleCode||'';
-  p.sidingType=meta.sidingType||'';
-  p.sidingUpperColor=meta.sidingUpperColor||'';
-  p.sidingLowerColor=meta.sidingLowerColor||meta.sidingUpperColor||'';
-  p.roofColor=meta.roofColor||'';
-  p.trimColor=meta.trimColor||'';
-  p.width=b.width?String(b.width):''; p.length=b.length?String(b.length):'';
-  p.salesPrice=(b.price!=null&&b.price!=='')?String(b.price):'';
-  var opts=b.mergedOptions||b.options||[];
-  for(var i=0;i<8;i++){
-    var line=opts[i], n=i+1;
-    if(!line||!line.name){ if(n>=7) p['opt'+n]=''; continue; }
-    p['opt'+n]=line.name||'';
-    if(n<=6){
-      p['opt'+n+'qty']=line.qty!=null&&line.qty!==''?String(line.qty):'';
-      p['opt'+n+'price']=line.unitPrice!=null&&line.unitPrice!==''?String(line.unitPrice):'';
-    }
-  }
+function cbPbField(label,value){
+  return {label:label, value:(value==null?'':String(value).trim())};
+}
+function cbPbAddGroup(groups,name,pairs){
+  var fields=[];
+  (pairs||[]).forEach(function(p){
+    if(!p) return;
+    fields.push(cbPbField(p.label,p.value));
+  });
+  if(fields.length) groups.push({name:name, fields:fields});
+}
+function cbGetSigningPasteFields(){
+  var defs=[
+    {id:'sgn_ssn',label:'SSN'},
+    {id:'sgn_dob',label:'Date of Birth'},
+    {id:'sgn_dl',label:'Driver\'s License #'},
+    {id:'sgn_dlstate',label:'DL State'},
+    {id:'sgn_dlissue',label:'DL Issue Date'},
+    {id:'sgn_dlexp',label:'DL Expiration'},
+    {id:'sgn_employer',label:'Employer (if changed)'}
+  ];
+  var out=[];
+  defs.forEach(function(d){
+    var el=document.getElementById(d.id);
+    var v=el?String(el.value||'').trim():'';
+    if(v) out.push(cbPbField(d.label,v));
+  });
+  return out;
+}
+function cbBuildPasteBoardData(){
+  var c=cbState.customer||{}, b=cbState.building||{}, isRTO=(cbState.type==='rto'), groups=[], meta=cbGatherBuildingMeta();
+  cbPbAddGroup(groups,'Customer',[
+    {label:'Full Legal Name',value:c.name},
+    {label:'Phone',value:c.phone},
+    {label:'Email',value:c.email},
+    {label:'Street Address',value:c.street},
+    {label:'City',value:c.city},
+    {label:'State',value:c.state},
+    {label:'ZIP',value:c.zip}
+  ]);
+  var orderPairs=[
+    {label:'Order Type',value:cbState.order},
+    {label:'Inventory #',value:cbState.inventory},
+    {label:'Building Type',value:b.styleName||b.styleCode},
+    {label:'Size',value:(b.width&&b.length)?(b.width+"' x "+b.length+"'"):''},
+    {label:'Sales Price',value:(b.price!==''&&b.price!=null)?((typeof fmt==='function')?fmt(b.price):('$'+b.price)):''}
+  ];
+  var merged=b.mergedOptions||b.options||[];
+  merged.forEach(function(line,idx){
+    if(!line||!line.name) return;
+    var n=idx+1;
+    var detail=line.name+(line.qty?(' · qty '+line.qty):'')+(line.total!=null&&line.total!==''?(' · '+(typeof fmt==='function'?fmt(line.total):line.total)):'' );
+    orderPairs.push({label:'Option '+n,value:detail});
+  });
+  cbPbAddGroup(groups,'Order & Building',orderPairs);
+  var bldPairs=[];
+  if(meta.sidingType) bldPairs.push({label:'Siding Type',value:meta.sidingType==='MTL'?'Metal':(meta.sidingType==='TTUR'?'Two Tone Urethane':'Urethane')});
+  if(meta.roofColor) bldPairs.push({label:'Roof Color',value:meta.roofColor});
+  if(meta.sidingUpperColor) bldPairs.push({label:'Siding Upper Color',value:meta.sidingUpperColor});
+  if(meta.sidingLowerColor&&meta.sidingLowerColor!==meta.sidingUpperColor) bldPairs.push({label:'Siding Lower Color',value:meta.sidingLowerColor});
+  if(meta.trimColor) bldPairs.push({label:'Trim Color',value:meta.trimColor});
+  if(meta.directions) bldPairs.push({label:'Directions / Site Notes',value:meta.directions});
+  if(isRTO&&meta.purchaseTerm) bldPairs.push({label:'RTO Term',value:meta.purchaseTerm});
+  cbPbAddGroup(groups,'Building Details',bldPairs);
   if(isRTO){
-    p.deliveryName=c.name||'';
-    p.ownRent=(c.rentOwn==='Rent')?'Rent':'Own';
-    if(c.rentOwn==='Rent'){ p.landlord=c.llName||''; p.llPhone=c.llPhone||'';
-      p.llAddress=c.llStreet||''; p.llCity=c.llCity||''; p.llState=(c.llState||'').toUpperCase(); p.llZip=c.llZip||''; }
-    if(!c.selfEmployed){ p.employer=c.employer||''; p.employerAddress=c.empStreet||'';
-      p.employerCity=c.empCity||''; p.employerState=(c.empState||'').toUpperCase();
-      p.employerZip=c.empZip||''; p.employerPhone=c.empPhone||''; }
-    p.ref1Name=c.ref1Name||''; p.ref1Phone=c.ref1Phone||'';
-    p.ref2Name=c.ref2Name||''; p.ref2Phone=c.ref2Phone||'';
-    p.purchaseType=CB_RTO_TERM_TO_FACTOR[meta.purchaseTerm]||'';
+    cbPbAddGroup(groups,'Delivery & Billing',[
+      {label:'Delivery Address',value:[c.delStreet,c.delCity,c.delState,c.delZip].filter(Boolean).join(', ')},
+      {label:'Billing Address',value:[c.billStreet,c.billCity,c.billState,c.billZip].filter(Boolean).join(', ')}
+    ]);
+    if(c.rentOwn==='Rent'||c.llName||c.llPhone){
+      cbPbAddGroup(groups,'Landlord',[
+        {label:'Landlord Name',value:c.llName},
+        {label:'Landlord Phone',value:c.llPhone},
+        {label:'Landlord Email',value:c.llEmail},
+        {label:'Landlord Address',value:[c.llStreet,c.llCity,c.llState,c.llZip].filter(Boolean).join(', ')}
+      ]);
+    }
+    cbPbAddGroup(groups,'Employment',c.selfEmployed?[
+      {label:'Employment Status',value:'Self-Employed / Retired'}
+    ]:[
+      {label:'Employer Name',value:c.employer},
+      {label:'Employer Phone',value:c.empPhone},
+      {label:'Employer Address',value:[c.empStreet,c.empCity,c.empState,c.empZip].filter(Boolean).join(', ')}
+    ]);
+    cbPbAddGroup(groups,'References',[
+      {label:'Reference 1 — Name',value:c.ref1Name},
+      {label:'Reference 1 — Phone',value:c.ref1Phone},
+      {label:'Reference 2 — Name',value:c.ref2Name},
+      {label:'Reference 2 — Phone',value:c.ref2Phone}
+    ]);
   }
-  return p;
+  var signing=cbGetSigningPasteFields();
+  if(signing.length) groups.push({name:'At Signing', fields:signing});
+  return {title:((isRTO?'RTO':'Cash')+' Paste Board'), isRTO:isRTO, groups:groups};
 }
-function cbBuildLaunchBundle(){
-  var s=(typeof loadSettings==='function')?loadSettings():{};
-  return {
-    map:(cbState.type==='rto')?'rto':'cash',
-    data:cbBuildAutofillPayload(),
-    username:s.rtostreamlineUsername||'',
-    password:s.rtostreamlinePassword||''
-  };
+function cbPasteBoardPlainText(data){
+  var lines=[];
+  (data.groups||[]).forEach(function(g){
+    lines.push('--- '+g.name+' ---');
+    (g.fields||[]).forEach(function(f){
+      if(f.value) lines.push(f.label+': '+f.value);
+    });
+    lines.push('');
+  });
+  return lines.join('\n').trim();
 }
-function cbBookmarkletInnerSource(){
-  var maps={cash:RTOSTREAMLINE_FIELD_MAP_CASH,rto:RTOSTREAMLINE_FIELD_MAP_RTO};
-  return "(function(){var K='cb_pending_payload',M="+JSON.stringify(maps)+";"+
-    "function T(m){alert('SellSheds: '+m);}"+
-    "function pg(){var p=location.pathname.toLowerCase(),h=location.href.toLowerCase();"+
-    "if(p.indexOf('shedsrtocashsale')>=0||h.indexOf('showcash=true')>=0)return 'cashForm';"+
-    "if(document.querySelector('#ctl00_MainContent_txtSaShName'))return 'rtoForm';"+
-    "if(document.querySelector('#ctl00_MainContent_btnAddaContracts'))return 'dashboard';"+
-    "if(document.querySelector('input[type=password]')&&!document.querySelector('#ctl00_MainContent_txtxName,#ctl00_MainContent_txtSaShName'))return 'login';"+
-    "return 'unknown';}"+
-    "function sv(el,v){if(!el||v==null||v==='')return false;"+
-    "if(el.tagName==='SELECT'){var ok=false,i,j,lv=String(v).toLowerCase();"+
-    "for(i=0;i<el.options.length;i++){if(el.options[i].value===String(v)){el.selectedIndex=i;ok=true;break;}}"+
-    "if(!ok){for(j=0;j<el.options.length;j++){var ot=(el.options[j].text||'').toLowerCase();"+
-    "if(ot===lv||ot.indexOf(lv)>=0||lv.indexOf(ot)>=0){el.selectedIndex=j;ok=true;break;}}}"+
-    "if(!ok)return false;el.dispatchEvent(new Event('change',{bubbles:true}));return true;}"+
-    "el.value=String(v);el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}));return true;}"+
-    "function ld(cb){var raw=localStorage.getItem(K);if(raw){try{cb(JSON.parse(raw));return;}catch(e){}}"+
-    "if(navigator.clipboard&&navigator.clipboard.readText){navigator.clipboard.readText().then(function(t){"+
-    "try{var b=JSON.parse(t);localStorage.setItem(K,t);cb(b);}catch(e2){pr(cb);}}).catch(function(){pr(cb);});}"+
-    "else pr(cb);}"+
-    "function pr(cb){var t=prompt('Paste the SellSheds contract payload (JSON copied when you tapped Launch):');"+
-    "if(!t){T('Cancelled');return;}try{var b=JSON.parse(t);localStorage.setItem(K,t);cb(b);}catch(e){T('Invalid payload');}}"+
-    "function lg(b){var u=b.username||'',pw=b.password||'';if(!u||!pw){T('No credentials — log in manually, then click bookmarklet again');return;}"+
-    "var pwi=document.querySelector('input[type=password]');if(!pwi){T('No login form found');return;}"+
-    "var usr=pwi.form&&pwi.form.querySelector('input[type=text],input[type=email]');"+
-    "if(!usr){var ins=document.querySelectorAll('input');for(var i=0;i<ins.length;i++){var tp=(ins[i].type||'text').toLowerCase();"+
-    "if(tp!=='password'&&tp!=='hidden'&&tp!=='submit'&&tp!=='button'&&tp!=='checkbox'&&tp!=='radio'){usr=ins[i];break;}}}"+
-    "if(usr)usr.value=u;pwi.value=pw;var btn=pwi.form&&(pwi.form.querySelector('input[type=submit],button[type=submit],button.btn-primary,button.btn'));"+
-    "if(btn)btn.click();else if(pwi.form)pwi.form.submit();T('Logging in… click bookmarklet again on the next page');}"+
-    "function db(b){if(!document.querySelector('#ctl00_MainContent_btnAddaContracts')){"+
-    "location.href='/ShedsRTO/ShedsRTODashboard.aspx';T('Opening Contracts Dashboard… click bookmarklet again');return;}"+
-    "var id=(b.map==='cash')?'ctl00_MainContent_btnSellAsCash':'ctl00_MainContent_btnAddaContracts';"+
-    "var btn=document.getElementById(id);if(btn){btn.click();T('Opening contract form… click bookmarklet again to fill');}"+
-    "else T('Contract button not found');}"+
-    "function fl(b){var fk=b.map||'cash',fm=M[fk]||M.cash,d=b.data||{},n=0,sk=[],tr=0,k,el;"+
-    "for(k in fm){if(!fm.hasOwnProperty(k))continue;var v=d[k];if(v==null||v==='')continue;el=document.querySelector(fm[k]);"+
-    "if(!el){sk.push(k+' (missing)');continue;}tr++;if(sv(el,v))n++;else sk.push(k);}"+
-    "var msg='Filled '+n+' of '+tr+' fields.';if(sk.length)msg+=' Skipped: '+sk.slice(0,8).join(', ')+(sk.length>8?'…':'')+'. Enter those manually.';"+
-    "localStorage.removeItem(K);T(msg);}"+
-    "ld(function(b){if(!b||!b.map){T('Invalid payload');return;}var t=pg();"+
-    "if(t==='login')lg(b);else if(t==='dashboard')db(b);else if(t==='cashForm'||t==='rtoForm')fl(b);"+
-    "else if(location.hostname.indexOf('rtostreamline')>=0){location.href='/ShedsRTO/ShedsRTODashboard.aspx';T('Going to dashboard… click bookmarklet again');}"+
-    "else T('Open RTOStreamline first, then click this bookmarklet');});})();";
+function cbPasteBoardFieldCount(data){
+  var n=0;
+  (data.groups||[]).forEach(function(g){
+    (g.fields||[]).forEach(function(f){ if(f.value) n++; });
+  });
+  return n;
 }
-function cbBookmarkletHref(){
-  return 'javascript:'+encodeURIComponent(cbBookmarkletInnerSource());
+function cbSavePasteBoardData(data){
+  cbState._pasteBoard=data;
+  try{ sessionStorage.setItem(CB_PASTEBOARD_KEY,JSON.stringify(data)); }catch(_e){}
 }
-function cbRefreshBookmarkletInstallUI(){
-  var href=cbBookmarkletHref();
-  var html='<div style="font-size:0.78rem;font-weight:700;color:var(--wheat);margin-bottom:6px;">RTOStreamline Autofill Bookmarklet</div>'+
-    '<div class="cb-bm-steps">One-time install: drag the link below to your bookmarks bar (desktop), or tap <strong>Copy bookmarklet code</strong> and paste it as a bookmark URL (mobile).</div>'+
-    '<a class="cb-bm-link" id="cbBmDragLink" href="#">&#128278; RTOStreamline Autofill</a><br>'+
-    '<button type="button" class="btn-secondary" style="margin-top:8px;" onclick="cbCopyBookmarkletCode()">Copy bookmarklet code</button>'+
-    '<div class="cb-bm-steps"><strong>After Launch:</strong> click the bookmarklet on each RTOStreamline page — login &rarr; dashboard &rarr; contract form. If clipboard paste is blocked, the bookmarklet will prompt you to paste the JSON payload.</div>';
-  ['cbBmInstallSettings','cbBmInstallStart'].forEach(function(id){
-    var el=document.getElementById(id);
-    if(!el) return;
-    el.innerHTML=html;
-    var link=el.querySelector('#cbBmDragLink');
-    if(link) link.setAttribute('href',href);
+function cbLoadPasteBoardData(){
+  if(cbState._pasteBoard) return cbState._pasteBoard;
+  try{
+    var raw=sessionStorage.getItem(CB_PASTEBOARD_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(_e2){}
+  return cbBuildPasteBoardData();
+}
+function cbCopyAllOpenPasteBoard(){
+  var data=cbBuildPasteBoardData();
+  var count=cbPasteBoardFieldCount(data);
+  if(!count){ showToast('No field values to copy'); return; }
+  cbSavePasteBoardData(data);
+  var plain=cbPasteBoardPlainText(data);
+  cbClipboard(plain).then(function(){
+    showToast('All '+count+' fields copied — open Paste Board to paste into RTOStreamline');
+    cbGo('cbPasteBoard');
+  }).catch(function(){
+    showToast('Paste Board ready — tap each field to copy');
+    cbGo('cbPasteBoard');
   });
 }
-function cbCopyBookmarkletCode(){
-  var code=cbBookmarkletHref();
-  cbClipboard(code).then(function(){ showToast('Bookmarklet code copied — paste as bookmark URL'); })
-    .catch(function(){ prompt('Copy this bookmark URL:',code); });
+var _cbPbFilter='';
+function cbFilterPasteBoard(q){
+  _cbPbFilter=String(q||'').trim().toLowerCase();
+  cbRenderPasteBoard();
 }
-function cbLaunch(){
+function cbPbCopyRow(row){
+  if(!row||row.classList.contains('empty')) return;
+  var v=row.getAttribute('data-copy')||'';
+  if(!v){ showToast('Nothing to copy for this field'); return; }
+  cbClipboard(v).then(function(){
+    row.classList.add('copied');
+    var label=row.getAttribute('data-label')||'Field';
+    showToast('Copied — '+label);
+    setTimeout(function(){ row.classList.remove('copied'); },1400);
+  }).catch(function(){ showToast('Copy failed — long-press the value to select'); });
+}
+function cbRenderPasteBoard(){
+  var data=cbLoadPasteBoardData();
+  var titleEl=document.getElementById('cb_pbTitle');
+  if(titleEl) titleEl.textContent=data.title||'Paste Board';
+  var count=cbPasteBoardFieldCount(data);
+  var cntEl=document.getElementById('cb_pbCount');
+  if(cntEl) cntEl.textContent=count+' field'+(count===1?'':'s')+' ready to paste';
+  var host=document.getElementById('cb_pbList');
+  if(!host) return;
+  var html='', shown=0, q=_cbPbFilter;
+  (data.groups||[]).forEach(function(g){
+    var rows='';
+    (g.fields||[]).forEach(function(f){
+      var hay=(f.label+' '+f.value).toLowerCase();
+      if(q&&hay.indexOf(q)<0) return;
+      shown++;
+      var has=!!f.value;
+      rows+='<div class="pb-row'+(has?'':' empty')+'" data-copy="'+cbFgAttr(f.value)+'" data-label="'+cbFgAttr(f.label)+'"'+(has?' onclick="cbPbCopyRow(this)"':'')+'>'+
+        '<div class="pb-rl"><div class="pb-k">'+cbFgEsc(f.label)+'</div>'+
+        '<div class="pb-v'+(has?'':' empty')+'">'+(has?cbFgEsc(f.value):'— not on file —')+'</div></div>'+
+        '<div class="pb-copy">'+(has?'Copy':'—')+'</div></div>';
+    });
+    if(rows) html+='<div class="pb-group"><div class="pb-grouphead">'+cbFgEsc(g.name)+'</div>'+rows+'</div>';
+  });
+  if(!html) html='<div class="pb-hint">No fields match your search.</div>';
+  host.innerHTML=html;
+  if(cntEl&&q) cntEl.textContent=shown+' matching field'+(shown===1?'':'s');
+}
+function cbOpenRTOStreamline(){
   var url=(typeof loadSettings==='function'&&loadSettings().rtostreamlineUrl)||'';
   if(!url){ showToast('Set RTOStreamline URL in Settings → Links & Cloud'); return; }
-  var bundle=cbBuildLaunchBundle();
-  var json=JSON.stringify(bundle);
-  try{ localStorage.setItem(CB_BOOKMARKLET_KEY,json); }catch(e){}
-  cbClipboard(json).then(function(){
-    showToast('Payload copied — open RTOStreamline and click your Autofill bookmarklet on each page (login, dashboard, contract form)');
-  }).catch(function(){
-    showToast('Open RTOStreamline and click your Autofill bookmarklet — paste payload if prompted');
-  });
-  cbWipeSigning();
   window.open(url,'rtostreamline');
+  showToast('RTOStreamline opened in a new tab');
 }
 function cbWipeSigning(){
   ['sgn_ssn','sgn_dob','sgn_dl','sgn_dlstate','sgn_dlissue','sgn_dlexp','sgn_employer'].forEach(function(id){
@@ -31577,6 +31601,8 @@ function cbReset(silent){
   cbWipeSigning();
   cbState={order:null,inventory:'',type:null,customer:null,building:null,_pending:null};
   cbMergeWorking=null;
+  _cbPbFilter='';
+  try{ sessionStorage.removeItem(CB_PASTEBOARD_KEY); }catch(_ePb){}
   cb_resetCalcState();
   ['cb_searchPhone','cb_searchName','cb_name','cb_phone','cb_email','cb_street','cb_city','cb_state','cb_zip','cb_inventory','cb_salePercent','cb_dealerDiscount']
     .forEach(function(id){ cbSetVal(id,''); });
