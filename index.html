@@ -1171,20 +1171,30 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
   margin-top:6px; font-size:0.68rem; line-height:1.4; color:rgba(255,255,255,0.38); max-width:220px;
 }
 #quickPriceWrap.is-empty {
-  display:flex !important; flex-direction:column; justify-content:center; align-items:stretch;
+  display:flex !important; flex-direction:row; align-items:stretch;
   box-sizing:border-box; min-height:0; align-self:stretch !important; height:100%;
-  padding:14px 16px;
+  padding:0;
 }
 #quickPriceWrap.is-empty .quick-price-empty {
   display:flex; flex-direction:column; align-items:center; justify-content:center;
-  text-align:center; flex:0 0 auto; width:100%;
-  min-height:0; padding:18px 14px; margin:0;
+  text-align:center; flex:1; min-width:0;
+  min-height:0; padding:18px 14px; margin:14px 14px 14px 0;
   border-radius:8px;
   background:rgba(255,255,255,0.04);
   border:1.5px dashed rgba(232,200,122,0.22);
 }
-#quickPriceWrap.is-empty .quick-price-active,
-#quickPriceWrap.is-empty .calc-price-panel-active { display:none; }
+#quickPriceWrap.is-empty .calc-price-panel-active {
+  display:flex; flex-direction:row; flex:0 0 auto; order:-1; min-height:0;
+}
+#quickPriceWrap.is-empty .calc-price-content {
+  display:flex; flex-direction:row; align-items:stretch;
+}
+#quickPriceWrap.is-empty .calc-rev-tab-col { align-self:stretch; }
+#quickPriceWrap.is-empty .calc-price-hero-slide,
+#quickPriceWrap.is-empty .calc-price-vdivider,
+#quickPriceWrap.is-empty .quick-price-controls,
+#quickPriceWrap.is-empty .calc-details-area { display:none !important; }
+#quickPriceWrap.is-empty .quick-price-active { display:none; }
 #calcPriceDeck {
   --calc-panel-bg: #251a15;
   display:none; overflow:visible; margin:12px 0 4px; border-radius:10px; position:relative;
@@ -1272,16 +1282,25 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
 .rto-setting-field .qpv-settings-label { font-size:0.6rem; letter-spacing:1px; color:rgba(232,200,122,0.7); text-transform:uppercase; display:flex; align-items:center; gap:5px; }
 .rto-setting-select,
 .calc-dark-select,
-#screenCalc .gss-list-wrap:has(#calcWidth) .gss-list-trigger,
-#screenCalc .gss-list-wrap:has(#calcLength) .gss-list-trigger,
 #screenCalc .gss-list-wrap:has(#assuranceSelect) .gss-list-trigger,
-#screenSalesSheet .gss-list-wrap:has(#ss_width) .gss-list-trigger,
-#screenSalesSheet .gss-list-wrap:has(#ss_length) .gss-list-trigger,
 #screenSalesSheet .gss-list-wrap:has(#ss_sheetLotContact) .gss-list-trigger,
 .qp-pill-fill select {
   -webkit-appearance:none; appearance:none; width:100%; box-sizing:border-box;
   background:rgba(255,255,255,0.08); border:1.5px solid rgba(232,200,122,0.25);
   color:var(--cream); border-radius:7px; padding:7px 8px; font-size:0.78rem;
+}
+/* Width/length dimension selectors — match Cash/RTO tab height */
+#screenCalc .gss-list-wrap:has(#calcWidth) .gss-list-trigger,
+#screenCalc .gss-list-wrap:has(#calcLength) .gss-list-trigger,
+#screenSalesSheet .gss-list-wrap:has(#ss_width) .gss-list-trigger,
+#screenSalesSheet .gss-list-wrap:has(#ss_length) .gss-list-trigger,
+#screenAd .gss-list-wrap:has(#adWidth) .gss-list-trigger,
+#screenAd .gss-list-wrap:has(#adLength) .gss-list-trigger {
+  -webkit-appearance:none; appearance:none; width:100%; box-sizing:border-box;
+  display:flex; align-items:center;
+  background:rgba(255,255,255,0.08); border:1.5px solid rgba(232,200,122,0.25);
+  color:var(--cream); border-radius:8px;
+  padding:9px 12px; font-size:0.78rem; min-height:36px;
 }
 .rto-setting-select option,
 .calc-dark-select option,
@@ -1441,10 +1460,22 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
 .gss-list-trigger--compact::after { display:none; }
 #screenCalc .gss-list-wrap .gss-list-trigger:not(.is-placeholder) { border-color:rgba(232,200,122,0.35); }
 #revCalcShell .gss-list-wrap .gss-list-trigger {
-  padding:8px 10px; font-size:0.9rem; background:rgba(255,255,255,0.1);
+  display:flex; align-items:center;
+  padding:9px 12px; font-size:0.78rem; min-height:36px; box-sizing:border-box;
+  background:#251a15; border:1.5px solid rgba(232,200,122,0.25);
+  border-radius:8px; color:var(--cream); font-weight:600;
+}
+#revCalcShell .gss-list-wrap .gss-list-trigger.is-placeholder {
+  color:rgba(245,240,232,0.7); font-weight:500;
+}
+#revCalcShell .gss-list-wrap .gss-list-trigger:focus,
+#revCalcShell .gss-list-wrap.is-open .gss-list-trigger {
+  border-color:var(--wheat);
+  box-shadow:0 0 0 3px rgba(232,200,122,0.12);
+  background:#251a15;
 }
 #revCalcShell .rev-filter-row .gss-list-wrap { flex:1; min-width:120px; }
-#revCalcShell .rev-inline-input .gss-list-wrap { flex:1; min-width:0; }
+#revCalcShell .qp-pill-fill .gss-list-wrap { flex:1; min-width:0; width:100%; }
 .gss-list-panel {
   display:none; margin-top:6px; border-radius:10px;
   border:1.5px solid rgba(232,200,122,0.28); background:rgba(0,0,0,0.22);
@@ -1595,24 +1626,48 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
 }
 #revCalcShell .rev-page-head {
   display:flex; flex-direction:column; align-items:center; justify-content:center;
-  padding:14px 16px 0; border-bottom:3px solid var(--barn);
+  padding:14px 16px 12px; border-bottom:3px solid var(--barn);
   background:#251a15; flex-shrink:0;
 }
 #revCalcShell .rev-page-title {
-  font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:1.2rem;
-  color:var(--wheat); letter-spacing:2px; text-align:center;
+  font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:1.35rem;
+  color:var(--wheat); letter-spacing:3px; text-align:center; line-height:1.05;
 }
 #revCalcShell .rev-page-body { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:16px 14px 80px; background:#251a15; }
 #revCalcShell.open .rev-page-body { padding-right:38px; }
-#revCalcShell .rev-entry-budget input { font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:2rem; letter-spacing:1px; padding:12px 14px; text-align:center; }
+#revCalcShell .field-label {
+  color:rgba(232,200,122,0.75); font-size:0.72rem; font-weight:600;
+  letter-spacing:2px; text-transform:uppercase;
+}
+#revCalcShell input[type="number"],
+#revCalcShell select {
+  background:#251a15; border:1.5px solid rgba(232,200,122,0.25);
+  border-radius:8px; color:var(--cream); box-sizing:border-box; width:100%;
+}
+#revCalcShell input[type="number"]:focus,
+#revCalcShell select:focus {
+  border-color:var(--wheat);
+  box-shadow:0 0 0 3px rgba(232,200,122,0.12); outline:none;
+}
+#revCalcShell .rev-entry-budget input {
+  font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:2rem;
+  letter-spacing:1px; padding:12px 14px; text-align:center;
+}
 #revCalcShell .rev-entry-row { display:flex; align-items:flex-end; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
 #revCalcShell .rev-entry-row .field-group { flex:1; min-width:100px; margin-bottom:0; }
-#revCalcShell .rev-sale-row,
-#revCalcShell .rev-tax-row { align-items:center; flex-wrap:nowrap; margin-bottom:10px; }
-#revCalcShell .rev-inline-input { display:none; flex:1; min-width:0; align-items:center; gap:8px; }
-#revCalcShell .rev-inline-input.visible { display:flex; }
-#revCalcShell .rev-inline-input select { flex:1; min-width:0; padding:8px 10px; font-size:0.9rem; border-radius:8px; border:1.5px solid rgba(232,200,122,0.25); background:rgba(255,255,255,0.1); color:var(--cream); }
-#revCalcShell .rev-inline-input input[type="number"] { width:76px; flex-shrink:0; margin-top:0; padding:8px 10px; font-size:0.9rem; border-radius:8px; border:1.5px solid rgba(232,200,122,0.25); background:rgba(255,255,255,0.1); color:var(--cream); }
+#revCalcShell .rev-pill-rows { margin-bottom:10px; }
+#revCalcShell .rev-pill-rows .qp-pill-row {
+  padding:7px 0; border-bottom:1px dotted rgba(232,200,122,0.32);
+}
+#revCalcShell .rev-pill-rows .qp-pill-row:last-child { border-bottom:none; padding-bottom:0; }
+#revCalcShell .rev-pill-rows .qp-pill-row:first-child { padding-top:0; }
+#revCalcShell #rev_salePct,
+#revCalcShell #rev_taxRate { display:none !important; }
+#revCalcShell .rev-action-btn {
+  width:100%; margin-top:4px; padding:12px;
+  font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;
+  font-size:1rem; letter-spacing:2px;
+}
 #revCalcShell .rev-refine-zone { display:none; border-top:1px solid rgba(232,200,122,0.15); padding-top:14px; margin-top:4px; }
 #revCalcShell .rev-refine-zone.visible { display:block; }
 #revCalcShell .rev-filter-row { display:flex; flex-wrap:wrap; gap:8px; align-items:stretch; margin-bottom:12px; }
@@ -3480,8 +3535,10 @@ select:focus {
 #screenSalesSheet .gss-list-wrap:has(#ss_width) .gss-list-trigger,
 #screenSalesSheet .gss-list-wrap:has(#ss_length) .gss-list-trigger {
   -webkit-appearance:none; appearance:none; width:100%; box-sizing:border-box;
+  display:flex; align-items:center;
   background:#251a15; border:1.5px solid rgba(232,200,122,0.25);
   border-radius:8px; color:var(--cream); font-weight:600;
+  padding:9px 12px; font-size:0.78rem; min-height:36px;
 }
 #screenSalesSheet .gss-list-wrap:has(#ss_width) .gss-list-trigger.is-placeholder,
 #screenSalesSheet .gss-list-wrap:has(#ss_length) .gss-list-trigger.is-placeholder {
@@ -3533,8 +3590,10 @@ select:focus {
 #screenAd .gss-list-wrap:has(#adWidth) .gss-list-trigger,
 #screenAd .gss-list-wrap:has(#adLength) .gss-list-trigger {
   -webkit-appearance:none; appearance:none; width:100%; box-sizing:border-box;
+  display:flex; align-items:center;
   background:#251a15; border:1.5px solid rgba(232,200,122,0.25);
   border-radius:8px; color:var(--cream); font-weight:600;
+  padding:9px 12px; font-size:0.78rem; min-height:36px;
 }
 #screenAd .gss-list-wrap:has(#adWidth) .gss-list-trigger.is-placeholder,
 #screenAd .gss-list-wrap:has(#adLength) .gss-list-trigger.is-placeholder {
@@ -4290,6 +4349,18 @@ select:focus {
 .cb-inv-item-title { font-weight:600; font-size:0.92rem; }
 .cb-inv-item-sub { font-size:0.75rem; color:rgba(245,240,232,0.55); margin-top:2px; }
 .cb-page-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:4px; flex-wrap:nowrap; }
+.cb-price-window { display:flex; align-items:stretch; gap:14px; text-align:left; }
+.cb-price-main { flex:1 1 auto; min-width:0; display:flex; flex-direction:column; justify-content:center; }
+.cb-price-controls { flex:0 0 150px; width:150px; display:flex; flex-direction:column; justify-content:center; gap:0; }
+.cb-price-controls .qp-pill-row { border-bottom-color:rgba(232,200,122,0.22); }
+.cb-price-controls .qp-pill-row:last-child { border-bottom:none; padding-bottom:0; }
+.cb-price-controls .qp-pill-row:first-child { padding-top:0; }
+.cb-price-controls .cb-sale-pct-custom { display:none !important; }
+.cb-price-controls .gss-list-native { display:none; }
+@media (max-width:380px){
+  .cb-price-window { flex-direction:column; gap:10px; }
+  .cb-price-controls { flex-basis:auto; width:100%; }
+}
 .cb-price-box { background:rgba(122,158,135,0.1); border:1.5px solid rgba(122,158,135,0.35); border-radius:12px;
   padding:16px; margin:16px 0; text-align:center; }
 .cb-price-box .label { font-size:0.7rem; letter-spacing:2px; text-transform:uppercase; color:rgba(245,240,232,0.6); margin-bottom:4px; }
@@ -6378,19 +6449,41 @@ select:focus {
         </div>
         <div id="cb_optsSummary" class="sel-opts-grid opts-summary-wrap"></div>
       </div>
-      <div class="cb-price-box">
-        <div class="label">Contract Sales Price</div>
-        <div class="amount zero" id="cb_quickSalePrice">&#8212;</div>
+      <div class="cb-price-box cb-price-window">
+        <div class="cb-price-main">
+          <div class="label">Contract Sales Price</div>
+          <div class="amount zero" id="cb_quickSalePrice">&#8212;</div>
+        </div>
+        <div class="cb-price-controls">
+          <div class="qp-pill-row">
+            <span class="qp-pill-label"><svg class="qp-pill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>SALE</span>
+            <button type="button" class="qp-pill" id="cb_quickSalePill" aria-pressed="false">
+              <span class="qp-pill-fill">
+                <select id="cb_quickSalePctSel" onchange="cb_onQuickSaleSelectChange(this)"></select>
+                <input type="number" id="cb_quickSalePct" class="cb-sale-pct-custom" min="0" max="100" step="0.1" placeholder="%">
+              </span>
+              <span class="qp-pill-ball" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div class="qp-pill-row">
+            <span class="qp-pill-label"><svg class="qp-pill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>DD</span>
+            <button type="button" class="qp-pill" id="cb_quickDealerPill" aria-pressed="false">
+              <span class="qp-pill-fill">
+                <select id="cb_quickDealer" onchange="cb_onQuickDealerChange(this)">
+                  <option value="0">None</option>
+                  <option value="1">1% off base</option>
+                  <option value="2">2% off base</option>
+                  <option value="3">3% off base</option>
+                  <option value="4">4% off base</option>
+                  <option value="5">5% off base</option>
+                </select>
+              </span>
+              <span class="qp-pill-ball" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
       </div>
       <div id="cb_priceBreakdown" style="font-size:0.78rem;line-height:1.55;color:var(--cream);margin-top:8px;"></div>
-      <div class="row2" style="margin-top:10px;">
-        <div class="field-group"><label class="field-label">Sale % off list</label>
-          <input type="number" id="cb_salePercent" min="0" max="100" step="0.1" placeholder="0" oninput="cb_onSaleInput(this)">
-        </div>
-        <div class="field-group"><label class="field-label">Dealer discount %</label>
-          <input type="number" id="cb_dealerDiscount" min="0" max="5" step="1" placeholder="0" oninput="cb_onDealerInput(this)">
-        </div>
-      </div>
     </div>
 
   </div>
@@ -7659,11 +7752,26 @@ select:focus {
 <div class="screen settings-panel-screen" id="screenSettingsPricing">
 <div class="header">
     <button type="button" class="back-btn" onclick="goTo('screenSettings')">&#8592;</button>
+    <div class="header-title">PRICING &amp; STYLE</div>
+    <div class="header-spacer" aria-hidden="true"></div>
+  </div>
+  <div style="padding:16px;padding-bottom:100px;" class="settings-panel-body">
+    <p style="font-size:0.78rem;color:rgba(232,200,122,0.55);margin:0 0 16px;line-height:1.45;">Open a section, make changes, then tap <strong>Save</strong> in the bar below to return here.</p>
+    <button type="button" class="settings-hub-nav" onclick="goTo('screenSettingsPricingCore')">PRICING</button>
+    <button type="button" class="settings-hub-nav" onclick="goTo('screenSettingsPricingBaseTable')">BASE PRICE TABLE</button>
+    <button type="button" class="settings-hub-nav" onclick="goTo('screenSettingsPricingOptions')">OPTIONS CATALOG</button>
+    <button type="button" class="settings-hub-nav" onclick="goTo('screenSettingsPricingRTO')">RTO MONTHLY DIVISORS</button>
+    <button type="button" class="settings-hub-nav" onclick="goTo('screenSettingsPricingStyle')">BUILDING STYLE &amp; PICKER</button>
+  </div>
+</div><!-- end screenSettingsPricing -->
+
+<div class="screen settings-panel-screen" id="screenSettingsPricingCore">
+<div class="header">
+    <button type="button" class="back-btn" onclick="goTo('screenSettingsPricing')">&#8592;</button>
     <div class="header-title">PRICING</div>
     <div class="header-spacer" aria-hidden="true"></div>
   </div>
   <div style="padding:16px;padding-bottom:100px;" class="settings-panel-body">
-<!-- Pricing -->
     <div class="settings-section-title" style="margin:16px 0 10px;">Pricing</div>
     <div class="field-group"><label class="field-label">Metal Rate (per sq ft)</label><input type="number" id="set_metalRate" placeholder="e.g. 12"></div>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
@@ -7680,15 +7788,54 @@ select:focus {
     <div class="field-group"><label class="field-label">Metal Min (Cabin)</label><input type="number" id="set_metalMinCabin" placeholder="e.g. 500"></div>
     <div class="field-group"><label class="field-label">Metal Min (Utility)</label><input type="number" id="set_metalMinUtility" placeholder="e.g. 400"></div>
     <div class="field-group"><label class="field-label">Tax Rate %</label><input type="number" id="set_taxRate" placeholder="e.g. 6" step="0.01"></div>
+  </div>
+</div><!-- end screenSettingsPricingCore -->
 
-    <div class="settings-section-title" style="margin:18px 0 6px;">Options catalog</div>
-    <p class="opt-settings-note">Hidden options stay in this list — they are not removed. Use <strong>Show / Hide</strong> on each built-in row to control calculator menus. Custom options added with <strong>+ Add option</strong> can be deleted with <strong>✕</strong>. Price changes apply to calculators automatically. <strong>Non-RTO</strong> marks an option paid upfront (cost reduction) instead of financed in RTO.</p>
+<div class="screen settings-panel-screen" id="screenSettingsPricingBaseTable">
+<div class="header">
+    <button type="button" class="back-btn" onclick="goTo('screenSettingsPricing')">&#8592;</button>
+    <div class="header-title">BASE PRICE TABLE</div>
+    <div class="header-spacer" aria-hidden="true"></div>
+  </div>
+  <div style="padding:16px;padding-bottom:100px;" class="settings-panel-body">
+    <div class="settings-section-title" style="margin:16px 0 6px;">Base building prices</div>
+    <p style="font-size:0.76rem;color:rgba(232,200,122,0.55);margin-bottom:12px;line-height:1.45;">Download the current price grid as CSV, edit in Excel or Google Sheets, then upload. Only existing width, length, and style columns are accepted. Changes sync to cloud with your other settings.</p>
+    <div id="set_priceTableStatus" style="font-size:0.76rem;color:rgba(232,200,122,0.65);margin-bottom:12px;"></div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
+      <button type="button" onclick="downloadPriceTableCsv()" class="btn-secondary" style="font-size:0.8rem;padding:7px 14px;">Download CSV template</button>
+      <label class="btn-secondary" style="display:inline-block;cursor:pointer;font-size:0.8rem;padding:7px 14px;">
+        Upload CSV<input type="file" accept=".csv,text/csv" onchange="uploadPriceTableCsv(this)" style="display:none;">
+      </label>
+      <button type="button" onclick="restoreDefaultPriceTable()" class="btn-secondary" style="font-size:0.8rem;padding:7px 14px;">Restore default pricing</button>
+    </div>
+    <div id="set_priceTableUploadPreview" style="display:none;font-size:0.75rem;color:rgba(232,200,122,0.8);padding:10px;border:1px solid rgba(232,200,122,0.2);border-radius:8px;margin-bottom:12px;"></div>
+  </div>
+</div><!-- end screenSettingsPricingBaseTable -->
+
+<div class="screen settings-panel-screen" id="screenSettingsPricingOptions">
+<div class="header">
+    <button type="button" class="back-btn" onclick="goTo('screenSettingsPricing')">&#8592;</button>
+    <div class="header-title">OPTIONS CATALOG</div>
+    <div class="header-spacer" aria-hidden="true"></div>
+  </div>
+  <div style="padding:16px;padding-bottom:100px;" class="settings-panel-body">
+    <div class="settings-section-title" style="margin:16px 0 6px;">Options catalog</div>
+    <p class="opt-settings-note">Hidden options stay in this list — they are not removed. Use <strong>Show / Hide</strong> on each built-in row to control calculator menus. Custom options added with <strong>+ Add option</strong> can be deleted with <strong>✕</strong>. Price changes apply to calculators automatically. <strong>Non-RTO</strong> marks an option paid upfront (cost reduction) instead of financed in RTO. Use <strong>+ Add variant</strong> on any option for optional named price choices.</p>
     <div id="set_optionsCatalogList" class="opt-settings-catalog" style="margin-bottom:8px;"></div>
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;margin-bottom:16px;">
       <button type="button" onclick="addSettingsOptionRow()" class="btn-secondary" style="font-size:0.8rem;padding:7px 14px;">+ Add option</button>
       <button type="button" onclick="restoreDefaultOptionsCatalog()" class="btn-secondary" style="font-size:0.8rem;padding:7px 14px;">Restore defaults</button>
     </div>
+  </div>
+</div><!-- end screenSettingsPricingOptions -->
 
+<div class="screen settings-panel-screen" id="screenSettingsPricingRTO">
+<div class="header">
+    <button type="button" class="back-btn" onclick="goTo('screenSettingsPricing')">&#8592;</button>
+    <div class="header-title">RTO DIVISORS</div>
+    <div class="header-spacer" aria-hidden="true"></div>
+  </div>
+  <div style="padding:16px;padding-bottom:100px;" class="settings-panel-body">
     <div class="settings-section-title" style="margin:18px 0 6px;">RTO monthly divisors</div>
     <div style="font-size:0.76rem;color:rgba(232,200,122,0.55);margin-bottom:10px;line-height:1.45;">The calculator uses: <strong>pre‑tax monthly = RTO amount ÷ divisor</strong> for the selected term (36 / 48 / 60 mo), where <strong>RTO amount</strong> = building subtotal (with assurance if RTO) minus <strong>pre‑tax cost reduction</strong>. Tax is added on the payment. Down payments still follow the built‑in width table (RTO_DOWN). Defaults match the previous app: <strong>19.8 / 22.56 / 27</strong>.</div>
     <div class="row2">
@@ -7696,32 +7843,25 @@ select:focus {
       <div class="field-group"><label class="field-label">48‑mo divisor</label><input type="number" id="set_rtoMonthlyDiv48" step="0.01" min="0.01" placeholder="22.56"></div>
       <div class="field-group"><label class="field-label">60‑mo divisor</label><input type="number" id="set_rtoMonthlyDiv60" step="0.01" min="0.01" placeholder="27"></div>
     </div>
-
-    <div class="settings-section-title" style="margin:18px 0 6px;">Reverse calculator</div>
-    <div style="font-size:0.76rem;color:rgba(232,200,122,0.55);margin-bottom:10px;line-height:1.45;">Default over/under range for the reverse calculator. Users can adjust the range on the reverse calculator screen; these values are the starting defaults.</div>
-    <div class="row2">
-      <div class="field-group"><label class="field-label">Cash match range ±</label><input type="number" id="set_revCashRange" min="0" step="50" placeholder="500"></div>
-      <div class="field-group"><label class="field-label">RTO match range ± /mo</label><input type="number" id="set_revRtoRange" min="0" step="5" placeholder="20"></div>
-    </div>
-
-    <!-- Building style & picker reference (collapsed; saved separately from main settings) -->
-    <div class="settings-style-collapse" id="settingsStyleRefCollapse">
-      <button type="button" class="settings-style-collapse-btn" onclick="toggleSettingsStyleRefCollapse()" aria-expanded="false" id="settingsStyleRefCollapseBtn">
-        <span>Building style &amp; picker reference</span>
-        <span class="settings-style-collapse-chevron" id="settingsStyleRefChevron">▼</span>
-      </button>
-      <div class="settings-style-collapse-body" id="settingsStyleRefBody">
-        <table class="style-ref-table" id="settingsStyleRefTable"></table>
-        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;">
-          <button type="button" class="btn-secondary" style="flex:1;min-width:140px;padding:12px;" onclick="resetStyleDataToBaseline()">Restore defaults</button>
-        </div>
-        <div id="settingsStyleDataMsg" style="display:none;text-align:center;font-size:0.78rem;font-weight:600;margin-top:10px;padding:8px;"></div>
-      </div>
-    </div>
-
-    
   </div>
-</div><!-- end screenSettingsPricing -->
+</div><!-- end screenSettingsPricingRTO -->
+
+<div class="screen settings-panel-screen" id="screenSettingsPricingStyle">
+<div class="header">
+    <button type="button" class="back-btn" onclick="goTo('screenSettingsPricing')">&#8592;</button>
+    <div class="header-title">BUILDING STYLE</div>
+    <div class="header-spacer" aria-hidden="true"></div>
+  </div>
+  <div style="padding:16px;padding-bottom:100px;" class="settings-panel-body">
+    <div class="settings-section-title" style="margin:16px 0 6px;">Building style &amp; picker reference</div>
+    <p style="font-size:0.76rem;color:rgba(232,200,122,0.55);margin-bottom:10px;line-height:1.45;">Edit style names, images, and listing copy used in the style picker and ads.</p>
+    <table class="style-ref-table" id="settingsStyleRefTable"></table>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;">
+      <button type="button" class="btn-secondary" style="flex:1;min-width:140px;padding:12px;" onclick="resetStyleDataToBaseline()">Restore defaults</button>
+    </div>
+    <div id="settingsStyleDataMsg" style="display:none;text-align:center;font-size:0.78rem;font-weight:600;margin-top:10px;padding:8px;"></div>
+  </div>
+</div><!-- end screenSettingsPricingStyle -->
 
 <div class="screen settings-panel-screen" id="screenSettingsLinksCloud">
 <div class="header">
@@ -8347,29 +8487,31 @@ select:focus {
           <input type="number" id="rev_tolerance" min="0" step="50" placeholder="500" oninput="onRevToleranceInput()">
         </div>
       </div>
-      <div class="rev-entry-row rev-sale-row">
-        <div class="tog-wrap" onclick="toggleRevSale()">
-          <div class="tog-track" id="revSaleTrack"><div class="tog-thumb"></div></div>
-          <span class="tog-label">Sale %</span>
+      <div class="rev-pill-rows">
+        <div class="qp-pill-row rev-sale-row">
+          <span class="qp-pill-label"><svg class="qp-pill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>SALE</span>
+          <button type="button" class="qp-pill" id="revSalePill" aria-pressed="false">
+            <span class="qp-pill-fill" id="rev_saleInputWrap">
+              <select id="rev_salePctSel" onchange="onRevSaleSelectChange(this)"></select>
+              <input type="number" id="rev_salePct" min="0" max="100" step="0.1" placeholder="%" oninput="onRevSaleInput(this)">
+            </span>
+            <span class="qp-pill-ball" aria-hidden="true"></span>
+          </button>
         </div>
-        <div id="rev_saleInputWrap" class="rev-inline-input">
-          <select id="rev_salePctSel" onchange="onRevSaleSelectChange(this)"></select>
-          <input type="number" id="rev_salePct" min="0" max="100" step="0.1" placeholder="%" oninput="onRevSaleInput(this)">
+        <div class="qp-pill-row rev-tax-row">
+          <span class="qp-pill-label"><svg class="qp-pill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>TAX</span>
+          <button type="button" class="qp-pill" id="revTaxPill" aria-pressed="false">
+            <span class="qp-pill-fill" id="rev_taxInputWrap">
+              <select id="rev_taxPctSel" onchange="onRevTaxSelectChange(this)"></select>
+              <input type="number" id="rev_taxRate" min="0" step="0.01" placeholder="Custom %" oninput="onRevTaxRateInput(this)">
+            </span>
+            <span class="qp-pill-ball" aria-hidden="true"></span>
+          </button>
         </div>
       </div>
-      <div class="rev-entry-row rev-tax-row">
-        <div class="tog-wrap" onclick="toggleRevIncludeTax()">
-          <div class="tog-track" id="revTaxTrack"><div class="tog-thumb"></div></div>
-          <span class="tog-label">Include tax</span>
-        </div>
-        <div id="rev_taxInputWrap" class="rev-inline-input">
-          <select id="rev_taxPctSel" onchange="onRevTaxSelectChange(this)"></select>
-          <input type="number" id="rev_taxRate" min="0" step="0.01" placeholder="Custom %" oninput="onRevTaxRateInput(this)">
-        </div>
-      </div>
-      <button type="button" id="rev_addOptionBtn" class="btn-primary" style="margin-top:4px;padding:12px;width:100%;" disabled onclick="openRevOptionsSheet()">+ Add Option</button>
+      <button type="button" id="rev_addOptionBtn" class="btn-primary rev-action-btn" disabled onclick="openRevOptionsSheet()">+ Add Option</button>
       <p id="rev_addOptionHint" style="font-size:0.68rem;color:rgba(232,200,122,0.45);margin:4px 0 8px;line-height:1.35;">Show results first to add options.</p>
-      <button type="button" id="rev_showResultsBtn" class="btn-primary" style="margin-top:0;padding:12px;width:100%;" onclick="showReverseResults()" disabled>Show Results</button>
+      <button type="button" id="rev_showResultsBtn" class="btn-primary rev-action-btn" style="margin-top:0;" onclick="showReverseResults()" disabled>Show Results</button>
     </div>
 
     <div id="rev_refineZone" class="rev-refine-zone">
@@ -8619,8 +8761,9 @@ async function settingsSyncFromCloud(){
     var cloudSettings=snap.data()||{};
     if(cloudSettings.firebasePassword) delete cloudSettings.firebasePassword;
     var localSettings=loadSettings();
-    var merged=migrateSettingsAddresses(Object.assign({},cloudSettings,localSettings));
+    var merged=migrateSettingsAddresses(Object.assign({},localSettings,cloudSettings));
     saveSettings(merged);
+    try{ initPriceTableFromSettings(); }catch(_ePt){}
     return {ok:true,settings:merged};
   })().catch(function(err){
     if(err&&err.code==='permission-denied') return {ok:false,reason:'permission-denied'};
@@ -11878,7 +12021,9 @@ function applyHomeRtoNavLink(s){
 // ============================================================
 // SETTINGS FORM — LOAD / SAVE (hub + sub-panels)
 // ============================================================
-var SETTINGS_SAVE_SCREEN_IDS={screenSettingsBizLots:1,screenSettingsPricing:1,screenSettingsLinksCloud:1,screenSettingsComms:1,screenSettingsHomeQuick:1,screenSettingsLists:1};
+var SETTINGS_SAVE_SCREEN_IDS={screenSettingsBizLots:1,screenSettingsPricingCore:1,screenSettingsPricingBaseTable:1,screenSettingsPricingOptions:1,screenSettingsPricingRTO:1,screenSettingsPricingStyle:1,screenSettingsLinksCloud:1,screenSettingsComms:1,screenSettingsHomeQuick:1,screenSettingsLists:1};
+var SETTINGS_SAVE_PARENT_SCREEN={screenSettingsPricingCore:'screenSettingsPricing',screenSettingsPricingBaseTable:'screenSettingsPricing',screenSettingsPricingOptions:'screenSettingsPricing',screenSettingsPricingRTO:'screenSettingsPricing',screenSettingsPricingStyle:'screenSettingsPricing'};
+function settingsSaveReturnScreen(screenId){ return SETTINGS_SAVE_PARENT_SCREEN[screenId]||'screenSettings'; }
 function isSettingsSaveSubScreen(sid){ return !!SETTINGS_SAVE_SCREEN_IDS[sid]; }
 
 function settingsAfterLocalSave(s){
@@ -11892,6 +12037,7 @@ function settingsAfterLocalSave(s){
   updateShareLinks();
   initCalcAdvancedTools();
   try{ refreshOptionsCatalogUI(); }catch(_eCat){}
+  try{ initPriceTableFromSettings(); }catch(_ePt){}
   initEmailJS();
 initFormspreeNotes();
   fbApp=null; fbDb=null; fbAuth=null; fbReady=false;
@@ -11928,7 +12074,7 @@ function renderSettingsBizLotsForm(s){
   renderSettingsBusinessContacts(s.businessContacts||[]);
   renderSettingsLotAddresses(s.lotAddresses||[],s);
 }
-function renderSettingsPricingForm(s){
+function renderSettingsPricingCoreForm(s){
   s=s||{};
   ['metalRate','cabinFlat','metalMinCabin','metalMinUtility','taxRate'].forEach(function(k){
     var el=document.getElementById('set_'+k);
@@ -11946,17 +12092,38 @@ function renderSettingsPricingForm(s){
     if(mbLblLeft){mbLblLeft.style.color=fp?'#aaa':'var(--wheat)';mbLblLeft.style.fontWeight=fp?'400':'700';}
     if(mbLblRight){mbLblRight.style.color=fp?'var(--wheat)':'#aaa';mbLblRight.style.fontWeight=fp?'700':'400';}
   }
+}
+function renderSettingsPricingRTOForm(s){
+  s=s||{};
   ['rtoMonthlyDiv36','rtoMonthlyDiv48','rtoMonthlyDiv60'].forEach(function(k){
     var el=document.getElementById('set_'+k);
     if(el) el.value=(s[k]!=null&&s[k]!=='')?String(s[k]):'';
   });
-  ['revCashRange','revRtoRange'].forEach(function(k){
-    var el=document.getElementById('set_'+k);
-    if(el) el.value=(s[k]!=null&&s[k]!=='')?String(s[k]):'';
-  });
+}
+function renderSettingsPricingOptionsForm(s){
+  s=s||{};
   var nrto=s.nonRtoOptions||{};
   renderSettingsOptionsCatalog(s,nrto);
+}
+function renderSettingsPricingStyleForm(s){
   try{ buildStyleRefTable(); }catch(_eLc){}
+}
+function renderSettingsPricingBaseTableForm(s){
+  s=s||{};
+  var statusEl=document.getElementById('set_priceTableStatus');
+  if(statusEl){
+    var hasOverride=!!(s.priceTableOverrides&&Object.keys(s.priceTableOverrides).length);
+    statusEl.textContent=hasOverride?'Custom pricing loaded ('+_countPriceTableCells(PRICING)+' prices).':'Using default pricing table ('+_countPriceTableCells(PRICING)+' prices).';
+  }
+  var preview=document.getElementById('set_priceTableUploadPreview');
+  if(preview){ preview.style.display='none'; preview.innerHTML=''; }
+}
+function renderSettingsPricingForm(s){
+  renderSettingsPricingCoreForm(s);
+  renderSettingsPricingRTOForm(s);
+  renderSettingsPricingOptionsForm(s);
+  renderSettingsPricingStyleForm(s);
+  renderSettingsPricingBaseTableForm(s);
 }
 function renderSettingsLinksCloudForm(s){
   s=s||{};
@@ -12065,6 +12232,74 @@ function _optSettingsModeButtons(key,mode){
     html+='<button type="button" class="'+(mode===m?'on':'')+'" data-mode="'+m+'" onclick="optSettingsSetMode(this,\''+escAttr(key)+'\',\''+m+'\')">'+modes[m]+'</button>';
   });
   return html;
+}
+
+function _optHasDedicatedVariants(cfg){
+  if(!cfg) return false;
+  var dedicated={door36:1,window:1,garagedoor:1,cutouts:1,'2x6':1,intwall:1,paintupgrade:1,tallwall:1};
+  if(dedicated[cfg.key]) return true;
+  if(cfg.priceMode==='garage') return true;
+  if(cfg.priceMode==='variants'&&cfg.variants){
+    var gk=Object.keys(cfg.variants).filter(function(k){ return k!=='options'; });
+    if(gk.length) return true;
+  }
+  return false;
+}
+function _optGenericVariantList(cfg){
+  if(!cfg||!cfg.variants||!Array.isArray(cfg.variants.options)) return [];
+  return cfg.variants.options.filter(function(v){ return v&&v.id; });
+}
+function _buildGenericVariantSelectOpts(cfg){
+  return _optGenericVariantList(cfg).map(function(v){
+    var p=parseFloat(v.price)||0;
+    return {v:String(v.id),t:(v.label||v.id)+(p>0?' \u2014 '+_fmtOptMoney(p):'')};
+  });
+}
+function getOptionGenericVariantPrice(key,variantId){
+  var cfg=getOptionConfig(key);
+  if(!cfg||!variantId||!cfg.variants||!Array.isArray(cfg.variants.options)) return null;
+  for(var i=0;i<cfg.variants.options.length;i++){
+    if(String(cfg.variants.options[i].id)===String(variantId)) return parseFloat(cfg.variants.options[i].price)||0;
+  }
+  return null;
+}
+function _activeGenericVariantPrice(key,fallback){
+  if(calcState&&calcState.addonVariant&&calcState.addonVariant[key]){
+    var vp=getOptionGenericVariantPrice(key,calcState.addonVariant[key]);
+    if(vp!==null) return vp;
+  }
+  return fallback;
+}
+function _optSettingsGenericVariantsHtml(cfg){
+  if(_optHasDedicatedVariants(cfg)) return '';
+  var list=_optGenericVariantList(cfg);
+  var html='<div class="opt-settings-variants opt-settings-generic-vars"><span class="opt-set-field-label">Optional variant prices</span>';
+  html+='<div style="font-size:0.7rem;color:rgba(232,200,122,0.5);margin:0 0 8px;line-height:1.4;">Add named choices with their own price. When set, the calculator shows a variant picker for this option.</div>';
+  list.forEach(function(v,i){
+    html+='<div class="opt-settings-var-row" data-gen-var-idx="'+i+'">'+
+      '<input type="text" data-opt-gen-var-label data-var-group="options" data-var-idx="'+i+'" value="'+escAttr(v.label||'')+'" placeholder="Variant name" style="flex:1;min-width:80px;">'+
+      '<input type="number" min="0" step="0.01" data-opt-var="'+escAttr(cfg.key)+'" data-var-group="options" data-var-idx="'+i+'" value="'+(v.price||0)+'" style="width:88px;">'+
+      '<button type="button" class="opt-settings-del" onclick="removeSettingsOptionVariant(this)" title="Remove variant" style="padding:4px 8px;">\u2715</button>'+
+      '</div>';
+  });
+  html+='<button type="button" onclick="addSettingsOptionVariant(this)" class="btn-secondary" style="font-size:0.75rem;padding:5px 12px;margin-top:4px;">+ Add variant</button></div>';
+  return html;
+}
+function _applyGenericVariantsToEntry(e,cfg){
+  var variants=_optGenericVariantList(cfg);
+  if(!variants.length) return e;
+  var varStep={id:'genericVariant',label:'Variant',type:'select',options:_buildGenericVariantSelectOpts(cfg)};
+  if(!e.subSteps) e.subSteps=[varStep];
+  else e.subSteps=[varStep].concat(e.subSteps);
+  var origCommit=e.commit;
+  e.commit=function(d){
+    if(d.genericVariant){
+      if(!calcState.addonVariant) calcState.addonVariant={};
+      calcState.addonVariant[cfg.key]=d.genericVariant;
+    }
+    if(origCommit) origCommit(d);
+  };
+  return e;
 }
 
 function _optSettingsVariantsHtml(cfg){
@@ -12190,7 +12425,7 @@ function renderSettingsOptionsCatalog(s,nrto){
         '</div>'+
         (fieldsBlock?('<div class="opt-settings-row-fields">'+fieldsBlock+'</div>'):'')+
         (!cfg.builtin?('<div class="opt-settings-user-cat"><span class="opt-set-field-label">Category</span>'+catSel.replace('style="font-size:0.78rem;"','style="width:100%;box-sizing:border-box;"')+'</div>'):'')+
-        _optSettingsVariantsHtml(cfg)+_optSettingsTiersHtml(cfg)+_optSettingsTallwallHtml(cfg);
+        _optSettingsVariantsHtml(cfg)+_optSettingsTiersHtml(cfg)+_optSettingsTallwallHtml(cfg)+_optSettingsGenericVariantsHtml(cfg);
       body.appendChild(row);
     });
     container.appendChild(wrap);
@@ -12222,7 +12457,7 @@ function bindOptionsCatalogAutosave(){
   container.addEventListener('input',function(e){
     var t=e.target;
     if(!t) return;
-    if(t.matches('[data-opt-label],[data-opt-price],[data-opt-var],[data-opt-tier],[data-opt-tall]'))
+    if(t.matches('[data-opt-label],[data-opt-price],[data-opt-var],[data-opt-tier],[data-opt-tall],[data-opt-gen-var-label]'))
       scheduleOptionsCatalogAutosave();
   });
   container.addEventListener('change',function(e){
@@ -12237,6 +12472,44 @@ function optSettingsSetMode(btn,key,mode){
   row.querySelectorAll('.opt-settings-mode button').forEach(function(b){ b.classList.toggle('on',b===btn); });
   row.setAttribute('data-opt-mode',mode);
   scheduleOptionsCatalogAutosave();
+}
+
+function addSettingsOptionVariant(btn){
+  var row=btn.closest('[data-opt-key]');
+  if(!row) return;
+  var key=row.getAttribute('data-opt-key');
+  var existing=collectOptionsCatalogFromForm();
+  var item=null;
+  existing.forEach(function(c){ if(c.key===key) item=c; });
+  if(!item) return;
+  if(!item.variants) item.variants={};
+  if(!Array.isArray(item.variants.options)) item.variants.options=[];
+  item.variants.options.push({id:'v_'+Date.now()+'_'+Math.random().toString(36).slice(2,5),label:'New variant',price:0});
+  var s=loadSettings();
+  s.optionsCatalog=existing;
+  s.nonRtoOptions=collectNonRtoFromOptionsForm();
+  saveSettings(s);
+  renderSettingsOptionsCatalog(s,s.nonRtoOptions);
+}
+function removeSettingsOptionVariant(btn){
+  var varRow=btn.closest('[data-gen-var-idx]');
+  var parentRow=btn.closest('[data-opt-key]');
+  if(!varRow||!parentRow) return;
+  var key=parentRow.getAttribute('data-opt-key');
+  var idx=parseInt(varRow.getAttribute('data-gen-var-idx'),10);
+  var existing=collectOptionsCatalogFromForm();
+  existing=existing.map(function(c){
+    if(c.key!==key||!c.variants||!Array.isArray(c.variants.options)) return c;
+    c.variants.options=c.variants.options.filter(function(_v,i){ return i!==idx; });
+    if(!c.variants.options.length) delete c.variants.options;
+    if(c.variants&&!Object.keys(c.variants).length) delete c.variants;
+    return c;
+  });
+  var s=loadSettings();
+  s.optionsCatalog=existing;
+  s.nonRtoOptions=collectNonRtoFromOptionsForm();
+  saveSettings(s);
+  renderSettingsOptionsCatalog(s,s.nonRtoOptions);
 }
 
 function addSettingsOptionRow(){
@@ -12303,7 +12576,7 @@ function collectOptionsCatalogFromForm(){
   container.querySelectorAll('[data-opt-key]').forEach(function(row){
     var key=row.getAttribute('data-opt-key');
     var isBuiltin=row.getAttribute('data-opt-builtin')==='1';
-    var base=byKey[key]||{key:key,builtin:!isBuiltin,category:'Custom',enabled:true,priceMode:'total',price:0,sortOrder:999};
+    var base=byKey[key]||{key:key,builtin:false,category:'Custom',enabled:true,priceMode:'total',price:0,sortOrder:999};
     var labelEl=row.querySelector('[data-opt-label]');
     var priceEl=row.querySelector('[data-opt-price]');
     var catEl=row.querySelector('[data-opt-cat]');
@@ -12327,6 +12600,15 @@ function collectOptionsCatalogFromForm(){
       if(!base.variants) base.variants={};
       if(!base.variants[gk]) return;
       if(base.variants[gk][idx]) base.variants[gk][idx].price=parseFloat(inp.value)||0;
+    });
+    row.querySelectorAll('[data-opt-gen-var-label]').forEach(function(inp){
+      var gk=inp.getAttribute('data-var-group');
+      var idx=parseInt(inp.getAttribute('data-var-idx'),10);
+      if(!base.variants) base.variants={};
+      if(!base.variants[gk]) base.variants[gk]=[];
+      while(base.variants[gk].length<=idx) base.variants[gk].push({id:'v_'+Date.now()+'_'+base.variants[gk].length,label:'',price:0});
+      base.variants[gk][idx].label=inp.value.trim()||('Variant '+(idx+1));
+      if(!base.variants[gk][idx].id) base.variants[gk][idx].id='v_'+Date.now()+'_'+idx;
     });
     row.querySelectorAll('[data-opt-tier]').forEach(function(inp){
       var wk=inp.getAttribute('data-tier-w');
@@ -12366,6 +12648,11 @@ function renderSettingsFormForScreen(screenId,s){
   s=s||loadSettings()||{};
   if(screenId==='screenSettingsBizLots') renderSettingsBizLotsForm(s);
   else if(screenId==='screenSettingsPricing') renderSettingsPricingForm(s);
+  else if(screenId==='screenSettingsPricingCore') renderSettingsPricingCoreForm(s);
+  else if(screenId==='screenSettingsPricingBaseTable') renderSettingsPricingBaseTableForm(s);
+  else if(screenId==='screenSettingsPricingOptions') renderSettingsPricingOptionsForm(s);
+  else if(screenId==='screenSettingsPricingRTO') renderSettingsPricingRTOForm(s);
+  else if(screenId==='screenSettingsPricingStyle') renderSettingsPricingStyleForm(s);
   else if(screenId==='screenSettingsLinksCloud') renderSettingsLinksCloudForm(s);
   else if(screenId==='screenSettingsComms') renderSettingsCommsForm(s);
   else if(screenId==='screenSettingsHomeQuick') renderSettingsHomeQuickForm(s);
@@ -12385,6 +12672,7 @@ async function loadSettingsForm(){
     }
   invalidateOptionsCatalogCache();
   try{ refreshOptionsCatalogUI(); }catch(_eCat){}
+  try{ initPriceTableFromSettings(); }catch(_ePt){}
   applyBizInfoToHome();
     try{ renderHomeQuickTools(); }catch(_q){}
     try{ renderHomeQuickSheet(); }catch(_q2){}
@@ -12415,7 +12703,7 @@ async function saveSettingsBizLots(opts){
   if(opts&&opts.skipCloud) return { cloudOk: true };
   return settingsSaveToCloudAndToast(s,opts);
 }
-async function saveSettingsPricing(opts){
+async function saveSettingsPricingCore(opts){
   var s=loadSettings();
   ['metalRate','cabinFlat','metalMinCabin','metalMinUtility','taxRate'].forEach(function(k){
     var el=document.getElementById('set_'+k);
@@ -12423,6 +12711,13 @@ async function saveSettingsPricing(opts){
   });
   var mbTrack=document.getElementById('set_metalBasisTrack');
   s.metalBasisFootprint=mbTrack&&mbTrack.classList.contains('active');
+  saveSettings(s);
+  settingsAfterLocalSave(s);
+  if(opts&&opts.skipCloud) return { cloudOk: true };
+  return settingsSaveToCloudAndToast(s,opts);
+}
+async function saveSettingsPricingRTO(opts){
+  var s=loadSettings();
   ['rtoMonthlyDiv36','rtoMonthlyDiv48','rtoMonthlyDiv60'].forEach(function(k){
     var el=document.getElementById('set_'+k);
     if(!el) return;
@@ -12433,20 +12728,24 @@ async function saveSettingsPricing(opts){
       if(isFinite(n)&&n>0) s[k]=n;
     }
   });
-  ['revCashRange','revRtoRange'].forEach(function(k){
-    var el=document.getElementById('set_'+k);
-    if(!el) return;
-    var raw=String(el.value||'').trim();
-    if(raw===''){ try{ delete s[k]; }catch(_d){ s[k]=''; } }
-    else{
-      var n=parseFloat(raw);
-      if(isFinite(n)&&n>=0) s[k]=n;
-    }
-  });
+  saveSettings(s);
+  settingsAfterLocalSave(s);
+  if(opts&&opts.skipCloud) return { cloudOk: true };
+  return settingsSaveToCloudAndToast(s,opts);
+}
+async function saveSettingsPricingOptions(opts){
+  var s=loadSettings();
   var nrto=collectNonRtoFromOptionsForm();
   s.nonRtoOptions=nrto;
   s.optionsCatalog=collectOptionsCatalogFromForm();
   invalidateOptionsCatalogCache();
+  saveSettings(s);
+  settingsAfterLocalSave(s);
+  if(opts&&opts.skipCloud) return { cloudOk: true };
+  return settingsSaveToCloudAndToast(s,opts);
+}
+async function saveSettingsPricingStyle(opts){
+  var s=loadSettings();
   try{
     flushStyleListingCopyModalToMemory();
     persistStyleDataToLocalStorage();
@@ -12454,6 +12753,24 @@ async function saveSettingsPricing(opts){
   saveSettings(s);
   settingsAfterLocalSave(s);
   if(opts&&opts.skipCloud) return { cloudOk: true };
+  return settingsSaveToCloudAndToast(s,opts);
+}
+async function saveSettingsPricingBaseTable(opts){
+  var s=loadSettings();
+  s.priceTableOverrides=serializePriceTable(PRICING);
+  saveSettings(s);
+  settingsAfterLocalSave(s);
+  if(opts&&opts.skipCloud) return { cloudOk: true };
+  return settingsSaveToCloudAndToast(s,opts);
+}
+async function saveSettingsPricing(opts){
+  var chainOpt={ suppressCloudFailureToast:true, skipCloud:true };
+  await saveSettingsPricingCore(chainOpt);
+  await saveSettingsPricingRTO(chainOpt);
+  await saveSettingsPricingOptions(chainOpt);
+  await saveSettingsPricingStyle(chainOpt);
+  await saveSettingsPricingBaseTable(chainOpt);
+  var s=loadSettings();
   return settingsSaveToCloudAndToast(s,opts);
 }
 async function saveSettingsLinksCloud(opts){
@@ -12510,7 +12827,11 @@ async function saveSettingsLists(opts){
 async function saveSettingsSection(screenId, opts){
   opts=opts||{};
   if(screenId==='screenSettingsBizLots') return saveSettingsBizLots(opts);
-  if(screenId==='screenSettingsPricing') return saveSettingsPricing(opts);
+  if(screenId==='screenSettingsPricingCore') return saveSettingsPricingCore(opts);
+  if(screenId==='screenSettingsPricingBaseTable') return saveSettingsPricingBaseTable(opts);
+  if(screenId==='screenSettingsPricingOptions') return saveSettingsPricingOptions(opts);
+  if(screenId==='screenSettingsPricingRTO') return saveSettingsPricingRTO(opts);
+  if(screenId==='screenSettingsPricingStyle') return saveSettingsPricingStyle(opts);
   if(screenId==='screenSettingsLinksCloud') return saveSettingsLinksCloud(opts);
   if(screenId==='screenSettingsComms') return saveSettingsComms(opts);
   if(screenId==='screenSettingsHomeQuick') return saveSettingsHomeQuick(opts);
@@ -13204,7 +13525,7 @@ function appBottomNavPrimaryAction(){
       try{
         var r=await saveSettingsSection(sid,{ suppressCloudFailureToast:true });
         showToast((r&&r.cloudOk)?'Saved':'Saved locally');
-        goTo('screenSettings');
+        goTo(settingsSaveReturnScreen(sid));
       }catch(_e){
         showToast('Could not save');
       }
@@ -13475,7 +13796,7 @@ function goTo(screenId){
   if(screenId==='screenSettings') loadSettingsForm();
   if(isSettingsSaveSubScreen(screenId)){
     renderSettingsFormForScreen(screenId);
-    if(screenId==='screenSettingsPricing') try{ buildStyleRefTable(); }catch(_eSdP){}
+    if(screenId==='screenSettingsPricingStyle') try{ buildStyleRefTable(); }catch(_eSdP){}
   }
   if(screenId==='screenAd'){
     var _adSaved=loadAdAutosave();
@@ -14165,6 +14486,181 @@ setInterval(updateHomeClock, 60000);
 const PRICING={8:{8:{UUTX:4145,USUTX:4395,UC:5545,UCC:5795,USC:5695,UPC:5895,UG:5495,UPGS:4145,UPCS:4145,ULB:4495,USLB:4745,ULBC:5895,UCLBC:6145,USLBC:6045,UPLBC:6245,ULG:5845},10:{UUTX:4145,USUTX:4395,UC:5545,UCC:5795,USC:5695,UPC:5895,UG:5545,UPGS:4145,UPCS:4145,ULB:4495,USLB:4745,ULBC:5895,UCLBC:6145,USLBC:6045,UPLBC:6245,ULG:5895},12:{UUTX:4145,USUTX:4395,UC:5545,UCC:5795,USC:5695,UPC:5895,UG:5545,UPGS:4145,UPCS:4145,ULB:4495,USLB:4745,ULBC:5895,UCLBC:6145,USLBC:6045,UPLBC:6245,ULG:5895},14:{UUTX:4695,USUTX:4945,UC:6095,UCC:6345,USC:6245,UPC:6445,UG:6145,UPGS:4695,UPCS:4695,ULB:5245,USLB:5495,ULBC:6645,UCLBC:6895,USLBC:6795,UPLBC:6995,ULG:6695},16:{UUTX:5345,USUTX:5595,UC:6745,UCC:6995,USC:6895,UPC:7095,UG:6845,UPGS:5345,UPCS:5345,ULB:5995,USLB:6245,ULBC:7395,UCLBC:7645,USLBC:7545,UPLBC:7745,ULG:7495},18:{UUTX:6045,USUTX:6295,UC:7445,UCC:7695,USC:7595,UPC:7795,UG:7545,UPGS:6045,UPCS:6045,ULB:6745,USLB:6995,ULBC:8145,UCLBC:8395,USLBC:8295,UPLBC:8495,ULG:8245},20:{UUTX:6695,USUTX:6945,UC:8095,UCC:8345,USC:8245,UPC:8445,UG:8245,UPGS:6695,UPCS:6695,ULB:7495,USLB:7745,ULBC:8895,UCLBC:9145,USLBC:9045,UPLBC:9245,ULG:9045},22:{UUTX:7395,USUTX:7645,UC:8795,UCC:9045,USC:8945,UPC:9145,UG:8995,UPGS:7395,UPCS:7395,ULB:8245,USLB:8495,ULBC:9645,UCLBC:9895,USLBC:9795,UPLBC:9995,ULG:9845},24:{UUTX:8045,USUTX:8295,UC:9445,UCC:9695,USC:9595,UPC:9795,UG:9645,UPGS:8045,UPCS:8045,ULB:8995,USLB:9245,ULBC:10395,UCLBC:10645,USLBC:10545,UPLBC:10745,ULG:10595},26:{UUTX:8695,USUTX:8945,UC:10095,UCC:10345,USC:10245,UPC:10445,UG:10345,UPGS:8695,UPCS:8695,ULB:9745,USLB:9995,ULBC:11145,UCLBC:11395,USLBC:11295,UPLBC:11495,ULG:11395},28:{UUTX:9395,USUTX:9645,UC:10795,UCC:11045,USC:10945,UPC:11145,UG:11045,UPGS:9395,UPCS:9395,ULB:10495,USLB:10745,ULBC:11895,UCLBC:12145,USLBC:12045,UPLBC:12245,ULG:12145},30:{UUTX:10045,USUTX:10295,UC:11445,UCC:11695,USC:11595,UPC:11795,UG:11745,UPGS:10045,UPCS:10045,ULB:11245,USLB:11495,ULBC:12645,UCLBC:12895,USLBC:12795,UPLBC:12995,ULG:12945},32:{UUTX:10745,USUTX:10995,UC:12145,UCC:12395,USC:12295,UPC:12495,UG:12495,UPGS:10745,UPCS:10745,ULB:11995,USLB:12245,ULBC:13395,UCLBC:13645,USLBC:13545,UPLBC:13745,ULG:13745},34:{UUTX:11395,USUTX:11645,UC:12795,UCC:13045,USC:12945,UPC:13145,UG:13145,UPGS:11395,UPCS:11395,ULB:12745,USLB:12995,ULBC:14145,UCLBC:14395,USLBC:14295,UPLBC:14495,ULG:14495},36:{UUTX:12045,USUTX:12295,UC:13445,UCC:13695,USC:13595,UPC:13795,UG:13845,UPGS:12045,UPCS:12045,ULB:13495,USLB:13745,ULBC:14895,UCLBC:15145,USLBC:15045,UPLBC:15245,ULG:15295},38:{UUTX:12745,USUTX:12995,UC:14145,UCC:14395,USC:14295,UPC:14495,UG:14595,UPGS:12745,UPCS:12745,ULB:14245,USLB:14495,ULBC:15645,UCLBC:15895,USLBC:15795,UPLBC:15995,ULG:16095},40:{UUTX:13395,USUTX:13645,UC:14795,UCC:15045,USC:14945,UPC:15145,UG:15245,UPGS:13395,UPCS:13395,ULB:14995,USLB:15245,ULBC:16395,UCLBC:16645,USLBC:16545,UPLBC:16745,ULG:16845},42:{UUTX:14045,USUTX:14295,UC:15445,UCC:15695,USC:15595,UPC:15795,UG:15945,UPGS:14045,UPCS:14045,ULB:15745,USLB:15995,ULBC:17145,UCLBC:17395,USLBC:17295,UPLBC:17495,ULG:17645},44:{UUTX:14745,USUTX:14995,UC:16145,UCC:16395,USC:16295,UPC:16495,UG:16695,UPGS:14745,UPCS:14745,ULB:16495,USLB:16745,ULBC:17895,UCLBC:18145,USLBC:18045,UPLBC:18245,ULG:18445},46:{UUTX:15395,USUTX:15645,UC:16795,UCC:17045,USC:16945,UPC:17145,UG:17345,UPGS:15395,UPCS:15395,ULB:17245,USLB:17495,ULBC:18645,UCLBC:18895,USLBC:18795,UPLBC:18995,ULG:19195},48:{UUTX:16095,USUTX:16345,UC:17495,UCC:17745,USC:17645,UPC:17845,UG:18095,UPGS:16095,UPCS:16095,ULB:17995,USLB:18245,ULBC:19395,UCLBC:19645,USLBC:19545,UPLBC:19745,ULG:19995},50:{UUTX:16745,USUTX:16995,UC:18145,UCC:18395,USC:18295,UPC:18495,UG:18745,UPGS:16745,UPCS:16745,ULB:18745,USLB:18995,ULBC:20145,UCLBC:20395,USLBC:20295,UPLBC:20495,ULG:20745},52:{UUTX:17395,USUTX:17645,UC:18795,UCC:19045,USC:18945,UPC:19145,UG:19445,UPGS:17395,UPCS:17395,ULB:19495,USLB:19745,ULBC:20895,UCLBC:21145,USLBC:21045,UPLBC:21245,ULG:21545},54:{UUTX:18095,USUTX:18345,UC:19495,UCC:19745,USC:19645,UPC:19845,UG:10195,UPGS:18095,UPCS:18095,ULB:20245,USLB:20495,ULBC:21645,UCLBC:21895,USLBC:21795,UPLBC:21995,ULG:22345},56:{UUTX:18745,USUTX:18995,UC:20145,UCC:20395,USC:20295,UPC:20495,UG:10845,UPGS:18745,UPCS:18745,ULB:20995,USLB:21245,ULBC:22395,UCLBC:22645,USLBC:22545,UPLBC:22745,ULG:23095},58:{UUTX:19395,USUTX:19645,UC:20795,UCC:21045,USC:20945,UPC:21145,UG:21545,UPGS:19395,UPCS:19395,ULB:21745,USLB:21995,ULBC:23145,UCLBC:23395,USLBC:23295,UPLBC:23495,ULG:23895},60:{UUTX:20095,USUTX:20345,UC:21495,UCC:21745,USC:21645,UPC:21845,UG:22295,UPGS:20095,UPCS:20095,ULB:22495,USLB:22745,ULBC:23895,UCLBC:24145,USLBC:24045,UPLBC:24245,ULG:24695}},10:{8:{UUTX:5195,USUTX:5445,UC:6745,UCC:6995,USC:6895,UPC:7095,UG:6555,UPGS:5195,UPCS:5445,ULB:5945,USLB:6195,ULBC:7495,UCLBC:7745,USLBC:7645,UPLBC:7845,ULG:7345},10:{UUTX:5195,USUTX:5445,UC:6745,UCC:6995,USC:6895,UPC:7095,UG:6595,UPGS:5195,UPCS:5445,ULB:5945,USLB:6195,ULBC:7495,UCLBC:7745,USLBC:7645,UPLBC:7845,ULG:7345},12:{UUTX:5195,USUTX:5445,UC:6745,UCC:6995,USC:6895,UPC:7095,UG:6635,UPGS:5195,UPCS:5445,ULB:5945,USLB:6195,ULBC:7495,UCLBC:7745,USLBC:7645,UPLBC:7845,ULG:7395},14:{UUTX:5345,USUTX:5595,UC:6895,UCC:7145,USC:7045,UPC:7245,UG:6825,UPGS:5345,UPCS:5595,ULB:6045,USLB:6295,ULBC:7595,UCLBC:7845,USLBC:7745,UPLBC:7945,ULG:7545},16:{UUTX:5945,USUTX:6195,UC:7495,UCC:7745,USC:7645,UPC:7845,UG:7465,UPGS:5945,UPCS:6195,ULB:6395,USLB:6645,ULBC:7945,UCLBC:8195,USLBC:8095,UPLBC:8395,ULG:7945},18:{UUTX:6595,USUTX:6845,UC:8145,UCC:8395,USC:8295,UPC:8495,UG:8155,UPGS:6595,UPCS:6845,ULB:7345,USLB:7595,ULBC:8895,UCLBC:9145,USLBC:9045,UPLBC:9245,ULG:8945},20:{UUTX:7295,USUTX:7545,UC:8845,UCC:9095,USC:8995,UPC:9195,UG:8895,UPGS:7295,UPCS:7545,ULB:8145,USLB:8395,ULBC:9695,UCLBC:9945,USLBC:9845,UPLBC:10045,ULG:9745},22:{UUTX:8045,USUTX:8295,UC:9595,UCC:9845,USC:9745,UPC:9945,UG:9685,UPGS:8045,UPCS:8295,ULB:8995,USLB:9245,ULBC:10545,UCLBC:10795,USLBC:10695,UPLBC:10895,ULG:10645},24:{UUTX:8795,USUTX:9045,UC:10345,UCC:10595,USC:10495,UPC:10695,UG:10475,UPGS:8795,UPCS:9045,ULB:9795,USLB:10045,ULBC:11345,UCLBC:11595,USLBC:11495,UPLBC:11695,ULG:11495},26:{UUTX:8495,USUTX:8745,UC:10045,UCC:10295,USC:10195,UPC:10395,UG:10215,UPGS:8495,UPCS:8745,ULB:10595,USLB:10845,ULBC:12145,UCLBC:12395,USLBC:12295,UPLBC:12495,ULG:12345},28:{UUTX:10245,USUTX:10495,UC:11795,UCC:12045,USC:11945,UPC:12145,UG:12005,UPGS:10245,UPCS:10495,ULB:11445,USLB:11695,ULBC:12995,UCLBC:13245,USLBC:13145,UPLBC:13345,ULG:13245},30:{UUTX:10945,USUTX:11195,UC:12495,UCC:12745,USC:12645,UPC:12845,UG:12745,UPGS:10945,UPCS:11195,ULB:12245,USLB:12495,ULBC:13795,UCLBC:14045,USLBC:13945,UPLBC:14145,ULG:14045},32:{UUTX:11695,USUTX:11945,UC:13245,UCC:13495,USC:13395,UPC:13595,UG:13535,UPGS:11695,UPCS:11945,ULB:13045,USLB:13295,ULBC:14595,UCLBC:14845,USLBC:14745,UPLBC:14945,ULG:14895},34:{UUTX:12445,USUTX:12695,UC:13995,UCC:14245,USC:14145,UPC:14345,UG:14325,UPGS:12445,UPCS:12695,ULB:13895,USLB:14145,ULBC:15445,UCLBC:15695,USLBC:15595,UPLBC:15795,ULG:15795},36:{UUTX:13145,USUTX:13395,UC:14695,UCC:14945,USC:14845,UPC:15045,UG:15065,UPGS:13145,UPCS:13395,ULB:14695,USLB:14945,ULBC:16245,UCLBC:16495,USLBC:16395,UPLBC:16595,ULG:16645},38:{UUTX:13895,USUTX:14145,UC:15445,UCC:15695,USC:15595,UPC:15795,UG:15855,UPGS:13895,UPCS:14145,ULB:15495,USLB:15745,ULBC:17045,UCLBC:17295,USLBC:17195,UPLBC:17395,ULG:17495},40:{UUTX:14595,USUTX:14845,UC:16145,UCC:16395,USC:16295,UPC:16495,UG:16595,UPGS:14595,UPCS:14845,ULB:16295,USLB:16545,ULBC:17845,UCLBC:18095,USLBC:17995,UPLBC:18195,ULG:18295},42:{UUTX:15345,USUTX:15595,UC:16895,UCC:17145,USC:17045,UPC:17245,UG:17385,UPGS:15345,UPCS:15595,ULB:17145,USLB:17395,ULBC:18695,UCLBC:18945,USLBC:18845,UPLBC:19045,ULG:19195},44:{UUTX:16095,USUTX:16345,UC:17645,UCC:17895,USC:17795,UPC:17995,UG:18175,UPGS:16095,UPCS:16345,ULB:17945,USLB:18195,ULBC:19495,UCLBC:19745,USLBC:19645,UPLBC:19845,ULG:20045},46:{UUTX:16795,USUTX:17045,UC:18345,UCC:18595,USC:18495,UPC:18695,UG:18915,UPGS:16795,UPCS:17045,ULB:18745,USLB:18995,ULBC:20295,UCLBC:20545,USLBC:20445,UPLBC:20615,ULG:20895},48:{UUTX:17545,USUTX:17795,UC:19095,UCC:19345,USC:19245,UPC:19445,UG:19705,UPGS:17545,UPCS:17795,ULB:19595,USLB:19845,ULBC:21145,UCLBC:21395,USLBC:21295,UPLBC:21495,ULG:21795},50:{UUTX:18245,USUTX:18495,UC:19795,UCC:20045,USC:19945,UPC:20145,UG:20445,UPGS:18245,UPCS:18495,ULB:20395,USLB:20645,ULBC:21945,UCLBC:22195,USLBC:22095,UPLBC:22295,ULG:22595},52:{UUTX:18995,USUTX:19245,UC:20545,UCC:20795,USC:20695,UPC:20895,UG:21235,UPGS:18995,UPCS:19245,ULB:21195,USLB:21445,ULBC:22745,UCLBC:22995,USLBC:22895,UPLBC:23095,ULG:23445},54:{UUTX:19745,USUTX:19995,UC:21295,UCC:21545,USC:21445,UPC:21645,UG:22025,UPGS:19745,UPCS:19995,ULB:21995,USLB:22245,ULBC:23545,UCLBC:23795,USLBC:23695,UPLBC:23895,ULG:24295},56:{UUTX:20445,USUTX:20695,UC:21995,UCC:22245,USC:22145,UPC:22345,UG:22765,UPGS:20445,UPCS:20695,ULB:22845,USLB:23095,ULBC:24395,UCLBC:24645,USLBC:24545,UPLBC:24745,ULG:25195},58:{UUTX:21195,USUTX:21445,UC:22745,UCC:22995,USC:22895,UPC:23095,UG:23555,UPGS:21195,UPCS:21445,ULB:23645,USLB:23895,ULBC:25195,UCLBC:25445,USLBC:25345,UPLBC:25545,ULG:26045},60:{UUTX:21895,USUTX:22145,UC:23445,UCC:23695,USC:23595,UPC:23795,UG:24295,UPGS:21895,UPCS:22145,ULB:24445,USLB:24695,ULBC:25995,UCLBC:26245,USLBC:26145,UPLBC:26345,ULG:26845}},12:{8:{UUTX:5945,USUTX:6195,UC:7695,UCC:7945,USC:7845,UPC:8045,UG:7345,UPGS:6145,UPCS:6145,ULB:6545,USLB:6795,ULBC:8295,UCLBC:8545,USLBC:8445,UPLBC:8645,ULG:7945},10:{UUTX:5945,USUTX:6195,UC:7695,UCC:7945,USC:7845,UPC:8045,UG:7395,UPGS:6195,UPCS:6195,ULB:6545,USLB:6795,ULBC:8295,UCLBC:8545,USLBC:8445,UPLBC:8645,ULG:7995},12:{UUTX:5945,USUTX:6195,UC:7695,UCC:7945,USC:7845,UPC:8045,UG:7445,UPGS:6245,UPCS:6245,ULB:6545,USLB:6795,ULBC:8295,UCLBC:8545,USLBC:8445,UPLBC:8645,ULG:8045},14:{UUTX:6645,USUTX:6895,UC:8395,UCC:8645,USC:8545,UPC:8745,UG:8195,UPGS:6995,UPCS:6995,ULB:7045,USLB:7295,ULBC:8795,UCLBC:9045,USLBC:8945,UPLBC:9145,ULG:8595},16:{UUTX:7295,USUTX:7545,UC:9045,UCC:9295,USC:9195,UPC:9395,UG:8895,UPGS:7695,UPCS:7695,ULB:7795,USLB:8045,ULBC:9545,UCLBC:9795,USLBC:9695,UPLBC:9895,ULG:9395},18:{UUTX:7895,USUTX:8145,UC:9645,UCC:9895,USC:9795,UPC:9995,UG:9545,UPGS:8345,UPCS:8345,ULB:8645,USLB:8895,ULBC:10395,UCLBC:10645,USLBC:10545,UPLBC:10745,ULG:10295},20:{UUTX:8495,USUTX:8745,UC:10245,UCC:10495,USC:10395,UPC:10595,UG:10195,UPGS:8995,UPCS:8995,ULB:9495,USLB:9745,ULBC:11245,UCLBC:11495,USLBC:11395,UPLBC:11595,ULG:11195},22:{UUTX:9145,USUTX:9395,UC:10895,UCC:11145,USC:11045,UPC:11245,UG:10895,UPGS:9695,UPCS:9695,ULB:10345,USLB:10595,ULBC:12095,UCLBC:12345,USLBC:12245,UPLBC:12445,ULG:12095},24:{UUTX:9745,USUTX:9995,UC:11495,UCC:11745,USC:11645,UPC:11845,UG:11545,UPGS:10345,UPCS:10345,ULB:10695,USLB:10945,ULBC:12445,UCLBC:12695,USLBC:12595,UPLBC:12795,ULG:12495},26:{UUTX:10395,USUTX:10645,UC:12145,UCC:12395,USC:12295,UPC:12495,UG:12245,UPGS:11045,UPCS:11045,ULB:11145,USLB:11395,ULBC:12895,UCLBC:13145,USLBC:13045,UPLBC:13245,ULG:12995},28:{UUTX:11195,USUTX:11445,UC:12945,UCC:13195,USC:13095,UPC:13295,UG:13095,UPGS:11895,UPCS:11895,ULB:11995,USLB:12245,ULBC:13745,UCLBC:13995,USLBC:13895,UPLBC:14095,ULG:13895},30:{UUTX:11995,USUTX:12245,UC:13745,UCC:13995,USC:13895,UPC:14095,UG:13945,UPGS:12745,UPCS:12745,ULB:12845,USLB:13095,ULBC:14595,UCLBC:14845,USLBC:14745,UPLBC:14945,ULG:14795},32:{UUTX:12745,USUTX:12995,UC:14495,UCC:14745,USC:14645,UPC:14845,UG:14745,UPGS:13545,UPCS:13545,ULB:13695,USLB:13945,ULBC:15445,UCLBC:15695,USLBC:15595,UPLBC:15795,ULG:15695},34:{UUTX:13545,USUTX:13795,UC:15295,UCC:15545,USC:15445,UPC:15645,UG:15595,UPGS:14395,UPCS:14395,ULB:14495,USLB:14745,ULBC:16245,UCLBC:16495,USLBC:16395,UPLBC:16595,ULG:16545},36:{UUTX:14345,USUTX:14595,UC:16095,UCC:16345,USC:16245,UPC:16445,UG:16445,UPGS:15245,UPCS:15245,ULB:15295,USLB:15545,ULBC:17045,UCLBC:17295,USLBC:17195,UPLBC:17395,ULG:17395},38:{UUTX:12145,USUTX:12395,UC:13895,UCC:14145,USC:14045,UPC:14245,UG:14295,UPGS:13095,UPCS:13095,ULB:16145,USLB:16395,ULBC:17895,UCLBC:18145,USLBC:18045,UPLBC:18245,ULG:18295},40:{UUTX:15895,USUTX:16145,UC:17645,UCC:17895,USC:17795,UPC:17995,UG:18095,UPGS:16895,UPCS:16895,ULB:16945,USLB:17195,ULBC:18695,UCLBC:18945,USLBC:18845,UPLBC:19045,ULG:19145},42:{UUTX:16695,USUTX:16945,UC:18445,UCC:18695,USC:18595,UPC:18795,UG:18945,UPGS:17745,UPCS:17745,ULB:17795,USLB:18045,ULBC:19545,UCLBC:19795,USLBC:19695,UPLBC:19895,ULG:20045},44:{UUTX:17495,USUTX:17745,UC:19245,UCC:19495,USC:19395,UPC:19595,UG:19795,UPGS:18595,UPCS:18595,ULB:18645,USLB:18895,ULBC:20395,UCLBC:20645,USLBC:20545,UPLBC:20745,ULG:20945},46:{UUTX:18295,USUTX:18545,UC:20045,UCC:20295,USC:20195,UPC:20395,UG:20645,UPGS:19445,UPCS:19445,ULB:19495,USLB:19745,ULBC:21245,UCLBC:21495,USLBC:21395,UPLBC:21595,ULG:21845},48:{UUTX:19095,USUTX:19345,UC:20845,UCC:21095,USC:20995,UPC:21195,UG:21495,UPGS:20295,UPCS:20295,ULB:20345,USLB:20595,ULBC:22095,UCLBC:22345,USLBC:22245,UPLBC:22445,ULG:22745},50:{UUTX:19895,USUTX:20145,UC:21645,UCC:21895,USC:21795,UPC:21995,UG:22295,UPGS:21145,UPCS:21145,ULB:21195,USLB:21445,ULBC:22945,UCLBC:23195,USLBC:23095,UPLBC:23295,ULG:23595},52:{UUTX:20695,USUTX:20945,UC:22445,UCC:22695,USC:22595,UPC:22795,UG:23145,UPGS:21995,UPCS:21995,ULB:22045,USLB:22295,ULBC:23795,UCLBC:24045,USLBC:23945,UPLBC:24145,ULG:24495},54:{UUTX:21495,USUTX:21745,UC:23245,UCC:23495,USC:23395,UPC:23595,UG:23995,UPGS:22845,UPCS:22845,ULB:22895,USLB:23145,ULBC:24645,UCLBC:24895,USLBC:24795,UPLBC:24995,ULG:25395},56:{UUTX:22295,USUTX:22545,UC:24045,UCC:24295,USC:24195,UPC:24395,UG:24845,UPGS:23695,UPCS:23695,ULB:23745,USLB:23995,ULBC:25495,UCLBC:25745,USLBC:25645,UPLBC:25845,ULG:26295},58:{UUTX:23045,USUTX:23295,UC:24795,UCC:25045,USC:24945,UPC:25145,UG:25645,UPGS:24495,UPCS:24495,ULB:24595,USLB:24845,ULBC:26345,UCLBC:26595,USLBC:26495,UPLBC:26695,ULG:27195},60:{UUTX:23845,USUTX:24095,UC:25595,UCC:25845,USC:25745,UPC:25945,UG:26495,UPGS:25345,UPCS:25345,ULB:25445,USLB:25695,ULBC:27195,UCLBC:27445,USLBC:27345,UPLBC:27545,ULG:28095}},14:{8:{UUTX:7295,USUTX:7545,UC:9245,UCC:9495,USC:9395,UPC:9595,UG:8745,UPGS:7595,UPCS:7595,ULB:8045,USLB:8295,ULBC:9995,UCLBC:10245,USLBC:10145,UPLBC:10345,ULG:9495},10:{UUTX:7295,USUTX:7545,UC:9245,UCC:9495,USC:9395,UPC:9595,UG:8795,UPGS:7645,UPCS:7645,ULB:8045,USLB:8295,ULBC:9995,UCLBC:10245,USLBC:10145,UPLBC:10345,ULG:9545},12:{UUTX:7295,USUTX:7545,UC:9245,UCC:9495,USC:9395,UPC:9595,UG:8845,UPGS:7745,UPCS:7745,ULB:8045,USLB:8295,ULBC:9995,UCLBC:10245,USLBC:10145,UPLBC:10345,ULG:9595},14:{UUTX:7295,USUTX:7545,UC:9245,UCC:9495,USC:9395,UPC:9595,UG:8895,UPGS:7795,UPCS:7795,ULB:8045,USLB:8295,ULBC:9995,UCLBC:10245,USLBC:10145,UPLBC:10345,ULG:9645},16:{UUTX:8295,USUTX:8545,UC:10245,UCC:10495,USC:10395,UPC:10595,UG:9945,UPGS:8895,UPCS:8895,ULB:9195,USLB:9445,ULBC:11145,UCLBC:11395,USLBC:11295,UPLBC:11495,ULG:10845},18:{UUTX:9345,USUTX:9595,UC:11295,UCC:11545,USC:11445,UPC:11645,UG:11095,UPGS:9975,UPCS:9975,ULB:10345,USLB:10595,ULBC:12295,UCLBC:12545,USLBC:12445,UPLBC:12645,ULG:12095},20:{UUTX:10395,USUTX:10645,UC:12345,UCC:12595,USC:12495,UPC:12695,UG:12195,UPGS:11095,UPCS:11095,ULB:11495,USLB:11745,ULBC:13445,UCLBC:13695,USLBC:13595,UPLBC:13795,ULG:13295},22:{UUTX:11445,USUTX:11695,UC:13395,UCC:13645,USC:13545,UPC:13745,UG:13295,UPGS:12245,UPCS:12245,ULB:12645,USLB:12895,ULBC:14595,UCLBC:14845,USLBC:14745,UPLBC:14945,ULG:14495},24:{UUTX:12445,USUTX:12695,UC:14395,UCC:14645,USC:14545,UPC:14745,UG:14345,UPGS:13295,UPCS:13295,ULB:13695,USLB:13945,ULBC:15645,UCLBC:15895,USLBC:15795,UPLBC:15995,ULG:15595},26:{UUTX:13195,USUTX:13445,UC:15145,UCC:15395,USC:15295,UPC:15495,UG:15145,UPGS:14145,UPCS:14145,ULB:14495,USLB:14745,ULBC:16445,UCLBC:16695,USLBC:16595,UPLBC:16795,ULG:16445},28:{UUTX:14195,USUTX:14445,UC:16145,UCC:16395,USC:16295,UPC:16495,UG:16195,UPGS:15195,UPCS:15195,ULB:15595,USLB:15845,ULBC:17545,UCLBC:17795,USLBC:17695,UPLBC:17895,ULG:17595},30:{UUTX:15195,USUTX:15445,UC:17145,UCC:17395,USC:17295,UPC:17495,UG:17245,UPGS:16245,UPCS:16245,ULB:16695,USLB:16945,ULBC:18645,UCLBC:18895,USLBC:18795,UPLBC:18995,ULG:18745},32:{UUTX:16195,USUTX:16445,UC:18145,UCC:18395,USC:18295,UPC:18495,UG:18295,UPGS:17345,UPCS:17345,ULB:17795,USLB:18045,ULBC:19745,UCLBC:19995,USLBC:19895,UPLBC:20095,ULG:19895},34:{UUTX:17095,USUTX:17345,UC:19045,UCC:19295,USC:19195,UPC:19395,UG:19295,UPGS:18295,UPCS:18295,ULB:18845,USLB:19095,ULBC:20795,UCLBC:21045,USLBC:20945,UPLBC:21145,ULG:21045},36:{UUTX:17995,USUTX:18245,UC:19945,UCC:20195,USC:20095,UPC:20295,UG:20245,UPGS:19295,UPCS:19295,ULB:19845,USLB:20095,ULBC:21795,UCLBC:22045,USLBC:21945,UPLBC:22145,ULG:22095},38:{UUTX:18895,USUTX:19145,UC:20845,UCC:21095,USC:20995,UPC:21195,UG:21195,UPGS:20245,UPCS:20245,ULB:20895,USLB:21145,ULBC:22845,UCLBC:23095,USLBC:22995,UPLBC:23195,ULG:23195},40:{UUTX:19795,USUTX:20045,UC:21745,UCC:21995,USC:21895,UPC:22095,UG:22145,UPGS:21195,UPCS:21195,ULB:21945,USLB:22195,ULBC:23895,UCLBC:24145,USLBC:24045,UPLBC:24245,ULG:24295},42:{UUTX:20795,USUTX:21045,UC:22745,UCC:22995,USC:22895,UPC:23095,UG:23195,UPGS:22295,UPCS:22295,ULB:23045,USLB:23295,ULBC:24995,UCLBC:25245,USLBC:25145,UPLBC:25345,ULG:25445},44:{UUTX:21795,USUTX:22045,UC:23745,UCC:23995,USC:23895,UPC:24095,UG:24245,UPGS:23345,UPCS:23345,ULB:24145,USLB:24395,ULBC:26095,UCLBC:26345,USLBC:26245,UPLBC:26445,ULG:26595},46:{UUTX:22795,USUTX:23045,UC:24745,UCC:24995,USC:24895,UPC:25095,UG:25295,UPGS:24445,UPCS:24445,ULB:25245,USLB:25495,ULBC:27195,UCLBC:27445,USLBC:27345,UPLBC:27545,ULG:27745},48:{UUTX:23795,USUTX:24045,UC:25745,UCC:25995,USC:25895,UPC:26095,UG:26345,UPGS:25495,UPCS:25495,ULB:26345,USLB:26595,ULBC:28295,UCLBC:28545,USLBC:28445,UPLBC:28645,ULG:28895},50:{UUTX:24745,USUTX:24995,UC:26695,UCC:26945,USC:26845,UPC:27045,UG:27345,UPGS:26495,UPCS:26495,ULB:27445,USLB:27695,ULBC:29395,UCLBC:29645,USLBC:29545,UPLBC:29745,ULG:30045},52:{UUTX:25745,USUTX:25995,UC:27695,UCC:27945,USC:27845,UPC:28045,UG:28445,UPGS:27595,UPCS:27595,ULB:28545,USLB:28795,ULBC:30495,UCLBC:30745,USLBC:30645,UPLBC:30845,ULG:31245},54:{UUTX:26745,USUTX:26995,UC:28695,UCC:28945,USC:28845,UPC:29045,UG:29495,UPGS:28645,UPCS:28645,ULB:29645,USLB:29895,ULBC:31595,UCLBC:31845,USLBC:31745,UPLBC:31945,ULG:32395},56:{UUTX:27745,USUTX:27995,UC:29695,UCC:29945,USC:29845,UPC:30045,UG:30545,UPGS:29745,UPCS:29745,ULB:30745,USLB:30995,ULBC:32695,UCLBC:32945,USLBC:32845,UPLBC:33045,ULG:33545},58:{UUTX:28745,USUTX:28995,UC:30695,UCC:30945,USC:30845,UPC:31045,UG:31595,UPGS:30795,UPCS:30795,ULB:31845,USLB:32095,ULBC:33795,UCLBC:34045,USLBC:33945,UPLBC:34145,ULG:34695},60:{UUTX:29695,USUTX:29945,UC:31645,UCC:31895,USC:31795,UPC:31995,UG:32595,UPGS:31795,UPCS:31795,ULB:32945,USLB:33195,ULBC:34895,UCLBC:35145,USLBC:35045,UPLBC:35245,ULG:35845}},16:{8:{UUTX:9195,USUTX:9445,UC:11295,UCC:11545,USC:11445,UPC:11645,UG:10695,UPGS:9595,UPCS:9595,ULB:10095,USLB:10345,ULBC:12195,UCLBC:12445,USLBC:12345,UPLBC:12545,ULG:11595},10:{UUTX:9195,USUTX:9445,UC:11295,UCC:11545,USC:11445,UPC:11645,UG:10745,UPGS:9695,UPCS:9695,ULB:10095,USLB:10345,ULBC:12195,UCLBC:12445,USLBC:12345,UPLBC:12545,ULG:11645},12:{UUTX:9195,USUTX:9445,UC:11295,UCC:11545,USC:11445,UPC:11645,UG:10795,UPGS:9795,UPCS:9795,ULB:10095,USLB:10345,ULBC:12195,UCLBC:12445,USLBC:12345,UPLBC:12545,ULG:11695},14:{UUTX:9195,USUTX:9445,UC:11295,UCC:11545,USC:11445,UPC:11645,UG:10845,UPGS:9895,UPCS:9895,ULB:10095,USLB:10345,ULBC:12195,UCLBC:12445,USLBC:12345,UPLBC:12545,ULG:11745},16:{UUTX:9195,USUTX:9445,UC:11295,UCC:11545,USC:11445,UPC:11645,UG:10945,UPGS:9995,UPCS:9995,ULB:10095,USLB:10345,ULBC:12195,UCLBC:12445,USLBC:12345,UPLBC:12545,ULG:11845},18:{UUTX:10295,USUTX:10545,UC:12395,UCC:12645,USC:12545,UPC:12745,UG:12095,UPGS:11195,UPCS:11195,ULB:11345,USLB:11595,ULBC:13445,UCLBC:13695,USLBC:13595,UPLBC:13795,ULG:13145},20:{UUTX:11445,USUTX:11695,UC:13545,UCC:13795,USC:13695,UPC:13895,UG:13295,UPGS:12445,UPCS:12445,ULB:12595,USLB:12845,ULBC:14695,UCLBC:14945,USLBC:14845,UPLBC:15045,ULG:14445},22:{UUTX:12595,USUTX:12845,UC:14695,UCC:14945,USC:14845,UPC:15045,UG:14545,UPGS:13695,UPCS:13695,ULB:13895,USLB:14145,ULBC:15995,UCLBC:16245,USLBC:16145,UPLBC:16345,ULG:15845},24:{UUTX:13745,USUTX:13995,UC:15845,UCC:16095,USC:15995,UPC:16195,UG:15745,UPGS:14945,UPCS:14945,ULB:15145,USLB:15395,ULBC:17245,UCLBC:17495,USLBC:17395,UPLBC:17595,ULG:17145},26:{UUTX:14895,USUTX:15145,UC:16995,UCC:17245,USC:17145,UPC:17345,UG:16945,UPGS:16195,UPCS:16195,ULB:16395,USLB:16645,ULBC:18495,UCLBC:18745,USLBC:18645,UPLBC:18845,ULG:18445},28:{UUTX:16045,USUTX:16295,UC:18145,UCC:18395,USC:18295,UPC:18495,UG:18145,UPGS:17445,UPCS:17445,ULB:17645,USLB:17895,ULBC:19745,UCLBC:19995,USLBC:19895,UPLBC:20095,ULG:19745},30:{UUTX:17195,USUTX:17445,UC:19295,UCC:19545,USC:19445,UPC:19645,UG:19395,UPGS:18695,UPCS:18695,ULB:18895,USLB:19145,ULBC:20995,UCLBC:21245,USLBC:21145,UPLBC:21345,ULG:21095},32:{UUTX:18295,USUTX:18545,UC:20395,UCC:20645,USC:20545,UPC:20745,UG:20545,UPGS:19895,UPCS:19895,ULB:20145,USLB:20395,ULBC:22245,UCLBC:22495,USLBC:22395,UPLBC:22595,ULG:22395},34:{UUTX:19295,USUTX:19545,UC:21395,UCC:21645,USC:21545,UPC:21745,UG:21595,UPGS:20995,UPCS:20995,ULB:21345,USLB:21595,ULBC:23445,UCLBC:23695,USLBC:23595,UPLBC:23795,ULG:23645},36:{UUTX:20295,USUTX:20545,UC:22395,UCC:22645,USC:22545,UPC:22745,UG:22695,UPGS:22095,UPCS:22095,ULB:22545,USLB:22795,ULBC:24645,UCLBC:24895,USLBC:24795,UPLBC:24995,ULG:24945},38:{UUTX:21345,USUTX:21595,UC:23445,UCC:23695,USC:23595,UPC:23795,UG:23795,UPGS:23245,UPCS:23245,ULB:23745,USLB:23995,ULBC:25845,UCLBC:26095,USLBC:25995,UPLBC:26195,ULG:26195},40:{UUTX:22395,USUTX:22645,UC:24495,UCC:24745,USC:24645,UPC:24845,UG:24895,UPGS:24395,UPCS:24395,ULB:24895,USLB:25145,ULBC:26995,UCLBC:27245,USLBC:27145,UPLBC:27345,ULG:27395},42:{UUTX:23545,USUTX:23795,UC:25645,UCC:25895,USC:25795,UPC:25995,UG:26095,UPGS:25645,UPCS:25645,ULB:26145,USLB:26395,ULBC:28245,UCLBC:28495,USLBC:28395,UPLBC:28595,ULG:28695},44:{UUTX:24645,USUTX:24895,UC:26745,UCC:26995,USC:26895,UPC:27095,UG:27295,UPGS:26845,UPCS:26845,ULB:27395,USLB:27645,ULBC:29495,UCLBC:29745,USLBC:29645,UPLBC:29845,ULG:30045},46:{UUTX:25795,USUTX:26045,UC:27895,UCC:28145,USC:28045,UPC:28245,UG:28495,UPGS:28095,UPCS:28095,ULB:28645,USLB:28895,ULBC:30745,UCLBC:30995,USLBC:30895,UPLBC:31095,ULG:31345},48:{UUTX:26895,USUTX:27145,UC:28995,UCC:29245,USC:29145,UPC:29345,UG:29645,UPGS:29295,UPCS:29295,ULB:29895,USLB:30145,ULBC:31995,UCLBC:32245,USLBC:32145,UPLBC:32345,ULG:32645},50:{UUTX:27995,USUTX:28245,UC:30095,UCC:30345,USC:30245,UPC:30445,UG:30795,UPGS:30495,UPCS:30495,ULB:31145,USLB:31395,ULBC:33245,UCLBC:33495,USLBC:33395,UPLBC:33595,ULG:33945},52:{UUTX:29145,USUTX:29395,UC:31245,UCC:31495,USC:31395,UPC:31595,UG:32045,UPGS:31745,UPCS:31745,ULB:32395,USLB:32645,ULBC:34495,UCLBC:34745,USLBC:34645,UPLBC:34845,ULG:35295},54:{UUTX:30245,USUTX:30495,UC:32345,UCC:32595,USC:32495,UPC:32695,UG:33195,UPGS:32945,UPCS:32945,ULB:33645,USLB:33895,ULBC:35745,UCLBC:35995,USLBC:35895,UPLBC:36095,ULG:36595},56:{UUTX:31395,USUTX:31645,UC:33495,UCC:33745,USC:33645,UPC:33845,UG:34395,UPGS:34195,UPCS:34195,ULB:34895,USLB:35145,ULBC:36995,UCLBC:37245,USLBC:37145,UPLBC:37345,ULG:37895},58:{UUTX:32495,USUTX:32745,UC:34595,UCC:34845,USC:34745,UPC:34945,UG:35595,UPGS:35395,UPCS:35395,ULB:36095,USLB:36345,ULBC:38195,UCLBC:38445,USLBC:38345,UPLBC:38545,ULG:39195},60:{UUTX:33595,USUTX:33845,UC:35695,UCC:35945,USC:35845,UPC:36045,UG:36745,UPGS:36595,UPCS:36595,ULB:37345,USLB:37595,ULBC:39445,UCLBC:39695,USLBC:39595,UPLBC:39795,ULG:40495}}};
 const NAMES={UUTX:'Utility',USUTX:'Side Utility',UC:'Cabin',UCC:'Center Cabin',USC:'Side Cabin',UPC:'Premier Cabin',UG:'Garage',UPGS:'Garden Shed',UPCS:'Cottage Shed',ULB:'Lofted Barn',USLB:'Side Lofted Barn',ULBC:'Lofted Barn Cabin',UCLBC:'Center Lofted Barn Cabin',USLBC:'Side Lofted Barn Cabin',UPLBC:'Premier Lofted Barn Cabin',ULG:'Lofted Garage'};
 const RTO_DOWN={8:100,10:150,12:250,14:750,16:1500};
+var _PRICING_BASELINE=JSON.parse(JSON.stringify(PRICING));
+var _pendingPriceTableUpload=null;
+function _countPriceTableCells(tbl){
+  var n=0;
+  Object.keys(tbl||{}).forEach(function(w){
+    Object.keys(tbl[w]||{}).forEach(function(l){
+      n+=Object.keys(tbl[w][l]||{}).length;
+    });
+  });
+  return n;
+}
+function serializePriceTable(tbl){
+  return JSON.parse(JSON.stringify(tbl||PRICING));
+}
+function applyPriceTableOverrides(overrides){
+  if(!overrides||typeof overrides!=='object') return;
+  Object.keys(overrides).forEach(function(wk){
+    var w=parseInt(wk,10);
+    if(!PRICING[w]) return;
+    Object.keys(overrides[wk]||{}).forEach(function(lk){
+      var l=parseInt(lk,10);
+      if(!PRICING[w][l]) return;
+      Object.keys(overrides[wk][lk]||{}).forEach(function(code){
+        if(PRICING[w][l][code]!==undefined) PRICING[w][l][code]=parseFloat(overrides[wk][lk][code])||0;
+      });
+    });
+  });
+}
+function restorePriceTableFromBaseline(){
+  Object.keys(PRICING).forEach(function(w){ delete PRICING[w]; });
+  Object.keys(_PRICING_BASELINE).forEach(function(w){
+    PRICING[w]=JSON.parse(JSON.stringify(_PRICING_BASELINE[w]));
+  });
+}
+function initPriceTableFromSettings(){
+  restorePriceTableFromBaseline();
+  var s=loadSettings()||{};
+  if(s.priceTableOverrides) applyPriceTableOverrides(s.priceTableOverrides);
+}
+function _priceTableStyleCodes(){
+  return Object.keys(NAMES);
+}
+function _priceTableStyleLabelToCode(label){
+  var raw=String(label||'').trim();
+  if(!raw) return null;
+  var codes=_priceTableStyleCodes();
+  for(var i=0;i<codes.length;i++){
+    if(codes[i]===raw) return codes[i];
+    if(NAMES[codes[i]]&&NAMES[codes[i]].toLowerCase()===raw.toLowerCase()) return codes[i];
+  }
+  return null;
+}
+function _parseCsvLine(line){
+  var out=[],cur='',inQ=false;
+  for(var i=0;i<line.length;i++){
+    var ch=line[i];
+    if(ch==='"'){
+      if(inQ&&line[i+1]==='"'){ cur+='"'; i++; }
+      else inQ=!inQ;
+    }else if(ch===','&&!inQ){ out.push(cur); cur=''; }
+    else cur+=ch;
+  }
+  out.push(cur);
+  return out.map(function(c){ return c.trim(); });
+}
+function downloadPriceTableCsv(){
+  var codes=_priceTableStyleCodes();
+  var rows=['Width,Length'].concat(codes.map(function(c){ return NAMES[c]||c; }));
+  Object.keys(PRICING).sort(function(a,b){ return parseInt(a,10)-parseInt(b,10); }).forEach(function(wk){
+    Object.keys(PRICING[wk]).sort(function(a,b){ return parseInt(a,10)-parseInt(b,10); }).forEach(function(lk){
+      var row=[wk,lk];
+      codes.forEach(function(code){
+        var val=PRICING[wk]&&PRICING[wk][lk]?PRICING[wk][lk][code]:'';
+        row.push(val!==undefined&&val!==''?String(val):'');
+      });
+      rows.push(row.join(','));
+    });
+  });
+  var blob=new Blob([rows.join('\n')],{type:'text/csv;charset=utf-8'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='GemStateSheds-PriceTable.csv';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },500);
+}
+function uploadPriceTableCsv(input){
+  var file=input&&input.files&&input.files[0];
+  if(!file) return;
+  var reader=new FileReader();
+  reader.onload=function(){
+    try{
+      var text=String(reader.result||'');
+      var lines=text.split(/\r?\n/).filter(function(l){ return l.trim(); });
+      if(lines.length<2) throw new Error('CSV must include a header row and at least one data row.');
+      var header=_parseCsvLine(lines[0]);
+      if(header.length<3||String(header[0]).toLowerCase()!=='width'||String(header[1]).toLowerCase()!=='length') throw new Error('First columns must be Width, Length.');
+      var colCodes=[];
+      var skippedCols=[];
+      for(var c=2;c<header.length;c++){
+        var code=_priceTableStyleLabelToCode(header[c]);
+        if(code) colCodes.push(code); else skippedCols.push(header[c]);
+      }
+      if(!colCodes.length) throw new Error('No recognized style columns found.');
+      var overrides=serializePriceTable(_PRICING_BASELINE);
+      var rowsRead=0, cellsChanged=0, rowsSkipped=0;
+      for(var r=1;r<lines.length;r++){
+        var cells=_parseCsvLine(lines[r]);
+        if(!cells.length||cells.every(function(v){ return !String(v).trim(); })) continue;
+        var w=parseInt(cells[0],10), l=parseInt(cells[1],10);
+        if(!w||!l||!PRICING[w]||!PRICING[w][l]){ rowsSkipped++; continue; }
+        rowsRead++;
+        for(var ci=0;ci<colCodes.length;ci++){
+          var code=colCodes[ci];
+          var raw=cells[ci+2];
+          if(raw===''||raw==null) continue;
+          var price=parseFloat(String(raw).replace(/[$,]/g,''));
+          if(!isFinite(price)) continue;
+          if(!overrides[w]) overrides[w]={};
+          if(!overrides[w][l]) overrides[w][l]={};
+          var baseline=_PRICING_BASELINE[w]&&_PRICING_BASELINE[w][l]&&_PRICING_BASELINE[w][l][code];
+          if(baseline!==price) cellsChanged++;
+          overrides[w][l][code]=price;
+        }
+      }
+      _pendingPriceTableUpload={overrides:overrides,rowsRead:rowsRead,cellsChanged:cellsChanged,rowsSkipped:rowsSkipped,skippedCols:skippedCols};
+      var preview=document.getElementById('set_priceTableUploadPreview');
+      if(preview){
+        preview.style.display='block';
+        var msg='Parsed <strong>'+rowsRead+'</strong> rows. <strong>'+cellsChanged+'</strong> prices differ from defaults.';
+        if(rowsSkipped) msg+=' Skipped <strong>'+rowsSkipped+'</strong> rows with unknown width/length.';
+        if(skippedCols.length) msg+=' Ignored columns: '+skippedCols.map(escHtml).join(', ')+'.';
+        msg+='<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;"><button type="button" class="btn-primary" style="font-size:0.78rem;padding:7px 14px;" onclick="confirmPriceTableUpload()">Apply upload</button><button type="button" class="btn-secondary" style="font-size:0.78rem;padding:7px 14px;" onclick="cancelPriceTableUpload()">Cancel</button></div>';
+        preview.innerHTML=msg;
+      }
+    }catch(err){
+      showToast(err.message||'Could not parse CSV');
+      _pendingPriceTableUpload=null;
+    }
+    input.value='';
+  };
+  reader.readAsText(file);
+}
+function confirmPriceTableUpload(){
+  if(!_pendingPriceTableUpload||!_pendingPriceTableUpload.overrides) return;
+  restorePriceTableFromBaseline();
+  applyPriceTableOverrides(_pendingPriceTableUpload.overrides);
+  var s=loadSettings();
+  s.priceTableOverrides=_pendingPriceTableUpload.overrides;
+  saveSettings(s);
+  _pendingPriceTableUpload=null;
+  var preview=document.getElementById('set_priceTableUploadPreview');
+  if(preview){ preview.style.display='none'; preview.innerHTML=''; }
+  renderSettingsPricingBaseTableForm(s);
+  try{ updateQuickPrice(); }catch(_e){}
+  showToast('Price table updated — tap Save to sync to cloud');
+}
+function cancelPriceTableUpload(){
+  _pendingPriceTableUpload=null;
+  var preview=document.getElementById('set_priceTableUploadPreview');
+  if(preview){ preview.style.display='none'; preview.innerHTML=''; }
+}
+function restoreDefaultPriceTable(){
+  if(!confirm('Restore all base building prices to factory defaults?')) return;
+  restorePriceTableFromBaseline();
+  var s=loadSettings();
+  delete s.priceTableOverrides;
+  saveSettings(s);
+  renderSettingsPricingBaseTableForm(s);
+  try{ updateQuickPrice(); }catch(_e){}
+  showToast('Default pricing restored — tap Save to sync to cloud');
+}
+(function initPriceTableOnLoad(){
+  try{ initPriceTableFromSettings(); }catch(_ePt){}
+})();
 
 // ============================================================
 // SQ FOOTAGE LOOKUP TABLES (internal — not shown to customer)
@@ -14760,7 +15256,7 @@ function getSettingVal(key,def){
 // ============================================================
 // CALCULATOR
 // ============================================================
-let calcState={type:null,width:null,length:null,payType:'cash',rtoMonths:36,addons:{},addonQty:{},addonExcluded:{},saleActive:false,salePercent:0,dealerDiscount:0,taxMode:'standard',taxRate:0,bosActive:false,quickTaxActive:false,quickDealerActive:false,assurancePlan:2,costReduction:0,qpvShowTax:false,multiDoors:[],multiWindows:[],multiGarage:[],multiCutouts:[],multiCustom:[],multi2x6:[],multiIntwall:[],multiPaint:[],osbIntwallFtManual:false,stdRemoved:{},stdHidden:{},cashDownPayment:null};
+let calcState={type:null,width:null,length:null,payType:'cash',rtoMonths:36,addons:{},addonQty:{},addonVariant:{},addonExcluded:{},saleActive:false,salePercent:0,dealerDiscount:0,taxMode:'standard',taxRate:0,bosActive:false,quickTaxActive:false,quickDealerActive:false,assurancePlan:2,costReduction:0,qpvShowTax:false,multiDoors:[],multiWindows:[],multiGarage:[],multiCutouts:[],multiCustom:[],multi2x6:[],multiIntwall:[],multiPaint:[],osbIntwallFtManual:false,stdRemoved:{},stdHidden:{},cashDownPayment:null};
 let calcCurrentPage=0;
 let _skipCalcTaxReset=false;
 /** When resuming a specific saved quote (from the history list or the home hero card),
@@ -14786,7 +15282,7 @@ const AD_AUTOSAVE_KEY='gss_ad_autosave_v1';
 
 function getDefaultCalcState(){
   return {
-    type:null,width:null,length:null,payType:'cash',rtoMonths:36,addons:{},addonQty:{},addonExcluded:{},
+    type:null,width:null,length:null,payType:'cash',rtoMonths:36,addons:{},addonQty:{},addonVariant:{},addonExcluded:{},
     saleActive:false,salePercent:0,dealerDiscount:0,taxMode:'standard',taxRate:0,
     bosActive:false,quickTaxActive:false,quickDealerActive:false,assurancePlan:2,costReduction:0,qpvShowTax:false,multiDoors:[],multiWindows:[],
     multiGarage:[],multiCutouts:[],multiCustom:[],multi2x6:[],multiIntwall:[],multiPaint:[],osbIntwallFtManual:false,stdRemoved:{},stdHidden:{},cashDownPayment:null,_stdType:null
@@ -16199,7 +16695,7 @@ function syncCalcPriceDeckHeight(){
   if(content) content.style.minHeight='';
   if(viewport) viewport.style.minHeight='';
   if(quickEmpty){
-    var emptyFloor=104;
+    var emptyFloor=112;
     if(viewport) viewport.style.minHeight=emptyFloor+'px';
     deck.style.height='';
     return;
@@ -16669,11 +17165,25 @@ function getReverseCompareValue(snap,mode,taxBasis){
   return beforeTax?rtoData.monthly:rtoData.totalMonthly;
 }
 
+function initRevPillZoneClicks(){
+  var map={
+    revSalePill:toggleRevSale,
+    revTaxPill:toggleRevIncludeTax
+  };
+  Object.keys(map).forEach(function(id){
+    var pill=document.getElementById(id);
+    if(!pill||pill._qpZoneBound) return;
+    pill._qpZoneBound=true;
+    pill.addEventListener('click',function(e){ handleQpPillTap(e,map[id]); });
+  });
+}
+
 function initCalcAdvancedTools(){
   initRevCalcUi();
   initCalcPriceDeckGestures();
   initRevCalcGestures();
   initQpPillZoneClicks();
+  initRevPillZoneClicks();
   updateQuickPrice();
 }
 
@@ -16770,13 +17280,13 @@ function ensureRevTaxSelectOptions(){
 
 function syncRevTaxUi(){
   ensureRevTaxSelectOptions();
-  var track=document.getElementById('revTaxTrack');
-  var wrap=document.getElementById('rev_taxInputWrap');
   var sel=document.getElementById('rev_taxPctSel');
   var inp=document.getElementById('rev_taxRate');
-  if(track) track.classList.toggle('on',!!revIncludeTax);
-  if(wrap) wrap.classList.toggle('visible',!!revIncludeTax);
-  if(!revIncludeTax||!sel) return;
+  setQpPillPressed('revTaxPill',!!revIncludeTax);
+  if(!revIncludeTax||!sel){
+    gssRefreshListTrigger(sel);
+    return;
+  }
   var tr=parseFloat(inp&&inp.value);
   if(isNaN(tr)||inp.value==='') tr=parseFloat(getSettingVal('taxRate',0))||0;
   var settingsRate=parseFloat(getSettingVal('taxRate',0))||0;
@@ -16869,13 +17379,13 @@ function ensureRevSalePctSelectOptions(){
 
 function syncRevSaleUi(){
   ensureRevSalePctSelectOptions();
-  var track=document.getElementById('revSaleTrack');
-  var wrap=document.getElementById('rev_saleInputWrap');
   var saleSel=document.getElementById('rev_salePctSel');
   var inp=document.getElementById('rev_salePct');
   var pct=revSalePercent>0?revSalePercent:0;
-  if(track) track.classList.toggle('on',!!revSaleActive);
-  if(wrap) wrap.classList.toggle('visible',!!revSaleActive);
+  setQpPillPressed('revSalePill',!!revSaleActive);
+  if(!revSaleActive&&saleSel&&saleSel._gssListWrap){
+    closeGssListPanel(saleSel._gssListWrap);
+  }
   if(saleSel){
     var stepped=(pct>=0&&pct<=100&&Math.abs(pct-Math.round(pct/5)*5)<0.001);
     if(stepped){
@@ -19773,6 +20283,10 @@ function _wizSlideSelectOpts(stepId,optKey){
   if(stepId==='intwallType'||optKey==='intwall') return _INTWALL_TYPE_OPTS;
   if(stepId==='paintType'||optKey==='paintupgrade') return _PAINT_TYPE_OPTS;
   if(stepId==='garType'||optKey==='garagedoor') return _GARAGE_TYPE_OPTS;
+  if(stepId==='genericVariant'&&optKey){
+    var cfg=getOptionConfig(optKey);
+    if(cfg) return _buildGenericVariantSelectOpts(cfg);
+  }
   return null;
 }
 
@@ -21338,13 +21852,20 @@ function formatOptionHintFromCfg(cfg){
       Object.keys(cfg.variants).forEach(function(k){
         var v=cfg.variants[k];
         if(Array.isArray(v)) collect(v);
-        else if(v&&Array.isArray(v)) collect(v);
         else if(v&&v.price) prices.push(v.price);
       });
     }
     if(!prices.length) return _fmtOptMoney(cfg.price)+'+';
     var mn3=Math.min.apply(null,prices),mx3=Math.max.apply(null,prices);
     return mn3===mx3?_fmtOptMoney(mn3):(_fmtOptMoney(mn3)+'\u2013'+_fmtOptMoney(mx3));
+  }
+  var genVars=_optGenericVariantList(cfg);
+  if(genVars.length){
+    var gPrices=genVars.map(function(v){ return parseFloat(v.price)||0; }).filter(function(p){ return p>0; });
+    if(gPrices.length){
+      var gmn=Math.min.apply(null,gPrices),gmx=Math.max.apply(null,gPrices);
+      return gmn===gmx?_fmtOptMoney(gmn):(_fmtOptMoney(gmn)+'\u2013'+_fmtOptMoney(gmx));
+    }
   }
   return _fmtOptMoney(cfg.price);
 }
@@ -21369,7 +21890,7 @@ function getOptionLinFtRate(key,subKey){
     }
   }
   if(key==='osb_intwall') return parseFloat(cfg.price)||20;
-  return parseFloat(cfg.price)||0;
+  return _activeGenericVariantPrice(key,parseFloat(cfg.price)||0);
 }
 
 function getOptionFlatPrice(key,ctx){
@@ -21378,7 +21899,7 @@ function getOptionFlatPrice(key,ctx){
   ctx=ctx||{};
   var w=parseInt(ctx.w||ctx.width,10)||0;
   var l=parseInt(ctx.l||ctx.length,10)||0;
-  if(cfg.priceMode==='total') return parseFloat(cfg.price)||0;
+  if(cfg.priceMode==='total') return _activeGenericVariantPrice(key,parseFloat(cfg.price)||0);
   if(cfg.priceMode==='tallwall'){
     var p=cfg.prices||{};
     if(w>=14) return parseFloat(p.wide14)||1000;
@@ -21394,7 +21915,7 @@ function getOptionFlatPrice(key,ctx){
 
 function getOptionSqFtRate(key){
   var cfg=getOptionConfig(key);
-  return cfg?parseFloat(cfg.price)||0:0;
+  return cfg?_activeGenericVariantPrice(key,parseFloat(cfg.price)||0):0;
 }
 
 function getOptionVariantPrice(key,variantId,subType){
@@ -21523,6 +22044,7 @@ function buildUserOptEntry(cfg){
       });
     };
   }
+  if(!_optHasDedicatedVariants(cfg)) entry=_applyGenericVariantsToEntry(entry,cfg);
   return entry;
 }
 
@@ -21553,9 +22075,11 @@ function getEffectiveOptCatalog(){
         else if(s.id==='intwallType') ns.options=_INTWALL_TYPE_OPTS;
         else if(s.id==='paintType') ns.options=_PAINT_TYPE_OPTS;
         else if(s.id==='garType') ns.options=_GARAGE_TYPE_OPTS;
+        else if(s.id==='genericVariant') ns.options=_buildGenericVariantSelectOpts(cfg);
         return ns;
       });
     }
+    if(!_optHasDedicatedVariants(cfg)) e=_applyGenericVariantsToEntry(e,cfg);
     out.push(e);
   });
   getMergedOptionsCatalog(true).forEach(function(cfg){
@@ -29033,6 +29557,7 @@ function gssListLinkedCustomInput(sel){
   if(!sel||!sel.id) return null;
   var map={
     c_quickSalePctSel:'c_quickSalePct',
+    cb_quickSalePctSel:'cb_quickSalePct',
     calcQuickTaxSelect:'calcQuickTaxPct',
     ss_quickSalePctSel:'ss_quickSalePct',
     rev_salePctSel:'rev_salePct',
@@ -29168,7 +29693,7 @@ function gssGetListPanel(wrap){
 }
 
 function gssShouldFloatListPanel(wrap){
-  return !!(wrap&&wrap.closest('#screenCalc'));
+  return !!(wrap&&(wrap.closest('#screenCalc')||wrap.closest('#cbBuilding')));
 }
 
 function gssFloatListPanel(wrap){
@@ -29227,7 +29752,7 @@ function gssPositionFloatedListPanel(wrap){
 }
 
 function gssPositionFloatedListPanels(){
-  document.querySelectorAll('#screenCalc .gss-list-wrap.is-open').forEach(function(w){
+  document.querySelectorAll('#screenCalc .gss-list-wrap.is-open, #cbBuilding .gss-list-wrap.is-open').forEach(function(w){
     gssPositionFloatedListPanel(w);
   });
 }
@@ -29368,6 +29893,10 @@ function initGssListSelectors(){
   [
     {id:'calcWidth',title:'Width'},
     {id:'calcLength',title:'Length'},
+    {id:'cb_calcWidth',title:'Width'},
+    {id:'cb_calcLength',title:'Length'},
+    {id:'cb_quickSalePctSel',title:'Sale %'},
+    {id:'cb_quickDealer',title:'Dealer discount'},
     {id:'adWidth',title:'Width'},
     {id:'adLength',title:'Length'},
     {id:'adLocation',title:'Location'},
@@ -29381,6 +29910,8 @@ function initGssListSelectors(){
     {id:'assuranceSelect',title:'Assurance Plan'},
     {id:'rev_salePctSel',title:'Sale %'},
     {id:'rev_taxPctSel',title:'Tax %'},
+    {id:'rev_mode',title:'Mode'},
+    {id:'rev_term',title:'RTO Term'},
     {id:'rev_filterSize',title:'Filter by size'},
     {id:'rev_filterStyle',title:'Filter by style'},
     {id:'rev_sortMode',title:'Sort results'},
@@ -29492,6 +30023,7 @@ document.addEventListener('DOMContentLoaded', function() {
   buildStyleRefTable();
   ensureQuickSalePctSelectOptions();
   ensureCalcQuickTaxOptions();
+  try{ cb_ensureQuickSalePctOptions(); }catch(_eCbSale){}
   initGssListSelectors();
   initCalcAdvancedTools();
   try{ updateAddOptionBtnState(); }catch(_eAddOpt){}
@@ -29898,6 +30430,7 @@ function cb_onCalcWidthChange(val){
     cbCalcState.length=null;
     ls.value='';
   }
+  try{ gssRefreshListTrigger(ls); }catch(_eGl2){}
   cb_syncDimensionBasedOptionFields();
   cb_updateQuickPrice();
   cb_updateAddOptionBtnState();
@@ -29909,17 +30442,105 @@ function cb_onCalcLengthChange(val){
   cb_updateQuickPrice();
   cb_updateAddOptionBtnState();
 }
-function cb_onSaleInput(el){
-  var v=parseFloat(el&&el.value);
-  cbCalcState.salePercent=isNaN(v)||v<0?0:Math.min(v,100);
-  cbCalcState.saleActive=cbCalcState.salePercent>0;
+function cb_ensureQuickSalePctOptions(){
+  var s=document.getElementById('cb_quickSalePctSel');
+  if(!s||(s.options&&s.options.length>0)) return;
+  var frag=document.createDocumentFragment();
+  for(var p=0;p<=100;p+=5){
+    var o=document.createElement('option');
+    o.value=String(p); o.textContent=p===0?'0%':(p+'%');
+    frag.appendChild(o);
+  }
+  var c=document.createElement('option');
+  c.value='custom'; c.textContent='Custom…';
+  frag.appendChild(c);
+  s.appendChild(frag);
+}
+function cb_setPillPressed(id,on){
+  var p=document.getElementById(id);
+  if(p) p.setAttribute('aria-pressed',on?'true':'false');
+}
+function cb_toggleQuickSale(){
+  cbCalcState.saleActive=!cbCalcState.saleActive;
+  if(!cbCalcState.saleActive){
+    var sel=document.getElementById('cb_quickSalePctSel');
+    if(sel&&sel._gssListWrap) closeGssListPanel(sel._gssListWrap);
+  }
+  cb_syncSaleDealerUI();
   cb_updateQuickPrice();
 }
-function cb_onDealerInput(el){
-  var v=parseFloat(el&&el.value);
-  cbCalcState.dealerDiscount=isNaN(v)||v<0?0:Math.min(v,5);
-  cbCalcState.quickDealerActive=cbCalcState.dealerDiscount>0;
+function cb_toggleQuickDealer(){
+  cbCalcState.quickDealerActive=!cbCalcState.quickDealerActive;
+  if(!cbCalcState.quickDealerActive){
+    var sel=document.getElementById('cb_quickDealer');
+    if(sel&&sel._gssListWrap) closeGssListPanel(sel._gssListWrap);
+  }
+  cb_syncSaleDealerUI();
   cb_updateQuickPrice();
+}
+function cb_onQuickSaleSelectChange(el){
+  cb_ensureQuickSalePctOptions();
+  var v=el&&el.value;
+  if(v==='custom'){
+    var linked=document.getElementById('cb_quickSalePct');
+    var cv=parseFloat(linked&&linked.value);
+    cbCalcState.salePercent=isNaN(cv)||cv<0?0:Math.min(cv,100);
+  }else{
+    var num=parseInt(v,10);
+    if(isNaN(num)||num<0) num=0;
+    if(num>100) num=100;
+    cbCalcState.salePercent=num;
+  }
+  cbCalcState.saleActive=true;
+  cb_setPillPressed('cb_quickSalePill',true);
+  gssRefreshListTrigger(el);
+  cb_updateQuickPrice();
+}
+function cb_onQuickDealerChange(el){
+  var num=parseInt(el&&el.value,10);
+  if(isNaN(num)||num<0) num=0;
+  if(num>5) num=5;
+  cbCalcState.dealerDiscount=num;
+  cbCalcState.quickDealerActive=num>0;
+  cb_setPillPressed('cb_quickDealerPill',cbCalcState.quickDealerActive);
+  gssRefreshListTrigger(el);
+  cb_updateQuickPrice();
+}
+function cb_syncSaleDealerUI(){
+  cb_ensureQuickSalePctOptions();
+  var saleSel=document.getElementById('cb_quickSalePctSel');
+  var linked=document.getElementById('cb_quickSalePct');
+  var pct=cbCalcState.salePercent>0?cbCalcState.salePercent:0;
+  cb_setPillPressed('cb_quickSalePill',!!cbCalcState.saleActive);
+  if(saleSel){
+    var isPreset=(pct%5===0);
+    if(pct>0&&!isPreset){
+      saleSel.value='custom';
+      if(linked) linked.value=String(pct);
+    }else{
+      saleSel.value=String(pct);
+      if(linked) linked.value='';
+    }
+    gssRefreshListTrigger(saleSel);
+  }
+  var dealerSel=document.getElementById('cb_quickDealer');
+  cb_setPillPressed('cb_quickDealerPill',!!cbCalcState.quickDealerActive);
+  if(dealerSel){
+    dealerSel.value=String(cbCalcState.quickDealerActive?(cbCalcState.dealerDiscount||0):0);
+    gssRefreshListTrigger(dealerSel);
+  }
+}
+function cb_initSaleDealerPills(){
+  cb_ensureQuickSalePctOptions();
+  [['cb_quickSalePill',cb_toggleQuickSale],['cb_quickDealerPill',cb_toggleQuickDealer]].forEach(function(pair){
+    var pill=document.getElementById(pair[0]);
+    if(!pill||pill._cbZoneBound) return;
+    pill._cbZoneBound=true;
+    pill.addEventListener('click',function(e){
+      if(typeof handleQpPillTap==='function') handleQpPillTap(e,pair[1]);
+      else pair[1]();
+    });
+  });
 }
 function cb_updateQuickPrice(){
   var priceEl=document.getElementById('cb_quickSalePrice');
@@ -31034,8 +31655,10 @@ function cb_syncBuildingUIFromState(){
   try{ cb_onCalcWidthChange(w?String(w):''); }catch(_eW){}
   var lsel=document.getElementById('cb_calcLength');
   if(lsel) lsel.value=cbCalcState.length?String(cbCalcState.length):'';
-  cbSetVal('cb_salePercent',(cbCalcState.saleActive&&cbCalcState.salePercent)?String(cbCalcState.salePercent):'');
-  cbSetVal('cb_dealerDiscount',(cbCalcState.quickDealerActive&&cbCalcState.dealerDiscount)?String(cbCalcState.dealerDiscount):'');
+  try{ gssRefreshListTrigger(wsel); }catch(_eGw){}
+  try{ gssRefreshListTrigger(lsel); }catch(_eGl){}
+  try{ cb_initSaleDealerPills(); }catch(_eSp){}
+  try{ cb_syncSaleDealerUI(); }catch(_eSd){}
   try{ cb_updateQuickPrice(); }catch(_eQ){}
   try{ cb_renderOptsSummary(); }catch(_eR){}
   try{ cb_updateAddOptionBtnState(); }catch(_eA){}
@@ -31604,8 +32227,9 @@ function cbReset(silent){
   _cbPbFilter='';
   try{ sessionStorage.removeItem(CB_PASTEBOARD_KEY); }catch(_ePb){}
   cb_resetCalcState();
-  ['cb_searchPhone','cb_searchName','cb_name','cb_phone','cb_email','cb_street','cb_city','cb_state','cb_zip','cb_inventory','cb_salePercent','cb_dealerDiscount']
+  ['cb_searchPhone','cb_searchName','cb_name','cb_phone','cb_email','cb_street','cb_city','cb_state','cb_zip','cb_inventory']
     .forEach(function(id){ cbSetVal(id,''); });
+  try{ cb_syncSaleDealerUI(); }catch(_eRsd){}
   var sr=document.getElementById('cb_searchResults'); if(sr) sr.innerHTML='';
   document.querySelectorAll('.cb-opt.sel').forEach(function(b){ b.classList.remove('sel'); });
   var iw=document.getElementById('cb_invWrap'); if(iw) iw.style.display='none';
