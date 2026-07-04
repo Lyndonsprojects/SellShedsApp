@@ -31,6 +31,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 /* Force light mode — prevent Safari dark mode override */
 :root {
@@ -831,13 +832,14 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
   padding:10px 12px 12px; margin:10px 0 4px; background:rgba(0,0,0,0.12);
 }
 .sel-opts-head {
-  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap;
   margin:0 0 8px;
 }
 .sel-opts-title {
   font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;
   font-size:0.95rem; letter-spacing:2px; color:rgba(232,200,122,0.85);
 }
+.sel-opts-head-btns { display:flex; gap:6px; flex-wrap:wrap; margin-left:auto; }
 .sel-opts-add-btn {
   -webkit-appearance:none; appearance:none; cursor:pointer; flex-shrink:0;
   background:rgba(196,81,31,0.2); border:1.5px solid rgba(196,81,31,0.45);
@@ -846,6 +848,7 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
 }
 .sel-opts-add-btn:disabled { opacity:0.35; cursor:not-allowed; }
 .sel-opts-add-btn:active:not(:disabled) { opacity:0.85; }
+.sel-opts-colors-btn { background:rgba(122,155,139,0.2); border-color:rgba(122,155,139,0.5); }
 .sel-opts-grid {
   display:grid; grid-template-columns:repeat(2,1fr); gap:6px; margin:0;
 }
@@ -864,6 +867,15 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
   -webkit-appearance:none; appearance:none;
 }
 .sel-opt-chk.is-included { background:var(--sage); border-color:var(--sage); }
+.sel-opt-qty {
+  width:30px; min-width:30px; height:22px; box-sizing:border-box;
+  border:1.5px solid rgba(232,200,122,0.35); border-radius:5px; padding:0 2px;
+  font-size:0.72rem; font-weight:700; color:var(--cream); background:rgba(255,255,255,0.08);
+  text-align:center; appearance:textfield; -moz-appearance:textfield;
+}
+.sel-opt-qty::-webkit-outer-spin-button,
+.sel-opt-qty::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+.sel-opt-qty:focus { outline:none; border-color:var(--wheat); background:rgba(255,255,255,0.14); }
 .sel-opt-name { font-weight:600; color:var(--cream); min-width:0; line-height:1.2; overflow-wrap:anywhere; }
 .sel-opt-price { font-weight:700; color:var(--wheat); flex-shrink:0; font-size:0.65rem; }
 .sel-opt-x {
@@ -875,27 +887,36 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
 .sel-opts-empty {
   grid-column:1/-1; font-size:0.72rem; color:rgba(232,200,122,0.45); padding:4px 2px;
 }
-.ss-color-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin:10px 0 4px; }
-@media (max-width:340px) { .ss-color-grid { grid-template-columns:1fr; } }
+.ss-color-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin:0 0 10px; }
+.ss-color-col { display:flex; flex-direction:column; gap:6px; min-width:0; }
+.ss-color-col-label {
+  font-size:0.58rem; letter-spacing:1.4px; text-transform:uppercase; text-align:center;
+  color:rgba(232,200,122,0.6); font-weight:700;
+}
 .ss-color-card {
-  -webkit-appearance:none; appearance:none; text-align:left; cursor:pointer;
-  display:flex; align-items:center; gap:10px; padding:8px; min-width:0;
+  -webkit-appearance:none; appearance:none; text-align:center; cursor:default;
+  display:flex; flex-direction:column; align-items:center; gap:5px; padding:8px 6px; min-width:0;
   background:rgba(0,0,0,0.22); border:1px solid rgba(232,200,122,0.18); border-radius:10px;
 }
 .ss-color-card.is-empty { border-style:dashed; border-color:rgba(232,200,122,0.3); }
-.ss-color-card:active { transform:scale(0.99); }
+.ss-color-sub-label { font-size:0.55rem; letter-spacing:0.6px; text-transform:uppercase; color:rgba(232,200,122,0.5); font-weight:700; }
 .ss-color-sw {
-  width:40px; height:40px; border-radius:8px; flex-shrink:0; overflow:hidden;
+  width:32px; height:32px; border-radius:8px; flex-shrink:0; overflow:hidden;
   background:rgba(255,255,255,0.06); border:1px solid rgba(232,200,122,0.25);
   display:flex; align-items:center; justify-content:center; color:rgba(232,200,122,0.6);
-  font-size:1.2rem; font-weight:700; line-height:1;
+  font-size:1.1rem; font-weight:700; line-height:1;
 }
 .ss-color-sw img { width:100%; height:100%; object-fit:cover; display:block; }
-.ss-color-txt { display:flex; flex-direction:column; min-width:0; flex:1; gap:1px; }
-.ss-color-slot { font-size:0.6rem; letter-spacing:1px; text-transform:uppercase; color:rgba(232,200,122,0.6); font-weight:700; }
-.ss-color-name { font-size:0.82rem; color:var(--cream); font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.ss-color-txt { display:flex; flex-direction:column; align-items:center; min-width:0; width:100%; gap:1px; }
+.ss-color-name { font-size:0.68rem; color:var(--cream); font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%; }
 .ss-color-name.is-placeholder { color:rgba(245,240,232,0.5); font-weight:500; }
-.ss-color-edit { font-size:0.64rem; color:var(--wheat); font-weight:700; flex-shrink:0; opacity:0.85; }
+.ss-color-edit-btn {
+  -webkit-appearance:none; appearance:none; cursor:pointer; width:100%;
+  background:rgba(196,81,31,0.2); border:1.5px solid rgba(196,81,31,0.45);
+  color:var(--wheat); border-radius:7px; padding:4px 6px;
+  font-size:0.6rem; font-weight:700; letter-spacing:0.5px;
+}
+.ss-color-edit-btn:active { opacity:0.85; }
 .opts-summary-wrap { margin:10px 0 8px; }
 .opts-summary-title { font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:0.78rem; letter-spacing:2px; color:rgba(232,200,122,0.65); margin-bottom:6px; }
 .opts-summary-row { display:flex; align-items:center; gap:8px; padding:10px 12px; margin-bottom:6px; background:rgba(0,0,0,0.22); border:1px solid rgba(232,200,122,0.15); border-radius:8px; font-size:0.8rem; }
@@ -1154,6 +1175,9 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
   font-size:0.78rem; font-weight:600; color:#fff; white-space:nowrap;
 }
 .qp-pill-row.is-bos-on .qp-pill-value:empty { display:none; }
+/* Sales sheet price deck: BOS and Dealer Discount don't apply to sales sheets */
+#calcPriceDeck.ss-deck-mode #quickBosCtrl,
+#calcPriceDeck.ss-deck-mode .quick-price-ctrl--dealer-tog { display:none !important; }
 #quickPriceWrap #calcQuickTaxPct,
 #quickPriceWrap .quick-sale-pct-custom { display:none !important; }
 
@@ -1297,10 +1321,18 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
 #screenAd .gss-list-wrap:has(#adWidth) .gss-list-trigger,
 #screenAd .gss-list-wrap:has(#adLength) .gss-list-trigger {
   -webkit-appearance:none; appearance:none; width:100%; box-sizing:border-box;
-  display:flex; align-items:center;
+  display:flex; align-items:center; min-width:0;
   background:rgba(255,255,255,0.08); border:1.5px solid rgba(232,200,122,0.25);
   color:var(--cream); border-radius:8px;
   padding:9px 12px; font-size:0.78rem; min-height:36px;
+}
+#screenCalc .gss-list-wrap:has(#calcWidth) .gss-list-trigger::after,
+#screenCalc .gss-list-wrap:has(#calcLength) .gss-list-trigger::after,
+#screenSalesSheet .gss-list-wrap:has(#ss_width) .gss-list-trigger::after,
+#screenSalesSheet .gss-list-wrap:has(#ss_length) .gss-list-trigger::after,
+#screenAd .gss-list-wrap:has(#adWidth) .gss-list-trigger::after,
+#screenAd .gss-list-wrap:has(#adLength) .gss-list-trigger::after {
+  float:none; margin-left:auto; flex-shrink:0;
 }
 .rto-setting-select option,
 .calc-dark-select option,
@@ -1464,6 +1496,25 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
   padding:9px 12px; font-size:0.78rem; min-height:36px; box-sizing:border-box;
   background:#251a15; border:1.5px solid rgba(232,200,122,0.25);
   border-radius:8px; color:var(--cream); font-weight:600;
+}
+#revCalcShell .gss-list-wrap .gss-list-trigger::after {
+  float:none; margin-left:auto; flex-shrink:0;
+}
+#revCalcShell .qp-pill-fill .gss-list-wrap .gss-list-trigger {
+  border:none !important; background:transparent !important;
+  padding:0 4px !important; min-height:24px !important; height:24px !important;
+  font-size:0.74rem !important; color:#fff !important; text-align:center;
+  justify-content:center; font-weight:600; box-shadow:none !important;
+}
+#revCalcShell .qp-pill-fill .gss-list-wrap .gss-list-trigger::after { display:none !important; }
+#revCalcShell .rev-budget-tile .gss-list-wrap .gss-list-trigger {
+  border:none !important; border-radius:0 !important; background:transparent !important;
+  min-height:34px !important; height:100% !important; padding:0 8px !important;
+  font-size:0.72rem !important; box-shadow:none !important;
+}
+#revCalcShell .rev-budget-tile .gss-list-wrap .gss-list-trigger:focus,
+#revCalcShell .rev-budget-tile .gss-list-wrap.is-open .gss-list-trigger {
+  box-shadow:none !important; background:transparent !important;
 }
 #revCalcShell .gss-list-wrap .gss-list-trigger.is-placeholder {
   color:rgba(245,240,232,0.7); font-weight:500;
@@ -1649,18 +1700,61 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
   border-color:var(--wheat);
   box-shadow:0 0 0 3px rgba(232,200,122,0.12); outline:none;
 }
-#revCalcShell .rev-entry-budget input {
-  font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:2rem;
-  letter-spacing:1px; padding:12px 14px; text-align:center;
+#revCalcShell .rev-entry-budget input,
+#revCalcShell #rev_tolerance {
+  font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;
+  font-size:0.78rem; padding:9px 12px; min-height:36px; text-align:left;
 }
-#revCalcShell .rev-entry-row { display:flex; align-items:flex-end; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
-#revCalcShell .rev-entry-row .field-group { flex:1; min-width:100px; margin-bottom:0; }
-#revCalcShell .rev-pill-rows { margin-bottom:10px; }
-#revCalcShell .rev-pill-rows .qp-pill-row {
-  padding:7px 0; border-bottom:1px dotted rgba(232,200,122,0.32);
+#revCalcShell .rev-budget-row {
+  display:flex; align-items:flex-end; gap:10px; margin-bottom:10px;
 }
-#revCalcShell .rev-pill-rows .qp-pill-row:last-child { border-bottom:none; padding-bottom:0; }
-#revCalcShell .rev-pill-rows .qp-pill-row:first-child { padding-top:0; }
+#revCalcShell .rev-budget-field { flex:1; min-width:0; margin-bottom:0; }
+#revCalcShell .rev-budget-tile {
+  display:flex; align-items:stretch; min-height:36px;
+  background:#251a15; border:1.5px solid rgba(232,200,122,0.25);
+  border-radius:8px; overflow:hidden; box-sizing:border-box;
+}
+#revCalcShell .rev-budget-tile:focus-within {
+  border-color:var(--wheat);
+  box-shadow:0 0 0 3px rgba(232,200,122,0.12);
+}
+#revCalcShell .rev-budget-tile #rev_budget {
+  flex:1; min-width:0; margin:0; border:none !important; border-radius:0;
+  background:transparent !important; box-shadow:none !important;
+  min-height:34px; padding:9px 12px;
+}
+#revCalcShell .rev-budget-tile #rev_budget:focus {
+  outline:none; box-shadow:none !important;
+}
+#revCalcShell .rev-term-in-budget {
+  display:none; flex:0 0 96px; min-width:88px;
+  align-items:stretch; border-left:1.5px solid rgba(232,200,122,0.25);
+}
+#revCalcShell .rev-term-in-budget.visible { display:flex; }
+#revCalcShell .rev-term-in-budget .gss-list-wrap { width:100%; height:100%; }
+#revCalcShell .rev-term-in-budget select { height:100%; border:none; border-radius:0; background:transparent; }
+#revCalcShell .rev-mode-tabs-wrap { flex:0 0 auto; width:min(148px,38%); margin-bottom:0; }
+#revCalcShell .rev-mode-tabs-wrap .field-label { margin-bottom:4px; }
+#revCalcShell .rev-mode-tabs {
+  margin:0; padding:2px; border-radius:8px; height:36px; box-sizing:border-box;
+  display:flex; align-items:stretch;
+}
+#revCalcShell .rev-mode-tabs .calc-price-tab {
+  padding:0 8px; font-size:0.68rem; letter-spacing:1.2px;
+  display:flex; align-items:center; justify-content:center; flex:1; min-height:0;
+}
+#revCalcShell .rev-controls-row {
+  display:flex; align-items:flex-end; gap:8px; margin-bottom:10px;
+}
+#revCalcShell .rev-control-tile {
+  flex:1; min-width:0; margin-bottom:0;
+}
+#revCalcShell .rev-control-tile .field-label {
+  margin-bottom:4px; font-size:0.58rem; letter-spacing:1.4px;
+}
+#revCalcShell .rev-control-tile .qp-pill {
+  width:100%; height:36px; box-sizing:border-box; overflow:visible;
+}
 #revCalcShell #rev_salePct,
 #revCalcShell #rev_taxRate { display:none !important; }
 #revCalcShell .rev-action-btn {
@@ -3676,22 +3770,50 @@ select:focus {
   flex:1; min-width:0; font-weight:600; line-height:1.25;
 }
 
-/* -- Sales sheet review scroll + flyer paper (isolate from dark theme) -- */
+/* Simple / Informative sales sheet template picker */
+#screenSalesSheet .ss-template-picker {
+  display:flex; gap:8px; margin:0 0 16px;
+}
+#screenSalesSheet .ss-template-opt {
+  -webkit-appearance:none; appearance:none; cursor:pointer; flex:1;
+  background:rgba(0,0,0,0.22); border:1.5px solid rgba(232,200,122,0.25);
+  color:var(--cream); border-radius:9px; padding:12px 10px;
+  font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif;
+  font-size:1rem; letter-spacing:1.5px;
+}
+#screenSalesSheet .ss-template-opt.is-active {
+  background:rgba(196,81,31,0.28); border-color:var(--barn); color:var(--wheat);
+}
+
+/* -- Sales sheet review preview: shows the FULL page, scaled to fit, no scrolling -- */
 #ss_reviewSheetScroll {
-  max-height: min(70vh, 520px);
-  overflow: auto;
+  height: min(68vh, 700px);
+  overflow: hidden;
   border: 1.5px solid rgba(0, 0, 0, 0.12);
   border-radius: 10px;
-  background: #fff;
-  padding: 12px;
+  background: #e9e9e9;
   margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+#ss_reviewSheetPreviewOuter {
+  width: 816px;
+  height: 1056px;
+  flex-shrink: 0;
+  transform-origin: center center;
+  box-shadow: 0 2px 14px rgba(0,0,0,0.25);
 }
 #screenSalesSheet .ss-review-sheet-preview {
   font-family: Georgia, serif;
   color: #111;
-  max-width: 600px;
-  margin: 0 auto;
+  width: 816px;
+  height: 1056px;
+  box-sizing: border-box;
+  padding: 0.3in 0.4in;
   background: #fff;
+  overflow: hidden;
 }
 /* Printable flyer: B/W paper, red accents, logo in color */
 .ss-flyer-root {
@@ -3700,8 +3822,7 @@ select:focus {
   color-scheme: light only;
   position: relative;
   width: 100%;
-  min-height: 10.2in;
-  max-height: 10.2in;
+  height: 100%;
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -3723,7 +3844,7 @@ select:focus {
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   transform-origin: top center;
 }
 .ss-flyer-root .ss-flyer-accent {
@@ -3741,6 +3862,37 @@ select:focus {
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
+
+/* -- "Informative" sales sheet template -- */
+.ss-flyer-root.is-informative { border: none; }
+.ssi-header {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 14px;
+  padding-bottom: 12px; border-bottom: 3px solid #111;
+}
+.ssi-logo2 { height: 56px; max-width: 130px; object-fit: contain; flex-shrink: 0; }
+.ssi-logo2-empty { height: 56px; width: 1px; flex-shrink: 0; }
+.ssi-bizblock { flex: 1; min-width: 0; text-align: center; }
+.ssi-bizname { font-size: 1.35rem; font-weight: 900; font-family: Arial Black, Arial, sans-serif; color: #111; letter-spacing: 1px; line-height: 1.15; }
+.ssi-slogan { font-size: 0.82rem; color: #333; font-style: italic; margin-top: 2px; }
+.ssi-lot { text-align: right; flex-shrink: 0; max-width: 34%; }
+.ssi-lot-label { font-size: 0.58rem; letter-spacing: 1.4px; color: #666; font-weight: 700; }
+.ssi-lot-name { font-size: 0.92rem; font-weight: 800; color: #111; line-height: 1.2; }
+.ssi-hero { text-align: center; margin-bottom: 14px; }
+.ssi-welcome { font-size: 1.6rem; font-weight: 900; font-family: Arial Black, Arial, sans-serif; color: #c0392b; letter-spacing: 2px; margin-bottom: 4px; }
+.ssi-sizetype { font-size: 1.7rem; font-weight: 900; font-family: Arial Black, Arial, sans-serif; color: #111; }
+.ssi-specs { margin: 0 auto 16px; max-width: 92%; }
+.ssi-specs ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 18px; }
+.ssi-specs li { font-size: 0.85rem; color: #111; line-height: 1.4; padding-left: 20px; position: relative; }
+.ssi-specs li::before { content: "\2713"; position: absolute; left: 0; top: 0; color: #c0392b; font-weight: 900; }
+.ssi-pricing { display: flex; justify-content: space-around; align-items: stretch; gap: 8px; margin: 0 auto 16px; border-top: 2px solid #111; border-bottom: 2px solid #111; padding: 12px 6px; }
+.ssi-price-col { flex: 1; text-align: center; }
+.ssi-price-label { font-size: 0.66rem; letter-spacing: 1.4px; font-weight: 700; color: #555; margin-bottom: 4px; text-transform: uppercase; }
+.ssi-price-val { font-size: 1.35rem; font-weight: 900; font-family: Arial Black, Arial, sans-serif; color: #111; white-space: nowrap; }
+.ssi-promo { text-align: center; font-size: 1rem; font-weight: 800; color: #c0392b; margin-bottom: 16px; }
+.ssi-footer { display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; border-top: 3px solid #111; padding-top: 12px; }
+.ssi-qr { text-align: center; }
+.ssi-qr-label { font-size: 0.62rem; color: #555; margin-top: 2px; font-weight: 700; }
+.ssi-contact { text-align: center; font-size: 1.05rem; font-weight: 900; font-family: Arial Black, Arial, sans-serif; color: #c0392b; line-height: 1.4; }
 #ssSheetContent {
   background: #fff !important;
   color: #111 !important;
@@ -4468,6 +4620,7 @@ select:focus {
     </div>
     <div class="modal-field">
       <label>Specs</label>
+      <div style="font-size:0.72rem;color:rgba(232,200,122,0.55);margin:-4px 0 8px;">The &quot;Informative&quot; sales sheet template shows only the first 6 specs listed here, in order.</div>
       <div id="styleListingCopySpecsList"></div>
       <button type="button" class="style-listing-spec-add" onclick="addStyleListingSpecRow()">+ Add spec</button>
     </div>
@@ -7497,24 +7650,16 @@ select:focus {
     <div class="sel-opts-section">
       <div class="sel-opts-head">
         <span class="sel-opts-title">SELECTED OPTIONS (<span id="ssSelOptsCount">0</span>)</span>
-        <button type="button" id="ssAddOptionBtn" class="sel-opts-add-btn" disabled onclick="openSsOptionsSheet()">Add Options</button>
+        <div class="sel-opts-head-btns">
+          <button type="button" id="ssColorsBtn" class="sel-opts-add-btn sel-opts-colors-btn" disabled onclick="ssStartColorWorkflow()">Select Colors</button>
+          <button type="button" id="ssAddOptionBtn" class="sel-opts-add-btn" disabled onclick="openSsOptionsSheet()">Add Options</button>
+        </div>
       </div>
+      <div id="ss_colorSummary" class="ss-color-grid"></div>
       <div id="ss_optsSummary" class="sel-opts-grid opts-summary-wrap"></div>
     </div>
 
-    <div id="ss_stdPanel" style="display:none;margin-bottom:12px;background:rgba(232,200,122,0.08);border:1.5px solid rgba(232,200,122,0.3);border-radius:8px;padding:12px;">
-      <div style="font-size:0.78rem;font-weight:700;color:var(--wheat);margin-bottom:6px;">Standard options (tap to remove; use menu when quantity &gt; 1)</div>
-      <div id="ss_stdList" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
-    </div>
-    <div id="ss_stdEmpty" style="display:none;font-size:0.8rem;color:rgba(232,200,122,0.55);margin-bottom:10px;">No standard options for this type.</div>
-
     <div id="ssPriceDeckMount"></div>
-
-    <!-- Colors -->
-    <div class="field-label" style="margin:12px 0 8px;color:var(--wheat);">Colors</div>
-    <button type="button" class="btn-primary" style="margin:0 0 12px;padding:12px;width:100%;" onclick="ssStartColorWorkflow()">Choose colors: roof &rarr; walls &rarr; trim</button>
-
-    <div id="ss_colorSummary" class="ss-color-grid"></div>
 
     <div id="ss_colorPickersHidden" style="display:none;">
     <div class="field-group">
@@ -7615,8 +7760,14 @@ select:focus {
 
   <!-- PAGE 1: QR & flyer contact -->
   <div id="sspage1" style="display:none;padding:16px;">
-    <div class="page-title">QR &amp; Contact</div>
-    <div class="page-sub">Optional QR codes and flyer contact info for the printed sheet</div>
+    <div class="page-title">Design &amp; Contact</div>
+    <div class="page-sub">Choose a sales sheet layout, then set QR codes and flyer contact info</div>
+
+    <div class="field-label" style="margin:0 0 6px;">Sales sheet template</div>
+    <div class="ss-template-picker" id="ss_templatePicker">
+      <button type="button" class="ss-template-opt" id="ss_templateOptSimple" onclick="ssSetTemplate('simple')">Simple</button>
+      <button type="button" class="ss-template-opt" id="ss_templateOptInformative" onclick="ssSetTemplate('informative')">Informative</button>
+    </div>
 
     <div class="field-group"><label class="field-label">Flyer contact (by lot)</label>
       <select id="ss_sheetLotContact"></select>
@@ -7628,29 +7779,40 @@ select:focus {
     <input type="hidden" id="ss_qrPurchaseUrl" value="">
     <input type="hidden" id="ss_qrIntakeUrl" value="">
 
-    <div class="field-label" style="margin:12px 0 6px;">QR codes</div>
-    <div class="ss-qr-list">
-      <label class="ss-qr-row" id="ss_qrListingRow">
-        <input type="checkbox" id="ss_qrUseListing" onchange="ssOnQrCheckboxChange('listing')">
-        <span class="ss-qr-row-label">Online Listing</span>
-      </label>
-      <div id="ss_qrListingUrlRow" class="field-group" style="display:none;margin:0 0 0 28px;">
-        <label class="field-label" for="ss_qrListingUrlInput">Listing URL</label>
-        <input type="url" id="ss_qrListingUrlInput" placeholder="https://…" autocomplete="off" oninput="ssOnListingQrUrlInput()" onblur="ssOnListingQrUrlInput()">
+    <div id="ss_qrSimpleSection">
+      <div class="field-label" style="margin:12px 0 6px;">QR codes</div>
+      <div class="ss-qr-list">
+        <label class="ss-qr-row" id="ss_qrListingRow">
+          <input type="checkbox" id="ss_qrUseListing" onchange="ssOnQrCheckboxChange('listing')">
+          <span class="ss-qr-row-label">Online Listing</span>
+        </label>
+        <div id="ss_qrListingUrlRow" class="field-group" style="display:none;margin:0 0 0 28px;">
+          <label class="field-label" for="ss_qrListingUrlInput">Listing URL</label>
+          <input type="url" id="ss_qrListingUrlInput" placeholder="https://…" autocomplete="off" oninput="ssOnListingQrUrlInput()" onblur="ssOnListingQrUrlInput()">
+        </div>
+        <label class="ss-qr-row" id="ss_qrPurchaseRow">
+          <input type="checkbox" id="ss_qrUsePurchase" onchange="ssOnQrCheckboxChange('purchase')">
+          <span class="ss-qr-row-label">Scan to start purchase</span>
+        </label>
+        <label class="ss-qr-row" id="ss_qrIntakeRow">
+          <input type="checkbox" id="ss_qrUseIntake" onchange="ssOnQrCheckboxChange('intake')">
+          <span class="ss-qr-row-label">Intake Form QR</span>
+        </label>
       </div>
-      <label class="ss-qr-row" id="ss_qrPurchaseRow">
-        <input type="checkbox" id="ss_qrUsePurchase" onchange="ssOnQrCheckboxChange('purchase')">
-        <span class="ss-qr-row-label">Scan to start purchase</span>
-      </label>
-      <label class="ss-qr-row" id="ss_qrIntakeRow">
-        <input type="checkbox" id="ss_qrUseIntake" onchange="ssOnQrCheckboxChange('intake')">
-        <span class="ss-qr-row-label">Intake Form QR</span>
-      </label>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:4px;">
+        <div id="ss_qrContainer" style="display:none;min-height:70px;"></div>
+        <div id="ss_qrContainer2" style="display:none;min-height:70px;"></div>
+        <div id="ss_qrContainer3" style="display:none;min-height:70px;"></div>
+      </div>
     </div>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:4px;">
-      <div id="ss_qrContainer" style="display:none;min-height:70px;"></div>
-      <div id="ss_qrContainer2" style="display:none;min-height:70px;"></div>
-      <div id="ss_qrContainer3" style="display:none;min-height:70px;"></div>
+
+    <div id="ss_qrInfoSection" style="display:none;">
+      <div class="field-group" style="margin-top:10px;">
+        <label class="field-label" for="ss_infoQrUrlInput">Info QR URL</label>
+        <input type="url" id="ss_infoQrUrlInput" placeholder="https://…" autocomplete="off" oninput="ssOnInfoQrUrlInput()" onblur="ssOnInfoQrUrlInput()">
+        <p style="font-size:0.68rem;color:rgba(232,200,122,0.55);margin:6px 0 0;line-height:1.35;">The Informative template shows a single QR code, typed in manually here.</p>
+      </div>
+      <div id="ss_infoQrContainer" style="display:none;min-height:70px;margin-top:4px;"></div>
     </div>
 
   </div><!-- end sspage1 -->
@@ -7658,14 +7820,17 @@ select:focus {
   <!-- PAGE 2: Review — live sales sheet preview + actions (no separate confirm sheet) -->
   <div id="sspage2" style="display:none;padding:16px;">
     <div class="page-title">Review</div>
-    <div class="page-sub">Preview the printable sales sheet. Use Generate to open the print view, or go back to edit.</div>
+    <div class="page-sub">Preview of the full printable sales sheet (8.5&quot; × 11&quot;). Use Print/Save PDF when ready, or go back to edit.</div>
     <div id="ss_reviewSheetScroll">
-      <div id="ss_reviewSheetPreview" class="ss-review-sheet-preview"></div>
+      <div id="ss_reviewSheetPreviewOuter">
+        <div id="ss_reviewSheetPreview" class="ss-review-sheet-preview"></div>
+      </div>
     </div>
+    <div id="ss_pdfShareStatus" style="display:none;font-size:0.78rem;color:rgba(232,200,122,0.7);text-align:center;margin-top:8px;"></div>
     <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
       <button type="button" class="btn-secondary" style="flex:1;min-width:90px;" onclick="ssGoStep(0)">Cancel</button>
       <button type="button" class="btn-secondary" style="flex:1;min-width:90px;" onclick="ssGoStep(1)">Edit</button>
-      <button type="button" class="btn-primary" style="flex:2;min-width:120px;background:var(--barn);" onclick="ssGenerate()">Generate</button>
+      <button type="button" class="btn-primary" id="ssPrintShareBtn" style="flex:2;min-width:150px;background:var(--barn);" onclick="ssPrintOrSharePdf()">🖨️ Print / Save PDF</button>
     </div>
   </div>
 
@@ -7707,6 +7872,7 @@ select:focus {
 <!-- Business Info -->
     <div class="settings-section-title" style="margin-bottom:10px;">Business Info</div>
     <div class="field-group"><label class="field-label">Business Name</label><input type="text" id="set_bizName" placeholder="Your Business"></div>
+    <div class="field-group"><label class="field-label">Business Slogan</label><input type="text" id="set_bizSlogan" placeholder="e.g. Built to last, priced to sell"></div>
     <div class="field-group"><label class="field-label">Contact Name</label><input type="text" id="set_contactName" placeholder="Sales rep name"></div>
     <div class="field-group"><label class="field-label">Phone</label><input type="tel" id="set_bizPhone" placeholder="123-123-1234"></div>
     <div class="field-group"><label class="field-label">Email</label><input type="email" id="set_bizEmail" placeholder="sales@example.com"></div>
@@ -7734,6 +7900,19 @@ select:focus {
           📷 Upload Logo<input type="file" accept="image/*" onchange="handleLogoUpload(this)" style="display:none;">
         </label>
         <button id="set_logoRemoveBtn" onclick="removeLogo()" class="btn-secondary" style="display:none;margin-top:6px;font-size:0.78rem;background:rgba(139,46,13,0.2);color:var(--wheat);">Remove</button>
+      </div>
+    </div>
+
+    <!-- Logo 2 (Informative sales sheet template only) -->
+    <div class="settings-section-title" style="margin:16px 0 4px;">Logo 2</div>
+    <div style="font-size:0.72rem;color:rgba(232,200,122,0.55);margin-bottom:8px;">Only used on the &quot;Informative&quot; sales sheet template layout.</div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+      <img id="set_logo2Preview" src="" style="display:none;max-height:50px;max-width:150px;object-fit:contain;border:1px solid #ddd;border-radius:6px;padding:4px;">
+      <div>
+        <label class="btn-secondary" style="display:inline-block;cursor:pointer;padding:8px 14px;font-size:0.82rem;">
+          📷 Upload Logo 2<input type="file" accept="image/*" onchange="handleLogo2Upload(this)" style="display:none;">
+        </label>
+        <button id="set_logo2RemoveBtn" onclick="removeLogo2()" class="btn-secondary" style="display:none;margin-top:6px;font-size:0.78rem;background:rgba(139,46,13,0.2);color:var(--wheat);">Remove</button>
       </div>
     </div>
 
@@ -8354,6 +8533,19 @@ select:focus {
   </div>
 </div>
 
+<!-- Sales sheet: missing-information warning (non-blocking) -->
+<div id="ssMissingInfoModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:10000;align-items:flex-end;justify-content:center;">
+  <div style="background:var(--earth);border:1.5px solid rgba(232,200,122,0.3);border-radius:16px 16px 0 0;padding:24px 20px 36px;width:100%;max-width:480px;">
+    <div class="page-title" style="margin-bottom:6px;">Some info is missing</div>
+    <div style="font-size:0.78rem;color:rgba(245,240,232,0.75);line-height:1.4;margin-bottom:10px;">This sales sheet will still generate, but the following is missing or incomplete:</div>
+    <ul id="ssMissingInfoList" style="margin:0 0 4px;padding-left:20px;font-size:0.8rem;line-height:1.6;color:var(--cream);"></ul>
+    <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;">
+      <button type="button" class="btn-secondary" onclick="ssCloseMissingInfoModal()" style="flex:1;min-width:90px;">Go back &amp; fix</button>
+      <button type="button" class="btn-primary" onclick="ssContinuePastMissingInfo()" style="flex:1;min-width:90px;background:var(--barn);">Continue anyway</button>
+    </div>
+  </div>
+</div>
+
 <!-- Facebook post preview (global — used from Price Calc and Inventory) -->
 <div class="photo-modal-overlay" id="invFacebookPromoModalOverlay" aria-hidden="true" onclick="if(event.target===this)invCloseFacebookPromoModal()">
   <div class="photo-modal" role="dialog" aria-modal="true" aria-labelledby="invFbPromoTitle" onclick="event.stopPropagation()">
@@ -8469,27 +8661,28 @@ select:focus {
   </div>
   <div class="rev-page-body">
     <div class="rev-entry-zone">
-      <div class="field-group rev-entry-budget" style="margin-bottom:10px;">
-        <label class="field-label">Budget</label>
-        <input type="number" id="rev_budget" min="0" step="1" placeholder="Enter budget" oninput="onRevBudgetInput()">
+      <select id="rev_mode" style="display:none;" onchange="onReverseModeChange(this.value)"><option value="cash">Cash</option><option value="rto">RTO</option></select>
+      <div class="rev-budget-row">
+        <div class="field-group rev-budget-field">
+          <label class="field-label" for="rev_budget">Budget</label>
+          <div class="rev-budget-tile">
+            <input type="number" id="rev_budget" min="0" step="1" placeholder="Enter budget" oninput="onRevBudgetInput()">
+            <div class="rev-term-in-budget" id="rev_termWrap">
+              <select id="rev_term" onchange="saveRevSessionPrefs();revSearchActive=false;"><option value="36">36 Mo</option><option value="48">48 Mo</option><option value="60">60 Mo</option></select>
+            </div>
+          </div>
+        </div>
+        <div class="field-group rev-mode-tabs-wrap">
+          <label class="field-label" aria-hidden="true">&nbsp;</label>
+          <div class="calc-price-tabs rev-mode-tabs" role="tablist" aria-label="Cash or RTO">
+            <button type="button" class="calc-price-tab is-active" id="revModeTabCash" role="tab" aria-selected="true" onclick="setRevMode('cash')">Cash</button>
+            <button type="button" class="calc-price-tab" id="revModeTabRto" role="tab" aria-selected="false" onclick="setRevMode('rto')">RTO</button>
+          </div>
+        </div>
       </div>
-      <div class="rev-entry-row">
-        <div class="field-group">
-          <label class="field-label">Mode</label>
-          <select id="rev_mode" onchange="onReverseModeChange(this.value)"><option value="cash">Cash</option><option value="rto">RTO</option></select>
-        </div>
-        <div class="field-group" id="rev_termWrap" style="display:none;">
-          <label class="field-label">RTO Term</label>
-          <select id="rev_term" onchange="saveRevSessionPrefs();revSearchActive=false;"><option value="36">36 Mo</option><option value="48">48 Mo</option><option value="60">60 Mo</option></select>
-        </div>
-        <div class="field-group">
-          <label class="field-label" id="rev_toleranceLabel">Range ± $</label>
-          <input type="number" id="rev_tolerance" min="0" step="50" placeholder="500" oninput="onRevToleranceInput()">
-        </div>
-      </div>
-      <div class="rev-pill-rows">
-        <div class="qp-pill-row rev-sale-row">
-          <span class="qp-pill-label"><svg class="qp-pill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>SALE</span>
+      <div class="rev-controls-row">
+        <div class="field-group rev-control-tile rev-control-tile--sale">
+          <label class="field-label">Sale</label>
           <button type="button" class="qp-pill" id="revSalePill" aria-pressed="false">
             <span class="qp-pill-fill" id="rev_saleInputWrap">
               <select id="rev_salePctSel" onchange="onRevSaleSelectChange(this)"></select>
@@ -8498,8 +8691,8 @@ select:focus {
             <span class="qp-pill-ball" aria-hidden="true"></span>
           </button>
         </div>
-        <div class="qp-pill-row rev-tax-row">
-          <span class="qp-pill-label"><svg class="qp-pill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>TAX</span>
+        <div class="field-group rev-control-tile rev-control-tile--tax">
+          <label class="field-label">Tax</label>
           <button type="button" class="qp-pill" id="revTaxPill" aria-pressed="false">
             <span class="qp-pill-fill" id="rev_taxInputWrap">
               <select id="rev_taxPctSel" onchange="onRevTaxSelectChange(this)"></select>
@@ -8508,9 +8701,18 @@ select:focus {
             <span class="qp-pill-ball" aria-hidden="true"></span>
           </button>
         </div>
+        <div class="field-group rev-control-tile rev-control-tile--range">
+          <label class="field-label" id="rev_toleranceLabel" for="rev_tolerance">Range ± $</label>
+          <input type="number" id="rev_tolerance" min="0" step="50" placeholder="500" oninput="onRevToleranceInput()">
+        </div>
       </div>
-      <button type="button" id="rev_addOptionBtn" class="btn-primary rev-action-btn" disabled onclick="openRevOptionsSheet()">+ Add Option</button>
-      <p id="rev_addOptionHint" style="font-size:0.68rem;color:rgba(232,200,122,0.45);margin:4px 0 8px;line-height:1.35;">Show results first to add options.</p>
+      <div class="sel-opts-section">
+        <div class="sel-opts-head">
+          <span class="sel-opts-title">SELECTED OPTIONS (<span id="revSelOptsCount">0</span>)</span>
+          <button type="button" id="rev_addOptionBtn" class="sel-opts-add-btn" disabled onclick="openRevOptionsSheet()">Add Options</button>
+        </div>
+        <div id="rev_optsSummary" class="sel-opts-grid opts-summary-wrap"></div>
+      </div>
       <button type="button" id="rev_showResultsBtn" class="btn-primary rev-action-btn" style="margin-top:0;" onclick="showReverseResults()" disabled>Show Results</button>
     </div>
 
@@ -8528,8 +8730,6 @@ select:focus {
           <option value="sqftAsc">Sq ft — smallest to biggest</option>
         </select>
       </div>
-      <div class="page-title" style="font-size:1rem;margin-bottom:4px;">Options &amp; Upgrades</div>
-      <div id="rev_optsSummary" class="opts-summary-wrap"></div>
     </div>
 
     <div id="rev_nrtoBanner" class="rev-nrto-banner">Non-RTO options require upfront payment (down payment applies).</div>
@@ -11859,6 +12059,55 @@ function applyLogoToUI(data){
   }
 }
 
+/** "Logo 2" is only used on the Informative sales sheet template; mirrors handleLogoUpload/removeLogo/applyLogoToUI. */
+async function handleLogo2Upload(input){
+  var file=input.files[0];
+  if(!file) return;
+  try{
+    var optimized=await logoFileToOptimizedDataUrl(file);
+    var s=loadSettings();
+    s.logo2Data=optimized;
+    saveSettings(s);
+    applyLogo2ToUI(optimized);
+    var cloudSaveResult=await settingsSaveToCloud(s).catch(function(err){
+      console.log('Cloud logo2 sync failed:',err);
+      return {ok:false,reason:'error'};
+    });
+    if(!cloudSaveResult||!cloudSaveResult.ok){
+      showSettingsCloudFailure(cloudSaveResult&&cloudSaveResult.reason||'error');
+      return;
+    }
+    showToast('Logo 2 synced');
+  }catch(err){
+    console.log('Logo 2 processing failed:',err);
+    showToast('Could not process logo image');
+  }
+}
+async function removeLogo2(){
+  var s=loadSettings();
+  delete s.logo2Data;
+  saveSettings(s);
+  applyLogo2ToUI(null);
+  var cloudSaveResult=await settingsSaveToCloud(s).catch(function(err){
+    console.log('Cloud logo2 remove sync failed:',err);
+    return {ok:false,reason:'error'};
+  });
+  if(!cloudSaveResult||!cloudSaveResult.ok){
+    showSettingsCloudFailure(cloudSaveResult&&cloudSaveResult.reason||'error');
+  }
+}
+function applyLogo2ToUI(data){
+  var prev=document.getElementById('set_logo2Preview');
+  var removeBtn=document.getElementById('set_logo2RemoveBtn');
+  if(data){
+    if(prev){prev.src=data;prev.style.display='block';}
+    if(removeBtn) removeBtn.style.display='block';
+  } else {
+    if(prev){prev.src='';prev.style.display='none';}
+    if(removeBtn) removeBtn.style.display='none';
+  }
+}
+
 // ============================================================
 // DYNAMIC HOME POPULATION
 // ============================================================
@@ -12063,14 +12312,15 @@ async function settingsSaveToCloudAndToast(s, opts){
 
 function renderSettingsBizLotsForm(s){
   s=s||{};
-  var txtFields=['bizName','bizPhone','bizEmail','bizStreet','bizCity','bizState','bizZip','shopStreet','shopCity','shopState','shopZip','contactName'];
+  var txtFields=['bizName','bizSlogan','bizPhone','bizEmail','bizStreet','bizCity','bizState','bizZip','shopStreet','shopCity','shopState','shopZip','contactName'];
   txtFields.forEach(function(k){
     var el=document.getElementById('set_'+k);
     if(el) el.value=s[k]||'';
   });
   var _setBizPh=document.getElementById('set_bizPhone');
   if(_setBizPh) applyPhoneFormatToElement(_setBizPh);
-  if(s.logoData) applyLogoToUI(s.logoData);
+  applyLogoToUI(s.logoData||null);
+  applyLogo2ToUI(s.logo2Data||null);
   renderSettingsBusinessContacts(s.businessContacts||[]);
   renderSettingsLotAddresses(s.lotAddresses||[],s);
 }
@@ -12684,7 +12934,7 @@ async function loadSettingsForm(){
 
 async function saveSettingsBizLots(opts){
   var s=loadSettings();
-  ['bizName','bizPhone','bizEmail','bizStreet','bizCity','bizState','bizZip','shopStreet','shopCity','shopState','shopZip','contactName'].forEach(function(k){
+  ['bizName','bizSlogan','bizPhone','bizEmail','bizStreet','bizCity','bizState','bizZip','shopStreet','shopCity','shopState','shopZip','contactName'].forEach(function(k){
     var el=document.getElementById('set_'+k);
     if(el) s[k]=el.value.trim();
   });
@@ -13072,6 +13322,28 @@ function getSalesSheetFlyerContactDisplay(s){
   var sel=document.getElementById('ss_sheetLotContact');
   var raw=sel?String(sel.value||'').trim():'';
   return resolveFlyerContactFromLotPick(s, raw);
+}
+/** Lot's name/label only (not its address) — used by the Informative template's "LOT LOCATION" header field. */
+function ssResolveLotNameForInformative(s){
+  s=s||loadSettings()||{};
+  var sel=document.getElementById('ss_sheetLotContact');
+  var raw=sel?String(sel.value||'').trim():'';
+  var lotList=s.lotAddresses||[];
+  function pickByValue(v){
+    for(var i=0;i<lotList.length;i++){
+      var it=lotList[i]; if(!it) continue;
+      var line=formatAddressFromParts(it.street||it.address||'',it.city||'',it.state||'',it.zip||'').trim();
+      if(line&&line===v) return it;
+      if((it.label||'').trim()===v) return it;
+    }
+    return null;
+  }
+  var lot=null;
+  if(raw&&raw!=='__default__') lot=pickByValue(raw);
+  if(!lot){
+    for(var j=0;j<lotList.length;j++){ if(lotList[j]&&lotList[j].isMain){ lot=lotList[j]; break; } }
+  }
+  return (lot&&lot.label)?String(lot.label).trim():'';
 }
 function populateLotContactPickSelect(selectId, preserveVal){
   var sel=document.getElementById(selectId);
@@ -13507,7 +13779,7 @@ function appBottomNavPrimaryAction(){
     if(typeof ssSalesPhase==='string'&&ssSalesPhase==='pick') return;
     if(ssCurrentStep===0) ssGoStep(1);
     else if(ssCurrentStep===1) ssGoStep(2);
-    else ssGenerate();
+    else ssPrintOrSharePdf();
     return;
   }
   if(sid==='screenMileage'){
@@ -15932,7 +16204,7 @@ function setQpPillPressed(pillId,on){
 function handleQpPillTap(e,toggleFn){
   var pill=e.currentTarget;
   if(!pill||typeof toggleFn!=='function') return;
-  if(e.target.closest('.gss-list-trigger,select,input')) return;
+  if(e.target.closest('.gss-list-trigger,.gss-list-wrap,select,input')) return;
   var rect=pill.getBoundingClientRect();
   var x=e.clientX-rect.left;
   var mid=rect.width/2;
@@ -17197,12 +17469,36 @@ function setReverseTaxFromSettings(force){
 
 function onReverseModeChange(val){
   var wrap=document.getElementById('rev_termWrap');
-  if(wrap) wrap.style.display=(val==='rto')?'block':'none';
+  if(wrap) wrap.classList.toggle('visible',val==='rto');
+  syncRevModeTabs();
   saveRevToleranceFromField();
   syncRevToleranceUi();
   saveRevSessionPrefs();
   revSearchActive=false;
   updateRevNrtoBanner();
+  var termSel=document.getElementById('rev_term');
+  if(termSel&&termSel._gssListEnhanced) gssRefreshListTrigger(termSel);
+}
+
+function setRevMode(mode){
+  var m=(mode==='rto')?'rto':'cash';
+  var sel=document.getElementById('rev_mode');
+  if(sel) sel.value=m;
+  onReverseModeChange(m);
+}
+
+function syncRevModeTabs(){
+  var mode=((document.getElementById('rev_mode')||{}).value||'cash').toLowerCase();
+  var cashTab=document.getElementById('revModeTabCash');
+  var rtoTab=document.getElementById('revModeTabRto');
+  if(cashTab){
+    cashTab.classList.toggle('is-active',mode==='cash');
+    cashTab.setAttribute('aria-selected',mode==='cash'?'true':'false');
+  }
+  if(rtoTab){
+    rtoTab.classList.toggle('is-active',mode==='rto');
+    rtoTab.setAttribute('aria-selected',mode==='rto'?'true':'false');
+  }
 }
 
 // ── Reverse calculator: state + workflow ───────────────────────────────────
@@ -17509,9 +17805,7 @@ function onRevBudgetInput(){
 
 function updateRevAddOptionBtn(){
   var btn=document.getElementById('rev_addOptionBtn');
-  var hint=document.getElementById('rev_addOptionHint');
   if(btn) btn.disabled=!revSearchActive;
-  if(hint) hint.style.display=revSearchActive?'none':'block';
 }
 
 function saveRevSessionPrefs(){
@@ -17556,6 +17850,7 @@ function loadRevSessionPrefs(){
     if(sizeSel&&p.filterSize!=null) sizeSel.value=p.filterSize;
     var styleSel=document.getElementById('rev_filterStyle');
     if(styleSel&&p.filterStyle!=null) styleSel.value=p.filterStyle;
+    syncRevModeTabs();
   }catch(_e2){}
 }
 
@@ -22671,6 +22966,10 @@ function _afterOptsSummaryHostChange(hostId){
     try{ syncSsOptionsFromCalc(); }catch(_eSs){}
     return;
   }
+  if(hostId==='cb_optsSummary'){
+    cb_afterOptsSummaryChange(hostId);
+    return;
+  }
   updateQuickPrice();
   if(calcCurrentPage===1) try{ renderReviewSummary(); }catch(_e){}
   renderOptsSummary();
@@ -22679,22 +22978,51 @@ function _afterOptsSummaryHostChange(hostId){
 function _appendSelOptCard(host,hostId,isRev,cfg){
   var card=document.createElement('div');
   card.className='sel-opt-card'+(cfg.excluded?' is-excluded':'');
-  var chk=document.createElement('button');
-  chk.type='button';
-  chk.className='sel-opt-chk'+(cfg.included?' is-included':'');
-  chk.setAttribute('aria-label',cfg.included?'Included in price':'Excluded from price');
-  chk.textContent=cfg.included?'\u2713':'';
-  chk.onclick=function(){
-    if(cfg.isStd){
-      var doTog=function(){ toggleStdRemove(cfg.stdId); };
-      if(isRev) withRevOptsProbe(doTog); else doTog();
-    }else{
-      var doTog2=function(){ toggleAddonExcluded(cfg.exKey); };
-      if(isRev) withRevOptsProbe(doTog2); else doTog2();
-    }
-    _afterOptsSummaryHostChange(hostId);
-  };
-  card.appendChild(chk);
+  if(cfg.isStd&&cfg.maxQty>1){
+    var maxQ=cfg.maxQty;
+    var curRemoved=Math.max(0,Math.min(maxQ,cfg.removedQty||0));
+    var curKept=maxQ-curRemoved;
+    var qtyInp=document.createElement('input');
+    qtyInp.type='number';
+    qtyInp.className='sel-opt-qty';
+    qtyInp.min='0';
+    qtyInp.max=String(maxQ);
+    qtyInp.step='1';
+    qtyInp.inputMode='numeric';
+    qtyInp.value=String(curKept);
+    qtyInp.setAttribute('aria-label','Quantity included for '+cfg.label+' (standard qty: '+maxQ+')');
+    var applyQtyInp=function(){
+      var n=parseInt(qtyInp.value,10);
+      if(isNaN(n)) n=maxQ;
+      n=Math.max(0,Math.min(maxQ,n));
+      qtyInp.value=String(n);
+      var removed=maxQ-n;
+      var doSet=function(){ if(cfg.onQtyChange) cfg.onQtyChange(removed); else setStdQty(cfg.stdId,removed); };
+      if(isRev) withRevOptsProbe(doSet); else doSet();
+      _afterOptsSummaryHostChange(hostId);
+    };
+    qtyInp.onchange=applyQtyInp;
+    qtyInp.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); qtyInp.blur(); } });
+    qtyInp.onclick=function(e){ e.stopPropagation(); };
+    card.appendChild(qtyInp);
+  }else{
+    var chk=document.createElement('button');
+    chk.type='button';
+    chk.className='sel-opt-chk'+(cfg.included?' is-included':'');
+    chk.setAttribute('aria-label',cfg.included?'Included in price':'Excluded from price');
+    chk.textContent=cfg.included?'\u2713':'';
+    chk.onclick=function(){
+      if(cfg.isStd){
+        var doTog=function(){ toggleStdRemove(cfg.stdId); };
+        if(isRev) withRevOptsProbe(doTog); else doTog();
+      }else{
+        var doTog2=function(){ toggleAddonExcluded(cfg.exKey); };
+        if(isRev) withRevOptsProbe(doTog2); else doTog2();
+      }
+      _afterOptsSummaryHostChange(hostId);
+    };
+    card.appendChild(chk);
+  }
   var name=document.createElement('div');
   name.className='sel-opt-name';
   name.textContent=cfg.label;
@@ -22726,13 +23054,13 @@ function _renderOptsSummaryInto(hostId){
   var host=document.getElementById(hostId);
   if(!host) return;
   var isRev=hostId==='rev_optsSummary';
-  var useCards=hostId==='optsSummary'||hostId==='ss_optsSummary'||hostId==='ad_optsSummary';
+  var useCards=hostId==='optsSummary'||hostId==='ss_optsSummary'||hostId==='ad_optsSummary'||hostId==='rev_optsSummary';
   host.innerHTML='';
   var ca=calcAddons(useCards);
   var stdItems=STD_OPTIONS[calcState.type]||[];
   var stdHidden=calcState.stdHidden||{};
   var visibleStd=stdItems.filter(function(it){ return !stdHidden[it.id]; });
-  var countEl=document.getElementById(hostId==='ss_optsSummary'?'ssSelOptsCount':(hostId==='cb_optsSummary'?'cb_selOptsCount':(hostId==='ad_optsSummary'?'adSelOptsCount':'selOptsCount')));
+  var countEl=document.getElementById(hostId==='ss_optsSummary'?'ssSelOptsCount':(hostId==='cb_optsSummary'?'cb_selOptsCount':(hostId==='ad_optsSummary'?'adSelOptsCount':(hostId==='rev_optsSummary'?'revSelOptsCount':'selOptsCount'))));
   var totalCount=visibleStd.length+ca.lines.length;
 
   if(useCards){
@@ -22740,17 +23068,19 @@ function _renderOptsSummaryInto(hostId){
     if(!visibleStd.length&&!ca.lines.length){
       var emptyC=document.createElement('div');
       emptyC.className='sel-opts-empty';
-      emptyC.textContent=calcState.type?'No options yet — tap Add Options.':'Select a building type first.';
+      emptyC.textContent=isRev?'No options yet — tap Add Options.':(calcState.type?'No options yet — tap Add Options.':'Select a building type first.');
       host.appendChild(emptyC);
       return;
     }
     visibleStd.forEach(function(it){
-      var rq=calcState.stdRemoved&&calcState.stdRemoved[it.id];
+      var maxQ=it.qty||1;
+      var rq=(calcState.stdRemoved&&calcState.stdRemoved[it.id])||0;
       var removed=rq>0;
-      var lbl=it.label+(it.qty>1?' ('+it.qty+'×)':'');
+      var lbl=it.label+(maxQ>1?' ('+maxQ+'×)':'');
       _appendSelOptCard(host,hostId,isRev,{
         isStd:true,stdId:it.id,label:lbl,included:!removed,excluded:removed,
-        priceText:removed?('-'+fmt((rq||1)*it.credit)):'Std',
+        maxQty:maxQ,removedQty:rq,creditEach:it.credit,
+        priceText:removed?('-'+fmt(rq*it.credit)):'Std',
         showRemove:true,
         onRemove:function(){
           var doHide=function(){ hideStdOption(it.id); };
@@ -22939,9 +23269,35 @@ function _renderOptsSummaryInto(hostId){
         name.className='os-name';
         name.textContent='Standard removed: '+it.label+(rq>1?' ('+rq+'×)':'');
         row.appendChild(name);
-        var ph=document.createElement('div');
-        ph.style.width='52px';
-        row.appendChild(ph);
+        var maxQ=it.qty||1;
+        if(maxQ>1){
+          var qtyInp=document.createElement('input');
+          qtyInp.type='number';
+          qtyInp.className='sel-opt-qty';
+          qtyInp.min='0';
+          qtyInp.max=String(maxQ);
+          qtyInp.step='1';
+          qtyInp.inputMode='numeric';
+          qtyInp.value=String(rq);
+          qtyInp.setAttribute('aria-label','Quantity removed for '+it.label+' (standard qty: '+maxQ+')');
+          var applyRemovedQty=function(){
+            var n=parseInt(qtyInp.value,10);
+            if(isNaN(n)) n=0;
+            n=Math.max(0,Math.min(maxQ,n));
+            qtyInp.value=String(n);
+            var doSet=function(){ setStdQty(it.id,n); };
+            if(isRev) withRevOptsProbe(doSet); else doSet();
+            _afterOptsSummaryHostChange(hostId);
+          };
+          qtyInp.onchange=applyRemovedQty;
+          qtyInp.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); qtyInp.blur(); } });
+          qtyInp.onclick=function(e){ e.stopPropagation(); };
+          row.appendChild(qtyInp);
+        }else{
+          var ph=document.createElement('div');
+          ph.style.width='52px';
+          row.appendChild(ph);
+        }
         var cred=document.createElement('div');
         cred.className='os-price';
         cred.textContent='-'+fmt(rq*it.credit);
@@ -22981,11 +23337,13 @@ function renderSsOptsSummary(){
   var w=parseInt((document.getElementById('ss_width')||{}).value,10)||0;
   var l=parseInt((document.getElementById('ss_length')||{}).value,10)||0;
   var addBtn=document.getElementById('ssAddOptionBtn');
+  var colorsBtn=document.getElementById('ssColorsBtn');
   if(!t||!w||!l){
     host.innerHTML='';
     var cnt=document.getElementById('ssSelOptsCount');
     if(cnt) cnt.textContent='0';
     if(addBtn) addBtn.disabled=true;
+    if(colorsBtn) colorsBtn.disabled=true;
     var empty=document.createElement('div');
     empty.className='sel-opts-empty';
     empty.textContent='Select a building type first.';
@@ -22994,6 +23352,7 @@ function renderSsOptsSummary(){
   }
   if(!syncCalcFromSsOptions()) return;
   if(addBtn) addBtn.disabled=false;
+  if(colorsBtn) colorsBtn.disabled=false;
   _renderOptsSummaryInto('ss_optsSummary');
 }
 
@@ -23030,9 +23389,16 @@ function hideStdOption(itemId){
   try{ renderOptsSummary(); }catch(_e){}
 }
 
+/** Set exactly how many units of a qty>1 standard item are removed (0 = keep all). */
 function setStdQty(itemId,qty){
   if(!calcState.stdRemoved) calcState.stdRemoved={};
-  calcState.stdRemoved[itemId]=qty||1;
+  var items=STD_OPTIONS[calcState.type]||[];
+  var item=null;
+  for(var i=0;i<items.length;i++){if(items[i].id===itemId){item=items[i];break;}}
+  var maxQ=item?(item.qty||1):999;
+  var n=Math.max(0,Math.min(maxQ,parseInt(qty,10)||0));
+  calcState.stdRemoved[itemId]=n;
+  if(n<=0&&calcState.stdHidden){ delete calcState.stdHidden[itemId]; }
   buildRemoveStdPanel();
   refreshOsbIntwallFtDefault(false);
   updateQuickPrice();
@@ -27393,6 +27759,8 @@ initFormspreeNotes();
 var SS_LENGTHS=[8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60];
 var ssAddons={};
 var ssStdRemoved={};
+/** Per-sheet template choice ('simple'|'informative'); picked each time on the Design & Contact page, stored in autosave only. */
+var ssTemplate='simple';
 
 function ssSalesSheetIntakeDealerReady(s){
   s=s||loadSettings()||{};
@@ -27529,11 +27897,44 @@ function ssMirrorOnQuickSaleInput(el){
 }
 
 function ssApplySettingsToSalesSheetQrs(){
+  ssRenderTemplatePicker();
   ssSyncQrChipVisuals();
   ssSyncQrHiddenFromCheckboxes();
   try{ ssUpdateQR(); }catch(_e1){}
   try{ ssUpdateQR2(); }catch(_e2){}
   try{ ssUpdateQR3(); }catch(_e3){}
+  try{ ssUpdateInfoQR(); }catch(_e4){}
+}
+
+/** Per-sheet Simple/Informative template picker (Design & Contact page). */
+function ssSetTemplate(tpl){
+  ssTemplate=(tpl==='informative')?'informative':'simple';
+  ssRenderTemplatePicker();
+  try{ ssUpdateInfoQR(); }catch(_e){}
+  try{ saveSsAutosave(); }catch(_e2){}
+}
+function ssRenderTemplatePicker(){
+  var simpleBtn=document.getElementById('ss_templateOptSimple');
+  var infoBtn=document.getElementById('ss_templateOptInformative');
+  var isInfo=ssTemplate==='informative';
+  if(simpleBtn) simpleBtn.classList.toggle('is-active',!isInfo);
+  if(infoBtn) infoBtn.classList.toggle('is-active',isInfo);
+  var simpleSec=document.getElementById('ss_qrSimpleSection');
+  var infoSec=document.getElementById('ss_qrInfoSection');
+  if(simpleSec) simpleSec.style.display=isInfo?'none':'block';
+  if(infoSec) infoSec.style.display=isInfo?'block':'none';
+}
+function ssOnInfoQrUrlInput(){
+  try{ ssUpdateInfoQR(); }catch(_e){}
+}
+function ssUpdateInfoQR(){
+  var url=((document.getElementById('ss_infoQrUrlInput')||{}).value||'').trim();
+  var container=document.getElementById('ss_infoQrContainer');
+  if(!container) return;
+  if(!url){ container.style.display='none'; container.innerHTML=''; return; }
+  container.style.display='block';
+  container.innerHTML='';
+  try{ new QRCode(container,{text:url,width:100,height:100,correctLevel:QRCode.CorrectLevel.M}); }catch(e){ container.innerHTML='<span style="font-size:0.7rem;color:rgba(232,200,122,0.4);">QR preview unavailable</span>'; }
 }
 
 function ssSetPlateOcrStatus(msg){
@@ -27567,6 +27968,7 @@ function ssShowPickPhase(){
 function ssChooseManualEntry(){
   ssEntryMode='manual';
   ssSalesPhase='wizard';
+  _ssMissingInfoAcknowledged=false;
   ssShowWizardShell(true);
   var strip=document.getElementById('ss_plateStrip');
   if(strip) strip.style.display='none';
@@ -27576,6 +27978,7 @@ function ssChooseManualEntry(){
 function ssChoosePlateEntry(){
   ssEntryMode='plate';
   ssSalesPhase='wizard';
+  _ssMissingInfoAcknowledged=false;
   ssShowWizardShell(true);
   var strip=document.getElementById('ss_plateStrip');
   if(strip) strip.style.display='block';
@@ -27606,6 +28009,7 @@ function saveSsAutosave(){
       ts:Date.now(),
       step:ssCurrentStep||0,
       entryMode:ssEntryMode||'manual',
+      template:ssTemplate||'simple',
       addons:JSON.parse(JSON.stringify(ssAddons||{})),
       stdRemoved:JSON.parse(JSON.stringify(ssStdRemoved||{})),
       multi:JSON.parse(JSON.stringify(ssMulti||{})),
@@ -27632,6 +28036,7 @@ function ssRestoreAutosave(entry){
     ssStdRemoved=Object.assign({},entry.stdRemoved||{});
     ssMulti=Object.assign({doors:[],windows:[],garage:[],cutouts:[],custom:[],x6:[],intwall:[],paint:[]},entry.multi||{});
     ssEntryMode=entry.entryMode||'manual';
+    ssTemplate=entry.template==='informative'?'informative':'simple';
     var controls=entry.controls||{};
     var wSel=document.getElementById('ss_width');
     if(wSel) wSel.value=controls.ss_width||'';
@@ -27649,6 +28054,8 @@ function ssRestoreAutosave(entry){
     ['doors','windows','garage','cutouts','x6','intwall','paint'].forEach(function(t){ try{ ssRenderRows(t); }catch(_eR){} });
     try{ ssRebuildStdPanel(); }catch(_eStd){}
     try{ ssSyncCatCounts(); }catch(_eCc){}
+    try{ ssRenderTemplatePicker(); }catch(_eTp){}
+    try{ ssUpdateInfoQR(); }catch(_eIq){}
     try{ ssSyncColorModeFromOptions(); }catch(_eCm){}
     try{ ssSyncTwoToneToggleVisual(); }catch(_eTt){}
     try{ ssSidingChange(); }catch(_eSc){}
@@ -27677,6 +28084,8 @@ function resetSalesSheet(){
   ssEntryMode='';
   ssCurrentStep=0;
   ssPlatePhotoData='';
+  ssTemplate='simple';
+  _ssMissingInfoAcknowledged=false;
   document.querySelectorAll('#screenSalesSheet [id^="ss_"]').forEach(function(el){
     if(!el||!el.id) return;
     if((el.tagName||'').toUpperCase()==='BUTTON') return;
@@ -27695,6 +28104,9 @@ function resetSalesSheet(){
   try{ ssSyncCatCounts(); }catch(_eCc){}
   try{ ssSyncTwoToneToggleVisual(); }catch(_eTt){}
   try{ renderSsOptsSummary(); }catch(_eOs){}
+  try{ renderSsColorSummary(); }catch(_eCs2){}
+  try{ ssRenderTemplatePicker(); }catch(_eTp){}
+  try{ ssUpdateInfoQR(); }catch(_eIq){}
   try{ ssRefreshSalesSheetTriggersFromDom(); }catch(_eTr){}
   try{ ssClearPriceLabels(); }catch(_eCp){}
   ssShowPickPhase();
@@ -27864,18 +28276,35 @@ function ssConfirmSalesSheetEdit(){
 }
 
 var _calcPriceDeckHome=null;
+var _ssSavedBosDealerState=null;
 function ssEnsureCalcPriceDeckHome(){
   if(_calcPriceDeckHome) return;
   var deck=document.getElementById('calcPriceDeck');
   if(!deck||!deck.parentNode) return;
   _calcPriceDeckHome={parent:deck.parentNode,next:deck.nextSibling};
 }
+/** Sales sheet price deck is the main calculator's deck, reused so styling always matches
+ *  exactly — but Build-on-Site and Dealer Discount don't apply to sales sheets, so they're
+ *  hidden (via .ss-deck-mode) and their effect on calcState is zeroed out while mounted here,
+ *  then restored untouched when the deck goes back home to the main calculator. */
 function ssMountCalcPriceDeck(){
   ssEnsureCalcPriceDeckHome();
   var deck=document.getElementById('calcPriceDeck');
   var mount=document.getElementById('ssPriceDeckMount');
   if(!deck||!mount||mount.contains(deck)) return;
   mount.appendChild(deck);
+  deck.classList.add('ss-deck-mode');
+  if(!_ssSavedBosDealerState){
+    _ssSavedBosDealerState={
+      bosActive:calcState.bosActive,
+      dealerDiscount:calcState.dealerDiscount,
+      quickDealerActive:calcState.quickDealerActive
+    };
+  }
+  calcState.bosActive=false;
+  calcState.dealerDiscount=0;
+  calcState.quickDealerActive=false;
+  try{ updateQuickPrice(); }catch(_eQp){}
   try{ syncCalcPriceDeckHeight(); }catch(_eH){}
 }
 function ssUnmountCalcPriceDeck(){
@@ -27884,6 +28313,74 @@ function ssUnmountCalcPriceDeck(){
   var h=_calcPriceDeckHome;
   if(h.next&&h.next.parentNode===h.parent) h.parent.insertBefore(deck,h.next);
   else h.parent.appendChild(deck);
+  deck.classList.remove('ss-deck-mode');
+  if(_ssSavedBosDealerState){
+    calcState.bosActive=_ssSavedBosDealerState.bosActive;
+    calcState.dealerDiscount=_ssSavedBosDealerState.dealerDiscount;
+    calcState.quickDealerActive=_ssSavedBosDealerState.quickDealerActive;
+    _ssSavedBosDealerState=null;
+  }
+  try{ updateQuickPrice(); }catch(_eQp){}
+}
+
+/** Roof/Walls/Trim (and Bottom Siding when Two-Tone is active) must all be picked before leaving Building & Options. */
+function ssColorsComplete(){
+  var roof=(document.getElementById('ss_roof')||{}).value||'';
+  var siding=(document.getElementById('ss_siding')||{}).value||'';
+  var trim=(document.getElementById('ss_trim')||{}).value||'';
+  if(!roof||!siding||!trim) return false;
+  var ttFields=document.getElementById('ss_ttFields');
+  var ttOn=!!(ttFields&&ttFields.style.display==='block');
+  if(ttOn&&!((document.getElementById('ss_bottomColor')||{}).value||'')) return false;
+  return true;
+}
+
+/** Checks everything the sales sheet templates pull from Settings/the current sheet and
+ *  returns a list of missing/incomplete items (empty array = nothing missing). Non-blocking —
+ *  the sheet can still be generated with gaps, this is just a heads-up to the user. */
+function ssGetMissingInfoItems(){
+  var missing=[];
+  var s=loadSettings()||{};
+  if(!String(s.bizName||'').trim()) missing.push('Business name (Settings \u2192 Business &amp; Lots)');
+  var fc=null;
+  try{ fc=getSalesSheetFlyerContactDisplay(s); }catch(_eFc){}
+  var hasContact=!!(fc&&((fc.contactName||'').trim()||(fc.bizPhone||'').trim()||(fc.block||'').trim()));
+  if(!hasContact) missing.push('A contact name or phone number (Settings \u2192 Business &amp; Lots)');
+  if(!s.logoData) missing.push('Main logo (Settings \u2192 Business &amp; Lots)');
+  var t=(document.getElementById('ss_type')||{}).value||'';
+  var listing=t?getStyleListingCopy(t):{specs:[]};
+  if(!listing||!listing.specs||!listing.specs.filter(Boolean).length){
+    missing.push('Building specs for this style (Settings \u2192 Building Style &amp; Specs)');
+  }
+  if(typeof ssTemplate==='string'&&ssTemplate==='informative'){
+    if(!s.logo2Data) missing.push('Logo #2 (Settings \u2192 Business &amp; Lots) \u2014 used by the Informative template');
+    if(!String(s.bizSlogan||'').trim()) missing.push('Business slogan (Settings \u2192 Business &amp; Lots) \u2014 used by the Informative template');
+    var infoUrl=((document.getElementById('ss_infoQrUrlInput')||{}).value||'').trim();
+    if(!infoUrl) missing.push('Info QR URL (Design &amp; Contact page) \u2014 used by the Informative template');
+  }
+  return missing;
+}
+var _ssMissingInfoAcknowledged=false;
+function ssShowMissingInfoModal(items){
+  var modal=document.getElementById('ssMissingInfoModal');
+  var list=document.getElementById('ssMissingInfoList');
+  if(!modal||!list) return;
+  list.innerHTML='';
+  items.forEach(function(msg){
+    var li=document.createElement('li');
+    li.innerHTML=msg;
+    list.appendChild(li);
+  });
+  modal.style.display='flex';
+}
+function ssCloseMissingInfoModal(){
+  var modal=document.getElementById('ssMissingInfoModal');
+  if(modal) modal.style.display='none';
+}
+function ssContinuePastMissingInfo(){
+  ssCloseMissingInfoModal();
+  _ssMissingInfoAcknowledged=true;
+  ssGoStep(2);
 }
 
 function ssGoStep(n){
@@ -27894,6 +28391,11 @@ function ssGoStep(n){
     var l=parseInt(document.getElementById('ss_length').value)||0;
     if(!t||!w||!l){showToast('Select building type and size first');return;}
     if(!PRICING[w]||!PRICING[w][l]||!PRICING[w][l][t]){showToast('No price found for that size/style');return;}
+    if(!ssColorsComplete()){showToast('Choose roof, wall, and trim colors first');return;}
+  }
+  if(n===2&&!_ssMissingInfoAcknowledged){
+    var missingInfo=ssGetMissingInfoItems();
+    if(missingInfo.length){ ssShowMissingInfoModal(missingInfo); return; }
   }
   if(n===1){
     try{ ssApplySettingsToSalesSheetQrs(); }catch(_eQr){}
@@ -28021,17 +28523,44 @@ function ssFillReviewPanel(){
 function ssFillReviewSheetPreview(){
   var wrap=document.getElementById('ss_reviewSheetPreview');
   if(!wrap) return;
-  var h=ssBuildSalesSheetPrintHtml('ssQRImgPrev','ssQRImgPrev2',{preview:true,imgId3:'ssQRImgPrev3'});
+  var isInfo=ssTemplate==='informative';
+  var h=isInfo
+    ? ssBuildInformativeSalesSheetHtml('ssInfoQRImgPrev',{preview:true})
+    : ssBuildSalesSheetPrintHtml('ssQRImgPrev','ssQRImgPrev2',{preview:true,imgId3:'ssQRImgPrev3'});
   if(!h){
     wrap.innerHTML='<p style="font-size:0.85rem;color:#666;margin:0;">Complete building, size, and options on the previous steps to see the preview.</p>';
     return;
   }
   wrap.innerHTML=h;
-  var qrUrl=(document.getElementById('ss_qrUrl').value||'').trim();
-  var qrPurchaseUrl=(document.getElementById('ss_qrPurchaseUrl').value||'').trim();
-  var qrIntakeUrl=(document.getElementById('ss_qrIntakeUrl').value||'').trim();
-  ssWireSsQrForUrls('ssQRImgPrev','ssQRImgPrev2',qrUrl,qrPurchaseUrl,'ssQRImgPrev3',qrIntakeUrl);
+  if(isInfo){
+    var infoQrUrl=((document.getElementById('ss_infoQrUrlInput')||{}).value||'').trim();
+    ssWireInfoQrForUrl('ssInfoQRImgPrev',infoQrUrl);
+  }else{
+    var qrUrl=(document.getElementById('ss_qrUrl').value||'').trim();
+    var qrPurchaseUrl=(document.getElementById('ss_qrPurchaseUrl').value||'').trim();
+    var qrIntakeUrl=(document.getElementById('ss_qrIntakeUrl').value||'').trim();
+    ssWireSsQrForUrls('ssQRImgPrev','ssQRImgPrev2',qrUrl,qrPurchaseUrl,'ssQRImgPrev3',qrIntakeUrl);
+  }
+  try{ ssFitReviewPreviewToWindow(); }catch(_eFit){}
 }
+
+/** Scales the full 8.5x11 review preview to fit inside its viewport with no scrolling, preserving aspect ratio. */
+function ssFitReviewPreviewToWindow(){
+  var box=document.getElementById('ss_reviewSheetScroll');
+  var outer=document.getElementById('ss_reviewSheetPreviewOuter');
+  if(!box||!outer) return;
+  var cw=box.clientWidth,ch=box.clientHeight;
+  if(!cw||!ch) return;
+  var scale=Math.min(cw/816,ch/1056);
+  if(!isFinite(scale)||scale<=0) scale=1;
+  outer.style.transform='scale('+scale.toFixed(4)+')';
+}
+window.addEventListener('resize',function(){
+  try{
+    var pg=document.getElementById('sspage2');
+    if(pg&&pg.style.display!=='none') ssFitReviewPreviewToWindow();
+  }catch(_e){}
+});
 
 function ssOpenConfirm(){
   var t=document.getElementById('ss_type').value;
@@ -28155,6 +28684,8 @@ function ssColorSwatchImg(dataArr,name){
 }
 
 /** Render the picked colors as a tappable list (like the options list); each card re-opens its picker. */
+/** Renders the picked colors as 3 labeled columns (Roof / Walls / Trim) with an Edit button per tile.
+ *  When Two-Tone siding is active, the Walls column stacks a 2nd tile for Bottom Siding. */
 function renderSsColorSummary(){
   var host=document.getElementById('ss_colorSummary');
   if(!host) return;
@@ -28165,52 +28696,68 @@ function renderSsColorSummary(){
   var ttOn=!!(ttFields&&ttFields.style.display==='block');
   var sidingData=metalOn?ROOF_COLOR_DATA:COLOR_DATA;
 
-  var slots=[
-    {label:'Roof',selId:'ss_roof',data:ROOF_COLOR_DATA,open:function(){ openColorPicker('ss_roof','Choose Roof Color',ROOF_COLOR_DATA); }},
-    {label:ttOn?'Top Siding':'Siding',selId:'ss_siding',data:sidingData,open:function(){ openSidingColorPicker('ss_siding',ttOn?'Choose Top Siding Color':'Choose Siding Color'); }}
+  var wallTiles=[{selId:'ss_siding',subLabel:ttOn?'Top':null,data:sidingData,open:function(){ openSidingColorPicker('ss_siding',ttOn?'Choose Top Siding Color':'Choose Siding Color'); }}];
+  if(ttOn) wallTiles.push({selId:'ss_bottomColor',subLabel:'Bottom',data:sidingData,open:function(){ openSidingColorPicker('ss_bottomColor','Choose Bottom Siding Color'); }});
+
+  var cols=[
+    {colLabel:'Roof',tiles:[{selId:'ss_roof',subLabel:null,data:ROOF_COLOR_DATA,open:function(){ openColorPicker('ss_roof','Choose Roof Color',ROOF_COLOR_DATA); }}]},
+    {colLabel:'Walls',tiles:wallTiles},
+    {colLabel:'Trim',tiles:[{selId:'ss_trim',subLabel:null,data:TRIM_COLOR_DATA,open:function(){ openColorPicker('ss_trim','Choose Trim Color',TRIM_COLOR_DATA); }}]}
   ];
-  if(ttOn) slots.push({label:'Bottom Siding',selId:'ss_bottomColor',data:sidingData,open:function(){ openSidingColorPicker('ss_bottomColor','Choose Bottom Siding Color'); }});
-  slots.push({label:'Trim',selId:'ss_trim',data:TRIM_COLOR_DATA,open:function(){ openColorPicker('ss_trim','Choose Trim Color',TRIM_COLOR_DATA); }});
 
-  slots.forEach(function(slot){
-    var sel=document.getElementById(slot.selId);
-    var val=sel?String(sel.value||''):'';
-    var dispName=val?colorPickerTriggerName(slot.selId,val):'';
-    var img=null;
-    if(val==='Same as Siding'&&typeof thumbSrcForSameAsSiding==='function') img=thumbSrcForSameAsSiding(slot.selId);
-    else img=ssColorSwatchImg(slot.data,val);
+  cols.forEach(function(col){
+    var colEl=document.createElement('div');
+    colEl.className='ss-color-col';
+    var lbl=document.createElement('div');
+    lbl.className='ss-color-col-label';
+    lbl.textContent=col.colLabel;
+    colEl.appendChild(lbl);
 
-    var card=document.createElement('button');
-    card.type='button';
-    card.className='ss-color-card'+(val?'':' is-empty');
-    card.onclick=slot.open;
+    col.tiles.forEach(function(slot){
+      var sel=document.getElementById(slot.selId);
+      var val=sel?String(sel.value||''):'';
+      var dispName=val?colorPickerTriggerName(slot.selId,val):'';
+      var img=null;
+      if(val==='Same as Siding'&&typeof thumbSrcForSameAsSiding==='function') img=thumbSrcForSameAsSiding(slot.selId);
+      else img=ssColorSwatchImg(slot.data,val);
 
-    var sw=document.createElement('span');
-    sw.className='ss-color-sw';
-    if(img){ var im=document.createElement('img'); im.src=img; im.alt=dispName; sw.appendChild(im); }
-    else if(val==='Same as Siding'){ sw.textContent='='; }
-    else if(val){ sw.textContent='\u270E'; }
-    else { sw.textContent='+'; }
-    card.appendChild(sw);
+      var card=document.createElement('div');
+      card.className='ss-color-card'+(val?'':' is-empty');
 
-    var txt=document.createElement('span');
-    txt.className='ss-color-txt';
-    var slotLbl=document.createElement('span');
-    slotLbl.className='ss-color-slot';
-    slotLbl.textContent=slot.label;
-    txt.appendChild(slotLbl);
-    var nm=document.createElement('span');
-    nm.className='ss-color-name'+(val?'':' is-placeholder');
-    nm.textContent=dispName||'Tap to choose';
-    txt.appendChild(nm);
-    card.appendChild(txt);
+      if(slot.subLabel){
+        var sub=document.createElement('div');
+        sub.className='ss-color-sub-label';
+        sub.textContent=slot.subLabel;
+        card.appendChild(sub);
+      }
 
-    var edit=document.createElement('span');
-    edit.className='ss-color-edit';
-    edit.textContent=val?'Change':'Choose';
-    card.appendChild(edit);
+      var sw=document.createElement('span');
+      sw.className='ss-color-sw';
+      if(img){ var im=document.createElement('img'); im.src=img; im.alt=dispName; sw.appendChild(im); }
+      else if(val==='Same as Siding'){ sw.textContent='='; }
+      else if(val){ sw.textContent='\u270E'; }
+      else { sw.textContent='\u2014'; }
+      card.appendChild(sw);
 
-    host.appendChild(card);
+      var txt=document.createElement('span');
+      txt.className='ss-color-txt';
+      var nm=document.createElement('span');
+      nm.className='ss-color-name'+(val?'':' is-placeholder');
+      nm.textContent=dispName||'Not chosen';
+      txt.appendChild(nm);
+      card.appendChild(txt);
+
+      var edit=document.createElement('button');
+      edit.type='button';
+      edit.className='ss-color-edit-btn';
+      edit.textContent=val?'Edit':'Choose';
+      edit.onclick=slot.open;
+      card.appendChild(edit);
+
+      colEl.appendChild(card);
+    });
+
+    host.appendChild(colEl);
   });
 }
 
@@ -28519,10 +29066,13 @@ function ssCalcPrice(){
   ssUpdateOptionPrices();
 
   var addBtn=document.getElementById('ssAddOptionBtn');
+  var colorsBtn=document.getElementById('ssColorsBtn');
   if(!t||!w||!l||!PRICING[w]||!PRICING[w][l]||!PRICING[w][l][t]){
     if(addBtn) addBtn.disabled=true;
+    if(colorsBtn) colorsBtn.disabled=true;
     ssClearPriceLabels();
     try{ renderSsOptsSummary(); }catch(_rss0){}
+    try{ renderSsColorSummary(); }catch(_rcs0){}
     return;
   }
 
@@ -28591,11 +29141,11 @@ function ssApplyStdRemovedFromCalc(){
   });
 }
 
+/** Normalizes/prunes ssStdRemoved for the current ss_type. The visible per-item
+ *  quantity control now lives in the shared ss_optsSummary option cards (see
+ *  _appendSelOptCard), so this no longer builds any standalone panel markup. */
 function ssRebuildStdPanel(){
   var t=document.getElementById('ss_type').value;
-  var panel=document.getElementById('ss_stdPanel');
-  var list=document.getElementById('ss_stdList');
-  var empty=document.getElementById('ss_stdEmpty');
   var opts=STD_OPTIONS[t]||[];
   var pruned={};
   opts.forEach(function(item){
@@ -28604,65 +29154,6 @@ function ssRebuildStdPanel(){
     if(rq>0) pruned[item.id]=rq;
   });
   ssStdRemoved=pruned;
-
-  if(!t||!opts.length){
-    if(panel) panel.style.display='none';
-    if(empty) empty.style.display='block';
-    return;
-  }
-  if(empty) empty.style.display='none';
-  if(panel) panel.style.display='block';
-  list.innerHTML='';
-  opts.forEach(function(item){
-    var maxQ=item.qty||1;
-    var cur=ssStdRemoved[item.id]||0;
-    var row=document.createElement('div');
-    row.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;flex-basis:100%;';
-    var lbl=document.createElement('div');
-    lbl.style.cssText='font-size:0.85rem;flex:1;min-width:0;';
-    lbl.textContent=item.label+(maxQ>1?' (x'+maxQ+')':'');
-    if(maxQ>1){
-      var sel=document.createElement('select');
-      sel.style.cssText='border:1.5px solid rgba(232,200,122,0.25);border-radius:6px;padding:4px 8px;font-size:0.72rem;font-weight:600;color:var(--wheat);background:rgba(255,255,255,0.08);cursor:pointer;flex-shrink:0;max-width:55%;';
-      for(var qv=0;qv<=maxQ;qv++){
-        var opt=document.createElement('option');
-        opt.value=String(qv);
-        if(qv===0) opt.textContent='Keep all (included)';
-        else opt.textContent='Remove '+qv+' (−$'+(qv*item.credit)+')';
-        if(qv===cur) opt.selected=true;
-        sel.appendChild(opt);
-      }
-      (function(id,mx){
-        sel.onchange=function(){
-          var n=ssNormalizeStdRemovedCount(parseInt(this.value,10),mx);
-          if(n<=0) delete ssStdRemoved[id];
-          else ssStdRemoved[id]=n;
-          ssCalcPrice();
-        };
-      })(item.id,maxQ);
-      row.appendChild(lbl);
-      row.appendChild(sel);
-    }else{
-      var chip=document.createElement('div');
-      chip.className='check-chip';
-      chip.style.cssText='font-size:0.72rem;padding:4px 10px;flex-shrink:0;';
-      chip.textContent='Remove -$'+item.credit;
-      if(cur>=1) chip.classList.add('on');
-      chip.onclick=(function(i,c,mx){
-        return function(){
-          var now=ssNormalizeStdRemovedCount(ssStdRemoved[i.id],mx);
-          var next=now>=1?0:1;
-          if(next<=0) delete ssStdRemoved[i.id];
-          else ssStdRemoved[i.id]=next;
-          c.classList.toggle('on',next>0);
-          ssCalcPrice();
-        };
-      })(item,chip,maxQ);
-      row.appendChild(lbl);
-      row.appendChild(chip);
-    }
-    list.appendChild(row);
-  });
 }
 
 function ssGetStdCredit(t){
@@ -28983,6 +29474,105 @@ function ssBuildSalesSheetPrintHtml(imgId1, imgId2, opts){
   return '<div class="ss-flyer-root">'+watermark+'<div class="ss-flyer-content">'+h+'</div></div>';
 }
 
+/** "Informative" sales sheet template: single Info QR, Logo 2, 6 building specs,
+ *  LIST/SALE/RTO pricing trio, and a LOT LOCATION + BUSINESS SLOGAN header. Full 8.5x11, no border. */
+function ssBuildInformativeSalesSheetHtml(infoQrImgId, opts){
+  opts=opts||{};
+  var preview=!!opts.preview;
+  infoQrImgId=infoQrImgId||'ssInfoQRImg';
+  var t=document.getElementById('ss_type').value;
+  var w=parseInt(document.getElementById('ss_width').value)||0;
+  var l=parseInt(document.getElementById('ss_length').value)||0;
+  var pct=parseFloat(document.getElementById('ss_salePct').value)||0;
+  var infoQrUrl=((document.getElementById('ss_infoQrUrlInput')||{}).value||'').trim();
+
+  if(!t||!w||!l){ if(!preview) showToast('Please select style, width, and length'); return null; }
+  if(!PRICING[w]||!PRICING[w][l]||!PRICING[w][l][t]){ if(!preview) showToast('No price found for that size/style'); return null; }
+
+  var s=loadSettings();
+  var bizName=s.bizName||'Your Business';
+  var bizSlogan=(s.bizSlogan||'').trim();
+  var fcFlyer=getSalesSheetFlyerContactDisplay(s);
+  var lotName=ssResolveLotNameForInformative(s);
+
+  var baseRaw=PRICING[w][l][t];
+  var stdCredit=ssGetStdCredit(t);
+  var addonResult=ssGetAddonLines(w,l,t);
+  var addonTotal=addonResult.total;
+  var discountedBase=ssDiscountedBaseCents(baseRaw,stdCredit,pct);
+  var salePrice=discountedBase+addonTotal;
+  var listPrice=baseRaw-stdCredit+addonTotal;
+  var hasSale=pct>0;
+  var typeName=NAMES[t]||t;
+  var sizeStr=w+"' \u00d7 "+l+"'";
+  var rtoDivMap=getRtoDivisorMap();
+  var rtoVals=[36,48,60].map(function(mo){ return Math.ceil(salePrice/rtoDivMap[mo]); });
+  var rtoFrom=Math.min.apply(Math,rtoVals);
+
+  function esc(v){ return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+
+  var listing=getStyleListingCopy(t);
+  var specs=(listing.specs||[]).filter(Boolean).slice(0,6);
+
+  var h='';
+
+  h+='<div class="ssi-header">';
+  h+=s.logo2Data?'<img class="ssi-logo2" src="'+String(s.logo2Data).replace(/"/g,'&quot;')+'" alt="">':'<div class="ssi-logo2 ssi-logo2-empty"></div>';
+  h+='<div class="ssi-bizblock">';
+  h+='<div class="ssi-bizname">'+esc(String(bizName).toUpperCase())+'</div>';
+  if(bizSlogan) h+='<div class="ssi-slogan">'+esc(bizSlogan)+'</div>';
+  h+='</div>';
+  if(lotName){
+    h+='<div class="ssi-lot"><div class="ssi-lot-label">LOT LOCATION</div><div class="ssi-lot-name">'+esc(lotName)+'</div></div>';
+  }
+  h+='</div>';
+
+  h+='<div class="ssi-hero">';
+  h+='<div class="ssi-welcome">WELCOME!</div>';
+  h+='<div class="ssi-sizetype">'+esc(sizeStr+' '+typeName)+'</div>';
+  h+='</div>';
+
+  if(specs.length){
+    h+='<div class="ssi-specs"><ul>';
+    specs.forEach(function(sp){ h+='<li>'+esc(sp)+'</li>'; });
+    h+='</ul></div>';
+  }
+
+  h+='<div class="ssi-pricing">';
+  h+='<div class="ssi-price-col"><div class="ssi-price-label">List Price</div><div class="ssi-price-val">$'+listPrice.toLocaleString()+'</div></div>';
+  h+='<div class="ssi-price-col"><div class="ssi-price-label">Sale Price</div><div class="ssi-price-val'+(hasSale?' ss-flyer-accent':'')+'">$'+salePrice.toLocaleString()+'</div></div>';
+  h+='<div class="ssi-price-col"><div class="ssi-price-label">RTO From</div><div class="ssi-price-val">$'+rtoFrom.toLocaleString()+'/mo</div></div>';
+  h+='</div>';
+
+  h+='<div class="ssi-promo">Ask about current promotions and available discounts!</div>';
+
+  h+='<div class="ssi-footer">';
+  if(infoQrUrl){
+    h+='<div class="ssi-qr">'+ssGetQRImgTag(infoQrUrl,88,infoQrImgId)+'<div class="ssi-qr-label">Scan for info</div></div>';
+  }
+  var flyLine=formatFlyerContactCallLine(fcFlyer);
+  var multiBlock=(fcFlyer.block&&fcFlyer.block.indexOf('<br>')>=0);
+  var contactHtml='';
+  if(multiBlock){
+    contactHtml=fcFlyer.block.split('<br>').map(function(part){return esc(part);}).join('<br>');
+  }else{
+    var oneLine=flyLine||String(fcFlyer.contactName||'').trim();
+    if(oneLine) contactHtml=esc(oneLine);
+  }
+  if(contactHtml) h+='<div class="ssi-contact">'+contactHtml+'</div>';
+  h+='</div>';
+
+  return '<div class="ss-flyer-root is-informative"><div class="ss-flyer-content">'+h+'</div></div>';
+}
+
+function ssWireInfoQrForUrl(imgId,url){
+  if(!url) return;
+  ssGetQRDataUrl(url,function(dataUrl){
+    var img=document.getElementById(imgId);
+    if(img&&dataUrl) img.src=dataUrl;
+  });
+}
+
 function ssWireSsQrForUrls(id1,id2,qrUrl,qrPurchaseUrl,id3,qrIntakeUrl){
   if(qrUrl){
     ssGetQRDataUrl(qrUrl,function(dataUrl){
@@ -29036,6 +29626,166 @@ function ssGenerate(){
     ssFitSalesSheetToPage();
     window.scrollTo(0,0);
   },50);
+}
+
+// ============================================================
+// SALES SHEET — Print / Save PDF (native share, print-dialog + download fallback)
+// ============================================================
+function ssWaitForImagesToLoad(root){
+  var imgs=root.querySelectorAll('img');
+  var pending=[];
+  imgs.forEach(function(img){
+    if(img.complete&&img.naturalWidth>0) return;
+    if(!img.src) return;
+    pending.push(new Promise(function(res){
+      img.onload=res;
+      img.onerror=res;
+      setTimeout(res,2500);
+    }));
+  });
+  return Promise.all(pending);
+}
+
+/** Renders the current template (Simple/Informative) full-size offscreen, rasterizes it with
+ *  html2canvas, and returns a one-page 8.5x11 PDF blob via jsPDF. Returns null (with a toast) on failure. */
+async function ssGenerateSalesSheetPdfBlob(){
+  var t=document.getElementById('ss_type').value;
+  var w=parseInt(document.getElementById('ss_width').value)||0;
+  var l=parseInt(document.getElementById('ss_length').value)||0;
+  if(!t||!w||!l){ showToast('Complete the building details first'); return null; }
+  if(typeof html2canvas==='undefined'){ showToast('PDF renderer failed to load — check your connection'); return null; }
+  var jspdfLib=window.jspdf;
+  if(!jspdfLib||!jspdfLib.jsPDF){ showToast('PDF library not loaded'); return null; }
+
+  var isInfo=ssTemplate==='informative';
+  var host=document.createElement('div');
+  host.style.cssText='position:absolute;left:-10000px;top:0;width:816px;height:1056px;box-sizing:border-box;padding:0.3in 0.4in;background:#fff;overflow:hidden;font-family:Georgia,serif;color:#111;';
+  document.body.appendChild(host);
+  try{
+    var qrId1='ssPdfQR',qrId2='ssPdfQR2',qrId3='ssPdfQR3';
+    var html=isInfo
+      ? ssBuildInformativeSalesSheetHtml(qrId1,{preview:false})
+      : ssBuildSalesSheetPrintHtml(qrId1,qrId2,{preview:false,imgId3:qrId3});
+    if(!html) return null;
+    host.innerHTML=html;
+
+    var qrWaits=[];
+    if(isInfo){
+      var infoQrUrl=((document.getElementById('ss_infoQrUrlInput')||{}).value||'').trim();
+      if(infoQrUrl){
+        qrWaits.push(new Promise(function(res){
+          ssGetQRDataUrl(infoQrUrl,function(dataUrl){
+            var img=host.querySelector('#'+qrId1);
+            if(img&&dataUrl) img.src=dataUrl;
+            res();
+          });
+        }));
+      }
+    }else{
+      var qrUrl=(document.getElementById('ss_qrUrl').value||'').trim();
+      var qrPurchaseUrl=(document.getElementById('ss_qrPurchaseUrl').value||'').trim();
+      var qrIntakeUrl=(document.getElementById('ss_qrIntakeUrl').value||'').trim();
+      [[qrUrl,qrId1],[qrPurchaseUrl,qrId2],[qrIntakeUrl,qrId3]].forEach(function(pair){
+        if(!pair[0]) return;
+        qrWaits.push(new Promise(function(res){
+          ssGetQRDataUrl(pair[0],function(dataUrl){
+            var img=host.querySelector('#'+pair[1]);
+            if(img&&dataUrl) img.src=dataUrl;
+            res();
+          });
+        }));
+      });
+    }
+    await Promise.all(qrWaits);
+    await ssWaitForImagesToLoad(host);
+
+    var canvas=await html2canvas(host,{scale:2,backgroundColor:'#ffffff',useCORS:true,logging:false});
+    var imgData=canvas.toDataURL('image/jpeg',0.92);
+    var doc=new jspdfLib.jsPDF({unit:'in',format:[8.5,11],orientation:'portrait'});
+    doc.addImage(imgData,'JPEG',0,0,8.5,11,undefined,'FAST');
+
+    var s=loadSettings();
+    var bizName=s.bizName||'Your-Business';
+    var typeName=NAMES[t]||t;
+    var safeName=(bizName+'-'+w+'x'+l+'-'+typeName).replace(/[^\w\-]+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'')||'SalesSheet';
+    var fname='SalesSheet-'+safeName+'-'+new Date().toISOString().slice(0,10)+'.pdf';
+    return {blob:doc.output('blob'),filename:fname};
+  }catch(err){
+    console.log('Sales sheet PDF build failed:',err);
+    showToast('Could not build the PDF');
+    return null;
+  }finally{
+    if(host&&host.parentNode) host.parentNode.removeChild(host);
+  }
+}
+
+function downloadSsPdfBlob(pdf){
+  if(!pdf||!pdf.blob) return;
+  var url=URL.createObjectURL(pdf.blob);
+  var a=document.createElement('a');
+  a.href=url;
+  a.download=pdf.filename||'sales-sheet.pdf';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); },60000);
+}
+
+/** Opens the generated PDF in a new tab and asks it to print — lets the user pick a
+ *  physical printer or "Save as PDF" from the native print dialog. Returns false if the
+ *  popup was blocked (caller should fall back to a direct download). */
+function ssOpenPdfPrintWindow(blob){
+  var url=URL.createObjectURL(blob);
+  var w;
+  try{ w=window.open(url,'_blank'); }catch(_e){ w=null; }
+  if(!w) return false;
+  setTimeout(function(){
+    try{ w.focus(); }catch(_e1){}
+    try{ w.print(); }catch(_e2){}
+  },600);
+  setTimeout(function(){ URL.revokeObjectURL(url); },60000);
+  return true;
+}
+
+/** Print/Save PDF button on the Review page: builds the PDF, then tries native share
+ *  first, falling back to the browser print dialog, then a direct download. */
+async function ssPrintOrSharePdf(){
+  var btn=document.getElementById('ssPrintShareBtn');
+  var statusEl=document.getElementById('ss_pdfShareStatus');
+  function setStatus(msg){ if(statusEl){ statusEl.textContent=msg||''; statusEl.style.display=msg?'block':'none'; } }
+  if(btn) btn.disabled=true;
+  setStatus('Building PDF\u2026');
+  try{
+    var pdf=await ssGenerateSalesSheetPdfBlob();
+    if(!pdf){ setStatus(''); return; }
+    var file=new File([pdf.blob],pdf.filename,{type:'application/pdf'});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){
+      try{
+        var s=loadSettings();
+        var bizName=s.bizName||'Your Business';
+        setStatus('Opening share options\u2026');
+        await navigator.share({title:'Sales Sheet \u2014 '+bizName,text:'Sales sheet from '+bizName,files:[file]});
+        setStatus('');
+        return;
+      }catch(shareErr){
+        if(shareErr&&shareErr.name==='AbortError'){ setStatus(''); return; }
+      }
+    }
+    setStatus('Opening print dialog\u2026');
+    var opened=ssOpenPdfPrintWindow(pdf.blob);
+    if(!opened){
+      downloadSsPdfBlob(pdf);
+      setStatus('PDF downloaded \u2014 open it to print or share.');
+    }else{
+      setStatus('');
+    }
+  }catch(err){
+    console.log('Print/Save PDF failed:',err);
+    showToast('Could not open Print / Save PDF');
+    setStatus('');
+  }finally{
+    if(btn) btn.disabled=false;
+  }
 }
 
 
@@ -29692,8 +30442,12 @@ function gssGetListPanel(wrap){
   return wrap.querySelector('.gss-list-panel');
 }
 
+/** Every enhanced dropdown floats as an overlay instead of expanding inline — this keeps
+ *  the page from jumping/pushing content down when a list opens, and matters even more for
+ *  panels nested inside overflow:hidden containers (e.g. the SALE/TAX pill controls), where a
+ *  non-floated panel would render invisible/clipped. */
 function gssShouldFloatListPanel(wrap){
-  return !!(wrap&&(wrap.closest('#screenCalc')||wrap.closest('#cbBuilding')));
+  return !!wrap;
 }
 
 function gssFloatListPanel(wrap){
@@ -29752,7 +30506,7 @@ function gssPositionFloatedListPanel(wrap){
 }
 
 function gssPositionFloatedListPanels(){
-  document.querySelectorAll('#screenCalc .gss-list-wrap.is-open, #cbBuilding .gss-list-wrap.is-open').forEach(function(w){
+  document.querySelectorAll('.gss-list-wrap.is-open').forEach(function(w){
     gssPositionFloatedListPanel(w);
   });
 }
@@ -29832,6 +30586,12 @@ function gssBindListDocClose(){
   window.addEventListener('scroll',function(){
     gssPositionFloatedListPanels();
   },true);
+  var revBody=document.querySelector('#revCalcShell .rev-page-body');
+  if(revBody){
+    revBody.addEventListener('scroll',function(){
+      gssPositionFloatedListPanels();
+    },{passive:true});
+  }
 }
 
 function gssEnhanceListSelect(sel,opts){
@@ -29910,7 +30670,6 @@ function initGssListSelectors(){
     {id:'assuranceSelect',title:'Assurance Plan'},
     {id:'rev_salePctSel',title:'Sale %'},
     {id:'rev_taxPctSel',title:'Tax %'},
-    {id:'rev_mode',title:'Mode'},
     {id:'rev_term',title:'RTO Term'},
     {id:'rev_filterSize',title:'Filter by size'},
     {id:'rev_filterStyle',title:'Filter by style'},
@@ -30351,6 +31110,19 @@ function cb_hideStdOption(stdId){
   var maxQ=it?(it.qty||1):1;
   var cur=cbCalcState.stdRemoved[stdId]||0;
   cbCalcState.stdRemoved[stdId]=Math.min(maxQ,cur+1);
+  cb_updateQuickPrice();
+  cb_renderOptsSummary();
+}
+/** Set exactly how many units of a qty>1 standard item are removed (0 = keep all). */
+function cb_setStdQty(stdId,qty){
+  if(!cbCalcState.stdRemoved) cbCalcState.stdRemoved={};
+  var items=STD_OPTIONS[cbCalcState.type]||[];
+  var it=null;
+  for(var i=0;i<items.length;i++){ if(items[i].id===stdId){ it=items[i]; break; } }
+  var maxQ=it?(it.qty||1):999;
+  var n=Math.max(0,Math.min(maxQ,parseInt(qty,10)||0));
+  cbCalcState.stdRemoved[stdId]=n;
+  if(n<=0&&cbCalcState.stdHidden) delete cbCalcState.stdHidden[stdId];
   cb_updateQuickPrice();
   cb_renderOptsSummary();
 }
@@ -31231,12 +32003,15 @@ function cb_renderOptsSummaryInto(hostId){
       return;
     }
     visibleStd.forEach(function(it){
-      var rq=cbCalcState.stdRemoved&&cbCalcState.stdRemoved[it.id];
+      var maxQ=it.qty||1;
+      var rq=(cbCalcState.stdRemoved&&cbCalcState.stdRemoved[it.id])||0;
       var removed=rq>0;
-      var lbl=it.label+(it.qty>1?' ('+it.qty+'×)':'');
+      var lbl=it.label+(maxQ>1?' ('+maxQ+'×)':'');
       _appendSelOptCard(host,hostId,false,{
         isStd:true,stdId:it.id,label:lbl,included:!removed,excluded:removed,
-        priceText:removed?('-'+fmt((rq||1)*it.credit)):'Std',
+        maxQty:maxQ,removedQty:rq,creditEach:it.credit,
+        onQtyChange:function(n){ cb_setStdQty(it.id,n); },
+        priceText:removed?('-'+fmt(rq*it.credit)):'Std',
         showRemove:true,
         onRemove:function(){
           var doHide=function(){ cb_hideStdOption(it.id); };
@@ -31415,9 +32190,35 @@ function cb_renderOptsSummaryInto(hostId){
         name.className='os-name';
         name.textContent='Standard removed: '+it.label+(rq>1?' ('+rq+'×)':'');
         row.appendChild(name);
-        var ph=document.createElement('div');
-        ph.style.width='52px';
-        row.appendChild(ph);
+        var maxQ=it.qty||1;
+        if(maxQ>1){
+          var qtyInp=document.createElement('input');
+          qtyInp.type='number';
+          qtyInp.className='sel-opt-qty';
+          qtyInp.min='0';
+          qtyInp.max=String(maxQ);
+          qtyInp.step='1';
+          qtyInp.inputMode='numeric';
+          qtyInp.value=String(rq);
+          qtyInp.setAttribute('aria-label','Quantity removed for '+it.label+' (standard qty: '+maxQ+')');
+          var applyRemovedQty=function(){
+            var n=parseInt(qtyInp.value,10);
+            if(isNaN(n)) n=0;
+            n=Math.max(0,Math.min(maxQ,n));
+            qtyInp.value=String(n);
+            var doSet=function(){ setStdQty(it.id,n); };
+            if(isRev) withRevOptsProbe(doSet); else doSet();
+            _afterOptsSummaryHostChange(hostId);
+          };
+          qtyInp.onchange=applyRemovedQty;
+          qtyInp.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); qtyInp.blur(); } });
+          qtyInp.onclick=function(e){ e.stopPropagation(); };
+          row.appendChild(qtyInp);
+        }else{
+          var ph=document.createElement('div');
+          ph.style.width='52px';
+          row.appendChild(ph);
+        }
         var cred=document.createElement('div');
         cred.className='os-price';
         cred.textContent='-'+fmt(rq*it.credit);
