@@ -19,7 +19,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Oswald:wght@400;500;600;700&family=Roboto+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
@@ -3787,7 +3787,7 @@ select:focus {
 
 /* -- Sales sheet review preview: shows the FULL page, scaled to fit, no scrolling -- */
 #ss_reviewSheetScroll {
-  height: min(68vh, 700px);
+  height: min(calc(100vh - 180px), 820px);
   overflow: hidden;
   border: 1.5px solid rgba(0, 0, 0, 0.12);
   border-radius: 10px;
@@ -3844,8 +3844,67 @@ select:focus {
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   transform-origin: top center;
+  box-sizing: border-box;
+}
+
+/* -- Simple sales sheet: fill page + larger type -- */
+.ss-flyer-root.is-simple .ss-flyer-content {
+  justify-content: space-between;
+  min-height: 100%;
+  padding: 2px 0 0;
+}
+.ss-simple-block { flex-shrink: 0; }
+.ss-simple-hero { text-align: center; }
+.ss-simple-title {
+  font-size: 3.35rem; font-weight: 900; font-family: Arial Black, Arial, sans-serif;
+  color: #111; line-height: 1.05; margin: 0 0 8px; white-space: nowrap;
+}
+.ss-simple-color {
+  font-size: 1.05rem; color: #000; margin-bottom: 6px; line-height: 1.35;
+  white-space: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.ss-simple-includes { font-size: 1.15rem; font-weight: 700; color: #000; margin-bottom: 2px; }
+.ss-simple-value { font-size: 1.15rem; font-weight: 700; }
+.ss-simple-price-block { text-align: center; margin-top: 4px; }
+.ss-simple-sale-price {
+  font-size: 3.15rem; font-weight: 900; font-family: Arial Black, Arial, sans-serif;
+  color: #c0392b; line-height: 1.05; white-space: nowrap;
+}
+.ss-simple-original { font-size: 1.35rem; color: #000; margin-top: 8px; }
+.ss-simple-cash {
+  text-align: center; font-size: 1.28rem; line-height: 1.65; margin-top: 10px;
+}
+.ss-simple-rto { text-align: center; line-height: 2.1; }
+.ss-simple-rto-head { font-size: 1.55rem; font-weight: 700; }
+.ss-simple-rto-line { font-size: 1.42rem; }
+.ss-simple-rto-mo { font-size: 1.48rem; }
+.ss-simple-rto-note { font-size: 1.1rem; color: #000; }
+.ss-simple-blurb {
+  border: 2px solid #000; border-radius: 4px; padding: 12px 14px;
+  text-align: center; line-height: 1.6; box-sizing: border-box;
+  font-size: 1rem; color: #000;
+}
+.ss-simple-qr-row {
+  display: flex; gap: 28px; padding: 18px; border: 1px solid #ccc; border-radius: 6px;
+  justify-content: center; align-items: flex-start; flex-wrap: wrap;
+}
+.ss-simple-qr-item { text-align: center; flex: 0 0 auto; }
+.ss-simple-qr-label { font-size: 1.05rem; color: #000; margin-top: 10px; font-weight: 700; line-height: 1.3; }
+.ss-simple-qr-label.is-accent { color: #c0392b; }
+.ss-simple-contact { text-align: center; }
+.ss-simple-contact-head {
+  font-size: 1.38rem; font-weight: 700; font-family: Arial, sans-serif;
+  color: #000; margin-bottom: 8px;
+}
+.ss-simple-contact-val {
+  font-size: 1.9rem; font-weight: 900; font-family: Arial Black, Arial, sans-serif;
+  color: #c0392b; line-height: 1.3;
+}
+.ss-simple-footer-note {
+  font-size: 0.72rem; text-align: center; text-decoration: underline;
+  color: #c0392b; margin-top: 6px;
 }
 .ss-flyer-root .ss-flyer-accent {
   color: #c0392b !important;
@@ -3863,36 +3922,233 @@ select:focus {
   print-color-adjust: exact;
 }
 
-/* -- "Informative" sales sheet template -- */
-.ss-flyer-root.is-informative { border: none; }
-.ssi-header {
-  display: flex; align-items: center; gap: 12px; margin-bottom: 14px;
-  padding-bottom: 12px; border-bottom: 3px solid #111;
+/* -- "Informative" sales sheet — matches price_sheet_8.5x11_print.pdf reference -- */
+.ss-flyer-root.is-informative {
+  border: none;
+  font-family: 'Roboto Condensed', 'DM Sans', sans-serif;
+  color: #111;
+  --ssi-red: #C80000;
+  --ssi-border: 2px solid #111;
+  --ssi-radius: 3px;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
 }
-.ssi-logo2 { height: 56px; max-width: 130px; object-fit: contain; flex-shrink: 0; }
-.ssi-logo2-empty { height: 56px; width: 1px; flex-shrink: 0; }
-.ssi-bizblock { flex: 1; min-width: 0; text-align: center; }
-.ssi-bizname { font-size: 1.35rem; font-weight: 900; font-family: Arial Black, Arial, sans-serif; color: #111; letter-spacing: 1px; line-height: 1.15; }
-.ssi-slogan { font-size: 0.82rem; color: #333; font-style: italic; margin-top: 2px; }
-.ssi-lot { text-align: right; flex-shrink: 0; max-width: 34%; }
-.ssi-lot-label { font-size: 0.58rem; letter-spacing: 1.4px; color: #666; font-weight: 700; }
-.ssi-lot-name { font-size: 0.92rem; font-weight: 800; color: #111; line-height: 1.2; }
-.ssi-hero { text-align: center; margin-bottom: 14px; }
-.ssi-welcome { font-size: 1.6rem; font-weight: 900; font-family: Arial Black, Arial, sans-serif; color: #c0392b; letter-spacing: 2px; margin-bottom: 4px; }
-.ssi-sizetype { font-size: 1.7rem; font-weight: 900; font-family: Arial Black, Arial, sans-serif; color: #111; }
-.ssi-specs { margin: 0 auto 16px; max-width: 92%; }
-.ssi-specs ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 18px; }
-.ssi-specs li { font-size: 0.85rem; color: #111; line-height: 1.4; padding-left: 20px; position: relative; }
-.ssi-specs li::before { content: "\2713"; position: absolute; left: 0; top: 0; color: #c0392b; font-weight: 900; }
-.ssi-pricing { display: flex; justify-content: space-around; align-items: stretch; gap: 8px; margin: 0 auto 16px; border-top: 2px solid #111; border-bottom: 2px solid #111; padding: 12px 6px; }
-.ssi-price-col { flex: 1; text-align: center; }
-.ssi-price-label { font-size: 0.66rem; letter-spacing: 1.4px; font-weight: 700; color: #555; margin-bottom: 4px; text-transform: uppercase; }
-.ssi-price-val { font-size: 1.35rem; font-weight: 900; font-family: Arial Black, Arial, sans-serif; color: #111; white-space: nowrap; }
-.ssi-promo { text-align: center; font-size: 1rem; font-weight: 800; color: #c0392b; margin-bottom: 16px; }
-.ssi-footer { display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; border-top: 3px solid #111; padding-top: 12px; }
-.ssi-qr { text-align: center; }
-.ssi-qr-label { font-size: 0.62rem; color: #555; margin-top: 2px; font-weight: 700; }
-.ssi-contact { text-align: center; font-size: 1.05rem; font-weight: 900; font-family: Arial Black, Arial, sans-serif; color: #c0392b; line-height: 1.4; }
+.ss-flyer-root.is-informative .ss-flyer-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 9px;
+  padding: 0;
+  box-sizing: border-box;
+}
+.ssi-head { text-align: center; flex-shrink: 0; }
+.ssi-lot-row {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 2px;
+}
+.ssi-lot-line { flex: 1; height: 2px; background: #111; min-width: 20px; }
+.ssi-lot-label {
+  font-family: 'Oswald', 'Bebas Neue', sans-serif;
+  font-size: 0.7rem; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: #111;
+  white-space: nowrap;
+}
+.ssi-lot-value {
+  font-family: 'Oswald', 'Bebas Neue', sans-serif;
+  font-size: 0.95rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+  color: #111; margin: 0 0 8px;
+}
+.ssi-biz-name {
+  font-family: 'Oswald', 'Bebas Neue', sans-serif;
+  font-size: 2.35rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+  color: #111; line-height: 1.02; margin: 4px 0 4px;
+}
+.ssi-biz-slogan {
+  font-family: 'Oswald', 'Bebas Neue', sans-serif;
+  font-size: 1rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+  color: #111; margin-bottom: 10px;
+}
+.ssi-logo-wrap { display: flex; align-items: center; gap: 12px; margin-bottom: 0; }
+.ssi-logo-box {
+  width: 220px; height: 70px; flex-shrink: 0;
+  border: var(--ssi-border); border-radius: var(--ssi-radius);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; background: #fff; box-sizing: border-box;
+}
+.ssi-logo-box img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+.ssi-logo-ph {
+  font-family: 'Oswald', 'Bebas Neue', sans-serif;
+  font-size: 0.8rem; letter-spacing: 2px; color: #333; text-transform: uppercase; font-weight: 600;
+}
+
+.ssi-product-box {
+  border: var(--ssi-border); border-radius: var(--ssi-radius);
+  padding: 0; flex-shrink: 0; box-sizing: border-box; overflow: hidden;
+}
+.ssi-product-top { padding: 12px 14px 10px; text-align: center; }
+.ssi-model-title {
+  font-family: 'Oswald', 'Bebas Neue', sans-serif;
+  font-size: 2rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+  line-height: 1.05; margin: 0 0 4px;
+}
+.ssi-model-sub {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 1rem; font-weight: 500; color: #111; margin: 0;
+}
+.ssi-hrule { border: none; border-top: 2px solid #111; margin: 0; }
+.ssi-price-row { display: flex; align-items: stretch; min-height: 72px; }
+.ssi-price-col {
+  flex: 1; text-align: center; padding: 10px 8px; box-sizing: border-box;
+  border-right: 2px solid #111;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.ssi-price-col:last-child { border-right: none; }
+.ssi-price-col.is-sale-only { flex: 1.35; }
+.ssi-price-label {
+  font-family: 'Oswald', 'Bebas Neue', sans-serif;
+  font-size: 0.75rem; font-weight: 600; letter-spacing: 1.8px; text-transform: uppercase;
+  color: #111; margin-bottom: 6px;
+}
+.ssi-price-label.is-red { color: var(--ssi-red); }
+.ssi-price-val {
+  font-family: 'Oswald', 'Bebas Neue', sans-serif;
+  font-size: 1.65rem; font-weight: 700; color: #111; line-height: 1; white-space: nowrap;
+}
+.ssi-price-val.is-sale {
+  color: var(--ssi-red); font-size: 2.75rem; font-weight: 700;
+}
+
+.ssi-lower {
+  display: flex; gap: 10px; flex: 1; min-height: 180px; align-items: stretch;
+}
+.ssi-left-col { width: 58%; min-width: 0; display: flex; flex-direction: column; }
+.ssi-right-col { width: 42%; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+
+.ssi-contact-card {
+  border: var(--ssi-border); border-radius: var(--ssi-radius);
+  padding: 14px 16px 16px; box-sizing: border-box; width: 100%; height: 100%;
+  display: flex; flex-direction: column; justify-content: flex-start; gap: 10px;
+}
+.ssi-contact-title {
+  font-family: 'Oswald', 'Bebas Neue', sans-serif;
+  font-size: 1.65rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--ssi-red); text-align: center; line-height: 1.05; margin: 0;
+}
+.ssi-phone-divider {
+  display: flex; align-items: center; gap: 8px; margin: 4px 0 2px;
+}
+.ssi-phone-divider::before,
+.ssi-phone-divider::after {
+  content: ''; flex: 1; border-top: 2px dashed var(--ssi-red);
+}
+.ssi-phone-icon {
+  width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--ssi-red);
+  color: var(--ssi-red); font-size: 0.85rem; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; line-height: 1; background: #fff;
+}
+.ssi-phone {
+  font-family: 'Oswald', 'Bebas Neue', sans-serif;
+  font-size: 2.2rem; font-weight: 700; color: var(--ssi-red);
+  text-align: center; line-height: 1.05; letter-spacing: 0.5px; margin: 0;
+}
+.ssi-contact-rule {
+  border: none; border-top: 2px solid var(--ssi-red); margin: 6px 0 4px;
+}
+.ssi-contact-rows { display: flex; flex-direction: column; gap: 10px; margin-top: auto; }
+.ssi-contact-row {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 1.05rem; font-weight: 600; color: var(--ssi-red); line-height: 1.25;
+  word-break: break-word;
+}
+.ssi-contact-row svg { flex-shrink: 0; width: 18px; height: 18px; stroke: var(--ssi-red); fill: none; }
+
+.ssi-specs-card {
+  border: var(--ssi-border); border-radius: var(--ssi-radius);
+  padding: 12px 14px; box-sizing: border-box; flex: 1; min-height: 0;
+  display: flex; flex-direction: column;
+}
+.ssi-specs-title {
+  font-family: 'Oswald', 'Bebas Neue', sans-serif;
+  font-size: 0.88rem; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase;
+  text-align: center; margin: 0 0 10px; text-decoration: underline; text-underline-offset: 3px;
+}
+.ssi-specs-list {
+  list-style: none; margin: 0; padding: 0; flex: 1;
+  display: flex; flex-direction: column; justify-content: space-evenly; gap: 4px;
+}
+.ssi-specs-list li {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 0.88rem; font-weight: 500; color: #111; line-height: 1.3;
+  padding-left: 26px; position: relative;
+}
+.ssi-specs-list li::before {
+  content: '\2713'; position: absolute; left: 0; top: 1px;
+  width: 16px; height: 16px; border: 1.5px solid #111; border-radius: 50%;
+  font-size: 0.62rem; font-weight: 700; color: #111;
+  display: flex; align-items: center; justify-content: center; line-height: 1;
+  box-sizing: border-box;
+}
+
+.ssi-qr-card {
+  border: var(--ssi-border); border-radius: var(--ssi-radius);
+  display: flex; align-items: stretch; flex-shrink: 0; min-height: 108px; overflow: hidden;
+}
+.ssi-qr-box {
+  width: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  border-right: 2px solid #111; padding: 8px; box-sizing: border-box; min-height: 100px;
+}
+.ssi-qr-box.is-empty {
+  background: #fff;
+}
+.ssi-qr-inner-dash {
+  width: 88px; height: 88px; border: 2px dashed #111; border-radius: 2px;
+  display: flex; align-items: center; justify-content: center; box-sizing: border-box;
+}
+.ssi-qr-box img { display: block; width: 88px; height: 88px; object-fit: contain; }
+.ssi-qr-ph {
+  font-family: 'Oswald', 'Bebas Neue', sans-serif;
+  font-size: 0.65rem; letter-spacing: 1.2px; text-transform: uppercase; color: #333; text-align: center; font-weight: 600;
+}
+.ssi-qr-text {
+  flex: 1; padding: 10px 14px 10px 12px; box-sizing: border-box;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 0.88rem; font-weight: 500; color: #111; line-height: 1.4;
+  display: flex; align-items: center; gap: 6px;
+}
+.ssi-qr-arrow {
+  flex-shrink: 0; font-size: 1.4rem; line-height: 1; color: #111; transform: scaleX(-1);
+}
+
+.ssi-notes-bar {
+  border: var(--ssi-border); border-radius: var(--ssi-radius);
+  padding: 10px 14px; display: flex; align-items: center; gap: 8px;
+  flex-shrink: 0; box-sizing: border-box; min-height: 40px;
+}
+.ssi-notes-label {
+  font-family: 'Oswald', 'Bebas Neue', sans-serif;
+  font-size: 0.78rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  white-space: nowrap;
+}
+.ssi-notes-line {
+  flex: 1; min-height: 1.1em; margin-left: 4px;
+  font-family: 'Roboto Condensed', sans-serif; font-size: 0.9rem; color: #111;
+  line-height: 1.2; padding-bottom: 2px; border-bottom: 2px solid #111;
+}
+.ssi-notes-lines {
+  flex: 1; display: flex; flex-direction: column; gap: 10px; margin-left: 4px; padding-top: 2px;
+}
+.ssi-notes-blank {
+  display: block; width: 100%; border-bottom: 2px solid #111; min-height: 0.85em;
+}
+
+.ssi-footer-promo {
+  display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+  font-family: 'Oswald', 'Bebas Neue', sans-serif;
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase;
+  color: #111; line-height: 1.3; padding: 0;
+}
+.ssi-promo-line { flex: 1; height: 2px; background: #111; min-width: 12px; }
+.ssi-promo-text { white-space: nowrap; text-align: center; }
 #ssSheetContent {
   background: #fff !important;
   color: #111 !important;
@@ -7810,9 +8066,13 @@ select:focus {
       <div class="field-group" style="margin-top:10px;">
         <label class="field-label" for="ss_infoQrUrlInput">Info QR URL</label>
         <input type="url" id="ss_infoQrUrlInput" placeholder="https://…" autocomplete="off" oninput="ssOnInfoQrUrlInput()" onblur="ssOnInfoQrUrlInput()">
-        <p style="font-size:0.68rem;color:rgba(232,200,122,0.55);margin:6px 0 0;line-height:1.35;">The Informative template shows a single QR code, typed in manually here.</p>
+        <p style="font-size:0.68rem;color:rgba(232,200,122,0.55);margin:6px 0 0;line-height:1.35;">Used for the QR code and website line on the Informative sales sheet.</p>
       </div>
       <div id="ss_infoQrContainer" style="display:none;min-height:70px;margin-top:4px;"></div>
+      <div class="field-group" style="margin-top:10px;">
+        <label class="field-label" for="ss_sheetNotes">Sheet notes (optional)</label>
+        <input type="text" id="ss_sheetNotes" placeholder="Printed on the NOTES line" autocomplete="off" maxlength="120">
+      </div>
     </div>
 
   </div><!-- end sspage1 -->
@@ -7820,18 +8080,13 @@ select:focus {
   <!-- PAGE 2: Review — live sales sheet preview + actions (no separate confirm sheet) -->
   <div id="sspage2" style="display:none;padding:16px;">
     <div class="page-title">Review</div>
-    <div class="page-sub">Preview of the full printable sales sheet (8.5&quot; × 11&quot;). Use Print/Save PDF when ready, or go back to edit.</div>
+    <div class="page-sub">Preview of the full printable sales sheet (8.5&quot; × 11&quot;). Use the buttons below to edit or print.</div>
     <div id="ss_reviewSheetScroll">
       <div id="ss_reviewSheetPreviewOuter">
         <div id="ss_reviewSheetPreview" class="ss-review-sheet-preview"></div>
       </div>
     </div>
     <div id="ss_pdfShareStatus" style="display:none;font-size:0.78rem;color:rgba(232,200,122,0.7);text-align:center;margin-top:8px;"></div>
-    <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
-      <button type="button" class="btn-secondary" style="flex:1;min-width:90px;" onclick="ssGoStep(0)">Cancel</button>
-      <button type="button" class="btn-secondary" style="flex:1;min-width:90px;" onclick="ssGoStep(1)">Edit</button>
-      <button type="button" class="btn-primary" id="ssPrintShareBtn" style="flex:2;min-width:150px;background:var(--barn);" onclick="ssPrintOrSharePdf()">🖨️ Print / Save PDF</button>
-    </div>
   </div>
 
 </div><!-- end screenSalesSheet -->
@@ -10804,9 +11059,105 @@ async function invUpdateItemCloud(docId,payload){
   payload.updatedAt=firebase.firestore.FieldValue.serverTimestamp();
   await fbDb.collection('inventory').doc(docId).set(payload,{merge:true});
 }
-async function invDeleteItemCloud(docId){
+function invCollectItemPhotoUrls(item){
+  var urls=[];
+  if(!item) return urls;
+  ['plateImage','plateThumb','frontImage','frontThumb'].forEach(function(k){
+    var u=String(item[k]||'').trim();
+    if(u) urls.push(u);
+  });
+  var pu=item.photoUrls;
+  if(pu&&typeof pu==='object'){
+    ['plate','plateThumb','front','frontThumb'].forEach(function(k){
+      var u2=String(pu[k]||'').trim();
+      if(u2) urls.push(u2);
+    });
+  }
+  return urls.filter(function(u,i,a){
+    return u&&!invIsDataUrl(u)&&a.indexOf(u)===i;
+  });
+}
+function invR2DeleteEndpointFromUploadUrl(uploadUrl){
+  var u=String(uploadUrl||'').trim();
+  if(!u) return '';
+  if(/\/upload\/?$/i.test(u)) return u.replace(/\/upload\/?$/i,'/delete');
+  return u.replace(/\/?$/,'')+'/delete';
+}
+async function invDeletePhotoFromFirebaseStorage(url){
+  try{
+    var u=String(url||'').trim();
+    if(!/^https?:\/\//i.test(u)) return;
+    if(!/firebasestorage\.googleapis\.com|\.appspot\.com/i.test(u)) return;
+    if(!(await firebaseEnsureAuthed())) return;
+    await firebase.storage().refFromURL(u).delete();
+  }catch(e){
+    console.warn('Firebase storage delete failed:',e);
+  }
+}
+async function invDeletePhotosFromR2(urls){
+  var cfg=cfR2ConfigFromSettings();
+  if(!cfR2ConfigReady(cfg)||!urls||!urls.length) return;
+  var deleteUrl=invR2DeleteEndpointFromUploadUrl(cfg.uploadUrl);
+  if(!deleteUrl) return;
+  try{
+    var resp=await fetch(deleteUrl,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({token:cfg.token,urls:urls})
+    });
+    if(!resp.ok) console.warn('R2 photo delete failed:',resp.status);
+  }catch(e){
+    console.warn('R2 photo delete failed:',e);
+  }
+}
+async function invDeleteItemPhotos(item){
+  var urls=invCollectItemPhotoUrls(item);
+  if(!urls.length) return;
+  await invDeletePhotosFromR2(urls);
+  for(var i=0;i<urls.length;i++){
+    await invDeletePhotoFromFirebaseStorage(urls[i]);
+  }
+}
+async function invDeleteItemCloud(docId,item){
   if(!(await firebaseEnsureAuthed())) throw new Error('Firebase not ready');
+  docId=String(docId||'');
+  if(!item){
+    try{
+      var snap=await fbDb.collection('inventory').doc(docId).get();
+      if(snap.exists){
+        var d=snap.data()||{};
+        item={
+          plateImage:d.photoUrls&&d.photoUrls.plate||'',
+          plateThumb:d.photoUrls&&d.photoUrls.plateThumb||'',
+          frontImage:d.photoUrls&&d.photoUrls.front||'',
+          frontThumb:d.photoUrls&&d.photoUrls.frontThumb||'',
+          photoUrls:d.photoUrls||null
+        };
+      }
+    }catch(_fetchErr){
+      console.warn('Could not load inventory item before delete:',_fetchErr);
+    }
+  }
+  if(item) await invDeleteItemPhotos(item);
   await fbDb.collection('inventory').doc(docId).delete();
+}
+function invRemoveItemFromApp(id){
+  id=String(id||'');
+  invState.items=(invState.items||[]).filter(function(it){return String(it.id)!==id;});
+  delete invCardDrafts[id];
+  if(invState.editId===id){
+    invClearForm();
+    invCloseAddEditModal();
+  }
+  if(invState.promoPendingItem&&String(invState.promoPendingItem.id)===id) invState.promoPendingItem=null;
+  if(invState.adPromoPendingItem&&String(invState.adPromoPendingItem.id)===id) invState.adPromoPendingItem=null;
+  if(invState.soldCustomerPending&&String(invState.soldCustomerPending.itemId)===id){
+    invCloseSoldCustomerModal();
+  }
+  invPersist();
+  invRenderList();
+  try{ renderHomeDashboard(); }catch(_dash){}
+  try{ lotPagesOnInventoryDataUpdated(); }catch(_lot){}
 }
 
 function invNormalizeUnitStatus(s){
@@ -27458,29 +27809,21 @@ async function invPromoChooseMarketplace(){
   invRunMarketplaceFor(it);
 }
 
-function invDeleteItem(id){
+async function invDeleteItem(id){
   var ok=window.confirm('Delete this inventory item?');
   if(!ok) return;
+  id=String(id||'');
+  var item=invItemById(id);
   if(cloudReady()){
-    invDeleteItemCloud(id).then(function(){
-      if(invState.editId===id){
-        invClearForm();
-        invCloseAddEditModal();
-      }
-      showToast('Inventory item deleted');
-    }).catch(function(err){
+    try{
+      await invDeleteItemCloud(id,item);
+    }catch(err){
       console.log('Cloud delete failed:',err);
-      showToast('Cloud delete failed');
-    });
-    return;
+      showToast('Could not delete inventory item');
+      return;
+    }
   }
-  invState.items=invState.items.filter(function(it){return it.id!==id;});
-  if(invState.editId===id){
-    invClearForm();
-    invCloseAddEditModal();
-  }
-  if(!invPersist()) return;
-  invRenderList();
+  invRemoveItemFromApp(id);
   showToast('Inventory item deleted');
 }
 
@@ -28348,11 +28691,11 @@ function ssGetMissingInfoItems(){
   if(!hasContact) missing.push('A contact name or phone number (Settings \u2192 Business &amp; Lots)');
   if(!s.logoData) missing.push('Main logo (Settings \u2192 Business &amp; Lots)');
   var t=(document.getElementById('ss_type')||{}).value||'';
-  var listing=t?getStyleListingCopy(t):{specs:[]};
-  if(!listing||!listing.specs||!listing.specs.filter(Boolean).length){
-    missing.push('Building specs for this style (Settings \u2192 Building Style &amp; Specs)');
-  }
   if(typeof ssTemplate==='string'&&ssTemplate==='informative'){
+    var listing=t?getStyleListingCopy(t):{specs:[]};
+    if(!listing||!listing.specs||!listing.specs.filter(Boolean).length){
+      missing.push('Building specs for this style (Settings \u2192 Building Style &amp; Specs) \u2014 top 6 used by Informative template');
+    }
     if(!s.logo2Data) missing.push('Logo #2 (Settings \u2192 Business &amp; Lots) \u2014 used by the Informative template');
     if(!String(s.bizSlogan||'').trim()) missing.push('Business slogan (Settings \u2192 Business &amp; Lots) \u2014 used by the Informative template');
     var infoUrl=((document.getElementById('ss_infoQrUrlInput')||{}).value||'').trim();
@@ -28541,7 +28884,18 @@ function ssFillReviewSheetPreview(){
     var qrIntakeUrl=(document.getElementById('ss_qrIntakeUrl').value||'').trim();
     ssWireSsQrForUrls('ssQRImgPrev','ssQRImgPrev2',qrUrl,qrPurchaseUrl,'ssQRImgPrev3',qrIntakeUrl);
   }
+  try{
+    var flyerRoot=wrap.querySelector('.ss-flyer-root');
+    if(flyerRoot) ssFitFlyerContentToPage(flyerRoot);
+  }catch(_eFitC){}
   try{ ssFitReviewPreviewToWindow(); }catch(_eFit){}
+  setTimeout(function(){
+    try{
+      var flyerRoot2=wrap.querySelector('.ss-flyer-root');
+      if(flyerRoot2) ssFitFlyerContentToPage(flyerRoot2);
+      ssFitReviewPreviewToWindow();
+    }catch(_eFit2){}
+  },400);
 }
 
 /** Scales the full 8.5x11 review preview to fit inside its viewport with no scrolling, preserving aspect ratio. */
@@ -29371,7 +29725,6 @@ function ssBuildSalesSheetPrintHtml(imgId1, imgId2, opts){
   [36,48,60].forEach(function(mo){rto[mo]=Math.ceil(salePrice/rtoDivMap[mo]);});
 
   var optLabels=addonLines.map(function(li){return li.label.replace(/ \([^)]+\)/,'');});
-  var listing=getStyleListingCopy(t);
 
   var h='';
 
@@ -29381,101 +29734,101 @@ function ssBuildSalesSheetPrintHtml(imgId1, imgId2, opts){
     if(!preview) window._quoteSheetConditionHtml='';
   }
 
-  h+='<div style="text-align:center;margin-bottom:14px;">';
-  h+='<div style="font-size:2rem;font-weight:900;font-family:Arial Black,Arial,sans-serif;color:#111;line-height:1.1;margin-bottom:6px;white-space:nowrap;">'+sizeStr+' '+typeName+'</div>';
-  if(color){h+='<div class="ss-flyer-colorline" style="font-size:0.78rem;color:#000;margin-bottom:6px;white-space:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;text-align:center;line-height:1.35;"><span style="display:inline-block;text-align:left;"><strong>Color:</strong> '+color+'</span></div>';}
+  h+='<div class="ss-simple-block ss-simple-hero">';
+  h+='<div class="ss-simple-title">'+sizeStr+' '+typeName+'</div>';
+  if(color){h+='<div class="ss-simple-color ss-flyer-colorline"><strong>Color:</strong> '+color+'</div>';}
   if(optLabels.length){
-    h+='<div style="font-size:1rem;font-weight:700;color:#000;margin-bottom:2px;">(Includes: '+optLabels.join(', ')+')</div>';
-    h+='<div class="ss-flyer-accent" style="font-size:1rem;font-weight:700;">$'+addonTotal.toLocaleString()+' Value</div>';
+    h+='<div class="ss-simple-includes">(Includes: '+optLabels.join(', ')+')</div>';
+    h+='<div class="ss-simple-value ss-flyer-accent">$'+addonTotal.toLocaleString()+' Value</div>';
   }
-  if(listing.blurb){
-    h+='<div style="font-size:0.82rem;color:#000;margin-top:8px;line-height:1.45;max-width:100%;">'+String(listing.blurb).replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</div>';
-  }
-  if(listing.specs&&listing.specs.length){
-    h+='<div style="text-align:left;margin:10px auto 0;max-width:100%;font-size:0.76rem;line-height:1.45;color:#000;">';
-    listing.specs.forEach(function(sp){
-      h+='<div style="margin-bottom:2px;">\u2713 '+String(sp).replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</div>';
-    });
-    h+='</div>';
-  }
+  h+='<div class="ss-simple-price-block">';
+  h+='<div class="ss-simple-sale-price">Sale Price: $'+salePrice.toLocaleString()+'</div>';
+  if(hasSale){ h+='<div class="ss-simple-original">(Original $'+base.toLocaleString()+')</div>'; }
+  h+='</div>';
+  h+='<div class="ss-simple-cash"><strong>Cash Sale:</strong> 50% Total price due at time of purchase, remaining balance due at delivery.</div>';
   h+='</div>';
 
-  h+='<div style="text-align:center;margin-bottom:16px;">';
-  if(hasSale){
-    h+='<div class="ss-flyer-accent" style="font-size:1.8rem;font-weight:900;font-family:Arial Black,Arial,sans-serif;white-space:nowrap;">SALE Price: $'+salePrice.toLocaleString()+'</div>';
-    h+='<div style="font-size:1rem;color:#000;margin-top:4px;">(Original $'+base.toLocaleString()+')</div>';
-  } else {
-    h+='<div style="font-size:1.8rem;font-weight:900;color:#111;font-family:Arial Black,Arial,sans-serif;white-space:nowrap;">Price: $'+salePrice.toLocaleString()+'</div>';
-  }
+  h+='<div class="ss-simple-block ss-simple-rto">';
+  h+='<div class="ss-simple-rto-head"><strong>NO CREDIT CHECK</strong> Rent-to-own:</div>';
+  h+='<div class="ss-simple-rto-line">$'+rtoDown.toLocaleString()+' Minimum down</div>';
+  h+='<div class="ss-simple-rto-line">Monthly Payment Before Tax:</div>';
+  h+='<div class="ss-simple-rto-mo">36 Month - $'+rto[36].toLocaleString()+'/Mo</div>';
+  h+='<div class="ss-simple-rto-mo">48 Month - $'+rto[48].toLocaleString()+'/Mo</div>';
+  h+='<div class="ss-simple-rto-mo">60 Month - $'+rto[60].toLocaleString()+'/Mo</div>';
+  h+='<div class="ss-simple-rto-note">(No early Payoff Penalty)</div>';
   h+='</div>';
 
-  h+='<div style="text-align:center;font-size:1rem;margin-bottom:18px;line-height:1.7;"><strong>Cash Sale:</strong> 50% Total price due at time of purchase, remaining balance due at delivery.</div>';
-
-  h+='<div style="text-align:center;margin-bottom:22px;line-height:1.9;">';
-  h+='<div style="font-size:1.05rem;"><strong>NO CREDIT CHECK</strong> Rent-to-own:</div>';
-  h+='<div style="font-size:1rem;">$'+rtoDown.toLocaleString()+' Minimum down</div>';
-  h+='<div style="font-size:1rem;">Monthly Payment Before Tax:</div>';
-  h+='<div style="font-size:1.05rem;">36 Month - $'+rto[36].toLocaleString()+'/Mo</div>';
-  h+='<div style="font-size:1.05rem;">48 Month - $'+rto[48].toLocaleString()+'/Mo</div>';
-  h+='<div style="font-size:1.05rem;">60 Month - $'+rto[60].toLocaleString()+'/Mo</div>';
-  h+='<div style="font-size:0.85rem;color:#000;">(No early Payoff Penalty)</div>';
-  h+='</div>';
-
-  h+='<div style="border:2px solid #000;border-radius:4px;padding:8px 10px;margin-bottom:14px;text-align:center;line-height:1.65;box-sizing:border-box;max-width:100%;">';
-  h+='<div style="font-size:0.72rem;color:#000;margin-top:6px;">'+sizeBlurb+'</div>';
-  h+='</div>';
-
+  h+='<div class="ss-simple-block">';
+  h+='<div class="ss-simple-blurb">'+sizeBlurb+'</div>';
   if(qrUrl||qrPurchaseUrl||qrIntakeUrl){
     var qrBlocks=[];
     if(qrUrl) qrBlocks.push({url:qrUrl,id:imgId1,label:'Online Listing',accent:false});
     if(qrPurchaseUrl) qrBlocks.push({url:qrPurchaseUrl,id:imgId2,label:'Scan to start purchase',accent:true});
     if(qrIntakeUrl) qrBlocks.push({url:qrIntakeUrl,id:imgId3,label:'Intake Form',accent:false});
-    var n=qrBlocks.length;
-    if(n>=2){
-      h+='<div style="display:flex;gap:16px;margin-bottom:14px;padding:14px;border:1px solid #ccc;border-radius:6px;justify-content:center;flex-wrap:wrap;">';
-      qrBlocks.forEach(function(b){
-        h+='<div style="text-align:center;">';
-        h+=ssGetQRImgTag(b.url,95,b.id);
-        h+='<div'+(b.accent?' class="ss-flyer-accent"':'')+' style="font-size:0.8rem;color:#000;margin-top:4px;font-weight:700;">'+b.label+'</div>';
-        h+='</div>';
-      });
+    var qrSize=qrBlocks.length===1?130:112;
+    h+='<div class="ss-simple-qr-row" style="margin-top:14px;">';
+    qrBlocks.forEach(function(b){
+      h+='<div class="ss-simple-qr-item">';
+      h+=ssGetQRImgTag(b.url,qrSize,b.id);
+      h+='<div class="ss-simple-qr-label'+(b.accent?' is-accent':'')+'">'+b.label+'</div>';
       h+='</div>';
-    }else{
-      var b0=qrBlocks[0];
-      var lbl=b0.label==='Online Listing'?'Scan listing QR':(b0.accent?'<span class="ss-flyer-accent" style="font-weight:700;">Scan to start purchase</span>':'Scan Intake QR');
-      h+='<div style="display:flex;align-items:center;gap:20px;margin-bottom:14px;padding:14px;border:1px solid #ccc;border-radius:6px;flex-wrap:wrap;justify-content:center;">';
-      h+=ssGetQRImgTag(b0.url,110,b0.id);
-      h+='<div style="font-size:1rem;color:#000;line-height:1.6;"><strong>'+lbl+'</strong></div>';
-      h+='</div>';
-    }
+    });
+    h+='</div>';
   }
+  h+='</div>';
 
+  h+='<div class="ss-simple-block">';
   var flyLine=formatFlyerContactCallLine(fcFlyer);
   var multiBlock=(fcFlyer.block&&fcFlyer.block.indexOf('<br>')>=0);
   if(multiBlock||flyLine||fcFlyer.contactName||fcFlyer.bizPhone){
-    h+='<div style="text-align:center;margin-bottom:12px;">';
-    h+='<div style="font-size:1.05rem;font-weight:700;font-family:Arial,sans-serif;color:#000;margin-bottom:4px;">Call/Text us with any questions you may have.</div>';
+    h+='<div class="ss-simple-contact">';
+    h+='<div class="ss-simple-contact-head">Call/Text us with any questions you may have.</div>';
     if(multiBlock){
-      h+='<div class="ss-flyer-accent" style="font-size:1.15rem;font-weight:900;font-family:Arial Black,Arial,sans-serif;line-height:1.35;">'+
+      h+='<div class="ss-simple-contact-val">'+
         fcFlyer.block.split('<br>').map(function(part){return String(part||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');}).join('<br>')+
       '</div>';
     }else{
       var oneLine=flyLine||String(fcFlyer.contactName||'').trim();
-      h+='<div class="ss-flyer-accent" style="font-size:1.3rem;font-weight:900;font-family:Arial Black,Arial,sans-serif;">'+String(oneLine).replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</div>';
+      h+='<div class="ss-simple-contact-val">'+String(oneLine).replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</div>';
     }
     h+='</div>';
   }
-
-  h+='<div class="ss-flyer-accent" style="font-size:0.52rem;text-align:center;text-decoration:underline;margin-bottom:4px;">Purchase can be made over the phone or in person by appointment.</div>';
+  h+='<div class="ss-simple-footer-note">Purchase can be made over the phone or in person by appointment.</div>';
+  h+='</div>';
 
   var watermark=s.logoData
     ? '<div class="ss-flyer-watermark" style="background-image:url(\''+String(s.logoData).replace(/'/g,'%27')+'\');"></div>'
     : '';
-  return '<div class="ss-flyer-root">'+watermark+'<div class="ss-flyer-content">'+h+'</div></div>';
+  return '<div class="ss-flyer-root is-simple">'+watermark+'<div class="ss-flyer-content">'+h+'</div></div>';
 }
 
-/** "Informative" sales sheet template: single Info QR, Logo 2, 6 building specs,
- *  LIST/SALE/RTO pricing trio, and a LOT LOCATION + BUSINESS SLOGAN header. Full 8.5x11, no border. */
+/** Format 10-digit phone as (XXX) XXX-XXXX for Informative sales sheet. */
+function ssFormatPhoneParen(str){
+  var d=String(str||'').replace(/\D/g,'').slice(0,10);
+  if(d.length===10) return '('+d.slice(0,3)+') '+d.slice(3,6)+'-'+d.slice(6);
+  return normalizePhoneTenDigits(d)||'';
+}
+/** Strip protocol/trailing slash for website display on Informative sheet. */
+function ssDisplayWebsiteUrl(url){
+  return String(url||'').trim().replace(/^https?:\/\//i,'').replace(/\/+$/,'');
+}
+/** Extract a display phone from flyer contact object. */
+function ssPhoneFromFlyerContact(fc,s){
+  fc=fc||{};
+  s=s||loadSettings()||{};
+  var raw=String(fc.bizPhone||'').trim();
+  if(!raw&&fc.block){
+    var parts=String(fc.block).split(/<br>|\n| · /);
+    for(var i=0;i<parts.length;i++){
+      var seg=parts[i].replace(/.*?—\s*/,'').trim();
+      if(/\d{3}/.test(seg)){ raw=seg; break; }
+    }
+  }
+  if(!raw) raw=String(s.bizPhone||'').trim();
+  return ssFormatPhoneParen(raw);
+}
+
+/** "Informative" sales sheet — 8.5×11 print layout per spec (Logo 2, specs, pricing, contact, QR). */
 function ssBuildInformativeSalesSheetHtml(infoQrImgId, opts){
   opts=opts||{};
   var preview=!!opts.preview;
@@ -29485,6 +29838,7 @@ function ssBuildInformativeSalesSheetHtml(infoQrImgId, opts){
   var l=parseInt(document.getElementById('ss_length').value)||0;
   var pct=parseFloat(document.getElementById('ss_salePct').value)||0;
   var infoQrUrl=((document.getElementById('ss_infoQrUrlInput')||{}).value||'').trim();
+  var sheetNotes=((document.getElementById('ss_sheetNotes')||{}).value||'').trim();
 
   if(!t||!w||!l){ if(!preview) showToast('Please select style, width, and length'); return null; }
   if(!PRICING[w]||!PRICING[w][l]||!PRICING[w][l][t]){ if(!preview) showToast('No price found for that size/style'); return null; }
@@ -29494,6 +29848,9 @@ function ssBuildInformativeSalesSheetHtml(infoQrImgId, opts){
   var bizSlogan=(s.bizSlogan||'').trim();
   var fcFlyer=getSalesSheetFlyerContactDisplay(s);
   var lotName=ssResolveLotNameForInformative(s);
+  var phoneDisplay=ssPhoneFromFlyerContact(fcFlyer,s);
+  var emailDisplay=String(s.bizEmail||'').trim();
+  var websiteDisplay=infoQrUrl?ssDisplayWebsiteUrl(infoQrUrl):'';
 
   var baseRaw=PRICING[w][l][t];
   var stdCredit=ssGetStdCredit(t);
@@ -29516,51 +29873,91 @@ function ssBuildInformativeSalesSheetHtml(infoQrImgId, opts){
 
   var h='';
 
-  h+='<div class="ssi-header">';
-  h+=s.logo2Data?'<img class="ssi-logo2" src="'+String(s.logo2Data).replace(/"/g,'&quot;')+'" alt="">':'<div class="ssi-logo2 ssi-logo2-empty"></div>';
-  h+='<div class="ssi-bizblock">';
-  h+='<div class="ssi-bizname">'+esc(String(bizName).toUpperCase())+'</div>';
-  if(bizSlogan) h+='<div class="ssi-slogan">'+esc(bizSlogan)+'</div>';
+  /* ── Header (matches PDF reference) ── */
+  h+='<header class="ssi-head">';
+  h+='<div class="ssi-lot-row"><span class="ssi-lot-line"></span><span class="ssi-lot-label">Lot Location</span><span class="ssi-lot-line"></span></div>';
+  if(lotName) h+='<div class="ssi-lot-value">'+esc(lotName)+'</div>';
+  h+='<div class="ssi-biz-name">'+esc(String(bizName).toUpperCase())+'</div>';
+  if(bizSlogan) h+='<div class="ssi-biz-slogan">'+esc(bizSlogan.toUpperCase())+'</div>';
+  h+='<div class="ssi-logo-wrap"><span class="ssi-lot-line"></span>';
+  h+='<div class="ssi-logo-box">';
+  if(s.logo2Data) h+='<img src="'+String(s.logo2Data).replace(/"/g,'&quot;')+'" alt="">';
+  else h+='<span class="ssi-logo-ph">Logo 2</span>';
+  h+='</div><span class="ssi-lot-line"></span></div>';
+  h+='</header>';
+
+  /* ── Main product box ── */
+  h+='<section class="ssi-product-box">';
+  h+='<div class="ssi-product-top">';
+  h+='<div class="ssi-model-title">'+esc(typeName.toUpperCase()+' / '+sizeStr)+'</div>';
+  h+='<div class="ssi-model-sub">'+esc(typeName+' / '+sizeStr)+'</div>';
   h+='</div>';
-  if(lotName){
-    h+='<div class="ssi-lot"><div class="ssi-lot-label">LOT LOCATION</div><div class="ssi-lot-name">'+esc(lotName)+'</div></div>';
-  }
-  h+='</div>';
-
-  h+='<div class="ssi-hero">';
-  h+='<div class="ssi-welcome">WELCOME!</div>';
-  h+='<div class="ssi-sizetype">'+esc(sizeStr+' '+typeName)+'</div>';
-  h+='</div>';
-
-  if(specs.length){
-    h+='<div class="ssi-specs"><ul>';
-    specs.forEach(function(sp){ h+='<li>'+esc(sp)+'</li>'; });
-    h+='</ul></div>';
-  }
-
-  h+='<div class="ssi-pricing">';
-  h+='<div class="ssi-price-col"><div class="ssi-price-label">List Price</div><div class="ssi-price-val">$'+listPrice.toLocaleString()+'</div></div>';
-  h+='<div class="ssi-price-col"><div class="ssi-price-label">Sale Price</div><div class="ssi-price-val'+(hasSale?' ss-flyer-accent':'')+'">$'+salePrice.toLocaleString()+'</div></div>';
-  h+='<div class="ssi-price-col"><div class="ssi-price-label">RTO From</div><div class="ssi-price-val">$'+rtoFrom.toLocaleString()+'/mo</div></div>';
-  h+='</div>';
-
-  h+='<div class="ssi-promo">Ask about current promotions and available discounts!</div>';
-
-  h+='<div class="ssi-footer">';
-  if(infoQrUrl){
-    h+='<div class="ssi-qr">'+ssGetQRImgTag(infoQrUrl,88,infoQrImgId)+'<div class="ssi-qr-label">Scan for info</div></div>';
-  }
-  var flyLine=formatFlyerContactCallLine(fcFlyer);
-  var multiBlock=(fcFlyer.block&&fcFlyer.block.indexOf('<br>')>=0);
-  var contactHtml='';
-  if(multiBlock){
-    contactHtml=fcFlyer.block.split('<br>').map(function(part){return esc(part);}).join('<br>');
+  h+='<hr class="ssi-hrule">';
+  h+='<div class="ssi-price-row">';
+  if(hasSale){
+    h+='<div class="ssi-price-col"><div class="ssi-price-label">List Price</div><div class="ssi-price-val">$'+listPrice.toLocaleString()+'</div></div>';
+    h+='<div class="ssi-price-col is-sale-only"><div class="ssi-price-label is-red">Sale Price</div><div class="ssi-price-val is-sale">$'+salePrice.toLocaleString()+'</div></div>';
   }else{
-    var oneLine=flyLine||String(fcFlyer.contactName||'').trim();
-    if(oneLine) contactHtml=esc(oneLine);
+    h+='<div class="ssi-price-col is-sale-only"><div class="ssi-price-label is-red">Sale Price</div><div class="ssi-price-val is-sale">$'+salePrice.toLocaleString()+'</div></div>';
   }
-  if(contactHtml) h+='<div class="ssi-contact">'+contactHtml+'</div>';
+  h+='<div class="ssi-price-col"><div class="ssi-price-label">RTO From</div><div class="ssi-price-val">$'+rtoFrom.toLocaleString()+'/mo</div></div>';
+  h+='</div></section>';
+
+  /* ── Lower section: contact | specs + QR ── */
+  h+='<section class="ssi-lower">';
+  h+='<div class="ssi-left-col"><div class="ssi-contact-card">';
+  h+='<div class="ssi-contact-title">Call / Text</div>';
+  if(phoneDisplay){
+    h+='<div class="ssi-phone-divider"><span class="ssi-phone-icon" aria-hidden="true">\u260E</span></div>';
+    h+='<div class="ssi-phone">'+esc(phoneDisplay)+'</div>';
+    h+='<hr class="ssi-contact-rule">';
+  }
+  if(websiteDisplay||emailDisplay){
+    h+='<div class="ssi-contact-rows">';
+    if(websiteDisplay){
+      h+='<div class="ssi-contact-row"><svg viewBox="0 0 24 24" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span>'+esc(websiteDisplay)+'</span></div>';
+    }
+    if(emailDisplay){
+      h+='<div class="ssi-contact-row"><svg viewBox="0 0 24 24" stroke-width="2" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg><span>'+esc(emailDisplay)+'</span></div>';
+    }
+    h+='</div>';
+  }
+  h+='</div></div>';
+
+  h+='<div class="ssi-right-col">';
+  h+='<div class="ssi-specs-card">';
+  h+='<div class="ssi-specs-title">Building Specs</div>';
+  if(specs.length){
+    h+='<ul class="ssi-specs-list">';
+    specs.forEach(function(sp){ h+='<li>'+esc(sp)+'</li>'; });
+    h+='</ul>';
+  }else{
+    h+='<ul class="ssi-specs-list"><li style="color:#666;font-style:italic;list-style:none;padding-left:0;">Add specs in Settings \u2192 Building Style</li></ul>';
+  }
   h+='</div>';
+
+  h+='<div class="ssi-qr-card">';
+  h+='<div class="ssi-qr-box'+(infoQrUrl?'':' is-empty')+'">';
+  if(infoQrUrl){
+    h+=ssGetQRImgTag(infoQrUrl,88,infoQrImgId);
+  }else{
+    h+='<div class="ssi-qr-inner-dash"><span class="ssi-qr-ph">QR Code</span></div>';
+  }
+  h+='</div>';
+  h+='<div class="ssi-qr-text"><span>Scan for more info, photos, and financing options.</span><span class="ssi-qr-arrow" aria-hidden="true">\u21B6</span></div>';
+  h+='</div>';
+  h+='</div>';
+  h+='</section>';
+
+  /* ── Notes + footer ── */
+  h+='<div class="ssi-notes-bar"><span class="ssi-notes-label">Notes |</span>';
+  if(sheetNotes){
+    h+='<span class="ssi-notes-line">'+esc(sheetNotes)+'</span>';
+  }else{
+    h+='<span class="ssi-notes-lines"><span class="ssi-notes-blank"></span><span class="ssi-notes-blank"></span></span>';
+  }
+  h+='</div>';
+  h+='<div class="ssi-footer-promo"><span class="ssi-promo-line"></span><span class="ssi-promo-text">\u2605 Ask about current promotions and custom order options \u2605</span><span class="ssi-promo-line"></span></div>';
 
   return '<div class="ss-flyer-root is-informative"><div class="ss-flyer-content">'+h+'</div></div>';
 }
@@ -29594,23 +29991,33 @@ function ssWireSsQrForUrls(id1,id2,qrUrl,qrPurchaseUrl,id3,qrIntakeUrl){
   }
 }
 
-function ssFitSalesSheetToPage(){
-  var root=document.querySelector('#ssSheetContent .ss-flyer-root');
+/** Scale flyer content to fit the printable page area (8.5×11 minus padding).
+ *  Simple uses flex space-between to fill the page; only scales down if content overflows.
+ *  Informative only scales down when content overflows. */
+function ssFitFlyerContentToPage(root){
   if(!root) return;
   var content=root.querySelector('.ss-flyer-content');
   if(!content) return;
   content.style.transform='';
   content.style.width='';
-  var maxH=Math.round(10.15*96);
-  var h=content.scrollHeight;
-  if(h>maxH){
-    var scale=maxH/h;
-    content.style.transform='scale('+scale.toFixed(4)+')';
-    content.style.width=(100/scale).toFixed(2)+'%';
-    root.style.height=Math.ceil(h*scale)+'px';
-  }else{
-    root.style.height='';
+  var maxH=root.clientHeight;
+  if(!maxH||maxH<100){
+    var parent=root.parentElement;
+    maxH=(parent&&parent.clientHeight>0)?parent.clientHeight:Math.round(10.2*96);
   }
+  var h=content.scrollHeight;
+  if(!h||h<1) return;
+  if(h>maxH){
+    var scaleDown=maxH/h;
+    content.style.transform='scale('+scaleDown.toFixed(4)+')';
+    content.style.width=(100/scaleDown).toFixed(2)+'%';
+  }
+}
+
+function ssFitSalesSheetToPage(){
+  var root=document.querySelector('#ssSheetContent .ss-flyer-root');
+  if(!root) return;
+  ssFitFlyerContentToPage(root);
 }
 
 function ssGenerate(){
@@ -29698,6 +30105,9 @@ async function ssGenerateSalesSheetPdfBlob(){
     }
     await Promise.all(qrWaits);
     await ssWaitForImagesToLoad(host);
+
+    var flyerRoot=host.querySelector('.ss-flyer-root');
+    if(flyerRoot) ssFitFlyerContentToPage(flyerRoot);
 
     var canvas=await html2canvas(host,{scale:2,backgroundColor:'#ffffff',useCORS:true,logging:false});
     var imgData=canvas.toDataURL('image/jpeg',0.92);
