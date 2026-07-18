@@ -528,6 +528,45 @@ select option { background:var(--earth); color:var(--cream); }
 #screenAppointments .appt-day-chip.on { background:rgba(122,158,135,0.3); border-color:var(--sage); color:var(--cream); }
 #screenAppointments .appt-actions { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
 #screenAppointments .appt-actions button { flex:1; min-width:120px; margin-top:0 !important; font-size:0.76rem; padding:10px 8px; }
+.day-schedule-overlay {
+  display:none; position:fixed; inset:0; z-index:10020; background:rgba(0,0,0,0.62);
+  align-items:flex-end; justify-content:center; padding:12px 12px max(12px,env(safe-area-inset-bottom,0px));
+}
+.day-schedule-overlay.open { display:flex; }
+.day-schedule-sheet {
+  width:100%; max-width:456px; max-height:86vh; overflow:auto; background:var(--earth);
+  border:1.5px solid rgba(232,200,122,0.32); border-radius:16px; padding:16px;
+  box-shadow:0 16px 44px rgba(0,0,0,0.48);
+}
+.day-schedule-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px; }
+.day-schedule-title { font-family:'Bebas Neue',Impact,sans-serif; color:var(--wheat); font-size:1.25rem; letter-spacing:2px; }
+.day-schedule-close { border:none; background:rgba(255,255,255,0.08); color:var(--cream); width:34px; height:34px; border-radius:50%; font-size:1.3rem; cursor:pointer; }
+.day-schedule-section { margin-top:14px; }
+.day-schedule-section-label { font-size:0.68rem; letter-spacing:1.3px; text-transform:uppercase; color:rgba(232,200,122,0.65); margin-bottom:7px; font-weight:700; }
+.day-schedule-item { padding:10px 11px; border:1px solid rgba(232,200,122,0.18); border-radius:9px; background:rgba(255,255,255,0.04); margin-bottom:7px; font-size:0.8rem; line-height:1.4; }
+.day-schedule-item-title { color:var(--wheat); font-weight:700; }
+.day-schedule-item-meta { color:rgba(245,240,232,0.62); font-size:0.7rem; margin-top:2px; }
+.day-todo-row { display:flex; align-items:flex-start; gap:8px; }
+.day-todo-row.completed .day-schedule-item-title { text-decoration:line-through; opacity:0.6; }
+.day-todo-check { width:18px; height:18px; margin-top:1px; accent-color:var(--sage); flex-shrink:0; }
+.day-todo-main { flex:1; min-width:0; }
+.day-todo-actions { display:flex; gap:4px; flex-shrink:0; }
+.day-todo-actions button { border:none; border-radius:6px; padding:5px 7px; background:rgba(255,255,255,0.08); color:var(--cream); cursor:pointer; font-size:0.68rem; }
+.day-todo-add { display:grid; grid-template-columns:1fr auto; gap:7px; margin-top:8px; }
+.day-todo-add input { min-width:0; }
+.day-todo-add button { margin:0; width:auto; padding:10px 12px; }
+.compare-toolbar { display:flex; gap:8px; margin-bottom:14px; }
+.compare-toolbar button { flex:1; margin:0; }
+.compare-list { display:flex; flex-direction:column; gap:12px; }
+.compare-card { border:1.5px solid rgba(232,200,122,0.24); border-radius:12px; background:rgba(255,255,255,0.045); padding:14px; }
+.compare-card-head { display:flex; justify-content:space-between; gap:10px; align-items:flex-start; border-bottom:1px solid rgba(232,200,122,0.14); padding-bottom:9px; margin-bottom:9px; }
+.compare-card-title { color:var(--wheat); font-weight:800; font-size:1rem; }
+.compare-card-sub { color:rgba(245,240,232,0.62); font-size:0.74rem; margin-top:2px; }
+.compare-remove { border:none; background:rgba(196,81,31,0.2); color:#f0c4a8; border-radius:7px; padding:6px 8px; cursor:pointer; }
+.compare-line { display:flex; justify-content:space-between; gap:12px; font-size:0.78rem; padding:3px 0; }
+.compare-line span:first-child { color:rgba(232,200,122,0.62); }
+.compare-line strong { color:var(--cream); text-align:right; }
+.compare-options { margin-top:8px; color:rgba(245,240,232,0.7); font-size:0.72rem; line-height:1.45; }
 .cc-crm-trio {
   grid-column: 1 / -1;
   display: grid;
@@ -4982,7 +5021,6 @@ select:focus {
     <div id="homeAppointmentsSection" class="cc-span2" style="display:none;">
       <div class="cc-section-label cc-span2" style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
         <span style="display:inline-flex;align-items:center;gap:6px;"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:16px;height:16px;display:block;"><rect x="3" y="4" width="18" height="18" rx="2" fill="rgba(232,200,122,0.07)" stroke="rgba(232,200,122,0.88)" stroke-width="1.5"/><path d="M16 2v4M8 2v4M3 10h18" stroke="rgba(232,200,122,0.88)" stroke-width="1.5" stroke-linecap="round"/></svg> APPOINTMENTS</span>
-        <button type="button" class="btn-secondary" style="margin:0;width:auto;padding:5px 10px;font-size:0.68rem;letter-spacing:0.5px;" onclick="openAppointmentsNew()">+ New</button>
       </div>
       <div id="homeApptCalendar" class="appt-calendar appt-calendar--home"></div>
     </div>
@@ -5944,6 +5982,8 @@ select:focus {
             </select>
           </label>
           <button type="button" class="quote-export-btn" onclick="copyEstimateTextToClipboard()">Copy estimate text</button>
+          <button type="button" class="quote-export-btn" onclick="addCurrentQuoteToCompare()">Compare</button>
+          <button type="button" class="quote-export-btn" onclick="openComparePage()">View comparisons <span id="compareCountBadge"></span></button>
         </div>
       </div>
 
@@ -5973,6 +6013,23 @@ select:focus {
     <div style="font-size:0.62rem;color:var(--wheat);opacity:0.45;letter-spacing:0.5px;">&copy; 2026 SellSheds &nbsp;&middot;&nbsp; All rights reserved</div>
   </div>
 </div><!-- end screenCalc -->
+
+<div class="screen" id="screenCompare">
+  <div class="header">
+    <button type="button" class="back-btn" onclick="appNavBack()" aria-label="Back">&#8592;</button>
+    <div class="header-title">Compare Buildings</div>
+    <div class="header-spacer" aria-hidden="true"></div>
+  </div>
+  <div style="padding:16px;padding-bottom:90px;">
+    <div class="page-title">Building comparison</div>
+    <div class="page-sub">Quotes remain here until you remove them or clear the list.</div>
+    <div class="compare-toolbar">
+      <button type="button" class="btn-primary" onclick="clearCalcAutosave();clearCalcForNewQuote();goTo('screenCalc')">Price another</button>
+      <button type="button" class="btn-secondary" onclick="clearAllComparisons()">Clear all</button>
+    </div>
+    <div id="compareList" class="compare-list"></div>
+  </div>
+</div><!-- end screenCompare -->
 
 <div class="screen" id="screenMileage">
   <div class="header">
@@ -6414,7 +6471,7 @@ select:focus {
         <input type="date" id="lotManualSaleDate">
       </div>
       <div class="field-group">
-        <label class="field-label">Sale amount <span class="req">*</span></label>
+        <label class="field-label">Pre-tax sale amount <span class="req">*</span></label>
         <input type="number" id="lotManualSaleAmount" min="0" step="0.01" placeholder="0.00">
       </div>
       <div class="field-group">
@@ -6532,6 +6589,7 @@ select:focus {
     <div class="field-group"><label class="field-label">Attach inventory (optional)</label>
       <select id="crm_invPick" onchange="crmInventoryPickChanged()"><option value="">— Pick inventory or type below —</option></select>
     </div>
+    <div class="field-group"><label class="field-label">Next follow-up date</label><input type="date" id="crm_nextFollowUpDate"></div>
     <div class="field-group"><label class="field-label">Building interest</label><input type="text" id="crm_building" placeholder="10x16 Lofted Barn"></div>
     <div class="field-group"><label class="field-label">Conversation channel</label>
       <select id="crm_channel">
@@ -6608,6 +6666,23 @@ select:focus {
     </div>
   </div>
 </div><!-- end screenAppointments -->
+
+<div class="day-schedule-overlay" id="dayScheduleOverlay" aria-hidden="true" onclick="if(event.target===this)closeDaySchedule()">
+  <div class="day-schedule-sheet" role="dialog" aria-modal="true" aria-labelledby="dayScheduleTitle" onclick="event.stopPropagation()">
+    <div class="day-schedule-head">
+      <div class="day-schedule-title" id="dayScheduleTitle">Schedule</div>
+      <button type="button" class="day-schedule-close" onclick="closeDaySchedule()" aria-label="Close">&times;</button>
+    </div>
+    <div id="dayScheduleBody"></div>
+    <div class="day-schedule-section">
+      <div class="day-schedule-section-label">Add to-do</div>
+      <div class="day-todo-add">
+        <input type="text" id="dayTodoNewText" placeholder="What needs to be done?" maxlength="240">
+        <button type="button" class="btn-primary" onclick="dayTodoAdd()">Add</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ============================================================
      SCREEN: CONTACTS (status filters)
@@ -8222,6 +8297,12 @@ select:focus {
     <div class="field-group"><label class="field-label">Metal Min (Cabin)</label><input type="number" id="set_metalMinCabin" placeholder="e.g. 500"></div>
     <div class="field-group"><label class="field-label">Metal Min (Utility)</label><input type="number" id="set_metalMinUtility" placeholder="e.g. 400"></div>
     <div class="field-group"><label class="field-label">Tax Rate %</label><input type="number" id="set_taxRate" placeholder="e.g. 6" step="0.01"></div>
+    <div class="settings-section-title" style="margin:18px 0 10px;">Current sales &amp; commission</div>
+    <div class="field-group"><label class="field-label">Custom order current sale %</label><input type="number" id="set_customOrderSalePct" min="0" max="100" step="0.1" placeholder="0"></div>
+    <div class="setup-note" style="margin-top:-6px;margin-bottom:12px;">Applied by default to the Price Calculator, reverse calculator, and custom-order calculators. It can still be changed or turned off for one quote.</div>
+    <div class="field-group"><label class="field-label">Inventory current sale %</label><input type="number" id="set_inventorySalePct" min="0" max="100" step="0.1" placeholder="0"></div>
+    <div class="setup-note" style="margin-top:-6px;margin-bottom:12px;">Applied by default to inventory pricing, inventory quotes, and sales sheets. It can still be changed or turned off for one quote.</div>
+    <div class="field-group"><label class="field-label">Commission % of pre-tax sale price</label><input type="number" id="set_commissionPct" min="0" max="100" step="0.1" placeholder="0"></div>
   </div>
 </div><!-- end screenSettingsPricingCore -->
 
@@ -9998,7 +10079,7 @@ async function followupsInit(){
 }
 
 function crmClearLeadForm(){
-  ['crm_name','crm_phone','crm_email','crm_building','crm_notes'].forEach(function(id){
+  ['crm_name','crm_phone','crm_email','crm_building','crm_notes','crm_nextFollowUpDate'].forEach(function(id){
     var el=document.getElementById(id);
     if(el) el.value='';
   });
@@ -10028,6 +10109,7 @@ function crmLeadDocToUi(lead){
   setVal('crm_email',lead.contact&&lead.contact.email||'');
   setVal('crm_building',lead.buildingInterest&&lead.buildingInterest.summary||'');
   setVal('crm_notes',lead.notes||'');
+  setVal('crm_nextFollowUpDate',lead.nextFollowUpDate||'');
   setVal('crm_status',crmNormalizeStatus(lead.status));
   setVal('crm_channel',lead.conversation&&lead.conversation.channel||'sms');
   try{ crmPopulateInventoryPicker(lead.buildingInterest&&lead.buildingInterest.inventoryId||''); }catch(_p){}
@@ -10134,6 +10216,7 @@ function crmBuildLeadPayloadFromForm(opts){
     contact:{name:cv('crm_name'),phone:cv('crm_phone'),email:cv('crm_email')},
     buildingInterest:building,
     notes:cv('crm_notes'),
+    nextFollowUpDate:cv('crm_nextFollowUpDate')||(opts.isUpdate?firebase.firestore.FieldValue.delete():''),
     conversation:{channel:ch,lastMessageAt:now,lastDirection:'note',summary:'Lead profile saved in CRM'},
     status:crmStatusToFirestore(cv('crm_status')),
     updatedAt:firebase.firestore.FieldValue.serverTimestamp()
@@ -10462,7 +10545,8 @@ function apptRenderCalendar(mountId,opts){
     });
     if(items.length>maxShow) chips+='<span class="appt-cal-more">+'+(items.length-maxShow)+'</span>';
     var dow=day.date.toLocaleDateString('en-US',{weekday:'short'});
-    return '<button type="button" class="'+cls+'" onclick="apptSetFilterDay(\''+day.key+'\')"><div class="appt-cal-dow">'+dow+'</div><div class="appt-cal-dom">'+day.date.getDate()+'</div><div class="appt-cal-chips">'+chips+'</div></button>';
+    var dayAction=compact?'openDaySchedule(\''+day.key+'\')':'apptSetFilterDay(\''+day.key+'\')';
+    return '<button type="button" class="'+cls+'" onclick="'+dayAction+'"><div class="appt-cal-dow">'+dow+'</div><div class="appt-cal-dom">'+day.date.getDate()+'</div><div class="appt-cal-chips">'+chips+'</div></button>';
   }).join('');
 }
 function apptRenderAllCalendars(){
@@ -10521,6 +10605,154 @@ function apptListItemHtml(it){
     '<span class="appt-status '+st+'">'+apptStatusLabel(st)+'</span>'+
     '<div style="font-size:0.84rem;font-weight:700;color:var(--wheat);">'+(it.customerName||'Unnamed')+'</div>'+
     '<div class="crm-muted" style="margin-top:2px;">'+(it.customerPhone||'No phone')+(when?' · '+when:'')+'</div></div>';
+}
+
+var DAY_TODOS_LOCAL_KEY='gss_day_todos_v1';
+var dayScheduleKey='';
+function dayTodosLoad(){
+  try{
+    var rows=JSON.parse(localStorage.getItem(DAY_TODOS_LOCAL_KEY)||'[]');
+    return Array.isArray(rows)?rows:[];
+  }catch(_e){ return []; }
+}
+function dayTodosSave(rows){
+  try{ localStorage.setItem(DAY_TODOS_LOCAL_KEY,JSON.stringify(rows||[])); }catch(_e){}
+}
+function dayScheduleDateLabel(key){
+  var p=String(key||'').split('-');
+  var d=p.length===3?new Date(Number(p[0]),Number(p[1])-1,Number(p[2])):new Date(key);
+  return isFinite(d.getTime())?d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'}):key;
+}
+function crmLeadDueDayKey(lead){
+  var candidates=[
+    lead&&lead.nextFollowUpDate,lead&&lead.followUpDate,lead&&lead.dueDate,
+    lead&&lead.nextFollowUpAt,lead&&lead.followUpAt,lead&&lead.reminderDate,
+    lead&&lead.conversation&&lead.conversation.nextFollowUpDate
+  ];
+  for(var i=0;i<candidates.length;i++){
+    var v=candidates[i];
+    if(!v) continue;
+    if(v&&typeof v.toDate==='function') v=v.toDate();
+    if(v instanceof Date) return apptDayKey(v);
+    var m=String(v).match(/^(\d{4}-\d{2}-\d{2})/);
+    if(m) return m[1];
+    var d=new Date(v);
+    if(isFinite(d.getTime())) return apptDayKey(d);
+  }
+  return '';
+}
+function openDaySchedule(key){
+  dayScheduleKey=String(key||'');
+  apptState.filterDayKey=dayScheduleKey;
+  var ov=document.getElementById('dayScheduleOverlay');
+  if(ov){ ov.classList.add('open'); ov.setAttribute('aria-hidden','false'); }
+  var title=document.getElementById('dayScheduleTitle');
+  if(title) title.textContent=dayScheduleDateLabel(dayScheduleKey);
+  var inp=document.getElementById('dayTodoNewText');
+  if(inp) inp.value='';
+  renderDaySchedule();
+  void dayTodosSyncAndRefresh();
+}
+function closeDaySchedule(){
+  var ov=document.getElementById('dayScheduleOverlay');
+  if(ov){ ov.classList.remove('open'); ov.setAttribute('aria-hidden','true'); }
+}
+function openAppointmentFromDay(id){
+  closeDaySchedule();
+  apptSelect(id);
+  openAppointments();
+}
+function openFollowupFromDay(id){
+  closeDaySchedule();
+  crmOpenDetail(id);
+}
+function renderDaySchedule(){
+  var mount=document.getElementById('dayScheduleBody');
+  if(!mount||!dayScheduleKey) return;
+  var appointments=apptItemsOnDay(dayScheduleKey).sort(function(a,b){ return apptItemSortMs(a)-apptItemSortMs(b); });
+  var followups=(crmState.leads||[]).filter(function(lead){ return crmLeadDueDayKey(lead)===dayScheduleKey; });
+  var todos=dayTodosLoad().filter(function(t){ return t.date===dayScheduleKey&&!t.deleted; }).sort(function(a,b){ return Number(a.completed)-Number(b.completed); });
+  var html='<div class="day-schedule-section"><div class="day-schedule-section-label">Appointments</div>';
+  if(!appointments.length) html+='<div class="day-schedule-item" style="color:rgba(232,200,122,0.55);">No appointments.</div>';
+  appointments.forEach(function(it){
+    var d=apptParseTs(it.confirmedStart);
+    var when=d?d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):apptStatusLabel(it.status||'draft');
+    html+='<button type="button" class="day-schedule-item" style="display:block;width:100%;text-align:left;color:inherit;cursor:pointer;" onclick="openAppointmentFromDay(\''+compareEscape(it.id)+'\')"><div class="day-schedule-item-title">'+compareEscape(it.customerName||'Unnamed appointment')+'</div><div class="day-schedule-item-meta">'+compareEscape(when)+(it.locationText?' · '+compareEscape(it.locationText):'')+'</div></button>';
+  });
+  html+='</div><div class="day-schedule-section"><div class="day-schedule-section-label">CRM follow-ups due</div>';
+  if(!followups.length) html+='<div class="day-schedule-item" style="color:rgba(232,200,122,0.55);">No CRM follow-ups due.</div>';
+  followups.forEach(function(lead){
+    var name=(lead.contact&&lead.contact.name)||lead.name||'Unnamed lead';
+    html+='<button type="button" class="day-schedule-item" style="display:block;width:100%;text-align:left;color:inherit;cursor:pointer;" onclick="openFollowupFromDay(\''+compareEscape(lead.id)+'\')"><div class="day-schedule-item-title">'+compareEscape(name)+'</div><div class="day-schedule-item-meta">'+compareEscape((lead.contact&&lead.contact.phone)||lead.status||'Follow up')+'</div></button>';
+  });
+  html+='</div><div class="day-schedule-section"><div class="day-schedule-section-label">To-do list</div>';
+  if(!todos.length) html+='<div class="day-schedule-item" style="color:rgba(232,200,122,0.55);">No to-dos yet.</div>';
+  todos.forEach(function(todo){
+    html+='<div class="day-schedule-item day-todo-row'+(todo.completed?' completed':'')+'"><input class="day-todo-check" type="checkbox" '+(todo.completed?'checked ':'')+'onchange="dayTodoToggle(\''+compareEscape(todo.id)+'\',this.checked)"><div class="day-todo-main"><div class="day-schedule-item-title">'+compareEscape(todo.text)+'</div></div><div class="day-todo-actions"><button type="button" onclick="dayTodoEdit(\''+compareEscape(todo.id)+'\')">Edit</button><button type="button" onclick="dayTodoDelete(\''+compareEscape(todo.id)+'\')">Delete</button></div></div>';
+  });
+  html+='</div>';
+  mount.innerHTML=html;
+}
+function dayTodoMutate(id,fn){
+  var rows=dayTodosLoad();
+  var todo=rows.find(function(t){ return String(t.id)===String(id); });
+  if(!todo) return;
+  fn(todo);
+  todo.updatedAt=new Date().toISOString();
+  todo.pending=true;
+  dayTodosSave(rows);
+  renderDaySchedule();
+  void dayTodosSyncAndRefresh();
+}
+function dayTodoAdd(){
+  var inp=document.getElementById('dayTodoNewText');
+  var text=String(inp&&inp.value||'').trim();
+  if(!dayScheduleKey||!text){ showToast('Enter a to-do'); return; }
+  var rows=dayTodosLoad();
+  rows.push({id:'todo_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),date:dayScheduleKey,text:text,completed:false,updatedAt:new Date().toISOString(),pending:true});
+  dayTodosSave(rows);
+  if(inp) inp.value='';
+  renderDaySchedule();
+  void dayTodosSyncAndRefresh();
+}
+function dayTodoToggle(id,on){ dayTodoMutate(id,function(t){ t.completed=!!on; }); }
+function dayTodoEdit(id){
+  var todo=dayTodosLoad().find(function(t){ return String(t.id)===String(id); });
+  if(!todo) return;
+  var text=prompt('Edit to-do',todo.text||'');
+  if(text===null||!String(text).trim()) return;
+  dayTodoMutate(id,function(t){ t.text=String(text).trim(); });
+}
+function dayTodoDelete(id){
+  if(!confirm('Delete this to-do?')) return;
+  dayTodoMutate(id,function(t){ t.deleted=true; });
+}
+async function dayTodosSyncAndRefresh(){
+  if(!dayScheduleKey) return;
+  try{
+    firebaseTryInit();
+    if(!(await firebaseEnsureAuthed())){ renderDaySchedule(); return; }
+    var rows=dayTodosLoad();
+    var pending=rows.filter(function(t){ return t.pending; });
+    for(var i=0;i<pending.length;i++){
+      var t=pending[i];
+      var ref=fbDb.collection('todos').doc(String(t.id));
+      if(t.deleted) await ref.delete().catch(function(){});
+      else await ref.set({date:t.date,text:t.text,completed:!!t.completed,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+      t.pending=false;
+    }
+    rows=rows.filter(function(t){ return !(t.deleted&&!t.pending); });
+    var snap=await fbDb.collection('todos').where('date','==',dayScheduleKey).get();
+    snap.docs.forEach(function(doc){
+      var d=doc.data()||{};
+      var existing=rows.find(function(t){ return String(t.id)===String(doc.id); });
+      var cloud={id:doc.id,date:d.date||dayScheduleKey,text:d.text||'',completed:!!d.completed,updatedAt:firebaseTsToIso(d.updatedAt)||'',pending:false};
+      if(existing&&!existing.pending) Object.assign(existing,cloud);
+      else if(!existing) rows.push(cloud);
+    });
+    dayTodosSave(rows);
+  }catch(e){ console.warn('To-do sync failed:',e); }
+  renderDaySchedule();
 }
 function apptNext14DayOptions(){
   var out=[];
@@ -11375,6 +11607,7 @@ function invWizardNext(){
 
 function invOpenAddModal(){
   invClearForm();
+  applyConfiguredSaleToCalc('inventory');
   var t=document.getElementById('invAddEditTitle');
   if(t) t.textContent='Add inventory';
   invPopulateLotLocationSelect('');
@@ -11961,7 +12194,16 @@ function lotPagesCollectInventorySales(addr){
   (invState.items||[]).forEach(function(it){
     if(String(it.lotLocation||'').trim()!==addr) return;
     if(invNormalizeUnitStatus(it.unitStatus)!=='sold') return;
-    var amt=(it.priceData&&it.priceData.finalTotal!=null)?Number(it.priceData.finalTotal):0;
+    var amt=0;
+    if(it.priceData){
+      if(it.priceData.subtotal!=null) amt=Number(it.priceData.subtotal);
+      else if(it.priceData.subtotalWithAssurance!=null) amt=Number(it.priceData.subtotalWithAssurance);
+      else if(it.priceData.finalTotal!=null){
+        amt=Number(it.priceData.finalTotal);
+        var tax=Number(it.priceData.taxAmt!=null?it.priceData.taxAmt:it.priceData.taxAmount);
+        if(isFinite(tax)&&tax>0) amt-=tax;
+      }
+    }
     if(!isFinite(amt)) amt=0;
     var title=[it.size,it.style].filter(Boolean).join(' · ')||'Sold unit';
     if(it.serialNumber) title+=' · '+it.serialNumber;
@@ -12003,15 +12245,19 @@ function lotPagesRenderSalesSection(addr){
   if(!mount) return;
   var sales=lotPagesCollectAllSales(addr);
   var t=lotPagesSalesTotals(sales);
+  var commissionPct=Math.max(0,Math.min(100,parseFloat(loadSettings().commissionPct)||0));
+  var monthCommission=Math.round(t.monthAmt*(commissionPct/100)*100)/100;
+  var yearCommission=Math.round(t.yearAmt*(commissionPct/100)*100)/100;
   var now=new Date();
   var monthName=now.toLocaleString('en-US',{month:'long'});
   var html='<div class="lot-sales-stats">'+
-    '<div class="lot-sales-stat"><div class="lot-sales-stat-label">'+invEscapeHtml(monthName)+' sales</div>'+
+    '<div class="lot-sales-stat"><div class="lot-sales-stat-label">'+invEscapeHtml(monthName)+' sold</div>'+
     '<div class="lot-sales-stat-value">'+invFmt(t.monthAmt)+'</div>'+
-    '<div class="lot-sales-stat-sub">'+t.monthCnt+' building'+(t.monthCnt===1?'':'s')+'</div></div>'+
-    '<div class="lot-sales-stat"><div class="lot-sales-stat-label">'+now.getFullYear()+' sales</div>'+
+    '<div class="lot-sales-stat-sub">'+t.monthCnt+' building'+(t.monthCnt===1?'':'s')+' · Commission '+invFmt(monthCommission)+'</div></div>'+
+    '<div class="lot-sales-stat"><div class="lot-sales-stat-label">'+now.getFullYear()+' sold</div>'+
     '<div class="lot-sales-stat-value">'+invFmt(t.yearAmt)+'</div>'+
-    '<div class="lot-sales-stat-sub">'+t.yearCnt+' building'+(t.yearCnt===1?'':'s')+'</div></div></div>';
+    '<div class="lot-sales-stat-sub">'+t.yearCnt+' building'+(t.yearCnt===1?'':'s')+' · Commission '+invFmt(yearCommission)+'</div></div></div>'+
+    '<div style="font-size:0.68rem;color:rgba(232,200,122,0.52);margin:-5px 0 10px;">Commission rate: '+commissionPct.toLocaleString()+'% of pre-tax sales</div>';
   if(!sales.length){
     html+='<div style="padding:12px;font-size:0.78rem;color:rgba(232,200,122,0.62);border:1px dashed rgba(232,200,122,0.2);border-radius:10px;margin-top:4px;">No sales recorded yet. Mark inventory as sold or add a manual sale.</div>';
 }else{
@@ -12677,9 +12923,9 @@ function renderSettingsBizLotsForm(s){
 }
 function renderSettingsPricingCoreForm(s){
   s=s||{};
-  ['metalRate','cabinFlat','metalMinCabin','metalMinUtility','taxRate'].forEach(function(k){
+  ['metalRate','cabinFlat','metalMinCabin','metalMinUtility','taxRate','customOrderSalePct','inventorySalePct','commissionPct'].forEach(function(k){
     var el=document.getElementById('set_'+k);
-    if(el) el.value=s[k]||'';
+    if(el) el.value=(s[k]!==undefined&&s[k]!==null)?s[k]:'';
   });
   var metalBasisTrack=document.getElementById('set_metalBasisTrack');
   var metalBasisDot=document.getElementById('set_metalBasisDot');
@@ -13309,6 +13555,13 @@ async function saveSettingsPricingCore(opts){
   ['metalRate','cabinFlat','metalMinCabin','metalMinUtility','taxRate'].forEach(function(k){
     var el=document.getElementById('set_'+k);
     if(el) s[k]=el.value.trim()===''?'':parseFloat(el.value);
+  });
+  ['customOrderSalePct','inventorySalePct','commissionPct'].forEach(function(k){
+    var el=document.getElementById('set_'+k);
+    if(!el) return;
+    var raw=el.value.trim();
+    var n=parseFloat(raw);
+    s[k]=raw===''?'':(isFinite(n)?Math.max(0,Math.min(100,n)):0);
   });
   var mbTrack=document.getElementById('set_metalBasisTrack');
   s.metalBasisFootprint=mbTrack&&mbTrack.classList.contains('active');
@@ -14438,6 +14691,7 @@ function goTo(screenId){
     initCalcAdvancedTools();
     try{ refreshOptionsCatalogUI(); }catch(_eCat){}
   }
+  if(screenId==='screenCompare') renderComparePage();
   else try{ updateRevCalcTabVisibility(); }catch(_eRvTab){}
   if(screenId==='screenMileage') initMileageScreen();
   if(screenId==='screenInventory') invInit();
@@ -15889,6 +16143,7 @@ let _skipCalcTaxReset=false;
 let _skipCalcScreenEntryLoad=false;
 const CALC_HISTORY_KEY='gss_calc_quote_history_v1';
 const CALC_HISTORY_MAX=24;
+const CALC_COMPARE_KEY='gss_calc_compare_v1';
 /** Short-lived "continue where I left off" snapshot for the Price Calculator screen itself.
  *  Kept separate from CALC_HISTORY_KEY (the user-facing "resume a past quote" list) so that
  *  jumping into the calculator from the Ad Writer / Sales Sheet / Inventory screens (which all
@@ -15904,12 +16159,23 @@ const SS_AUTOSAVE_KEY='gss_salessheet_autosave_v1';
 const AD_AUTOSAVE_KEY='gss_ad_autosave_v1';
 
 function getDefaultCalcState(){
+  var configuredSale=0;
+  try{ configuredSale=Math.max(0,Math.min(100,parseFloat(loadSettings().customOrderSalePct)||0)); }catch(_e){}
   return {
     type:null,width:null,length:null,payType:'cash',rtoMonths:36,addons:{},addonQty:{},addonVariant:{},addonExcluded:{},
-    saleActive:false,salePercent:0,dealerDiscount:0,taxMode:'standard',taxRate:0,
+    saleActive:configuredSale>0,salePercent:configuredSale,dealerDiscount:0,taxMode:'standard',taxRate:0,
     bosActive:false,quickTaxActive:false,quickDealerActive:false,assurancePlan:2,costReduction:0,qpvShowTax:false,multiDoors:[],multiWindows:[],
     multiGarage:[],multiCutouts:[],multiCustom:[],multi2x6:[],multiIntwall:[],multiPaint:[],osbIntwallFtManual:false,stdRemoved:{},stdHidden:{},cashDownPayment:null,_stdType:null
   };
+}
+
+function applyConfiguredSaleToCalc(kind){
+  var key=kind==='inventory'?'inventorySalePct':'customOrderSalePct';
+  var pct=0;
+  try{ pct=Math.max(0,Math.min(100,parseFloat(loadSettings()[key])||0)); }catch(_e){}
+  calcState.salePercent=pct;
+  calcState.saleActive=pct>0;
+  try{ syncSaleUIFromState(); saveSaleState(); updateQuickPrice(); }catch(_e2){}
 }
 
 function cloneCalcState(src){
@@ -15928,6 +16194,90 @@ function saveCalcHistory(items){
     var out=Array.isArray(items)?items.slice(0,CALC_HISTORY_MAX):[];
     localStorage.setItem(CALC_HISTORY_KEY,JSON.stringify(out));
   }catch(e){}
+}
+
+function loadComparisons(){
+  try{
+    var rows=JSON.parse(localStorage.getItem(CALC_COMPARE_KEY)||'[]');
+    return Array.isArray(rows)?rows:[];
+  }catch(_e){ return []; }
+}
+function saveComparisons(rows){
+  try{ localStorage.setItem(CALC_COMPARE_KEY,JSON.stringify(Array.isArray(rows)?rows:[])); }catch(_e){}
+  updateCompareCountBadge();
+}
+function compareEscape(v){
+  return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function updateCompareCountBadge(){
+  var el=document.getElementById('compareCountBadge');
+  if(el){
+    var n=loadComparisons().length;
+    el.textContent=n?'('+n+')':'';
+  }
+}
+function addCurrentQuoteToCompare(){
+  var q=getCalcQuoteSnapshot();
+  if(!q||!q.base||!calcState.type||!calcState.width||!calcState.length){ showToast('Build a complete quote first'); return; }
+  var rows=loadComparisons();
+  var options=(q.addonLines||[]).map(function(l){ return {label:l.label||'Option',amount:Number(l.val)||0}; });
+  rows.push({
+    id:'cmp_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),
+    addedAt:new Date().toISOString(),
+    typeCode:calcState.type,
+    typeName:NAMES[calcState.type]||calcState.type,
+    width:calcState.width,
+    length:calcState.length,
+    listPrice:q.base,
+    salePct:q.salePct||0,
+    saleAmount:q.saleAmount||0,
+    subtotal:q.subtotal||0,
+    taxAmount:q.taxAmount||0,
+    cashTotal:q.grandTotal||0,
+    rtoMonths:calcState.rtoMonths||36,
+    rtoMonthly:q.rtoMonthly||0,
+    rtoMonthlyTax:q.rtoTaxPerMonth||0,
+    options:options
+  });
+  saveComparisons(rows);
+  showToast('Added to comparison');
+}
+function removeComparison(id){
+  saveComparisons(loadComparisons().filter(function(row){ return String(row.id)!==String(id); }));
+  renderComparePage();
+}
+function clearAllComparisons(){
+  if(!loadComparisons().length) return;
+  if(!confirm('Clear every compared building?')) return;
+  saveComparisons([]);
+  renderComparePage();
+}
+function openComparePage(){
+  goTo('screenCompare');
+}
+function renderComparePage(){
+  var mount=document.getElementById('compareList');
+  if(!mount) return;
+  var rows=loadComparisons();
+  updateCompareCountBadge();
+  if(!rows.length){
+    mount.innerHTML='<div style="padding:18px;text-align:center;border:1px dashed rgba(232,200,122,0.24);border-radius:10px;color:rgba(232,200,122,0.62);font-size:0.82rem;">No buildings added yet. Price a building and tap Compare.</div>';
+    return;
+  }
+  mount.innerHTML=rows.map(function(row){
+    var opt=(row.options||[]).map(function(o){ return compareEscape(o.label)+' ('+fmt(o.amount||0)+')'; }).join(' · ');
+    var totalRto=(Number(row.rtoMonthly)||0)+(Number(row.rtoMonthlyTax)||0);
+    return '<div class="compare-card"><div class="compare-card-head"><div><div class="compare-card-title">'+compareEscape(row.typeName||'Building')+'</div>'+
+      '<div class="compare-card-sub">'+compareEscape(row.width+"' × "+row.length+"'")+'</div></div>'+
+      '<button type="button" class="compare-remove" onclick="removeComparison(\''+compareEscape(row.id)+'\')">Remove</button></div>'+
+      '<div class="compare-line"><span>List price</span><strong>'+fmt(row.listPrice||0)+'</strong></div>'+
+      (row.saleAmount>0?'<div class="compare-line"><span>Sale ('+compareEscape(row.salePct)+'%)</span><strong>-'+fmt(row.saleAmount)+'</strong></div>':'')+
+      '<div class="compare-line"><span>Pre-tax subtotal</span><strong>'+fmt(row.subtotal||0)+'</strong></div>'+
+      '<div class="compare-line"><span>Tax</span><strong>'+fmt(row.taxAmount||0)+'</strong></div>'+
+      '<div class="compare-line"><span>Cash total</span><strong>'+fmt(row.cashTotal||0)+'</strong></div>'+
+      (row.rtoMonthly>0?'<div class="compare-line"><span>RTO '+compareEscape(row.rtoMonths)+' mo</span><strong>'+fmt(totalRto)+'/mo incl. tax</strong></div>':'')+
+      '<div class="compare-options"><strong>Options:</strong> '+(opt||'None')+'</div></div>';
+  }).join('');
 }
 
 function captureCalcSession(){
@@ -16096,12 +16446,8 @@ function resetCalcDimensionSelectors(){
 }
 
 function clearCalcForNewQuote(){
-  var keepSaleActive=calcState.saleActive;
-  var keepSalePct=calcState.salePercent;
   var keepQpvShowTax=calcState.qpvShowTax;
   calcState=getDefaultCalcState();
-  calcState.saleActive=keepSaleActive;
-  calcState.salePercent=keepSalePct;
   calcState.qpvShowTax=keepQpvShowTax;
   calcState.quickTaxActive=!!keepQpvShowTax;
   calcCurrentPage=0;
@@ -16655,6 +17001,15 @@ function syncSaleUIFromState(){
 
 function loadSaleState(){
   try{
+    var configured=parseFloat(loadSettings().customOrderSalePct);
+    if(isFinite(configured)){
+      calcState.salePercent=Math.max(0,Math.min(configured,100));
+      calcState.saleActive=calcState.salePercent>0;
+      syncSaleUIFromState();
+      updateQuickPrice();
+      renderCalcQuote();
+      return;
+    }
     var s=JSON.parse(localStorage.getItem('gss_sale')||'null');
     if(!s) return;
     var pct=parseFloat(s.pct);
@@ -18181,8 +18536,7 @@ function saveRevSessionPrefs(){
 function loadRevSessionPrefs(){
   try{
     var raw=sessionStorage.getItem('gss_rev_prefs');
-    if(!raw) return;
-    var p=JSON.parse(raw);
+    var p=raw?JSON.parse(raw):{};
     var b=document.getElementById('rev_budget');
     if(b&&p.budget!=null) b.value=p.budget;
     var m=document.getElementById('rev_mode');
@@ -18190,8 +18544,9 @@ function loadRevSessionPrefs(){
     var t=document.getElementById('rev_term');
     if(t&&p.term) t.value=p.term;
     if(typeof p.includeTax==='boolean') revIncludeTax=p.includeTax;
-    if(typeof p.saleActive==='boolean') revSaleActive=p.saleActive;
-    if(typeof p.salePercent==='number'&&!isNaN(p.salePercent)) revSalePercent=Math.min(Math.max(p.salePercent,0),100);
+    var configured=Math.max(0,Math.min(100,parseFloat(loadSettings().customOrderSalePct)||0));
+    revSalePercent=configured;
+    revSaleActive=configured>0;
     if(typeof p.cashTolerance==='number'&&!isNaN(p.cashTolerance)&&p.cashTolerance>=0) revCashTolerance=p.cashTolerance;
     if(typeof p.rtoTolerance==='number'&&!isNaN(p.rtoTolerance)&&p.rtoTolerance>=0) revRtoTolerance=p.rtoTolerance;
     if(p.sortMode==='cheapest'||p.sortMode==='closest'||p.sortMode==='sqftAsc') revSortMode=p.sortMode;
@@ -18749,6 +19104,7 @@ function goToSalesSheetFromQuote(){
 
 function openSalesSheetReviewFromSyncedCalc(){
   window._quoteSheetConditionHtml='';
+  applyConfiguredSaleToCalc('inventory');
   if(!syncSalesSheetFromCalcForQuote()){ showToast('Select building type, width, and length first'); return false; }
   window._ssSkipPick=true;
   window._ssResumeStep=2;
@@ -19494,14 +19850,19 @@ async function shareEstimatePdfNative(){
   if(!pdf) return false;
   var s=loadSettings();
   var bizName=s.bizName||'Your Business';
-  var file=new File([pdf.blob],pdf.filename,{type:'application/pdf'});
+  var file=null;
+  try{
+    if(typeof File!=='undefined') file=new File([pdf.blob],pdf.filename,{type:'application/pdf'});
+  }catch(_fileErr){ file=null; }
   var email=String(cv('c_custEmail')||'').trim();
   var phone=_quoteSharePhoneDigits();
   var sharePayload={
     title:'Price Estimate \u2014 '+bizName,
     text:'Price estimate from '+bizName+(email?('\n'+email):'')
   };
-  if(navigator.canShare&&navigator.canShare({files:[file]})){
+  var canShareFile=false;
+  try{ canShareFile=!!(file&&navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})); }catch(_canShareErr){}
+  if(canShareFile){
     try{
       await navigator.share(Object.assign({},sharePayload,{files:[file]}));
       return true;
@@ -19714,9 +20075,10 @@ async function quoteShareCommit(){
   var btn=document.getElementById('quoteShareCommitBtn');
   if(btn){ btn.disabled=true; btn.textContent='Preparing\u2026'; }
   try{
-    await quoteShareSaveToCrm();
-    await shareEstimatePdfNative();
-    quoteShareLogActivityAfterSend('web_share');
+    var shared=await shareEstimatePdfNative();
+    if(!shared) throw new Error('PDF share did not complete');
+    try{ await quoteShareSaveToCrm(); }catch(crmErr){ console.warn('Quote shared; CRM save failed:',crmErr); }
+    try{ void quoteShareLogActivityAfterSend('web_share'); }catch(_logErr){}
     closeQuoteShareRecipientModal();
   }catch(e){
     if(e&&e.name==='AbortError') return;
@@ -26670,6 +27032,7 @@ function closePhotoModal(){document.getElementById('photoModalOverlay').classLis
 document.getElementById('photoModalOverlay').addEventListener('click',function(e){if(e.target===this)closePhotoModal();});
 try{renderPhotoFolders();}catch(e){}
 try{loadSaleState();}catch(e){}
+try{updateCompareCountBadge();}catch(e){}
 try{loadQpvTaxPref();}catch(e){}
 try{calcState.taxRate=getSettingVal('taxRate',0);}catch(e){}
 try{applyBizInfoToHome();}catch(e){}
@@ -28477,6 +28840,7 @@ function ssInitEnterSalesSheet(fromHome){
     return;
   }
   if(fromHome){
+    applyConfiguredSaleToCalc('inventory');
     ssShowPickPhase();
     return;
   }
@@ -31445,7 +31809,9 @@ var _CB_CALC_MULTI_CONTAINER={doors:'cb_c_doorRows',windows:'cb_c_windowRows',ga
 var _CB_CALC_MULTI_ADDON={doors:'door36',windows:'window',garage:'garagedoor',cutouts:'cutouts',x6:'2x6',intwall:'intwall',paint:'paintupgrade'};
 
 function cb_resetCalcState(){
-  cbCalcState={type:null,width:null,length:null,payType:'cash',rtoMonths:36,addons:{},addonQty:{},addonExcluded:{},saleActive:false,salePercent:0,dealerDiscount:0,taxMode:'standard',taxRate:0,bosActive:false,quickTaxActive:false,quickDealerActive:false,assurancePlan:2,costReduction:0,qpvShowTax:false,multiDoors:[],multiWindows:[],multiGarage:[],multiCutouts:[],multiCustom:[],multi2x6:[],multiIntwall:[],multiPaint:[],osbIntwallFtManual:false,stdRemoved:{},stdHidden:{},cashDownPayment:null};
+  var pct=0;
+  try{ pct=Math.max(0,Math.min(100,parseFloat(loadSettings().customOrderSalePct)||0)); }catch(_e){}
+  cbCalcState={type:null,width:null,length:null,payType:'cash',rtoMonths:36,addons:{},addonQty:{},addonExcluded:{},saleActive:pct>0,salePercent:pct,dealerDiscount:0,taxMode:'standard',taxRate:0,bosActive:false,quickTaxActive:false,quickDealerActive:false,assurancePlan:2,costReduction:0,qpvShowTax:false,multiDoors:[],multiWindows:[],multiGarage:[],multiCutouts:[],multiCustom:[],multi2x6:[],multiIntwall:[],multiPaint:[],osbIntwallFtManual:false,stdRemoved:{},stdHidden:{},cashDownPayment:null};
 }
 cb_resetCalcState();
 
