@@ -557,16 +557,44 @@ select option { background:var(--earth); color:var(--cream); }
 .day-todo-add button { margin:0; width:auto; padding:10px 12px; }
 .compare-toolbar { display:flex; gap:8px; margin-bottom:14px; }
 .compare-toolbar button { flex:1; margin:0; }
+.compare-summary-banner { border:1.5px solid rgba(122,158,135,0.4); background:rgba(122,158,135,0.1); border-radius:12px; padding:12px 14px; margin-bottom:14px; }
+.compare-summary-row { display:flex; justify-content:space-between; align-items:baseline; gap:10px; padding:4px 0; font-size:0.82rem; }
+.compare-summary-row span:first-child { color:rgba(245,240,232,0.65); }
+.compare-summary-row strong { color:var(--cream); text-align:right; }
+.compare-summary-diff { margin-top:6px; padding-top:8px; border-top:1px solid rgba(232,200,122,0.18); text-align:center; font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; letter-spacing:1px; font-size:1.05rem; color:var(--wheat); }
+.compare-summary-diff span { color:var(--rust); }
 .compare-list { display:flex; flex-direction:column; gap:12px; }
-.compare-card { border:1.5px solid rgba(232,200,122,0.24); border-radius:12px; background:rgba(255,255,255,0.045); padding:14px; }
+.compare-card { border:1.5px solid rgba(232,200,122,0.24); border-radius:12px; background:rgba(255,255,255,0.045); padding:14px; position:relative; }
+.compare-card--low { border-color:rgba(122,158,135,0.55); background:rgba(122,158,135,0.08); }
+.compare-card--high { border-color:rgba(196,81,31,0.55); background:rgba(196,81,31,0.07); }
 .compare-card-head { display:flex; justify-content:space-between; gap:10px; align-items:flex-start; border-bottom:1px solid rgba(232,200,122,0.14); padding-bottom:9px; margin-bottom:9px; }
+.compare-card-title-wrap { min-width:0; }
 .compare-card-title { color:var(--wheat); font-weight:800; font-size:1rem; }
 .compare-card-sub { color:rgba(245,240,232,0.62); font-size:0.74rem; margin-top:2px; }
-.compare-remove { border:none; background:rgba(196,81,31,0.2); color:#f0c4a8; border-radius:7px; padding:6px 8px; cursor:pointer; }
+.compare-badge { display:inline-block; margin-top:5px; padding:2px 8px; border-radius:20px; font-size:0.62rem; font-weight:800; letter-spacing:0.6px; text-transform:uppercase; }
+.compare-badge--low { background:var(--sage); color:#0f1a13; }
+.compare-badge--high { background:var(--rust); color:#2c1810; }
+.compare-remove { border:none; background:rgba(196,81,31,0.2); color:#f0c4a8; border-radius:7px; padding:6px 8px; cursor:pointer; flex-shrink:0; }
 .compare-line { display:flex; justify-content:space-between; gap:12px; font-size:0.78rem; padding:3px 0; }
 .compare-line span:first-child { color:rgba(232,200,122,0.62); }
 .compare-line strong { color:var(--cream); text-align:right; }
+.compare-line--diff { margin-top:6px; padding-top:7px; border-top:1px dashed rgba(232,200,122,0.18); }
+.compare-line--diff span:first-child { color:rgba(232,200,122,0.5); }
+.compare-line--diff strong { color:var(--rust); }
+.compare-line--diff.is-cheapest strong { color:var(--sage); }
 .compare-options { margin-top:8px; color:rgba(245,240,232,0.7); font-size:0.72rem; line-height:1.45; }
+.calc-compare-bar { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:14px 0 4px; }
+.calc-compare-btn {
+  -webkit-appearance:none; appearance:none; box-sizing:border-box; min-width:0;
+  display:flex; align-items:center; justify-content:center; gap:5px;
+  border:1.5px solid rgba(232,200,122,0.28); border-radius:9px; background:rgba(255,255,255,0.06);
+  color:var(--wheat); cursor:pointer; padding:11px 6px;
+  font-family:'DM Sans',-apple-system,sans-serif; font-size:0.78rem; font-weight:700; letter-spacing:0.2px;
+  text-align:center; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.calc-compare-btn:active { opacity:0.82; }
+.calc-compare-btn--view { background:var(--barn); border-color:var(--barn); color:var(--cream); }
+.calc-compare-btn .compare-count-badge { font-weight:800; opacity:0.9; }
 .cc-crm-trio {
   grid-column: 1 / -1;
   display: grid;
@@ -5403,6 +5431,11 @@ select:focus {
       </div><!-- /calc-price-deck-body -->
       </div><!-- /calcPriceDeck -->
 
+      <div class="calc-compare-bar">
+        <button type="button" class="calc-compare-btn" onclick="addCurrentQuoteToCompare()">+ Add to Compare</button>
+        <button type="button" class="calc-compare-btn calc-compare-btn--view" onclick="openComparePage()">View Compare<span class="compare-count-badge" id="compareCountBadge"></span></button>
+      </div>
+
       <!-- Bottom-sheet picker for options -->
       <div id="optionsSheetOverlay" class="opt-sheet-overlay" onclick="if(event.target===this)closeOptionsSheet()" aria-hidden="true"></div>
       <div id="optionsSheet" class="opt-sheet" role="dialog" aria-modal="true" aria-labelledby="optionsSheetTitle">
@@ -5982,8 +6015,6 @@ select:focus {
             </select>
           </label>
           <button type="button" class="quote-export-btn" onclick="copyEstimateTextToClipboard()">Copy estimate text</button>
-          <button type="button" class="quote-export-btn" onclick="addCurrentQuoteToCompare()">Compare</button>
-          <button type="button" class="quote-export-btn" onclick="openComparePage()">View comparisons <span id="compareCountBadge"></span></button>
         </div>
       </div>
 
@@ -8932,11 +8963,12 @@ select:focus {
       </div>
     </div>
     <div id="quoteShareFirebaseHint" style="display:none;font-size:0.72rem;color:rgba(232,200,122,0.55);margin:-4px 0 10px;line-height:1.35;">Set Firebase in Settings to load contacts from CRM.</div>
+    <div style="font-size:0.72rem;color:rgba(232,200,122,0.55);margin:-2px 0 10px;line-height:1.35;">Customer info is optional — leave everything blank to just share or download the PDF.</div>
     <div id="quoteShareFieldsWrap">
-      <div class="field-group"><label class="field-label">Name</label><input type="text" id="c_custName" placeholder="First Last"></div>
-      <div class="field-group"><label class="field-label">Email</label><input type="email" id="c_custEmail" placeholder="email@example.com"></div>
-      <div class="field-group"><label class="field-label">Phone</label><input type="tel" id="c_custPhone" placeholder="123-123-1234"></div>
-      <div class="field-group"><label class="field-label">Delivery street</label><input type="text" id="c_custAddress" placeholder="123 Main St" style="width:100%;box-sizing:border-box;"></div>
+      <div class="field-group"><label class="field-label">Name (optional)</label><input type="text" id="c_custName" placeholder="First Last"></div>
+      <div class="field-group"><label class="field-label">Email (optional)</label><input type="email" id="c_custEmail" placeholder="email@example.com"></div>
+      <div class="field-group"><label class="field-label">Phone (optional)</label><input type="tel" id="c_custPhone" placeholder="123-123-1234"></div>
+      <div class="field-group"><label class="field-label">Delivery street (optional)</label><input type="text" id="c_custAddress" placeholder="123 Main St" style="width:100%;box-sizing:border-box;"></div>
       <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-bottom:14px;">
         <div class="field-group" style="margin-bottom:0;"><label class="field-label">City</label><input type="text" id="c_custCity" placeholder="City" style="width:100%;box-sizing:border-box;"></div>
         <div class="field-group" style="margin-bottom:0;"><label class="field-label">State</label><input type="text" id="c_custState" placeholder="ST" maxlength="2" style="width:100%;box-sizing:border-box;text-transform:uppercase;"></div>
@@ -16261,14 +16293,36 @@ function renderComparePage(){
   var rows=loadComparisons();
   updateCompareCountBadge();
   if(!rows.length){
-    mount.innerHTML='<div style="padding:18px;text-align:center;border:1px dashed rgba(232,200,122,0.24);border-radius:10px;color:rgba(232,200,122,0.62);font-size:0.82rem;">No buildings added yet. Price a building and tap Compare.</div>';
+    mount.innerHTML='<div style="padding:18px;text-align:center;border:1px dashed rgba(232,200,122,0.24);border-radius:10px;color:rgba(232,200,122,0.62);font-size:0.82rem;">No buildings added yet. Price a building and tap "+ Add to Compare" on the calculator.</div>';
     return;
   }
-  mount.innerHTML=rows.map(function(row){
+  var sorted=rows.slice().sort(function(a,b){ return (Number(a.cashTotal)||0)-(Number(b.cashTotal)||0); });
+  var lowId=sorted[0].id, highId=sorted[sorted.length-1].id;
+  var lowTotal=Number(sorted[0].cashTotal)||0, highTotal=Number(sorted[sorted.length-1].cashTotal)||0;
+  var summary='';
+  if(sorted.length>1){
+    summary='<div class="compare-summary-banner">'+
+      '<div class="compare-summary-row"><span>Cheapest &mdash; '+compareEscape(sorted[0].typeName||'Building')+' ('+compareEscape(sorted[0].width+"'\u00d7"+sorted[0].length+"'")+')</span><strong>'+fmt(lowTotal)+'</strong></div>'+
+      '<div class="compare-summary-row"><span>Most expensive &mdash; '+compareEscape(sorted[sorted.length-1].typeName||'Building')+' ('+compareEscape(sorted[sorted.length-1].width+"'\u00d7"+sorted[sorted.length-1].length+"'")+')</span><strong>'+fmt(highTotal)+'</strong></div>'+
+      '<div class="compare-summary-diff">Most expensive is <span>'+fmt(highTotal-lowTotal)+'</span> more</div>'+
+      '</div>';
+  }
+  mount.innerHTML=summary+sorted.map(function(row){
     var opt=(row.options||[]).map(function(o){ return compareEscape(o.label)+' ('+fmt(o.amount||0)+')'; }).join(' · ');
     var totalRto=(Number(row.rtoMonthly)||0)+(Number(row.rtoMonthlyTax)||0);
-    return '<div class="compare-card"><div class="compare-card-head"><div><div class="compare-card-title">'+compareEscape(row.typeName||'Building')+'</div>'+
-      '<div class="compare-card-sub">'+compareEscape(row.width+"' × "+row.length+"'")+'</div></div>'+
+    var isLow=sorted.length>1&&row.id===lowId;
+    var isHigh=sorted.length>1&&row.id===highId&&lowId!==highId;
+    var cardCls='compare-card'+(isLow?' compare-card--low':'')+(isHigh?' compare-card--high':'');
+    var badge=isLow?'<span class="compare-badge compare-badge--low">Cheapest</span>':(isHigh?'<span class="compare-badge compare-badge--high">Most expensive</span>':'');
+    var diffLine='';
+    if(sorted.length>1){
+      var diff=(Number(row.cashTotal)||0)-lowTotal;
+      diffLine=diff<=0
+        ? '<div class="compare-line compare-line--diff is-cheapest"><span>vs. cheapest</span><strong>Cheapest of the group</strong></div>'
+        : '<div class="compare-line compare-line--diff"><span>vs. cheapest</span><strong>+'+fmt(diff)+'</strong></div>';
+    }
+    return '<div class="'+cardCls+'"><div class="compare-card-head"><div class="compare-card-title-wrap"><div class="compare-card-title">'+compareEscape(row.typeName||'Building')+'</div>'+
+      '<div class="compare-card-sub">'+compareEscape(row.width+"' × "+row.length+"'")+'</div>'+badge+'</div>'+
       '<button type="button" class="compare-remove" onclick="removeComparison(\''+compareEscape(row.id)+'\')">Remove</button></div>'+
       '<div class="compare-line"><span>List price</span><strong>'+fmt(row.listPrice||0)+'</strong></div>'+
       (row.saleAmount>0?'<div class="compare-line"><span>Sale ('+compareEscape(row.salePct)+'%)</span><strong>-'+fmt(row.saleAmount)+'</strong></div>':'')+
@@ -16276,6 +16330,7 @@ function renderComparePage(){
       '<div class="compare-line"><span>Tax</span><strong>'+fmt(row.taxAmount||0)+'</strong></div>'+
       '<div class="compare-line"><span>Cash total</span><strong>'+fmt(row.cashTotal||0)+'</strong></div>'+
       (row.rtoMonthly>0?'<div class="compare-line"><span>RTO '+compareEscape(row.rtoMonths)+' mo</span><strong>'+fmt(totalRto)+'/mo incl. tax</strong></div>':'')+
+      diffLine+
       '<div class="compare-options"><strong>Options:</strong> '+(opt||'None')+'</div></div>';
   }).join('');
 }
@@ -20070,8 +20125,6 @@ async function quoteShareLogActivityAfterSend(method){
 }
 
 async function quoteShareCommit(){
-  var name=cv('c_custName'), phone=cv('c_custPhone'), email=cv('c_custEmail');
-  if(!name&&!phone&&!email){ showToast('Enter customer name, phone, or email'); return; }
   var btn=document.getElementById('quoteShareCommitBtn');
   if(btn){ btn.disabled=true; btn.textContent='Preparing\u2026'; }
   try{
