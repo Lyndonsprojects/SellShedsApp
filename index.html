@@ -345,6 +345,10 @@ select option { background:var(--earth); color:var(--cream); }
 #screenCRM .crm-lead-card-name { font-size:0.86rem; font-weight:700; color:var(--wheat); }
 #screenCRM .crm-status-chip,
 #screenCRMDetail .crm-status-chip { font-size:0.62rem; letter-spacing:0.5px; text-transform:uppercase; padding:3px 7px; border-radius:999px; background:rgba(232,200,122,0.15); color:var(--wheat); flex-shrink:0; }
+#screenCRM .crm-status-chip.status-quoted,
+#screenCRMDetail .crm-status-chip.status-quoted { background:rgba(122,158,200,0.28); color:#cfe1f2; }
+#screenCRM .crm-status-chip.status-negotiation,
+#screenCRMDetail .crm-status-chip.status-negotiation { background:rgba(232,158,80,0.28); color:#f3d3a3; }
 #screenCRM .crm-status-chip.status-ordered,
 #screenCRMDetail .crm-status-chip.status-ordered { background:rgba(122,158,135,0.28); color:#c8e6d4; }
 #screenCRM .crm-status-chip.status-delivered,
@@ -483,6 +487,18 @@ select option { background:var(--earth); color:var(--cream); }
 #screenCRM .crm-muted,
 #screenCRMDetail .crm-muted,
 #screenCRMNew .crm-muted { font-size:0.72rem; color:rgba(232,200,122,0.65); }
+#screenCRM .crm-dash-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:12px; }
+#screenCRM .crm-dash-stat { border:1.5px solid rgba(232,200,122,0.22); border-radius:10px; background:rgba(255,255,255,0.04); padding:10px 6px; text-align:center; cursor:pointer; }
+#screenCRM .crm-dash-stat-num { font-size:1.15rem; font-weight:800; color:var(--wheat); line-height:1.1; }
+#screenCRM .crm-dash-stat-label { font-size:0.6rem; letter-spacing:0.4px; text-transform:uppercase; color:rgba(245,240,232,0.7); margin-top:3px; line-height:1.25; }
+#screenCRM .crm-dash-stat-warn .crm-dash-stat-num { color:#f0a68a; }
+#screenCRM .crm-dash-chips { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+#screenCRM .crm-dash-chip { font-size:0.68rem; padding:5px 10px; }
+#screenCRM .crm-dash-src { border:1.5px solid rgba(232,200,122,0.2); border-radius:10px; background:rgba(255,255,255,0.04); padding:10px 12px; margin-bottom:14px; }
+#screenCRM .crm-dash-src-title { font-size:0.62rem; letter-spacing:0.6px; text-transform:uppercase; color:rgba(232,200,122,0.6); margin-bottom:6px; }
+#screenCRM .crm-dash-src-row { display:flex; justify-content:space-between; font-size:0.78rem; color:var(--cream); padding:4px 0; border-bottom:1px solid rgba(232,200,122,0.1); }
+#screenCRM .crm-dash-src-row:last-child { border-bottom:none; }
+@media (max-width:380px){ #screenCRM .crm-dash-stats { grid-template-columns:repeat(2,1fr); } }
 #screenCRMNew .crm-activity-wrap { border:1.5px solid rgba(232,200,122,0.2); border-radius:10px; background:rgba(255,255,255,0.04); padding:10px 12px; max-height:220px; overflow:auto; }
 .inv-card-sum-price { font-size:0.76rem; color:var(--wheat); font-weight:700; margin-top:3px; }
 #invAdPromoModalOverlay { z-index:126; }
@@ -491,12 +507,14 @@ select option { background:var(--earth); color:var(--cream); }
   display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;
 }
 #screenContacts .contacts-chip,
-#screenFollowups .contacts-chip {
+#screenFollowups .contacts-chip,
+#screenCRM .contacts-chip {
   background:rgba(255,255,255,0.06); border:1.5px solid rgba(232,200,122,0.3); border-radius:20px;
   padding:6px 12px; font-size:0.72rem; font-weight:600; color:var(--cream); cursor:pointer; user-select:none;
 }
 #screenContacts .contacts-chip.active,
-#screenFollowups .contacts-chip.active {
+#screenFollowups .contacts-chip.active,
+#screenCRM .contacts-chip.active {
   background:var(--barn); border-color:var(--barn); color:var(--wheat);
 }
 #screenContacts .crm-list,
@@ -6534,12 +6552,15 @@ select:focus {
     <div class="page-title">Leads</div>
     <div class="page-sub">Tap a lead for details. Use the Actions menu on each card.</div>
 
+    <div id="crm_dashboard"></div>
+
     <div class="field-group">
       <label class="field-label">Search</label>
       <input type="text" id="crm_search" placeholder="Name, phone, email, serial..." oninput="crmRenderLeadList()">
     </div>
-    <div style="display:flex;gap:8px;margin-bottom:10px;">
+    <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
       <button class="btn-secondary" style="margin-top:0;" onclick="crmStartNewLead()">+ New Lead</button>
+      <button class="btn-secondary" style="margin-top:0;" onclick="openCaptureLinks()">📎 Capture Links</button>
       <button class="btn-secondary" style="margin-top:0;" onclick="crmRefreshLeads()">Refresh</button>
     </div>
 
@@ -6611,6 +6632,8 @@ select:focus {
       <div class="field-group"><label class="field-label">Status</label>
         <select id="crm_status">
           <option value="interested">Interested</option>
+          <option value="quoted">Quoted</option>
+          <option value="negotiation">Negotiation</option>
           <option value="ordered">Ordered</option>
           <option value="delivered">Delivered</option>
           <option value="lost">Lost</option>
@@ -6620,7 +6643,7 @@ select:focus {
     <div class="field-group"><label class="field-label">Attach inventory (optional)</label>
       <select id="crm_invPick" onchange="crmInventoryPickChanged()"><option value="">— Pick inventory or type below —</option></select>
     </div>
-    <div class="field-group"><label class="field-label">Next follow-up date</label><input type="date" id="crm_nextFollowUpDate"></div>
+    <div class="field-group"><label class="field-label">Next follow-up (date &amp; time)</label><input type="datetime-local" id="crm_nextFollowUpAt"></div>
     <div class="field-group"><label class="field-label">Building interest</label><input type="text" id="crm_building" placeholder="10x16 Lofted Barn"></div>
     <div class="field-group"><label class="field-label">Conversation channel</label>
       <select id="crm_channel">
@@ -6637,6 +6660,44 @@ select:focus {
     <div class="field-group"><label class="field-label">Notes</label><textarea id="crm_notes" rows="3" placeholder="General lead notes"></textarea></div>
   </div>
 </div><!-- end screenCRMNew -->
+
+<div class="screen" id="screenCaptureLinks">
+  <div class="header">
+    <button type="button" class="back-btn" onclick="goTo('screenCRM')" aria-label="Back">&#8592;</button>
+    <div class="header-title">Capture Links</div>
+    <div class="header-spacer" aria-hidden="true"></div>
+  </div>
+  <div style="padding:16px;padding-bottom:100px;">
+    <div class="page-title">QR &amp; link generator</div>
+    <div class="page-sub">Pick a form and where you're sharing it. Anyone who submits through this link is tagged with that source automatically.</div>
+
+    <div class="field-group"><label class="field-label">Form to send them to</label>
+      <select id="cap_formType"></select>
+    </div>
+    <div class="field-group"><label class="field-label">Channel (tags the lead source)</label>
+      <select id="cap_channel"></select>
+    </div>
+    <div class="field-group"><label class="field-label">Label (optional)</label>
+      <input type="text" id="cap_label" placeholder='e.g. "Spring yard sign"' maxlength="60">
+    </div>
+    <button type="button" class="btn-primary" onclick="crmGenerateCaptureLink()">Generate link &amp; QR code</button>
+
+    <div id="cap_resultWrap" style="display:none;margin-top:16px;">
+      <div class="crm-detail-card">
+        <div class="crm-detail-sum-row"><span class="lbl">Link</span><span class="val" id="cap_resultUrl" style="word-break:break-all;"></span></div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+          <button type="button" class="btn-secondary" style="margin-top:0;" onclick="crmCopyCaptureResultLink()">Copy link</button>
+          <button type="button" class="btn-secondary" style="margin-top:0;" onclick="crmTextCaptureResultLink()">Text link</button>
+          <button type="button" class="btn-secondary" style="margin-top:0;" onclick="crmDownloadCaptureQr()">Download QR</button>
+        </div>
+        <div id="cap_qrPreview" style="margin-top:14px;display:flex;justify-content:center;"></div>
+      </div>
+    </div>
+
+    <div class="section-head">Recent links</div>
+    <div class="crm-list" id="cap_recentList"></div>
+  </div>
+</div><!-- end screenCaptureLinks -->
 
 <!-- ============================================================
      SCREEN: APPOINTMENTS
@@ -6726,6 +6787,8 @@ select:focus {
     <div class="contacts-filter-row" id="contacts_filterRow">
       <span class="contacts-chip active" data-filter="all" onclick="contactsSetFilter('all')">All</span>
       <span class="contacts-chip" data-filter="interested" onclick="contactsSetFilter('interested')">Interested</span>
+      <span class="contacts-chip" data-filter="quoted" onclick="contactsSetFilter('quoted')">Quoted</span>
+      <span class="contacts-chip" data-filter="negotiation" onclick="contactsSetFilter('negotiation')">Negotiation</span>
       <span class="contacts-chip" data-filter="ordered" onclick="contactsSetFilter('ordered')">Ordered</span>
       <span class="contacts-chip" data-filter="delivered" onclick="contactsSetFilter('delivered')">Delivered</span>
       <span class="contacts-chip" data-filter="lost" onclick="contactsSetFilter('lost')">Lost</span>
@@ -8446,6 +8509,8 @@ select:focus {
     <div class="field-group"><label class="field-label">RTOStreamline Password</label><input type="password" id="set_rtostreamlinePassword" placeholder="Saved locally — not synced to cloud" autocomplete="off"></div>
     <div class="setup-note" style="margin-top:-4px;margin-bottom:12px;">Optional login reference for RTOStreamline. Stored on this device only (not synced to cloud).</div>
     <div class="field-group"><label class="field-label">Interest URL</label><input type="url" id="set_interestUrl" placeholder="https://..."></div>
+    <div class="field-group"><label class="field-label">Capture Link Base URL</label><input type="url" id="set_captureLinkBaseUrl" placeholder="https://lyndonsprojects.github.io/SellShedsApp/GemStateSheds-App.html"></div>
+    <div class="setup-note" style="margin-top:-4px;margin-bottom:12px;">The web address customers land on when they scan a QR code or tap a link from <strong>CRM → Capture Links</strong>. Leave blank to use this page's own address.</div>
     <div class="field-group"><label class="field-label">Google Maps API Key</label><input type="text" id="set_mapsApiKey" placeholder="Used for mileage calculator"></div>
 
     <!-- CRM -->
@@ -9138,6 +9203,188 @@ var fbLeadsUnsub=null;
 var fbAppointmentsUnsub=null;
 var crmActivitiesUnsub=null;
 var crmState={leads:[],selectedLeadId:'',activities:[],intentNewLead:false};
+var crmListState={statusFilter:'all'};
+var crmPendingCapture=null;
+var CRM_CAPTURE_CHANNELS=[
+  {key:'website',label:'Website / Landing Page'},
+  {key:'facebook_ad',label:'Facebook Lead Ad'},
+  {key:'facebook_marketplace',label:'Facebook Marketplace'},
+  {key:'instagram',label:'Instagram'},
+  {key:'google_ad',label:'Google Ad'},
+  {key:'qr_yard_sign',label:'QR Code / Yard Sign'},
+  {key:'sms_text',label:'SMS / Text Link'},
+  {key:'home_show',label:'Home Show / Event'},
+  {key:'referral',label:'Walk-in / Referral'},
+  {key:'other',label:'Other'}
+];
+var CRM_CAPTURE_FORM_TYPES=[
+  {key:'interest',label:'General Interest'},
+  {key:'purchase',label:'Cash Sale (Purchase)'},
+  {key:'rto',label:'Rent-To-Own (RTO)'}
+];
+var CRM_SOURCE_LABELS={manual:'Manual entry',purchase:'Purchase form',rto:'RTO form',interest:'Interest form',inventorySold:'Inventory sale',calculator:'Price calculator',fullCalc:'Full quote calculator'};
+function crmCaptureChannelLabel(key){
+  var found=CRM_CAPTURE_CHANNELS.find(function(c){return c.key===key;});
+  return found?found.label:'';
+}
+function crmFormTypeLabel(key){
+  var found=CRM_CAPTURE_FORM_TYPES.find(function(c){return c.key===key;});
+  return found?found.label:'';
+}
+function crmSourceDisplayLabel(lead){
+  if(!lead) return 'Manual entry';
+  var raw=String(lead.source||'manual');
+  var chLabel=crmCaptureChannelLabel(raw);
+  var base=chLabel||CRM_SOURCE_LABELS[raw]||raw.replace(/_/g,' ');
+  var extra=[];
+  if(chLabel&&lead.formType) extra.push(crmFormTypeLabel(lead.formType)||lead.formType);
+  if(lead.captureLabel) extra.push(lead.captureLabel);
+  return extra.length?(base+' · '+extra.join(' · ')):base;
+}
+function crmCaptureLinkBaseUrl(){
+  var s=loadSettings();
+  var u=(s.captureLinkBaseUrl||'').trim();
+  if(u) return u.replace(/[?#].*$/,'');
+  try{ return window.location.href.split('?')[0].split('#')[0]; }catch(_e){ return ''; }
+}
+function crmBuildCaptureLink(formType,channelKey,label){
+  var base=crmCaptureLinkBaseUrl();
+  if(!base||!formType||!channelKey) return '';
+  var params=['form='+encodeURIComponent(formType),'src='+encodeURIComponent(channelKey)];
+  if(label) params.push('label='+encodeURIComponent(label));
+  return base+(base.indexOf('?')>=0?'&':'?')+params.join('&');
+}
+var CRM_CAPTURE_LINKS_KEY='gss_captureLinks_v1';
+function crmCaptureLinksLoad(){
+  try{
+    var rows=JSON.parse(localStorage.getItem(CRM_CAPTURE_LINKS_KEY)||'[]');
+    return Array.isArray(rows)?rows:[];
+  }catch(_e){ return []; }
+}
+function crmCaptureLinksSave(rows){
+  try{ localStorage.setItem(CRM_CAPTURE_LINKS_KEY,JSON.stringify((rows||[]).slice(0,25))); }catch(_e){}
+}
+function crmCaptureLinksAdd(entry){
+  var rows=crmCaptureLinksLoad().filter(function(r){return r.url!==entry.url;});
+  rows.unshift(entry);
+  crmCaptureLinksSave(rows);
+}
+function crmCaptureHandleIncomingUrl(){
+  try{
+    var params=new URLSearchParams(window.location.search);
+    var form=(params.get('form')||'').trim().toLowerCase();
+    var src=(params.get('src')||'').trim().toLowerCase();
+    var label=(params.get('label')||'').trim();
+    if(!form&&!src) return;
+    crmPendingCapture={form:form,src:src,label:label,capturedAt:Date.now()};
+    try{
+      var url=new URL(window.location.href);
+      ['form','src','label'].forEach(function(k){url.searchParams.delete(k);});
+      window.history.replaceState({},'',url.toString());
+    }catch(_eUrl){}
+    if(['purchase','rto','interest'].indexOf(form)>=0){
+      setTimeout(function(){ try{ goTo({purchase:'screenPurchase',rto:'screenRTO',interest:'screenInterest'}[form]); }catch(_eGo){} },80);
+    }
+  }catch(_e){}
+}
+function crmCaptureFormTypeOptionsHtml(){
+  return CRM_CAPTURE_FORM_TYPES.map(function(f){return '<option value="'+f.key+'">'+crmEsc(f.label)+'</option>';}).join('');
+}
+function crmCaptureChannelOptionsHtml(){
+  return CRM_CAPTURE_CHANNELS.map(function(c){return '<option value="'+c.key+'">'+crmEsc(c.label)+'</option>';}).join('');
+}
+var crmCaptureLastResult=null;
+function openCaptureLinks(){
+  goTo('screenCaptureLinks');
+}
+function captureLinksInit(){
+  var ft=document.getElementById('cap_formType');
+  if(ft&&!ft.options.length) ft.innerHTML=crmCaptureFormTypeOptionsHtml();
+  var ch=document.getElementById('cap_channel');
+  if(ch&&!ch.options.length) ch.innerHTML=crmCaptureChannelOptionsHtml();
+  var wrap=document.getElementById('cap_resultWrap');
+  if(wrap) wrap.style.display='none';
+  crmRenderRecentCaptureLinks();
+}
+function crmGenerateCaptureLink(){
+  var formType=(document.getElementById('cap_formType')||{}).value||'interest';
+  var channel=(document.getElementById('cap_channel')||{}).value||'other';
+  var label=((document.getElementById('cap_label')||{}).value||'').trim();
+  var url=crmBuildCaptureLink(formType,channel,label);
+  if(!url){ showToast('Set a Capture Link Base URL in Settings → Links & Cloud'); return; }
+  crmCaptureLastResult={url:url,formType:formType,channel:channel,label:label};
+  var urlEl=document.getElementById('cap_resultUrl');
+  if(urlEl) urlEl.textContent=url;
+  var wrap=document.getElementById('cap_resultWrap');
+  if(wrap) wrap.style.display='block';
+  crmRenderCaptureQr(url);
+  crmCaptureLinksAdd({url:url,formType:formType,channel:channel,label:label,createdAt:new Date().toISOString()});
+  crmRenderRecentCaptureLinks();
+  showToast('Link generated');
+}
+function crmRenderCaptureQr(url){
+  var mount=document.getElementById('cap_qrPreview');
+  if(!mount) return;
+  mount.innerHTML='';
+  try{
+    new QRCode(mount,{text:url,width:170,height:170,correctLevel:QRCode.CorrectLevel.M});
+  }catch(e){
+    mount.innerHTML='<span style="font-size:0.7rem;color:rgba(232,200,122,0.5);">QR preview unavailable</span>';
+  }
+}
+function crmCopyCaptureResultLink(){
+  if(!crmCaptureLastResult){ showToast('Generate a link first'); return; }
+  copyUrlToClipboard(crmCaptureLastResult.url);
+}
+function crmTextCaptureResultLink(){
+  if(!crmCaptureLastResult){ showToast('Generate a link first'); return; }
+  var msg="Here's the link: "+crmCaptureLastResult.url;
+  var a=document.createElement('a');
+  a.href='sms:?body='+encodeURIComponent(msg);
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+function crmDownloadCaptureQr(){
+  if(!crmCaptureLastResult){ showToast('Generate a link first'); return; }
+  ssGetQRDataUrl(crmCaptureLastResult.url,function(dataUrl){
+    if(!dataUrl){ showToast('QR download unavailable'); return; }
+    var a=document.createElement('a');
+    a.href=dataUrl; a.download='capture-link-qr.png';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  });
+}
+function crmRenderRecentCaptureLinks(){
+  var wrap=document.getElementById('cap_recentList');
+  if(!wrap) return;
+  var rows=crmCaptureLinksLoad();
+  if(!rows.length){ wrap.innerHTML='<div style="padding:12px;color:rgba(232,200,122,0.7);font-size:0.8rem;">No links generated yet.</div>'; return; }
+  wrap.innerHTML=rows.map(function(r,i){
+    var title=r.label||((crmFormTypeLabel(r.formType)||r.formType)+' · '+(crmCaptureChannelLabel(r.channel)||r.channel));
+    return '<div class="crm-lead-card">'+
+      '<div class="crm-lead-card-head"><div class="crm-lead-card-name">'+crmEsc(title)+'</div></div>'+
+      '<div class="crm-muted" style="margin-top:4px;word-break:break-all;">'+crmEsc(r.url)+'</div>'+
+      '<div style="display:flex;gap:8px;margin-top:8px;">'+
+        '<button type="button" class="btn-secondary" style="margin-top:0;flex:1;" onclick="crmReuseCaptureLink('+i+')">Reuse</button>'+
+        '<button type="button" class="btn-secondary" style="margin-top:0;flex:1;" onclick="copyUrlToClipboard(\''+crmEscAttr(r.url)+'\')">Copy</button>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+function crmEscAttr(t){
+  return String(t||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+}
+function crmReuseCaptureLink(i){
+  var rows=crmCaptureLinksLoad();
+  var r=rows[i];
+  if(!r) return;
+  crmCaptureLastResult=r;
+  var urlEl=document.getElementById('cap_resultUrl'); if(urlEl) urlEl.textContent=r.url;
+  var wrap=document.getElementById('cap_resultWrap'); if(wrap) wrap.style.display='block';
+  crmRenderCaptureQr(r.url);
+  var ft=document.getElementById('cap_formType'); if(ft) ft.value=r.formType;
+  var ch=document.getElementById('cap_channel'); if(ch) ch.value=r.channel;
+  var lb=document.getElementById('cap_label'); if(lb) lb.value=r.label||'';
+  window.scrollTo(0,0);
+}
 var crmPurgeLastRunMs=0;
 var contactsListState={filter:'all'};
 var SETTINGS_LOCAL_KEY='gss_settings';
@@ -9495,17 +9742,22 @@ async function invUploadPhotoToDrive(dataUrl,kind,serialNumber){
     webViewLink:out&&out.webViewLink?out.webViewLink:url
   };
 }
+var CRM_STATUS_ORDER=['interested','quoted','negotiation','ordered','delivered'];
 function crmNormalizeStatus(s){
-  var v=String(s||'').toLowerCase();
-  if(v==='interested'||v==='ordered'||v==='delivered'||v==='lost') return v;
+  var v=String(s||'').toLowerCase().trim();
+  if(v==='interested'||v==='quoted'||v==='negotiation'||v==='ordered'||v==='delivered'||v==='lost') return v;
   if(v==='won') return 'ordered';
-  if(v==='new'||v==='contacted'||v==='quoted'||v==='') return 'interested';
+  if(v==='negotiating'||v==='in negotiation') return 'negotiation';
+  if(v==='contacted') return 'interested';
+  if(v==='new'||v==='') return 'interested';
   return 'interested';
 }
 function crmStatusToFirestore(s){
   return crmNormalizeStatus(s);
 }
 function crmStatusDisplayLabel(norm){
+  if(norm==='quoted') return 'Quoted';
+  if(norm==='negotiation') return 'Negotiation';
   if(norm==='ordered') return 'Ordered';
   if(norm==='delivered') return 'Delivered';
   if(norm==='lost') return 'Lost';
@@ -9690,7 +9942,13 @@ function contactsRenderList(){
 function followupsRenderList(){
   var wrap=document.getElementById('followups_leadList');
   if(!wrap) return;
-  var leads=(crmState.leads||[]).slice().sort(function(a,b){return leadTouchMs(b)-leadTouchMs(a);});
+  var leads=(crmState.leads||[]).slice().sort(function(a,b){
+    var da=crmFollowUpDate(a), db=crmFollowUpDate(b);
+    if(da&&db) return da.getTime()-db.getTime();
+    if(da&&!db) return -1;
+    if(db&&!da) return 1;
+    return leadTouchMs(b)-leadTouchMs(a);
+  });
   if(!leads.length){
     wrap.innerHTML='<div style="padding:12px;color:rgba(232,200,122,0.7);font-size:0.8rem;">No leads yet.</div>';
     return;
@@ -9699,9 +9957,13 @@ function followupsRenderList(){
   wrap.innerHTML=leads.slice(0,60).map(function(lead){
     var id=esc(lead.id);
     var st=crmStatusChipLabel(lead);
+    var fu=crmFollowUpDisplay(lead);
+    var overdue=crmFollowUpIsOverdue(lead);
+    var fuLine=fu!=='—'?('<div style="font-size:0.72rem;margin-top:2px;color:'+(overdue?'#f0a68a':'rgba(232,200,122,0.85)')+';font-weight:700;">'+(overdue?'⚠ Overdue — ':'Follow up ')+esc(fu)+'</div>'):'';
     return '<div class="crm-lead-item" onclick="navigateToLeadInCrm(\''+id+'\')">'+
       '<div style="font-size:0.84rem;font-weight:700;color:var(--wheat);">'+esc((lead.contact&&lead.contact.name)||'Unnamed')+'</div>'+
       '<div style="font-size:0.72rem;color:rgba(245,240,232,0.75);margin-top:2px;">'+st+' · '+esc(formatLeadTouchShort(lead))+'</div>'+
+      fuLine+
       '<div class="crm-muted" style="margin-top:2px;">'+esc((lead.contact&&lead.contact.phone)||'')+'</div>'+
     '</div>';
   }).join('');
@@ -9811,6 +10073,36 @@ function crmCopyRtoLink(){
     navigator.clipboard.writeText(u).then(function(){ showToast('RTO link copied'); },function(){ legacyCopy(u); });
   }else legacyCopy(u);
 }
+function crmGetFormLinkUrl(formType){
+  var s=loadSettings();
+  var direct=(s[formType+'Url']||'').trim();
+  if(direct) return direct;
+  return crmBuildCaptureLink(formType,'direct_send','');
+}
+function crmComposeFormLinkSmsForLead(lead,formType){
+  var digits=crmLeadPhoneDigits(lead);
+  if(digits.length<10){showToast('Lead needs a phone number.');return;}
+  var to=(digits.length===11&&digits.charAt(0)==='1')?digits:((digits.length===10)?'1'+digits:digits);
+  var url=crmGetFormLinkUrl(formType);
+  if(!url){ showToast('Set a '+(formType==='purchase'?'Purchase':'RTO')+' link in Settings → Links & Cloud'); return; }
+  var leadName=(lead.contact&&lead.contact.name||'').trim();
+  var first=leadName?leadName.split(/\s+/)[0]:'';
+  var formLabel=formType==='purchase'?'purchase (cash sale) form':'Rent-To-Own application';
+  var msg=(first?('Hi '+first+' — '):'Hi — ')+'Please complete our '+formLabel+': '+url;
+  var a=document.createElement('a');
+  a.href='sms:'+to+'?body='+encodeURIComponent(msg);
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  void (async function(){
+    try{
+      if(await firebaseEnsureAuthed()) await crmAddActivity(lead.id,{channel:'sms',direction:'outbound',body:'Sent '+formLabel+' link: '+url,createdBy:loadSettings().contactName||'sales'});
+    }catch(_e){}
+  })();
+}
+function crmCopyFormLink(formType){
+  var url=crmGetFormLinkUrl(formType);
+  if(!url){ showToast('Set a '+(formType==='purchase'?'Purchase':'RTO')+' link in Settings → Links & Cloud'); return; }
+  copyUrlToClipboard(url);
+}
 function crmComposeSmsToLead(){
   var lead=crmGetLeadById(crmState.selectedLeadId);
   if(!lead){ showToast('Select a lead first'); return; }
@@ -9843,6 +10135,7 @@ function crmOnLeadsDataUpdated(){
     }
   }
   crmRenderLeadList();
+  try{ crmRenderDashboard(); }catch(_eDash){}
   leadsSidePanelsRefresh();
   try{ renderHomeDashboard(); }catch(_e){}
   try{ if(typeof calcCurrentPage==='number'&&calcCurrentPage===1) populateQuoteShareLeadPickerIfOpen(); }catch(_eQ){}
@@ -9894,6 +10187,8 @@ function crmDetailToolbarHtml(leadId){
       '<select class="crm-action-select" aria-label="Update status" onchange="crmDetailStatusPick(this)">'+
         '<option value="">Update status…</option>'+
         '<option value="interested">Interested</option>'+
+        '<option value="quoted">Quoted</option>'+
+        '<option value="negotiation">Negotiation</option>'+
         '<option value="ordered">Ordered</option>'+
         '<option value="delivered">Delivered</option>'+
         '<option value="lost">Lost</option>'+
@@ -9901,7 +10196,12 @@ function crmDetailToolbarHtml(leadId){
       '<select class="crm-action-select" aria-label="More actions" onchange="crmDetailMorePick(this)">'+
         '<option value="">More actions…</option>'+
         '<option value="intake">Send intake form</option>'+
+        '<option value="purchaseSms">Send purchase link (SMS)</option>'+
+        '<option value="purchaseCopy">Copy purchase link</option>'+
+        '<option value="rtoSms">Send RTO link (SMS)</option>'+
         '<option value="rto">Copy RTO link</option>'+
+        '<option value="reminder">Set follow-up reminder</option>'+
+        '<option value="calendar">Add reminder to calendar</option>'+
         '<option value="note">Add quick note</option>'+
       '</select>'+
     '</div>'+
@@ -9928,14 +10228,22 @@ function crmActionSelectHtml(leadId){
   html+='<option value="text">Text lead</option>';
   html+='<option value="email">Email lead</option>';
   html+='<option value="call">Call lead</option>';
+  html+='<optgroup label="Forms">';
   html+='<option value="intake">Send intake form (SMS)</option>';
+  html+='<option value="purchaseSms">Send purchase link (SMS)</option>';
+  html+='<option value="purchaseCopy">Copy purchase link</option>';
+  html+='<option value="rtoSms">Send RTO link (SMS)</option>';
   html+='<option value="rto">Copy RTO link</option>';
+  html+='</optgroup>';
   html+='<optgroup label="Status">';
   html+='<option value="status:interested">Mark interested</option>';
+  html+='<option value="status:quoted">Mark quoted</option>';
+  html+='<option value="status:negotiation">Mark in negotiation</option>';
   html+='<option value="status:ordered">Mark ordered</option>';
   html+='<option value="status:delivered">Mark delivered</option>';
   html+='<option value="status:lost">Mark lost</option>';
   html+='</optgroup>';
+  html+='<option value="reminder">Set follow-up reminder</option>';
   html+='<option value="note">Add quick note</option>';
   html+='<option value="delete">Delete lead</option>';
   html+='</select>';
@@ -9949,6 +10257,8 @@ function crmRunListAction(leadId, action){
     return;
   }
   if(action==='note'){ crmQuickNote(leadId); return; }
+  if(action==='reminder'){ crmPromptSetReminder(leadId); return; }
+  if(action==='calendar'){ crmAddFollowUpToCalendar(leadId); return; }
   if(action==='delete'){ void crmDeleteLeadById(leadId); return; }
   if(!lead){ showToast('Lead not found — refresh'); return; }
   if(action==='text') crmComposeSmsForLead(lead);
@@ -9956,6 +10266,9 @@ function crmRunListAction(leadId, action){
   else if(action==='call') crmComposeCallForLead(lead);
   else if(action==='intake') crmComposeIntakeSmsForLead(lead);
   else if(action==='rto') crmCopyRtoLink();
+  else if(action==='rtoSms') crmComposeFormLinkSmsForLead(lead,'rto');
+  else if(action==='purchaseSms') crmComposeFormLinkSmsForLead(lead,'purchase');
+  else if(action==='purchaseCopy') crmCopyFormLink('purchase');
 }
 function crmListActionPick(sel,leadId){
   var v=sel?sel.value:'';
@@ -10046,8 +10359,10 @@ function crmRenderDetailView(){
   var building=(lead.buildingInterest&&lead.buildingInterest.summary)||'—';
   var channel=crmChannelDisplayLabel(lead.conversation&&lead.conversation.channel);
   var notes=lead.notes||'—';
-  var source=String(lead.source||'manual').replace(/_/g,' ');
+  var source=crmSourceDisplayLabel(lead);
   var touch=formatLeadTouchShort(lead);
+  var followUp=crmFollowUpDisplay(lead);
+  if(followUp!=='—'&&crmFollowUpIsOverdue(lead)) followUp+=' (overdue)';
   mount.innerHTML=
     '<div class="crm-detail-card">'+
       '<div class="crm-detail-card-head">'+
@@ -10060,6 +10375,7 @@ function crmRenderDetailView(){
       crmDetailSumRow('Channel',channel)+
       crmDetailSumRow('Notes',notes)+
       crmDetailSumRow('Source',source)+
+      crmDetailSumRow('Follow-up',followUp)+
       crmDetailSumRow('Last touch',touch)+
     '</div>'+
     crmDetailToolbarHtml(lead.id);
@@ -10111,7 +10427,7 @@ async function followupsInit(){
 }
 
 function crmClearLeadForm(){
-  ['crm_name','crm_phone','crm_email','crm_building','crm_notes','crm_nextFollowUpDate'].forEach(function(id){
+  ['crm_name','crm_phone','crm_email','crm_building','crm_notes','crm_nextFollowUpAt'].forEach(function(id){
     var el=document.getElementById(id);
     if(el) el.value='';
   });
@@ -10130,6 +10446,108 @@ function crmStartNewLead(){
   crmClearLeadForm();
   goTo('screenCRMNew');
 }
+function crmFollowUpRawValue(lead){
+  return (lead&&(lead.nextFollowUpAt||lead.nextFollowUpDate))||'';
+}
+function crmFollowUpDate(lead){
+  var v=crmFollowUpRawValue(lead);
+  if(!v) return null;
+  if(v&&typeof v.toDate==='function') v=v.toDate();
+  var d=new Date(v);
+  return isFinite(d.getTime())?d:null;
+}
+function crmFollowUpHasTime(lead){
+  return /T\d{2}:\d{2}/.test(String(crmFollowUpRawValue(lead)));
+}
+function crmFollowUpInputValue(lead){
+  var v=crmFollowUpRawValue(lead);
+  if(!v) return '';
+  var m=String(v).match(/^(\d{4}-\d{2}-\d{2})$/);
+  if(m) return m[1]+'T09:00';
+  var d=crmFollowUpDate(lead);
+  if(!d) return '';
+  var pad=function(n){return String(n).padStart(2,'0');};
+  return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T'+pad(d.getHours())+':'+pad(d.getMinutes());
+}
+function crmFollowUpDisplay(lead){
+  var d=crmFollowUpDate(lead);
+  if(!d) return '—';
+  var dateLabel=d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  if(!crmFollowUpHasTime(lead)) return dateLabel;
+  return dateLabel+' · '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+}
+function crmFollowUpIsOverdue(lead){
+  var d=crmFollowUpDate(lead);
+  if(!d) return false;
+  return d.getTime()<Date.now();
+}
+function crmBuildFollowUpIcsBlob(lead){
+  var d=crmFollowUpDate(lead);
+  if(!d) return null;
+  var end=new Date(d.getTime()+1800000);
+  var pad=function(n){return String(n).padStart(2,'0');};
+  function fmtZ(dt){return dt.getUTCFullYear()+pad(dt.getUTCMonth()+1)+pad(dt.getUTCDate())+'T'+pad(dt.getUTCHours())+pad(dt.getUTCMinutes())+pad(dt.getUTCSeconds())+'Z';}
+  var name=(lead.contact&&lead.contact.name)||'Lead';
+  var ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//SellSheds//EN','BEGIN:VEVENT',
+    'UID:followup-'+(lead.id||'x')+'@sellsheds','DTSTAMP:'+fmtZ(new Date()),
+    'DTSTART:'+fmtZ(d),'DTEND:'+fmtZ(end),
+    'SUMMARY:Follow up \u2014 '+name.replace(/[,\\;]/g,' '),
+    'BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:Follow up with '+name.replace(/[,\\;]/g,' '),'TRIGGER:-PT15M','END:VALARM',
+    'END:VEVENT','END:VCALENDAR'].join('\r\n');
+  return new Blob([ics],{type:'text/calendar'});
+}
+function crmDownloadIcs(blob,filename){
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=filename||'reminder.ics';
+  a.click();
+  showToast('Calendar file downloaded');
+}
+function crmAddFollowUpToCalendar(leadId){
+  var lead=crmGetLeadById(leadId);
+  if(!lead){showToast('Lead not found — refresh');return;}
+  var blob=crmBuildFollowUpIcsBlob(lead);
+  if(!blob){showToast('Set a follow-up date & time first');return;}
+  if(navigator.share&&navigator.canShare&&navigator.canShare({files:[new File([blob],'followup.ics',{type:'text/calendar'})]})){
+    navigator.share({files:[new File([blob],'followup.ics',{type:'text/calendar'})],title:'Follow-up reminder'}).catch(function(){ crmDownloadIcs(blob,'followup.ics'); });
+  }else crmDownloadIcs(blob,'followup.ics');
+}
+function crmParseTimeInput(s){
+  s=String(s||'').trim();
+  if(!s) return '09:00';
+  var m=s.match(/^(\d{1,2}):?(\d{2})?\s*([ap]\.?m\.?)?$/i);
+  if(!m) return null;
+  var h=parseInt(m[1],10), mi=m[2]?parseInt(m[2],10):0;
+  var ap=(m[3]||'').toLowerCase().replace(/\./g,'');
+  if(ap==='pm'&&h<12) h+=12;
+  if(ap==='am'&&h===12) h=0;
+  if(h<0||h>23||mi<0||mi>59) return null;
+  var pad=function(n){return String(n).padStart(2,'0');};
+  return pad(h)+':'+pad(mi);
+}
+function crmPromptSetReminder(leadId){
+  var lead=crmGetLeadById(leadId);
+  if(!lead){showToast('Lead not found — refresh');return;}
+  var existing=crmFollowUpInputValue(lead);
+  var defDate=existing?existing.slice(0,10):apptDayKey(new Date());
+  var dateStr=window.prompt('Follow-up date (YYYY-MM-DD):',defDate);
+  if(dateStr===null) return;
+  dateStr=String(dateStr||'').trim();
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)){ showToast('Enter date as YYYY-MM-DD'); return; }
+  var defTime=existing?existing.slice(11,16):'09:00';
+  var timeStr=window.prompt('Follow-up time (e.g. 2:30 PM):',defTime);
+  if(timeStr===null) return;
+  var hm=crmParseTimeInput(timeStr);
+  if(!hm){ showToast('Could not read that time — try e.g. 2:30 PM'); return; }
+  var iso=dateStr+'T'+hm;
+  void (async function(){
+    try{
+      if(!(await firebaseEnsureAuthed())){ showToastForFirebaseCRMBlock(); return; }
+      await crmUpdateLead(leadId,{nextFollowUpAt:iso,nextFollowUpDate:firebase.firestore.FieldValue.delete()});
+      showToast('Follow-up reminder set');
+    }catch(e){ showToast('Could not set reminder'); }
+  })();
+}
 function crmLeadDocToUi(lead){
   var setVal=function(id,v){
     var el=document.getElementById(id);
@@ -10141,7 +10559,7 @@ function crmLeadDocToUi(lead){
   setVal('crm_email',lead.contact&&lead.contact.email||'');
   setVal('crm_building',lead.buildingInterest&&lead.buildingInterest.summary||'');
   setVal('crm_notes',lead.notes||'');
-  setVal('crm_nextFollowUpDate',lead.nextFollowUpDate||'');
+  setVal('crm_nextFollowUpAt',crmFollowUpInputValue(lead));
   setVal('crm_status',crmNormalizeStatus(lead.status));
   setVal('crm_channel',lead.conversation&&lead.conversation.channel||'sms');
   try{ crmPopulateInventoryPicker(lead.buildingInterest&&lead.buildingInterest.inventoryId||''); }catch(_p){}
@@ -10154,13 +10572,15 @@ function crmRenderLeadList(){
   var wrap=document.getElementById('crm_leadList');
   if(!wrap) return;
   var q=(document.getElementById('crm_search')&&document.getElementById('crm_search').value||'').toLowerCase().trim();
+  var statusFilter=crmListState.statusFilter||'all';
   var leads=crmState.leads.filter(function(lead){
+    if(statusFilter!=='all'&&crmNormalizeStatus(lead.status)!==statusFilter) return false;
     if(!q) return true;
     var hay=[lead.contact&&lead.contact.name,lead.contact&&lead.contact.phone,lead.contact&&lead.contact.email,lead.buildingInterest&&lead.buildingInterest.summary,lead.notes].join(' ').toLowerCase();
     return hay.indexOf(q)>=0;
   });
   if(!leads.length){
-    wrap.innerHTML='<div style="padding:12px;color:rgba(232,200,122,0.7);font-size:0.8rem;">No leads yet. Intake submissions and manual leads appear here.</div>';
+    wrap.innerHTML='<div style="padding:12px;color:rgba(232,200,122,0.7);font-size:0.8rem;">No leads match this view. Intake submissions and manual leads appear here.</div>';
     return;
   }
   wrap.innerHTML=leads.map(function(lead){
@@ -10168,16 +10588,78 @@ function crmRenderLeadList(){
     var st=crmStatusChipLabel(lead);
     var chipCls=crmStatusChipClass(lead);
     var name=(lead.contact&&lead.contact.name)||'Unnamed Lead';
+    var fu=crmFollowUpDisplay(lead);
+    var fuLine=fu!=='—'?('<div style="font-size:0.7rem;margin-top:3px;color:'+(crmFollowUpIsOverdue(lead)?'#f0a68a':'rgba(232,200,122,0.75)')+';">'+(crmFollowUpIsOverdue(lead)?'⚠ Overdue: ':'Follow up: ')+crmEsc(fu)+'</div>'):'';
     return '<div class="crm-lead-card" onclick="crmOpenDetail(\''+id+'\')">'+
       '<div class="crm-lead-card-head">'+
         '<div class="crm-lead-card-name">'+crmEsc(name)+'</div>'+
         '<span class="crm-status-chip '+chipCls+'">'+crmEsc(st)+'</span>'+
       '</div>'+
+      fuLine+
       '<div class="crm-lead-quick" onclick="event.stopPropagation()">'+
         crmActionSelectHtml(lead.id)+
       '</div>'+
     '</div>';
   }).join('');
+}
+function crmDashboardCounts(){
+  var leads=crmState.leads||[];
+  var counts={};
+  CRM_STATUS_ORDER.concat(['lost']).forEach(function(k){counts[k]=0;});
+  var overdue=0, dueToday=0, newThisWeek=0;
+  var todayKey=apptDayKey(new Date());
+  var weekAgo=Date.now()-7*86400000;
+  leads.forEach(function(lead){
+    var norm=crmNormalizeStatus(lead.status);
+    counts[norm]=(counts[norm]||0)+1;
+    var fu=crmFollowUpDate(lead);
+    if(fu){
+      if(fu.getTime()<Date.now()) overdue++;
+      else if(apptDayKey(fu)===todayKey) dueToday++;
+    }
+    var created=lead.createdAt?new Date(lead.createdAt).getTime():0;
+    if(created&&isFinite(created)&&created>=weekAgo) newThisWeek++;
+  });
+  return {counts:counts,total:leads.length,overdue:overdue,dueToday:dueToday,newThisWeek:newThisWeek};
+}
+function crmSourceBreakdown(){
+  var leads=crmState.leads||[];
+  var map={};
+  leads.forEach(function(lead){
+    var label=crmSourceDisplayLabel(lead).split(' · ')[0];
+    map[label]=(map[label]||0)+1;
+  });
+  return Object.keys(map).map(function(k){return {label:k,count:map[k]};}).sort(function(a,b){return b.count-a.count;});
+}
+function crmSetStatusFilter(key){
+  crmListState.statusFilter=key||'all';
+  crmRenderDashboard();
+  crmRenderLeadList();
+}
+function crmDashboardHtml(){
+  var d=crmDashboardCounts();
+  var chips=['all'].concat(CRM_STATUS_ORDER).concat(['lost']).map(function(k){
+    var label=k==='all'?'All':crmStatusDisplayLabel(k);
+    var count=k==='all'?d.total:(d.counts[k]||0);
+    var active=(crmListState.statusFilter||'all')===k?' active':'';
+    return '<span class="contacts-chip crm-dash-chip'+active+'" onclick="crmSetStatusFilter(\''+k+'\')">'+crmEsc(label)+' ('+count+')</span>';
+  }).join('');
+  var src=crmSourceBreakdown().slice(0,6).map(function(s){
+    return '<div class="crm-dash-src-row"><span>'+crmEsc(s.label)+'</span><span>'+s.count+'</span></div>';
+  }).join('')||'<div class="crm-muted">No leads yet</div>';
+  return '<div class="crm-dash-stats">'+
+      '<div class="crm-dash-stat"><div class="crm-dash-stat-num">'+d.total+'</div><div class="crm-dash-stat-label">Total leads</div></div>'+
+      '<div class="crm-dash-stat'+(d.overdue?' crm-dash-stat-warn':'')+'" onclick="openFollowups()"><div class="crm-dash-stat-num">'+d.overdue+'</div><div class="crm-dash-stat-label">Overdue</div></div>'+
+      '<div class="crm-dash-stat" onclick="openFollowups()"><div class="crm-dash-stat-num">'+d.dueToday+'</div><div class="crm-dash-stat-label">Due today</div></div>'+
+      '<div class="crm-dash-stat"><div class="crm-dash-stat-num">'+d.newThisWeek+'</div><div class="crm-dash-stat-label">New this week</div></div>'+
+    '</div>'+
+    '<div class="crm-dash-chips">'+chips+'</div>'+
+    '<div class="crm-dash-src"><div class="crm-dash-src-title">Leads by source</div>'+src+'</div>';
+}
+function crmRenderDashboard(){
+  var mount=document.getElementById('crm_dashboard');
+  if(!mount) return;
+  mount.innerHTML=crmDashboardHtml();
 }
 function crmActivityChannelLabel(ch){
   return crmChannelDisplayLabel(ch)||'Other';
@@ -10248,11 +10730,12 @@ function crmBuildLeadPayloadFromForm(opts){
     contact:{name:cv('crm_name'),phone:cv('crm_phone'),email:cv('crm_email')},
     buildingInterest:building,
     notes:cv('crm_notes'),
-    nextFollowUpDate:cv('crm_nextFollowUpDate')||(opts.isUpdate?firebase.firestore.FieldValue.delete():''),
+    nextFollowUpAt:cv('crm_nextFollowUpAt')||(opts.isUpdate?firebase.firestore.FieldValue.delete():''),
     conversation:{channel:ch,lastMessageAt:now,lastDirection:'note',summary:'Lead profile saved in CRM'},
     status:crmStatusToFirestore(cv('crm_status')),
     updatedAt:firebase.firestore.FieldValue.serverTimestamp()
   };
+  if(opts.isUpdate) payload.nextFollowUpDate=firebase.firestore.FieldValue.delete();
   if(!opts.isUpdate) payload.source='manual';
   return payload;
 }
@@ -10456,6 +10939,7 @@ async function crmInit(){
     return;
   }
   crmRenderLeadList();
+  try{ crmRenderDashboard(); }catch(_eDash){}
 }
 
 // ============================================================
@@ -10713,9 +11197,12 @@ function renderDaySchedule(){
   });
   html+='</div><div class="day-schedule-section"><div class="day-schedule-section-label">CRM follow-ups due</div>';
   if(!followups.length) html+='<div class="day-schedule-item" style="color:rgba(232,200,122,0.55);">No CRM follow-ups due.</div>';
+  followups.sort(function(a,b){var da=crmFollowUpDate(a),db=crmFollowUpDate(b);return (da?da.getTime():0)-(db?db.getTime():0);});
   followups.forEach(function(lead){
     var name=(lead.contact&&lead.contact.name)||lead.name||'Unnamed lead';
-    html+='<button type="button" class="day-schedule-item" style="display:block;width:100%;text-align:left;color:inherit;cursor:pointer;" onclick="openFollowupFromDay(\''+compareEscape(lead.id)+'\')"><div class="day-schedule-item-title">'+compareEscape(name)+'</div><div class="day-schedule-item-meta">'+compareEscape((lead.contact&&lead.contact.phone)||lead.status||'Follow up')+'</div></button>';
+    var timeLabel=crmFollowUpHasTime(lead)?(crmFollowUpDate(lead)?crmFollowUpDate(lead).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):''):'';
+    var meta=(timeLabel?timeLabel+' · ':'')+((lead.contact&&lead.contact.phone)||lead.status||'Follow up');
+    html+='<button type="button" class="day-schedule-item" style="display:block;width:100%;text-align:left;color:inherit;cursor:pointer;" onclick="openFollowupFromDay(\''+compareEscape(lead.id)+'\')"><div class="day-schedule-item-title">'+compareEscape(name)+'</div><div class="day-schedule-item-meta">'+compareEscape(meta)+'</div></button>';
   });
   html+='</div><div class="day-schedule-section"><div class="day-schedule-section-label">To-do list</div>';
   if(!todos.length) html+='<div class="day-schedule-item" style="color:rgba(232,200,122,0.55);">No to-dos yet.</div>';
@@ -12829,9 +13316,14 @@ function applyBizInfoToHome(){
       var leads=crmState&&crmState.leads?crmState.leads:[];
       if(!leads.length) followSub.textContent='No activity yet';
       else {
-        var top=leads.slice().sort(function(a,b){return leadTouchMs(b)-leadTouchMs(a);})[0];
-        var nm=(top.contact&&top.contact.name)||'Lead';
-        followSub.textContent=nm+' · '+formatLeadTouchShort(top);
+        var dueInfo=(typeof crmDashboardCounts==='function')?crmDashboardCounts():{overdue:0,dueToday:0};
+        if(dueInfo.overdue) followSub.textContent=dueInfo.overdue+' overdue follow-up'+(dueInfo.overdue===1?'':'s');
+        else if(dueInfo.dueToday) followSub.textContent=dueInfo.dueToday+' due today';
+        else {
+          var top=leads.slice().sort(function(a,b){return leadTouchMs(b)-leadTouchMs(a);})[0];
+          var nm=(top.contact&&top.contact.name)||'Lead';
+          followSub.textContent=nm+' · '+formatLeadTouchShort(top);
+        }
       }
     }else{
       followSub.textContent='Needs Firebase';
@@ -13006,7 +13498,7 @@ function renderSettingsPricingForm(s){
 }
 function renderSettingsLinksCloudForm(s){
   s=s||{};
-  ['designerUrl','purchaseUrl','intakeFormUrl','appointmentPickBaseUrl','rtoUrl','rtostreamlineUrl','rtostreamlineUsername','rtostreamlinePassword','rtoNavUrl','interestUrl','crmUrl','mapsApiKey','firebaseApiKey','firebaseAuthDomain','firebaseProjectId','firebaseStorageBucket','firebaseMessagingSenderId','firebaseAppId','firebaseEmail','firebasePassword','twilioAccountSid','twilioAuthToken','twilioFromNumber','driveUploadUrl','driveUploadToken','driveFolderId','cfR2UploadUrl','cfR2UploadToken'].forEach(function(k){
+  ['designerUrl','purchaseUrl','intakeFormUrl','appointmentPickBaseUrl','rtoUrl','rtostreamlineUrl','rtostreamlineUsername','rtostreamlinePassword','rtoNavUrl','interestUrl','crmUrl','captureLinkBaseUrl','mapsApiKey','firebaseApiKey','firebaseAuthDomain','firebaseProjectId','firebaseStorageBucket','firebaseMessagingSenderId','firebaseAppId','firebaseEmail','firebasePassword','twilioAccountSid','twilioAuthToken','twilioFromNumber','driveUploadUrl','driveUploadToken','driveFolderId','cfR2UploadUrl','cfR2UploadToken'].forEach(function(k){
     var el=document.getElementById('set_'+k);
     if(el) el.value=s[k]||'';
   });
@@ -13661,7 +14153,7 @@ async function saveSettingsPricing(opts){
 }
 async function saveSettingsLinksCloud(opts){
   var s=loadSettings();
-  ['designerUrl','purchaseUrl','intakeFormUrl','appointmentPickBaseUrl','rtoUrl','rtostreamlineUrl','rtostreamlineUsername','rtostreamlinePassword','rtoNavUrl','interestUrl','crmUrl','mapsApiKey','firebaseApiKey','firebaseAuthDomain','firebaseProjectId','firebaseStorageBucket','firebaseMessagingSenderId','firebaseAppId','firebaseEmail','firebasePassword','twilioAccountSid','twilioAuthToken','twilioFromNumber','driveUploadUrl','driveUploadToken','driveFolderId','cfR2UploadUrl','cfR2UploadToken'].forEach(function(k){
+  ['designerUrl','purchaseUrl','intakeFormUrl','appointmentPickBaseUrl','rtoUrl','rtostreamlineUrl','rtostreamlineUsername','rtostreamlinePassword','rtoNavUrl','interestUrl','crmUrl','captureLinkBaseUrl','mapsApiKey','firebaseApiKey','firebaseAuthDomain','firebaseProjectId','firebaseStorageBucket','firebaseMessagingSenderId','firebaseAppId','firebaseEmail','firebasePassword','twilioAccountSid','twilioAuthToken','twilioFromNumber','driveUploadUrl','driveUploadToken','driveFolderId','cfR2UploadUrl','cfR2UploadToken'].forEach(function(k){
     var el=document.getElementById('set_'+k);
     if(el) s[k]=el.value.trim();
   });
@@ -14742,6 +15234,7 @@ function goTo(screenId){
   if(screenId==='screenCRM') crmInit();
   if(screenId==='screenCRMDetail') void crmDetailInit();
   if(screenId==='screenCRMNew') void crmNewInit();
+  if(screenId==='screenCaptureLinks') captureLinksInit();
   if(screenId==='screenAppointments') void apptInit();
   if(screenId==='screenContacts') contactsInit();
   if(screenId==='screenFollowups') followupsInit();
@@ -14942,6 +15435,7 @@ var HOME_QUICK_SCREEN_LABELS={
   screenAppointments:'Appointments',
   screenContacts:'Contacts',
   screenFollowups:'Follow-ups',
+  screenCaptureLinks:'Capture Links',
   screenIntakeSelector:'Forms',
   screenSalesSheet:'Sales sheet',
   screenLandlordForm:'Landlord form',
@@ -14951,7 +15445,7 @@ var HOME_QUICK_SCREEN_LABELS={
   screenDocs:'Docs & facts'
 };
 var HOME_QUICK_TOOL_SCREEN_IDS=[
-  'screenWebsites','screenCalc','screenPhotos','screenSettings','screenMileage','screenAd','screenInventory','screenCRM','screenAppointments','screenContacts','screenFollowups','screenIntakeSelector','screenSalesSheet','screenLandlordForm','screenPurchase','screenRTO','screenInterest','screenDocs'
+  'screenWebsites','screenCalc','screenPhotos','screenSettings','screenMileage','screenAd','screenInventory','screenCRM','screenAppointments','screenContacts','screenFollowups','screenCaptureLinks','screenIntakeSelector','screenSalesSheet','screenLandlordForm','screenPurchase','screenRTO','screenInterest','screenDocs'
 ];
 var HOME_QUICK_ACTION_PRESETS=[
   {id:'__qa_newQuote', label:'New quote (fresh calc)'},
@@ -28317,27 +28811,33 @@ function buildLeadPayloadFromIntake(type){
     }
   }[type]||{name:'',phone:'',email:'',building:'',notes:''};
   var now=new Date().toISOString();
-  return {
+  var cap=(typeof crmPendingCapture==='object'&&crmPendingCapture&&(!crmPendingCapture.form||crmPendingCapture.form===type))?crmPendingCapture:null;
+  var payload={
     contact:{name:map.name,phone:map.phone,email:map.email},
     buildingInterest:{summary:map.building},
     notes:map.notes||'Submitted via intake form',
     conversation:{channel:'form',lastMessageAt:now,lastDirection:'inbound',summary:'Submitted '+type+' intake form'},
-    source:type,
+    source:(cap&&cap.src)?cap.src:type,
+    formType:type,
     status:crmStatusToFirestore('interested')
   };
+  if(cap&&cap.label) payload.captureLabel=cap.label;
+  return payload;
 }
 
 async function saveIntakeLead(type,messageText){
   if(!(await firebaseEnsureAuthed())) return null;
   var payload=buildLeadPayloadFromIntake(type);
+  var trackedNote=(payload.source&&payload.source!==type)?(' Tracked source: '+(crmCaptureChannelLabel(payload.source)||payload.source)+(payload.captureLabel?(' ('+payload.captureLabel+')'):'')+'.'):'';
   var result=await crmCreateLead(payload);
   var leadId=result.id;
   await crmAddActivity(leadId,{
     channel:'form',
     direction:'inbound',
-    body:(result.merged?'Duplicate form — merged. ':'')+'Form submitted ('+type+'). '+(messageText||'').slice(0,220),
+    body:(result.merged?'Duplicate form — merged. ':'')+'Form submitted ('+type+').'+trackedNote+' '+(messageText||'').slice(0,220),
     createdBy:'system'
   });
+  crmPendingCapture=null;
   return leadId;
 }
 
@@ -31589,6 +32089,7 @@ function closeStylePicker() {
 
 // Close on backdrop click
 document.addEventListener('DOMContentLoaded', function() {
+  try{ crmCaptureHandleIncomingUrl(); }catch(_eCap){}
   var modal = document.getElementById('stylePickerModal');
   modal.addEventListener('click', function(e) {
     if (e.target === modal) closeStylePicker();
