@@ -953,9 +953,9 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
 }
 .sel-opt-chk.is-included { background:var(--sage); border-color:var(--sage); }
 .sel-opt-qty {
-  width:30px; min-width:30px; height:22px; box-sizing:border-box;
-  border:1.5px solid rgba(232,200,122,0.35); border-radius:5px; padding:0 2px;
-  font-size:0.72rem; font-weight:700; color:var(--cream); background:rgba(255,255,255,0.08);
+  width:26px; min-width:26px; height:18px; box-sizing:border-box;
+  border:2px solid rgba(232,200,122,0.35); border-radius:4px; padding:0 2px;
+  font-size:0.65rem; font-weight:700; color:var(--cream); background:transparent;
   text-align:center; appearance:textfield; -moz-appearance:textfield;
 }
 .sel-opt-qty::-webkit-outer-spin-button,
@@ -22034,10 +22034,10 @@ function _stagingRowLabelPrice(key,row){
   }
   if(key==='window'){
     var q=Math.max(1,parseInt(row.qty)||1);
-    if(row.type==='custom_vinyl'){ var cv=parseFloat(row.customPrice)||0; return {label:'Custom Vinyl'+(row.customSize?' ('+row.customSize+')':''),price:cv*q}; }
+    if(row.type==='custom_vinyl'){ var cv=parseFloat(row.customPrice)||0; return {label:'Custom Vinyl Window'+(row.customSize?' ('+row.customSize+')':''),price:cv*q}; }
     var wP=getOptionVariantPrice('window',row.type);
-  var opts=_WIN_OPTS; var lbl='Window';
-    opts.forEach(function(o){ if(o.v===row.type) lbl=o.t.split(' \u2014 ')[0]; });
+    var wDesc=_optLabelFromOpts(_WIN_OPTS,row.type);
+    var lbl=wDesc?wDesc+' Window':'Window';
     return {label:lbl,price:wP*q};
   }
   if(key==='garagedoor'){
@@ -22045,7 +22045,8 @@ function _stagingRowLabelPrice(key,row){
     var szP=getOptionVariantPrice('garagedoor',row.customSize,gSub);
     var gOpts=row.type==='rollup'?_GARAGE_ROLLUP_OPTS:_GARAGE_SECTIONAL_OPTS;
     var lbl=_optLabelFromOpts(gOpts,row.customSize);
-    if(!lbl) lbl=row.type==='rollup'?'Rollup Door':'Sectional Garage';
+    if(lbl) lbl+=row.type==='rollup'?' Rollup':' Sectional';
+    else lbl=row.type==='rollup'?'Rollup Door':'Sectional Garage Door';
     var gq=Math.max(1,parseInt(row.qty)||1);
     return {label:lbl,price:szP*gq};
   }
@@ -22499,8 +22500,9 @@ function optWizardTap(key,multiAdd){
   optWizardState.slideIdx=0;
   optWizardState.slides=buildSlidePages(key,entry,optWizardState.draft);
   if(optWizardState.slides.length===0){
+    var zeroSlideDraft=optWizardState.draft;
     if(!optWizardState.multiAdd&&!_stagingMultiKey(key)&&key!=='custom') optStagingClearKey(key,null,true);
-    _applyDraftToStaging(key,optWizardState.draft);
+    _applyDraftToStaging(key,zeroSlideDraft);
     optWizardState.activeKey='';
     optWizardState.key='';
     optWizardState.draft={};
@@ -22582,11 +22584,12 @@ function optWizardSlideAdvance(){
     if((optWizardState.draft.customMode||'total')==='total'&&!optWizardState.draft.qty) optWizardState.draft.qty='1';
   }
   if(idx>=pages.length-1){
-    if(key==='osb_intwall'&&optWizardState.draft.linft) optWizardState.draft._osbManual=true;
+    var finalDraft=optWizardState.draft;
+    if(key==='osb_intwall'&&finalDraft.linft) finalDraft._osbManual=true;
     if(!optWizardState.multiAdd&&!_stagingMultiKey(key)&&key!=='custom'){
       optStagingClearKey(key,null,true);
     }
-    _applyDraftToStaging(key,optWizardState.draft);
+    _applyDraftToStaging(key,finalDraft);
     optWizardState.activeKey='';
     optWizardState.key='';
     optWizardState.draft={};
@@ -22647,6 +22650,7 @@ function commitOptSheetStaging(){
   updateCatCounts();
   updateAutoWidthPrices();
   updateQuickPrice();
+  try{ renderCalcQuote(); }catch(_eRq){}
   if(calcCurrentPage===1) try{ renderReviewSummary(); }catch(_e){}
   try{ renderOptsSummary(); }catch(_e){}
   clearOptSheetStaging();
@@ -22688,7 +22692,6 @@ function optWizardRenderPicker(){
   host.innerHTML=html;
   if(optWizardState.activeKey){
     optWizardUpdateSlidePreview();
-    _wizFocusInlineSlideField();
   }
 }
 
@@ -23917,24 +23920,49 @@ function ssRemoveRow(type,idx){
 
 
 // Each entry: {id, label, credit, qty}  qty>1 shows a quantity select
+/** matchKey/matchType tie a standard-included item to the exact addable
+ *  variant it represents (door36/window/garagedoor-rollup/garagedoor-sectional
+ *  + the variant's id) so an added option of the identical type/size can be
+ *  merged into the same Selected Options tile instead of listed separately. */
 var STD_OPTIONS={
-  UPCS:[{id:'sd1',label:'70" Double Doors',credit:150,qty:1},{id:'sd2',label:'2x3 Standard Window',credit:115,qty:1}],
-  UPGS:[{id:'sd1',label:'70" Double Doors',credit:150,qty:1},{id:'sd2',label:'2x3 Standard Window',credit:115,qty:1}],
-  UUTX:[{id:'sd1',label:'70" Double Doors',credit:150,qty:1}],
-  ULB: [{id:'sd1',label:'70" Double Doors',credit:150,qty:1}],
-  USUTX:[{id:'sd1',label:'70" Double Doors',credit:150,qty:1},{id:'sd2',label:'2x3 Standard Windows',credit:115,qty:2}],
-  USLB: [{id:'sd1',label:'70" Double Doors',credit:150,qty:1},{id:'sd2',label:'2x3 Standard Windows',credit:115,qty:2}],
-  UC:   [{id:'sd3',label:'36" 9-Lite Door',credit:450,qty:1},{id:'sd2',label:'2x3 Standard Windows',credit:115,qty:3}],
-  USC:  [{id:'sd3',label:'36" 9-Lite Door',credit:450,qty:1},{id:'sd2',label:'2x3 Standard Windows',credit:115,qty:3}],
-  ULBC: [{id:'sd3',label:'36" 9-Lite Door',credit:450,qty:1},{id:'sd2',label:'2x3 Standard Windows',credit:115,qty:3}],
-  USLBC:[{id:'sd3',label:'36" 9-Lite Door',credit:450,qty:1},{id:'sd2',label:'2x3 Standard Windows',credit:115,qty:3}],
-  UCC:  [{id:'sd3',label:'36" 9-Lite Door',credit:450,qty:1},{id:'sd2',label:'2x3 Standard Windows',credit:115,qty:3}],
-  UCLBC:[{id:'sd3',label:'36" 9-Lite Door',credit:450,qty:1},{id:'sd2',label:'2x3 Standard Windows',credit:115,qty:3}],
-  UPC:  [{id:'sd3',label:'36" 9-Lite Door',credit:450,qty:1},{id:'sd2',label:'2x3 Standard Windows',credit:115,qty:4}],
-  UPLBC:[{id:'sd3',label:'36" 9-Lite Door',credit:450,qty:1},{id:'sd2',label:'2x3 Standard Windows',credit:115,qty:4}],
-  UG:   [{id:'sd4',label:"9'x7' Rollup Door",credit:575,qty:1},{id:'sd5',label:'36" 4-Lite Door',credit:475,qty:1},{id:'sd6',label:'3x3 Standard Windows',credit:130,qty:2}],
-  ULG:  [{id:'sd4',label:"9'x7' Rollup Door",credit:575,qty:1},{id:'sd5',label:'36" 4-Lite Door',credit:475,qty:1},{id:'sd6',label:'3x3 Standard Windows',credit:130,qty:2}]
+  UPCS:[{id:'sd1',label:'70" Double Doors',credit:150,qty:1,matchKey:'door36',matchType:'150'},{id:'sd2',label:'2x3 Standard Window',credit:115,qty:1,matchKey:'window',matchType:'115'}],
+  UPGS:[{id:'sd1',label:'70" Double Doors',credit:150,qty:1,matchKey:'door36',matchType:'150'},{id:'sd2',label:'2x3 Standard Window',credit:115,qty:1,matchKey:'window',matchType:'115'}],
+  UUTX:[{id:'sd1',label:'70" Double Doors',credit:150,qty:1,matchKey:'door36',matchType:'150'}],
+  ULB: [{id:'sd1',label:'70" Double Doors',credit:150,qty:1,matchKey:'door36',matchType:'150'}],
+  USUTX:[{id:'sd1',label:'70" Double Doors',credit:150,qty:1,matchKey:'door36',matchType:'150'},{id:'sd2',label:'2x3 Standard Windows',credit:115,qty:2,matchKey:'window',matchType:'115'}],
+  USLB: [{id:'sd1',label:'70" Double Doors',credit:150,qty:1,matchKey:'door36',matchType:'150'},{id:'sd2',label:'2x3 Standard Windows',credit:115,qty:2,matchKey:'window',matchType:'115'}],
+  UC:   [{id:'sd3',label:'36" 9-Lite Door',credit:450,qty:1,matchKey:'door36',matchType:'450'},{id:'sd2',label:'2x3 Standard Windows',credit:115,qty:3,matchKey:'window',matchType:'115'}],
+  USC:  [{id:'sd3',label:'36" 9-Lite Door',credit:450,qty:1,matchKey:'door36',matchType:'450'},{id:'sd2',label:'2x3 Standard Windows',credit:115,qty:3,matchKey:'window',matchType:'115'}],
+  ULBC: [{id:'sd3',label:'36" 9-Lite Door',credit:450,qty:1,matchKey:'door36',matchType:'450'},{id:'sd2',label:'2x3 Standard Windows',credit:115,qty:3,matchKey:'window',matchType:'115'}],
+  USLBC:[{id:'sd3',label:'36" 9-Lite Door',credit:450,qty:1,matchKey:'door36',matchType:'450'},{id:'sd2',label:'2x3 Standard Windows',credit:115,qty:3,matchKey:'window',matchType:'115'}],
+  UCC:  [{id:'sd3',label:'36" 9-Lite Door',credit:450,qty:1,matchKey:'door36',matchType:'450'},{id:'sd2',label:'2x3 Standard Windows',credit:115,qty:3,matchKey:'window',matchType:'115'}],
+  UCLBC:[{id:'sd3',label:'36" 9-Lite Door',credit:450,qty:1,matchKey:'door36',matchType:'450'},{id:'sd2',label:'2x3 Standard Windows',credit:115,qty:3,matchKey:'window',matchType:'115'}],
+  UPC:  [{id:'sd3',label:'36" 9-Lite Door',credit:450,qty:1,matchKey:'door36',matchType:'450'},{id:'sd2',label:'2x3 Standard Windows',credit:115,qty:4,matchKey:'window',matchType:'115'}],
+  UPLBC:[{id:'sd3',label:'36" 9-Lite Door',credit:450,qty:1,matchKey:'door36',matchType:'450'},{id:'sd2',label:'2x3 Standard Windows',credit:115,qty:4,matchKey:'window',matchType:'115'}],
+  UG:   [{id:'sd4',label:"9'x7' Rollup Door",credit:575,qty:1,matchKey:'garagedoor-rollup',matchType:'575'},{id:'sd5',label:'36" 4-Lite Door',credit:475,qty:1,matchKey:'door36',matchType:'475'},{id:'sd6',label:'3x3 Standard Windows',credit:130,qty:2,matchKey:'window',matchType:'130'}],
+  ULG:  [{id:'sd4',label:"9'x7' Rollup Door",credit:575,qty:1,matchKey:'garagedoor-rollup',matchType:'575'},{id:'sd5',label:'36" 4-Lite Door',credit:475,qty:1,matchKey:'door36',matchType:'475'},{id:'sd6',label:'3x3 Standard Windows',credit:130,qty:2,matchKey:'window',matchType:'130'}]
 };
+
+/** Resolve which addable variant an addon line represents, so it can be
+ *  matched against a STD_OPTIONS entry's matchKey/matchType. Returns
+ *  {catKey,matchType,arr,idx,row} or null if the line isn't a matchable type. */
+function _stdMatchInfoForLine(state,l){
+  if(l.multiIdx===null||l.multiIdx===undefined) return null;
+  if(l.sourceKey==='door36'){
+    var arr=state.multiDoors||[];
+    var row=arr[l.multiIdx];
+    if(row&&row.type) return {catKey:'door36',matchType:String(row.type),arr:arr,idx:l.multiIdx,row:row};
+  } else if(l.sourceKey==='window'||l.sourceKey==='vinylwindow'){
+    var arrW=state.multiWindows||[];
+    var rowW=arrW[l.multiIdx];
+    if(rowW&&rowW.type&&rowW.type!=='custom_vinyl') return {catKey:'window',matchType:String(rowW.type),arr:arrW,idx:l.multiIdx,row:rowW};
+  } else if(l.sourceKey==='garagedoor'||l.sourceKey==='rollupdoor'){
+    var arrG=state.multiGarage||[];
+    var rowG=arrG[l.multiIdx];
+    if(rowG&&rowG.customSize) return {catKey:(rowG.type==='rollup'?'garagedoor-rollup':'garagedoor-sectional'),matchType:String(rowG.customSize),arr:arrG,idx:l.multiIdx,row:rowG};
+  }
+  return null;
+}
 
 
 // ── Color / Two-Tone helpers ───────────────────────────────────────────────
@@ -24231,6 +24259,7 @@ function _afterOptsSummaryHostChange(hostId){
     return;
   }
   updateQuickPrice();
+  try{ renderCalcQuote(); }catch(_eRq){}
   if(calcCurrentPage===1) try{ renderReviewSummary(); }catch(_e){}
   renderOptsSummary();
 }
@@ -24238,7 +24267,30 @@ function _afterOptsSummaryHostChange(hostId){
 function _appendSelOptCard(host,hostId,isRev,cfg){
   var card=document.createElement('div');
   card.className='sel-opt-card'+(cfg.excluded?' is-excluded':'');
-  if(cfg.isStd&&cfg.maxQty>1){
+  if(cfg.isCombinedStd){
+    var totalQ=cfg.stdQty+cfg.addedQty;
+    var qtyInpC=document.createElement('input');
+    qtyInpC.type='number';
+    qtyInpC.className='sel-opt-qty';
+    qtyInpC.min=String(cfg.stdQty);
+    qtyInpC.step='1';
+    qtyInpC.inputMode='numeric';
+    qtyInpC.value=String(totalQ);
+    qtyInpC.setAttribute('aria-label','Total quantity for '+cfg.label+' (standard qty: '+cfg.stdQty+')');
+    var applyQtyInpC=function(){
+      var n=parseInt(qtyInpC.value,10);
+      if(isNaN(n)) n=totalQ;
+      n=Math.max(cfg.stdQty,n);
+      qtyInpC.value=String(n);
+      var doSet=function(){ if(cfg.onQtyChange) cfg.onQtyChange(n-cfg.stdQty); };
+      if(isRev) withRevOptsProbe(doSet); else doSet();
+      _afterOptsSummaryHostChange(hostId);
+    };
+    qtyInpC.onchange=applyQtyInpC;
+    qtyInpC.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); qtyInpC.blur(); } });
+    qtyInpC.onclick=function(e){ e.stopPropagation(); };
+    card.appendChild(qtyInpC);
+  } else if(cfg.isStd&&cfg.maxQty>1){
     var maxQ=cfg.maxQty;
     var curRemoved=Math.max(0,Math.min(maxQ,cfg.removedQty||0));
     var curKept=maxQ-curRemoved;
@@ -24332,10 +24384,47 @@ function _renderOptsSummaryInto(hostId){
       host.appendChild(emptyC);
       return;
     }
+    var mergedLineKeys={};
     visibleStd.forEach(function(it){
       var maxQ=it.qty||1;
       var rq=(calcState.stdRemoved&&calcState.stdRemoved[it.id])||0;
       var removed=rq>0;
+      var remainingStd=maxQ-rq;
+      var match=null;
+      if(it.matchKey&&remainingStd>0){
+        for(var mi=0;mi<ca.lines.length;mi++){
+          var cl=ca.lines[mi];
+          if(cl.excluded) continue;
+          var lk=cl.sourceKey+'|'+cl.multiIdx;
+          if(mergedLineKeys[lk]) continue;
+          var info=_stdMatchInfoForLine(calcState,cl);
+          if(info&&info.catKey===it.matchKey&&info.matchType===String(it.matchType)){ match={line:cl,info:info,key:lk}; break; }
+        }
+      }
+      if(match){
+        mergedLineKeys[match.key]=true;
+        var addedQty=Math.max(1,parseInt(match.info.row.qty)||1);
+        var baseLabel=it.label.replace(/s$/,'');
+        _appendSelOptCard(host,hostId,isRev,{
+          isCombinedStd:true,
+          label:'('+(remainingStd+addedQty)+') '+baseLabel,
+          stdQty:remainingStd,addedQty:addedQty,
+          priceText:'+'+fmt(match.line.val),
+          showRemove:true,
+          onQtyChange:function(newAddedQty){
+            var mt=_summaryMultiTypeForKey(match.line.sourceKey);
+            if(newAddedQty<=0){ calcRemoveRow(mt,match.info.idx); }
+            else{ match.info.row.qty=newAddedQty; calcRenderRows(mt); }
+          },
+          onRemove:function(){
+            var mt=_summaryMultiTypeForKey(match.line.sourceKey);
+            var doRemove=function(){ calcRemoveRow(mt,match.info.idx); };
+            if(isRev) withRevOptsProbe(doRemove); else doRemove();
+            _afterOptsSummaryHostChange(hostId);
+          }
+        });
+        return;
+      }
       var lbl=it.label+(maxQ>1?' ('+maxQ+'×)':'');
       _appendSelOptCard(host,hostId,isRev,{
         isStd:true,stdId:it.id,label:lbl,included:!removed,excluded:removed,
@@ -24351,6 +24440,8 @@ function _renderOptsSummaryInto(hostId){
     });
     ca.lines.forEach(function(l){
       (function(l){
+        var lk=l.sourceKey+'|'+l.multiIdx;
+        if(mergedLineKeys[lk]) return;
         var exKey=_addonExcludeKey(l.sourceKey,l.multiIdx);
         _appendSelOptCard(host,hostId,isRev,{
           isStd:false,exKey:exKey,label:l.label,included:!l.excluded,excluded:!!l.excluded,
@@ -24972,8 +25063,9 @@ function calcAddons(forDisplay){
         if(cvP>0) add(cvLbl+(q>1?' ('+q+'x)':''),cvP*q,'vinylwindow',idx);
       } else {
         var wP=getOptionVariantPrice('window',row.type);
-        var wLbl=wP>=375?'Vinyl Window':'Window';
         var wKey=wP>=375?'vinylwindow':'window';
+        var wDesc=_optLabelFromOpts(_WIN_OPTS,row.type);
+        var wLbl=wDesc?wDesc+' Window':(wP>=375?'Vinyl Window':'Window');
         if(wP>0) add(wLbl+(q>1?' ('+q+'x)':''),wP*q,wKey,idx);
       }
     });
@@ -24984,7 +25076,8 @@ function calcAddons(forDisplay){
       var sz=getOptionVariantPrice('garagedoor',row.customSize,gSub);
       var gOpts=row.type==='rollup'?_GARAGE_ROLLUP_OPTS:_GARAGE_SECTIONAL_OPTS;
       var lbl=_optLabelFromOpts(gOpts,row.customSize);
-      if(!lbl) lbl=row.type==='rollup'?'Rollup Door':'Sectional Garage Door';
+      if(lbl) lbl+=row.type==='rollup'?' Rollup':' Sectional';
+      else lbl=row.type==='rollup'?'Rollup Door':'Sectional Garage Door';
       var optKey=row.type==='rollup'?'rollupdoor':'garagedoor';
       var gq=Math.max(1,parseInt(row.qty)||1);
       if(sz>0) add(lbl+(gq>1?' ('+gq+'x)':''),sz*gq,optKey,idx);
@@ -30211,8 +30304,9 @@ function ssGetAddonLines(w,l,t){
         if(cvP>0) add('Custom Vinyl Window'+(cvS?' ('+cvS+')':'')+(q>1?' ('+q+'x)':''),cvP*q,'vinylwindow',idx);
       } else {
         var wP=getOptionVariantPrice('window',row.type);
-        var wLbl=wP>=375?'Vinyl Window':'Window';
         var wKey=wP>=375?'vinylwindow':'window';
+        var wDesc=_optLabelFromOpts(_WIN_OPTS,row.type);
+        var wLbl=wDesc?wDesc+' Window':(wP>=375?'Vinyl Window':'Window');
         if(wP>0) add(wLbl+(q>1?' ('+q+'x)':''),wP*q,wKey,idx);
       }
     });
@@ -30221,7 +30315,10 @@ function ssGetAddonLines(w,l,t){
     ssMulti.garage.forEach(function(row,idx){
       var gSub=row.type||'sectional';
       var sz=getOptionVariantPrice('garagedoor',row.customSize,gSub);
-      var lbl=row.type==='rollup'?'Rollup Door':'Garage Door';
+      var gOpts=row.type==='rollup'?_GARAGE_ROLLUP_OPTS:_GARAGE_SECTIONAL_OPTS;
+      var lbl=_optLabelFromOpts(gOpts,row.customSize);
+      if(lbl) lbl+=row.type==='rollup'?' Rollup':' Sectional';
+      else lbl=row.type==='rollup'?'Rollup Door':'Sectional Garage Door';
       var optKey=row.type==='rollup'?'rollupdoor':'garagedoor';
       if(sz>0) add(lbl,sz,optKey,idx);
     });
@@ -32946,8 +33043,9 @@ function cb_calcAddons(forDisplay){
         if(cvP>0) add(cvLbl+(q>1?' ('+q+'x)':''),cvP*q,'vinylwindow',idx);
       } else {
         var wP=getOptionVariantPrice('window',row.type);
-        var wLbl=wP>=375?'Vinyl Window':'Window';
         var wKey=wP>=375?'vinylwindow':'window';
+        var wDesc=_optLabelFromOpts(_WIN_OPTS,row.type);
+        var wLbl=wDesc?wDesc+' Window':(wP>=375?'Vinyl Window':'Window');
         if(wP>0) add(wLbl+(q>1?' ('+q+'x)':''),wP*q,wKey,idx);
       }
     });
@@ -32958,7 +33056,8 @@ function cb_calcAddons(forDisplay){
       var sz=getOptionVariantPrice('garagedoor',row.customSize,gSub);
       var gOpts=row.type==='rollup'?_GARAGE_ROLLUP_OPTS:_GARAGE_SECTIONAL_OPTS;
       var lbl=_optLabelFromOpts(gOpts,row.customSize);
-      if(!lbl) lbl=row.type==='rollup'?'Rollup Door':'Sectional Garage Door';
+      if(lbl) lbl+=row.type==='rollup'?' Rollup':' Sectional';
+      else lbl=row.type==='rollup'?'Rollup Door':'Sectional Garage Door';
       var optKey=row.type==='rollup'?'rollupdoor':'garagedoor';
       var gq=Math.max(1,parseInt(row.qty)||1);
       if(sz>0) add(lbl+(gq>1?' ('+gq+'x)':''),sz*gq,optKey,idx);
@@ -33332,10 +33431,46 @@ function cb_renderOptsSummaryInto(hostId){
       host.appendChild(emptyC);
       return;
     }
+    var mergedLineKeys={};
     visibleStd.forEach(function(it){
       var maxQ=it.qty||1;
       var rq=(cbCalcState.stdRemoved&&cbCalcState.stdRemoved[it.id])||0;
       var removed=rq>0;
+      var remainingStd=maxQ-rq;
+      var match=null;
+      if(it.matchKey&&remainingStd>0){
+        for(var mi=0;mi<ca.lines.length;mi++){
+          var cl=ca.lines[mi];
+          if(cl.excluded) continue;
+          var lk=cl.sourceKey+'|'+cl.multiIdx;
+          if(mergedLineKeys[lk]) continue;
+          var info=_stdMatchInfoForLine(cbCalcState,cl);
+          if(info&&info.catKey===it.matchKey&&info.matchType===String(it.matchType)){ match={line:cl,info:info,key:lk}; break; }
+        }
+      }
+      if(match){
+        mergedLineKeys[match.key]=true;
+        var addedQty=Math.max(1,parseInt(match.info.row.qty)||1);
+        var baseLabel=it.label.replace(/s$/,'');
+        _appendSelOptCard(host,hostId,false,{
+          isCombinedStd:true,
+          label:'('+(remainingStd+addedQty)+') '+baseLabel,
+          stdQty:remainingStd,addedQty:addedQty,
+          priceText:'+'+fmt(match.line.val),
+          showRemove:true,
+          onQtyChange:function(newAddedQty){
+            var mt=_summaryMultiTypeForKey(match.line.sourceKey);
+            if(newAddedQty<=0){ cb_calcRemoveRow(mt,match.info.idx); }
+            else{ match.info.row.qty=newAddedQty; cb_calcRenderRows(mt); }
+          },
+          onRemove:function(){
+            var mt=_summaryMultiTypeForKey(match.line.sourceKey);
+            cb_calcRemoveRow(mt,match.info.idx);
+            cb_afterOptsSummaryChange(hostId);
+          }
+        });
+        return;
+      }
       var lbl=it.label+(maxQ>1?' ('+maxQ+'×)':'');
       _appendSelOptCard(host,hostId,false,{
         isStd:true,stdId:it.id,label:lbl,included:!removed,excluded:removed,
@@ -33352,6 +33487,8 @@ function cb_renderOptsSummaryInto(hostId){
     });
     ca.lines.forEach(function(l){
       (function(l){
+        var lk=l.sourceKey+'|'+l.multiIdx;
+        if(mergedLineKeys[lk]) return;
         var exKey=_addonExcludeKey(l.sourceKey,l.multiIdx);
         _appendSelOptCard(host,hostId,false,{
           isStd:false,exKey:exKey,label:l.label,included:!l.excluded,excluded:!!l.excluded,
