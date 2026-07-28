@@ -962,7 +962,26 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
 .sel-opt-qty::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
 .sel-opt-qty:focus { outline:none; border-color:var(--wheat); background:rgba(255,255,255,0.14); }
 .sel-opt-name { font-weight:600; color:var(--cream); min-width:0; line-height:1.2; overflow-wrap:anywhere; }
+.sel-opt-qtybadge { display:inline-block; color:var(--wheat); font-weight:800; margin-right:2px; }
+.sel-opt-card-editable { cursor:pointer; }
+.sel-opt-card-editable:active { background:rgba(255,255,255,0.06); }
 .sel-opt-price { font-weight:700; color:var(--wheat); flex-shrink:0; font-size:0.65rem; }
+.selopt-edit-overlay { display:none; position:fixed; inset:0; z-index:10030; background:rgba(0,0,0,0.6); align-items:center; justify-content:center; padding:16px; }
+.selopt-edit-overlay.open { display:flex; }
+.selopt-edit-pop { width:100%; max-width:320px; max-height:82vh; overflow-y:auto; background:var(--earth); border:1.5px solid rgba(232,200,122,0.3); border-radius:14px; padding:16px; box-shadow:0 8px 32px rgba(0,0,0,0.5); }
+.selopt-edit-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:6px; }
+.selopt-edit-head h4 { font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:1.05rem; letter-spacing:1.5px; color:var(--wheat); margin:0; }
+.selopt-edit-close { -webkit-appearance:none; appearance:none; border:none; background:rgba(255,255,255,0.08); color:var(--wheat); width:30px; height:30px; border-radius:8px; font-size:0.9rem; cursor:pointer; flex-shrink:0; }
+.selopt-edit-label { font-size:0.68rem; letter-spacing:1.2px; text-transform:uppercase; color:rgba(232,200,122,0.6); margin:12px 0 6px; }
+.selopt-edit-qtyrow { display:flex; align-items:center; gap:10px; }
+.selopt-edit-qtybtn { width:38px; height:38px; flex-shrink:0; border-radius:8px; border:1.5px solid rgba(232,200,122,0.35); background:rgba(255,255,255,0.06); color:var(--cream); font-size:1.2rem; line-height:1; cursor:pointer; -webkit-appearance:none; appearance:none; }
+.selopt-edit-qtybtn:active { background:rgba(255,255,255,0.14); }
+.selopt-edit-qtyval { flex:1; text-align:center; font-size:1.1rem; font-weight:700; color:var(--cream); border:1.5px solid rgba(232,200,122,0.25); border-radius:8px; padding:8px; background:rgba(255,255,255,0.04); }
+.selopt-edit-hint { font-size:0.65rem; color:rgba(232,200,122,0.5); margin-top:8px; line-height:1.3; }
+.selopt-edit-actions { display:flex; gap:8px; margin-top:16px; }
+.selopt-edit-btn { flex:1; -webkit-appearance:none; appearance:none; border-radius:9px; padding:11px; font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:0.95rem; letter-spacing:1.5px; cursor:pointer; }
+.selopt-edit-btn-primary { background:var(--barn); color:var(--wheat); border:none; }
+.selopt-edit-btn-secondary { background:rgba(255,255,255,0.06); color:rgba(232,200,122,0.7); border:1.5px solid rgba(232,200,122,0.25); }
 .sel-opt-x {
   -webkit-appearance:none; appearance:none; border:none;
   background:rgba(196,81,31,0.25); color:var(--wheat);
@@ -6065,9 +6084,8 @@ select:focus {
 
 <div class="screen" id="screenCompare">
   <div class="header">
-    <button type="button" class="back-btn" onclick="appNavBack()" aria-label="Back">&#8592;</button>
-    <div class="header-title">Compare Buildings</div>
     <div class="header-spacer" aria-hidden="true"></div>
+    <div class="header-title">Compare Buildings</div>
   </div>
   <div style="padding:16px;padding-bottom:90px;">
     <div class="page-title">Building comparison</div>
@@ -23960,8 +23978,145 @@ function _stdMatchInfoForLine(state,l){
     var arrG=state.multiGarage||[];
     var rowG=arrG[l.multiIdx];
     if(rowG&&rowG.customSize) return {catKey:(rowG.type==='rollup'?'garagedoor-rollup':'garagedoor-sectional'),matchType:String(rowG.customSize),arr:arrG,idx:l.multiIdx,row:rowG};
+  } else if(l.sourceKey==='cutouts'){
+    var arrC=state.multiCutouts||[];
+    var rowC=arrC[l.multiIdx];
+    if(rowC&&rowC.type) return {catKey:'cutouts',matchType:String(rowC.type),arr:arrC,idx:l.multiIdx,row:rowC};
+  } else if(l.sourceKey==='custom'){
+    var arrCu=state.multiCustom||[];
+    var rowCu=arrCu[l.multiIdx];
+    if(rowCu&&rowCu.mode!=='linft') return {catKey:'custom',matchType:null,arr:arrCu,idx:l.multiIdx,row:rowCu};
   }
   return null;
+}
+
+/** Variant list (for the "select a different option" list in the Selected
+ *  Options edit popup) matching a resolved category key. */
+function _variantOptsForCatKey(catKey){
+  if(catKey==='door36') return _DOOR_OPTS;
+  if(catKey==='window') return (_WIN_OPTS||[]).filter(function(o){ return o.v!=='custom_vinyl'; });
+  if(catKey==='garagedoor-rollup') return _GARAGE_ROLLUP_OPTS;
+  if(catKey==='garagedoor-sectional') return _GARAGE_SECTIONAL_OPTS;
+  if(catKey==='cutouts') return _CUTOUT_OPTS;
+  return null;
+}
+
+/** Split a computed addon line label like "70\u2033 Double Door (2x)" into
+ *  {base:"70\u2033 Double Door", qty:2} so the Selected Options tile can show
+ *  the quantity separately instead of embedded in the title text. */
+function _splitQtyFromLabel(label){
+  var m=/^(.*) \((\d+)x\)$/.exec(label||'');
+  if(m) return {base:m[1],qty:parseInt(m[2],10)||1};
+  return {base:label||'',qty:1};
+}
+
+/** Small popup letting the user change an added option's quantity and,
+ *  when applicable, pick a different variant/size — triggered by tapping
+ *  a Selected Options tile (checkbox and remove (x) stay untouched). */
+function _openSelOptEditPopup(opts){
+  var old=document.getElementById('selOptEditOverlay');
+  if(old&&old.parentNode) old.parentNode.removeChild(old);
+  var overlay=document.createElement('div');
+  overlay.id='selOptEditOverlay';
+  overlay.className='selopt-edit-overlay open';
+  function closePop(){ if(overlay.parentNode) overlay.parentNode.removeChild(overlay); }
+  overlay.onclick=function(e){ if(e.target===overlay) closePop(); };
+
+  var pop=document.createElement('div');
+  pop.className='selopt-edit-pop';
+  pop.onclick=function(e){ e.stopPropagation(); };
+  overlay.appendChild(pop);
+
+  var head=document.createElement('div');
+  head.className='selopt-edit-head';
+  var h4=document.createElement('h4');
+  h4.textContent=opts.title||'Edit Option';
+  head.appendChild(h4);
+  var closeBtn=document.createElement('button');
+  closeBtn.type='button'; closeBtn.className='selopt-edit-close'; closeBtn.setAttribute('aria-label','Close');
+  closeBtn.textContent='\u2715';
+  closeBtn.onclick=closePop;
+  head.appendChild(closeBtn);
+  pop.appendChild(head);
+
+  var selectedVariant=opts.currentVariant!=null?String(opts.currentVariant):null;
+  if(opts.variantOpts&&opts.variantOpts.length){
+    var vLabel=document.createElement('div');
+    vLabel.className='selopt-edit-label';
+    vLabel.textContent='Select Option';
+    pop.appendChild(vLabel);
+    var tiles=document.createElement('div');
+    tiles.className='owp-opt-tiles';
+    opts.variantOpts.forEach(function(o){
+      var btn=document.createElement('button');
+      btn.type='button';
+      btn.className='owp-opt-tile'+(String(o.v)===selectedVariant?' selected':'');
+      var span=document.createElement('span');
+      span.className='owp-opt-tile-text';
+      span.textContent=o.t;
+      btn.appendChild(span);
+      btn.onclick=function(){
+        selectedVariant=String(o.v);
+        var all=tiles.querySelectorAll('.owp-opt-tile');
+        for(var ti=0;ti<all.length;ti++) all[ti].classList.remove('selected');
+        btn.classList.add('selected');
+      };
+      tiles.appendChild(btn);
+    });
+    pop.appendChild(tiles);
+  }
+
+  var qLabel=document.createElement('div');
+  qLabel.className='selopt-edit-label';
+  qLabel.textContent='Quantity';
+  pop.appendChild(qLabel);
+
+  var minQ=opts.minQty!=null?opts.minQty:0;
+  var curQty=Math.max(minQ,opts.qty||1);
+  var qRow=document.createElement('div');
+  qRow.className='selopt-edit-qtyrow';
+  var minusBtn=document.createElement('button');
+  minusBtn.type='button'; minusBtn.className='selopt-edit-qtybtn'; minusBtn.setAttribute('aria-label','Decrease quantity');
+  minusBtn.textContent='\u2212';
+  var qVal=document.createElement('div');
+  qVal.className='selopt-edit-qtyval';
+  qVal.textContent=String(curQty);
+  var plusBtn=document.createElement('button');
+  plusBtn.type='button'; plusBtn.className='selopt-edit-qtybtn'; plusBtn.setAttribute('aria-label','Increase quantity');
+  plusBtn.textContent='+';
+  minusBtn.onclick=function(){ curQty=Math.max(minQ,curQty-1); qVal.textContent=String(curQty); };
+  plusBtn.onclick=function(){ curQty=curQty+1; qVal.textContent=String(curQty); };
+  qRow.appendChild(minusBtn); qRow.appendChild(qVal); qRow.appendChild(plusBtn);
+  pop.appendChild(qRow);
+  if(minQ>0){
+    var hint=document.createElement('div');
+    hint.className='selopt-edit-hint';
+    hint.textContent=minQ+' included standard \u2014 lowering to '+minQ+' removes the added extra.';
+    pop.appendChild(hint);
+  }else{
+    var hint2=document.createElement('div');
+    hint2.className='selopt-edit-hint';
+    hint2.textContent='Lowering to 0 removes this option.';
+    pop.appendChild(hint2);
+  }
+
+  var actions=document.createElement('div');
+  actions.className='selopt-edit-actions';
+  var cancelBtn=document.createElement('button');
+  cancelBtn.type='button'; cancelBtn.className='selopt-edit-btn selopt-edit-btn-secondary';
+  cancelBtn.textContent='Cancel';
+  cancelBtn.onclick=closePop;
+  var applyBtn=document.createElement('button');
+  applyBtn.type='button'; applyBtn.className='selopt-edit-btn selopt-edit-btn-primary';
+  applyBtn.textContent='Apply';
+  applyBtn.onclick=function(){
+    closePop();
+    if(opts.onApply) opts.onApply(curQty,selectedVariant);
+  };
+  actions.appendChild(cancelBtn); actions.appendChild(applyBtn);
+  pop.appendChild(actions);
+
+  document.body.appendChild(overlay);
 }
 
 
@@ -24266,31 +24421,8 @@ function _afterOptsSummaryHostChange(hostId){
 
 function _appendSelOptCard(host,hostId,isRev,cfg){
   var card=document.createElement('div');
-  card.className='sel-opt-card'+(cfg.excluded?' is-excluded':'');
-  if(cfg.isCombinedStd){
-    var totalQ=cfg.stdQty+cfg.addedQty;
-    var qtyInpC=document.createElement('input');
-    qtyInpC.type='number';
-    qtyInpC.className='sel-opt-qty';
-    qtyInpC.min=String(cfg.stdQty);
-    qtyInpC.step='1';
-    qtyInpC.inputMode='numeric';
-    qtyInpC.value=String(totalQ);
-    qtyInpC.setAttribute('aria-label','Total quantity for '+cfg.label+' (standard qty: '+cfg.stdQty+')');
-    var applyQtyInpC=function(){
-      var n=parseInt(qtyInpC.value,10);
-      if(isNaN(n)) n=totalQ;
-      n=Math.max(cfg.stdQty,n);
-      qtyInpC.value=String(n);
-      var doSet=function(){ if(cfg.onQtyChange) cfg.onQtyChange(n-cfg.stdQty); };
-      if(isRev) withRevOptsProbe(doSet); else doSet();
-      _afterOptsSummaryHostChange(hostId);
-    };
-    qtyInpC.onchange=applyQtyInpC;
-    qtyInpC.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); qtyInpC.blur(); } });
-    qtyInpC.onclick=function(e){ e.stopPropagation(); };
-    card.appendChild(qtyInpC);
-  } else if(cfg.isStd&&cfg.maxQty>1){
+  card.className='sel-opt-card'+(cfg.excluded?' is-excluded':'')+(cfg.onEdit?' sel-opt-card-editable':'');
+  if(cfg.isStd&&cfg.maxQty>1){
     var maxQ=cfg.maxQty;
     var curRemoved=Math.max(0,Math.min(maxQ,cfg.removedQty||0));
     var curKept=maxQ-curRemoved;
@@ -24337,7 +24469,15 @@ function _appendSelOptCard(host,hostId,isRev,cfg){
   }
   var name=document.createElement('div');
   name.className='sel-opt-name';
-  name.textContent=cfg.label;
+  if(cfg.qty>1){
+    var qb=document.createElement('span');
+    qb.className='sel-opt-qtybadge';
+    qb.textContent=cfg.qty+'\u00d7';
+    name.appendChild(qb);
+    name.appendChild(document.createTextNode(' '+cfg.label));
+  }else{
+    name.textContent=cfg.label;
+  }
   name.title=cfg.label;
   card.appendChild(name);
   var price=document.createElement('div');
@@ -24358,6 +24498,21 @@ function _appendSelOptCard(host,hostId,isRev,cfg){
     var ph=document.createElement('div');
     ph.style.width='20px';
     card.appendChild(ph);
+  }
+  if(cfg.onEdit){
+    card.setAttribute('role','button');
+    card.setAttribute('tabindex','0');
+    card.setAttribute('aria-label','Edit '+cfg.label);
+    card.onclick=function(e){
+      if(e.target.closest('.sel-opt-chk,.sel-opt-x,.sel-opt-qty')) return;
+      cfg.onEdit();
+    };
+    card.onkeydown=function(e){
+      if((e.key==='Enter'||e.key===' ')&&!e.target.closest('.sel-opt-chk,.sel-opt-x,.sel-opt-qty')){
+        e.preventDefault();
+        cfg.onEdit();
+      }
+    };
   }
   host.appendChild(card);
 }
@@ -24404,25 +24559,47 @@ function _renderOptsSummaryInto(hostId){
       if(match){
         mergedLineKeys[match.key]=true;
         var addedQty=Math.max(1,parseInt(match.info.row.qty)||1);
+        var combinedQty=remainingStd+addedQty;
         var baseLabel=it.label.replace(/s$/,'');
-        _appendSelOptCard(host,hostId,isRev,{
-          isCombinedStd:true,
-          label:'('+(remainingStd+addedQty)+') '+baseLabel,
-          stdQty:remainingStd,addedQty:addedQty,
-          priceText:'+'+fmt(match.line.val),
-          showRemove:true,
-          onQtyChange:function(newAddedQty){
-            var mt=_summaryMultiTypeForKey(match.line.sourceKey);
-            if(newAddedQty<=0){ calcRemoveRow(mt,match.info.idx); }
-            else{ match.info.row.qty=newAddedQty; calcRenderRows(mt); }
-          },
-          onRemove:function(){
-            var mt=_summaryMultiTypeForKey(match.line.sourceKey);
-            var doRemove=function(){ calcRemoveRow(mt,match.info.idx); };
-            if(isRev) withRevOptsProbe(doRemove); else doRemove();
-            _afterOptsSummaryHostChange(hostId);
-          }
-        });
+        var exKeyM=_addonExcludeKey(match.line.sourceKey,match.line.multiIdx);
+        (function(match,remainingStd,combinedQty,baseLabel){
+          _appendSelOptCard(host,hostId,isRev,{
+            isStd:false,exKey:exKeyM,
+            label:baseLabel,qty:combinedQty,
+            included:!match.line.excluded,excluded:!!match.line.excluded,
+            priceText:'+'+fmt(match.line.val),
+            showRemove:true,
+            onEdit:function(){
+              _openSelOptEditPopup({
+                title:baseLabel,
+                variantOpts:_variantOptsForCatKey(match.info.catKey),
+                currentVariant:match.info.matchType,
+                qty:combinedQty,
+                minQty:remainingStd,
+                onApply:function(newQty,newVariant){
+                  var doApply=function(){
+                    if(newVariant!=null){
+                      if(match.info.catKey==='garagedoor-rollup'||match.info.catKey==='garagedoor-sectional') match.info.row.customSize=newVariant;
+                      else match.info.row.type=newVariant;
+                    }
+                    var mt=_summaryMultiTypeForKey(match.line.sourceKey);
+                    var newAdded=Math.max(0,newQty-remainingStd);
+                    if(newAdded<=0){ calcRemoveRow(mt,match.info.idx); }
+                    else{ match.info.row.qty=newAdded; calcRenderRows(mt); }
+                  };
+                  if(isRev) withRevOptsProbe(doApply); else doApply();
+                  _afterOptsSummaryHostChange(hostId);
+                }
+              });
+            },
+            onRemove:function(){
+              var mt=_summaryMultiTypeForKey(match.line.sourceKey);
+              var doRemove=function(){ calcRemoveRow(mt,match.info.idx); };
+              if(isRev) withRevOptsProbe(doRemove); else doRemove();
+              _afterOptsSummaryHostChange(hostId);
+            }
+          });
+        })(match,remainingStd,combinedQty,baseLabel);
         return;
       }
       var lbl=it.label+(maxQ>1?' ('+maxQ+'×)':'');
@@ -24443,8 +24620,11 @@ function _renderOptsSummaryInto(hostId){
         var lk=l.sourceKey+'|'+l.multiIdx;
         if(mergedLineKeys[lk]) return;
         var exKey=_addonExcludeKey(l.sourceKey,l.multiIdx);
-        _appendSelOptCard(host,hostId,isRev,{
-          isStd:false,exKey:exKey,label:l.label,included:!l.excluded,excluded:!!l.excluded,
+        var split=_splitQtyFromLabel(l.label);
+        var info=_stdMatchInfoForLine(calcState,l);
+        var tileQty=(info&&info.catKey==='custom')?Math.max(1,parseInt(info.row.qty)||1):split.qty;
+        var cardCfg={
+          isStd:false,exKey:exKey,label:split.base,qty:tileQty,included:!l.excluded,excluded:!!l.excluded,
           priceText:'+'+fmt(l.val),showRemove:true,
           onRemove:function(){
             var sk=l.sourceKey;
@@ -24464,7 +24644,45 @@ function _renderOptsSummaryInto(hostId){
             if(isRev) withRevOptsProbe(doRemove); else doRemove();
             _afterOptsSummaryHostChange(hostId);
           }
-        });
+        };
+        if(info&&info.catKey==='custom'){
+          cardCfg.onEdit=function(){
+            _openSelOptEditPopup({
+              title:split.base,variantOpts:null,qty:tileQty,minQty:0,
+              onApply:function(newQty){
+                var doApply=function(){
+                  if(newQty<=0){ if(calcState.multiCustom) calcState.multiCustom.splice(info.idx,1); }
+                  else{ info.row.qty=newQty; }
+                };
+                if(isRev) withRevOptsProbe(doApply); else doApply();
+                _afterOptsSummaryHostChange(hostId);
+              }
+            });
+          };
+        } else if(info){
+          cardCfg.onEdit=function(){
+            _openSelOptEditPopup({
+              title:split.base,
+              variantOpts:_variantOptsForCatKey(info.catKey),
+              currentVariant:info.matchType,
+              qty:split.qty,minQty:0,
+              onApply:function(newQty,newVariant){
+                var doApply=function(){
+                  if(newVariant!=null){
+                    if(info.catKey==='garagedoor-rollup'||info.catKey==='garagedoor-sectional') info.row.customSize=newVariant;
+                    else info.row.type=newVariant;
+                  }
+                  var mt=_summaryMultiTypeForKey(l.sourceKey);
+                  if(newQty<=0){ calcRemoveRow(mt,info.idx); }
+                  else{ info.row.qty=newQty; calcRenderRows(mt); }
+                };
+                if(isRev) withRevOptsProbe(doApply); else doApply();
+                _afterOptsSummaryHostChange(hostId);
+              }
+            });
+          };
+        }
+        _appendSelOptCard(host,hostId,isRev,cardCfg);
       })(l);
     });
     return;
@@ -33451,24 +33669,43 @@ function cb_renderOptsSummaryInto(hostId){
       if(match){
         mergedLineKeys[match.key]=true;
         var addedQty=Math.max(1,parseInt(match.info.row.qty)||1);
+        var combinedQty=remainingStd+addedQty;
         var baseLabel=it.label.replace(/s$/,'');
-        _appendSelOptCard(host,hostId,false,{
-          isCombinedStd:true,
-          label:'('+(remainingStd+addedQty)+') '+baseLabel,
-          stdQty:remainingStd,addedQty:addedQty,
-          priceText:'+'+fmt(match.line.val),
-          showRemove:true,
-          onQtyChange:function(newAddedQty){
-            var mt=_summaryMultiTypeForKey(match.line.sourceKey);
-            if(newAddedQty<=0){ cb_calcRemoveRow(mt,match.info.idx); }
-            else{ match.info.row.qty=newAddedQty; cb_calcRenderRows(mt); }
-          },
-          onRemove:function(){
-            var mt=_summaryMultiTypeForKey(match.line.sourceKey);
-            cb_calcRemoveRow(mt,match.info.idx);
-            cb_afterOptsSummaryChange(hostId);
-          }
-        });
+        var exKeyM=_addonExcludeKey(match.line.sourceKey,match.line.multiIdx);
+        (function(match,remainingStd,combinedQty,baseLabel){
+          _appendSelOptCard(host,hostId,false,{
+            isStd:false,exKey:exKeyM,
+            label:baseLabel,qty:combinedQty,
+            included:!match.line.excluded,excluded:!!match.line.excluded,
+            priceText:'+'+fmt(match.line.val),
+            showRemove:true,
+            onEdit:function(){
+              _openSelOptEditPopup({
+                title:baseLabel,
+                variantOpts:_variantOptsForCatKey(match.info.catKey),
+                currentVariant:match.info.matchType,
+                qty:combinedQty,
+                minQty:remainingStd,
+                onApply:function(newQty,newVariant){
+                  if(newVariant!=null){
+                    if(match.info.catKey==='garagedoor-rollup'||match.info.catKey==='garagedoor-sectional') match.info.row.customSize=newVariant;
+                    else match.info.row.type=newVariant;
+                  }
+                  var mt=_summaryMultiTypeForKey(match.line.sourceKey);
+                  var newAdded=Math.max(0,newQty-remainingStd);
+                  if(newAdded<=0){ cb_calcRemoveRow(mt,match.info.idx); }
+                  else{ match.info.row.qty=newAdded; cb_calcRenderRows(mt); }
+                  cb_afterOptsSummaryChange(hostId);
+                }
+              });
+            },
+            onRemove:function(){
+              var mt=_summaryMultiTypeForKey(match.line.sourceKey);
+              cb_calcRemoveRow(mt,match.info.idx);
+              cb_afterOptsSummaryChange(hostId);
+            }
+          });
+        })(match,remainingStd,combinedQty,baseLabel);
         return;
       }
       var lbl=it.label+(maxQ>1?' ('+maxQ+'×)':'');
@@ -33490,8 +33727,11 @@ function cb_renderOptsSummaryInto(hostId){
         var lk=l.sourceKey+'|'+l.multiIdx;
         if(mergedLineKeys[lk]) return;
         var exKey=_addonExcludeKey(l.sourceKey,l.multiIdx);
-        _appendSelOptCard(host,hostId,false,{
-          isStd:false,exKey:exKey,label:l.label,included:!l.excluded,excluded:!!l.excluded,
+        var split=_splitQtyFromLabel(l.label);
+        var info=_stdMatchInfoForLine(cbCalcState,l);
+        var tileQty=(info&&info.catKey==='custom')?Math.max(1,parseInt(info.row.qty)||1):split.qty;
+        var cardCfg={
+          isStd:false,exKey:exKey,label:split.base,qty:tileQty,included:!l.excluded,excluded:!!l.excluded,
           priceText:'+'+fmt(l.val),showRemove:true,
           onRemove:function(){
             var sk=l.sourceKey;
@@ -33511,7 +33751,39 @@ function cb_renderOptsSummaryInto(hostId){
             doRemove();
             cb_afterOptsSummaryChange(hostId);
           }
-        });
+        };
+        if(info&&info.catKey==='custom'){
+          cardCfg.onEdit=function(){
+            _openSelOptEditPopup({
+              title:split.base,variantOpts:null,qty:tileQty,minQty:0,
+              onApply:function(newQty){
+                if(newQty<=0){ if(cbCalcState.multiCustom) cbCalcState.multiCustom.splice(info.idx,1); }
+                else{ info.row.qty=newQty; }
+                cb_afterOptsSummaryChange(hostId);
+              }
+            });
+          };
+        } else if(info){
+          cardCfg.onEdit=function(){
+            _openSelOptEditPopup({
+              title:split.base,
+              variantOpts:_variantOptsForCatKey(info.catKey),
+              currentVariant:info.matchType,
+              qty:split.qty,minQty:0,
+              onApply:function(newQty,newVariant){
+                if(newVariant!=null){
+                  if(info.catKey==='garagedoor-rollup'||info.catKey==='garagedoor-sectional') info.row.customSize=newVariant;
+                  else info.row.type=newVariant;
+                }
+                var mt=_summaryMultiTypeForKey(l.sourceKey);
+                if(newQty<=0){ cb_calcRemoveRow(mt,info.idx); }
+                else{ info.row.qty=newQty; cb_calcRenderRows(mt); }
+                cb_afterOptsSummaryChange(hostId);
+              }
+            });
+          };
+        }
+        _appendSelOptCard(host,hostId,false,cardCfg);
       })(l);
     });
     return;
