@@ -977,6 +977,12 @@ a.quote-hub-tile { text-decoration:none; box-sizing:border-box; color:inherit; }
 .selopt-edit-qtybtn { width:38px; height:38px; flex-shrink:0; border-radius:8px; border:1.5px solid rgba(232,200,122,0.35); background:rgba(255,255,255,0.06); color:var(--cream); font-size:1.2rem; line-height:1; cursor:pointer; -webkit-appearance:none; appearance:none; }
 .selopt-edit-qtybtn:active { background:rgba(255,255,255,0.14); }
 .selopt-edit-qtyval { flex:1; text-align:center; font-size:1.1rem; font-weight:700; color:var(--cream); border:1.5px solid rgba(232,200,122,0.25); border-radius:8px; padding:8px; background:rgba(255,255,255,0.04); }
+.selopt-edit-measure-row { display:flex; align-items:center; gap:8px; }
+.selopt-edit-measure-input { flex:1; text-align:center; font-size:1.1rem; font-weight:700; color:var(--cream); border:1.5px solid rgba(232,200,122,0.25); border-radius:8px; padding:8px; background:rgba(255,255,255,0.04); -webkit-appearance:none; appearance:none; }
+.selopt-edit-measure-input::-webkit-outer-spin-button,
+.selopt-edit-measure-input::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+.selopt-edit-measure-input:focus { outline:none; border-color:var(--wheat); }
+.selopt-edit-measure-unit { font-size:0.72rem; color:rgba(232,200,122,0.6); flex-shrink:0; }
 .selopt-edit-hint { font-size:0.65rem; color:rgba(232,200,122,0.5); margin-top:8px; line-height:1.3; }
 .selopt-edit-actions { display:flex; gap:8px; margin-top:16px; }
 .selopt-edit-btn { flex:1; -webkit-appearance:none; appearance:none; border-radius:9px; padding:11px; font-family:'Bebas Neue',Impact,'Arial Narrow',sans-serif; font-size:0.95rem; letter-spacing:1.5px; cursor:pointer; }
@@ -5528,6 +5534,7 @@ select:focus {
             <div class="opt-detail" id="detail_rooffelt" style="display:none;">
               <div class="opt-auto-note" id="note_rooffelt">💡 Auto-calculated from building length</div>
               <div class="opt-calc-preview" id="prev_rooffelt"></div>
+              <input type="hidden" id="c_rooffeltFt" value="">
             </div>
           </div>
 
@@ -5543,6 +5550,7 @@ select:focus {
             <div class="opt-detail" id="detail_housewrap" style="display:none;">
               <div class="opt-auto-note" id="note_housewrap">💡 Auto-calculated from building length</div>
               <div class="opt-calc-preview" id="prev_housewrap"></div>
+              <input type="hidden" id="c_housewrapFt" value="">
             </div>
           </div>
 
@@ -5586,6 +5594,7 @@ select:focus {
             <div class="opt-detail" id="detail_doubletopplate" style="display:none;">
               <div class="opt-auto-note" id="note_doubletopplate">💡 Auto-calculated from building length</div>
               <div class="opt-calc-preview" id="prev_doubletopplate"></div>
+              <input type="hidden" id="c_doubletopplateFt" value="">
             </div>
           </div>
 
@@ -5644,6 +5653,7 @@ select:focus {
             <div class="opt-detail" id="detail_rooftrusses" style="display:none;">
               <div class="opt-auto-note" id="note_rooftrusses">💡 Auto-calculated from building length (8–12' wide)</div>
               <div class="opt-calc-preview" id="prev_rooftrusses"></div>
+              <input type="hidden" id="c_rooftrussft" value="">
             </div>
           </div>
 
@@ -5659,6 +5669,7 @@ select:focus {
             <div class="opt-detail" id="detail_floorjoists" style="display:none;">
               <div class="opt-auto-note" id="note_floorjoists">💡 Auto-calculated from building length</div>
               <div class="opt-calc-preview" id="prev_floorjoists"></div>
+              <input type="hidden" id="c_floorjoistFt" value="">
             </div>
           </div>
 
@@ -7211,6 +7222,7 @@ select:focus {
             <div class="opt-detail" id="cb_detail_rooffelt" style="display:none;">
               <div class="opt-auto-note" id="cb_note_rooffelt">💡 Auto-calculated from building length</div>
               <div class="opt-calc-preview" id="cb_prev_rooffelt"></div>
+              <input type="hidden" id="cb_c_rooffeltFt" value="">
             </div>
           </div>
 
@@ -7226,6 +7238,7 @@ select:focus {
             <div class="opt-detail" id="cb_detail_housewrap" style="display:none;">
               <div class="opt-auto-note" id="cb_note_housewrap">💡 Auto-calculated from building length</div>
               <div class="opt-calc-preview" id="cb_prev_housewrap"></div>
+              <input type="hidden" id="cb_c_housewrapFt" value="">
             </div>
           </div>
 
@@ -7269,6 +7282,7 @@ select:focus {
             <div class="opt-detail" id="cb_detail_doubletopplate" style="display:none;">
               <div class="opt-auto-note" id="cb_note_doubletopplate">💡 Auto-calculated from building length</div>
               <div class="opt-calc-preview" id="cb_prev_doubletopplate"></div>
+              <input type="hidden" id="cb_c_doubletopplateFt" value="">
             </div>
           </div>
 
@@ -7327,6 +7341,7 @@ select:focus {
             <div class="opt-detail" id="cb_detail_rooftrusses" style="display:none;">
               <div class="opt-auto-note" id="cb_note_rooftrusses">💡 Auto-calculated from building length (8–12' wide)</div>
               <div class="opt-calc-preview" id="cb_prev_rooftrusses"></div>
+              <input type="hidden" id="cb_c_rooftrussft" value="">
             </div>
           </div>
 
@@ -7342,6 +7357,7 @@ select:focus {
             <div class="opt-detail" id="cb_detail_floorjoists" style="display:none;">
               <div class="opt-auto-note" id="cb_note_floorjoists">💡 Auto-calculated from building length</div>
               <div class="opt-calc-preview" id="cb_prev_floorjoists"></div>
+              <input type="hidden" id="cb_c_floorjoistFt" value="">
             </div>
           </div>
 
@@ -17254,7 +17270,8 @@ function syncDimensionBasedOptionFields(){
     floorjoists:'c_floorjoistFt',
     shelves:'c_shelvesLinFt',
     loft:'c_loftFt',
-    porch:'c_porchFt'
+    porch:'c_porchFt',
+    doubletopplate:'c_doubletopplateFt'
   };
   Object.keys(linftFieldMap).forEach(function(key){
     if(!calcState.addons[key]) return;
@@ -17268,12 +17285,6 @@ function syncDimensionBasedOptionFields(){
     if(_optSkipsMeasureConfirm(flEntry)){
       var fl=document.getElementById('c_flooringSqFt');
       if(fl) fl.value=sq>0?String(sq):'';
-    }
-  }
-  if(calcState.addons.doubletopplate){
-    var dtpEntry=getOptCatalogEntry('doubletopplate');
-    if(_optSkipsMeasureConfirm(dtpEntry)){
-      /* price uses building length directly */
     }
   }
   if(calcState.multi2x6&&calcState.multi2x6.length){
@@ -23985,7 +23996,20 @@ function _stdMatchInfoForLine(state,l){
   } else if(l.sourceKey==='custom'){
     var arrCu=state.multiCustom||[];
     var rowCu=arrCu[l.multiIdx];
-    if(rowCu&&rowCu.mode!=='linft') return {catKey:'custom',matchType:null,arr:arrCu,idx:l.multiIdx,row:rowCu};
+    if(rowCu&&rowCu.mode==='linft') return {catKey:'custom-linft',matchType:null,arr:arrCu,idx:l.multiIdx,row:rowCu};
+    if(rowCu) return {catKey:'custom',matchType:null,arr:arrCu,idx:l.multiIdx,row:rowCu};
+  } else if(l.sourceKey==='2x6'){
+    var arrX=state.multi2x6||[];
+    var rowX=arrX[l.multiIdx];
+    if(rowX&&rowX.type) return {catKey:'2x6',matchType:String(rowX.type),arr:arrX,idx:l.multiIdx,row:rowX};
+  } else if(l.sourceKey==='intwall'){
+    var arrIw=state.multiIntwall||[];
+    var rowIw=arrIw[l.multiIdx];
+    if(rowIw&&rowIw.type) return {catKey:'intwall',matchType:String(rowIw.type),arr:arrIw,idx:l.multiIdx,row:rowIw};
+  } else if(l.sourceKey==='twotone'||l.sourceKey==='custompaint'){
+    var arrPt=state.multiPaint||[];
+    var rowPt=arrPt[l.multiIdx];
+    if(rowPt&&rowPt.type) return {catKey:'paint',matchType:String(rowPt.type),arr:arrPt,idx:l.multiIdx,row:rowPt};
   }
   return null;
 }
@@ -23998,7 +24022,50 @@ function _variantOptsForCatKey(catKey){
   if(catKey==='garagedoor-rollup') return _GARAGE_ROLLUP_OPTS;
   if(catKey==='garagedoor-sectional') return _GARAGE_SECTIONAL_OPTS;
   if(catKey==='cutouts') return _CUTOUT_OPTS;
+  if(catKey==='2x6') return _X6_TYPE_OPTS;
+  if(catKey==='intwall') return _INTWALL_TYPE_OPTS;
+  if(catKey==='paint') return _PAINT_TYPE_OPTS;
   return null;
+}
+
+/** Insulation options are mutually-exclusive within a category (e.g. Roof vs
+ *  Walls+Roof Deck, or Foam Board vs Spray Foam floor). Returns the tile list
+ *  (including the currently active key) for the Selected Options edit popup. */
+function _insulationVariantOptsForKey(key){
+  var groups=_insulationExclusionGroups();
+  for(var i=0;i<groups.length;i++){
+    if(groups[i].indexOf(key)>=0){
+      return groups[i].map(function(k){ return {v:k,t:_insulationShortLabel(k)}; });
+    }
+  }
+  return null;
+}
+
+/** Single-field lin ft / sq ft options (no variant, no multi-row array) that
+ *  should be tap-to-edit in the Selected Options tile. `warn:true` means the
+ *  value is meant to always match the building's size — changing it away from
+ *  that size requires confirmation in the edit popup. */
+var _MEASURE_OPT_META={
+  shelves:{type:'linft',warn:false},
+  loft:{type:'linft',warn:false},
+  porch:{type:'linft',warn:false},
+  osb_intwall:{type:'linft',warn:false},
+  rooffelt:{type:'linft',warn:true},
+  housewrap:{type:'linft',warn:true},
+  rooftrusses:{type:'linft',warn:true},
+  floorjoists:{type:'linft',warn:true},
+  doubletopplate:{type:'linft',warn:true},
+  flooring:{type:'sqft',warn:true}
+};
+var _MEASURE_FIELD_IDS={
+  shelves:'c_shelvesLinFt',loft:'c_loftFt',porch:'c_porchFt',osb_intwall:'c_osbIntwallFt',
+  rooffelt:'c_rooffeltFt',housewrap:'c_housewrapFt',rooftrusses:'c_rooftrussft',
+  floorjoists:'c_floorjoistFt',doubletopplate:'c_doubletopplateFt',flooring:'c_flooringSqFt'
+};
+function _measureFieldId(key,isCb){
+  var id=_MEASURE_FIELD_IDS[key];
+  if(!id) return null;
+  return isCb?('cb_'+id):id;
 }
 
 /** Split a computed addon line label like "70\u2033 Double Door (2x)" into
@@ -24010,9 +24077,25 @@ function _splitQtyFromLabel(label){
   return {base:label||'',qty:1};
 }
 
-/** Small popup letting the user change an added option's quantity and,
- *  when applicable, pick a different variant/size — triggered by tapping
- *  a Selected Options tile (checkbox and remove (x) stay untouched). */
+/** Small popup letting the user change an added option's quantity,
+ *  lin ft / sq ft measurement, and/or pick a different variant/size —
+ *  triggered by tapping a Selected Options tile (checkbox and remove (x)
+ *  stay untouched).
+ *
+ *  opts:
+ *    title           popup heading
+ *    variantOpts     optional [{v,t}] list \u2014 renders a "Select Option" tile picker
+ *    currentVariant  currently selected variant value
+ *    measure         optional {type:'linft'|'sqft', value, warnMismatch, expected}
+ *                     \u2014 when set, renders a plain numeric field instead of the
+ *                     qty stepper. If warnMismatch is true and the entered value
+ *                     doesn't match `expected`, the user must confirm before apply.
+ *    noQty           when true (and no measure), hides the qty stepper entirely
+ *                     (variant-only edit, e.g. swapping insulation type)
+ *    qty / minQty / maxQty   qty stepper bounds (ignored when `measure` is set)
+ *    hintText        optional override for the small hint line under the control
+ *    onApply(qtyOrMeasureVal, selectedVariant)
+ */
 function _openSelOptEditPopup(opts){
   var old=document.getElementById('selOptEditOverlay');
   if(old&&old.parentNode) old.parentNode.removeChild(old);
@@ -24066,38 +24149,73 @@ function _openSelOptEditPopup(opts){
     pop.appendChild(tiles);
   }
 
-  var qLabel=document.createElement('div');
-  qLabel.className='selopt-edit-label';
-  qLabel.textContent='Quantity';
-  pop.appendChild(qLabel);
+  var curQty=0, qVal=null, minQ=0, maxQ=null;
+  var measureInput=null;
+  if(opts.measure){
+    var mLabel=document.createElement('div');
+    mLabel.className='selopt-edit-label';
+    mLabel.textContent=opts.measure.type==='sqft'?'Square Feet':'Linear Feet';
+    pop.appendChild(mLabel);
+    var mRow=document.createElement('div');
+    mRow.className='selopt-edit-measure-row';
+    measureInput=document.createElement('input');
+    measureInput.type='number';
+    measureInput.className='selopt-edit-measure-input';
+    measureInput.min='0';
+    measureInput.step='0.1';
+    measureInput.inputMode='decimal';
+    measureInput.value=String(opts.measure.value||0);
+    measureInput.onclick=function(e){ e.stopPropagation(); };
+    var mUnit=document.createElement('span');
+    mUnit.className='selopt-edit-measure-unit';
+    mUnit.textContent=opts.measure.type==='sqft'?'sq ft':'lin ft';
+    mRow.appendChild(measureInput); mRow.appendChild(mUnit);
+    pop.appendChild(mRow);
+    var mHint=document.createElement('div');
+    mHint.className='selopt-edit-hint';
+    mHint.textContent=opts.hintText||(opts.measure.warnMismatch?'\ud83d\udca1 Defaults to this building\u2019s size \u2014 changing it will ask for confirmation.':'Set to 0 to remove this option.');
+    pop.appendChild(mHint);
+  }else if(!opts.noQty){
+    var qLabel=document.createElement('div');
+    qLabel.className='selopt-edit-label';
+    qLabel.textContent='Quantity';
+    pop.appendChild(qLabel);
 
-  var minQ=opts.minQty!=null?opts.minQty:0;
-  var curQty=Math.max(minQ,opts.qty||1);
-  var qRow=document.createElement('div');
-  qRow.className='selopt-edit-qtyrow';
-  var minusBtn=document.createElement('button');
-  minusBtn.type='button'; minusBtn.className='selopt-edit-qtybtn'; minusBtn.setAttribute('aria-label','Decrease quantity');
-  minusBtn.textContent='\u2212';
-  var qVal=document.createElement('div');
-  qVal.className='selopt-edit-qtyval';
-  qVal.textContent=String(curQty);
-  var plusBtn=document.createElement('button');
-  plusBtn.type='button'; plusBtn.className='selopt-edit-qtybtn'; plusBtn.setAttribute('aria-label','Increase quantity');
-  plusBtn.textContent='+';
-  minusBtn.onclick=function(){ curQty=Math.max(minQ,curQty-1); qVal.textContent=String(curQty); };
-  plusBtn.onclick=function(){ curQty=curQty+1; qVal.textContent=String(curQty); };
-  qRow.appendChild(minusBtn); qRow.appendChild(qVal); qRow.appendChild(plusBtn);
-  pop.appendChild(qRow);
-  if(minQ>0){
-    var hint=document.createElement('div');
-    hint.className='selopt-edit-hint';
-    hint.textContent=minQ+' included standard \u2014 lowering to '+minQ+' removes the added extra.';
-    pop.appendChild(hint);
-  }else{
-    var hint2=document.createElement('div');
-    hint2.className='selopt-edit-hint';
-    hint2.textContent='Lowering to 0 removes this option.';
-    pop.appendChild(hint2);
+    minQ=opts.minQty!=null?opts.minQty:0;
+    maxQ=opts.maxQty!=null?opts.maxQty:null;
+    curQty=Math.max(minQ,opts.qty||1);
+    if(maxQ!=null) curQty=Math.min(maxQ,curQty);
+    var qRow=document.createElement('div');
+    qRow.className='selopt-edit-qtyrow';
+    var minusBtn=document.createElement('button');
+    minusBtn.type='button'; minusBtn.className='selopt-edit-qtybtn'; minusBtn.setAttribute('aria-label','Decrease quantity');
+    minusBtn.textContent='\u2212';
+    qVal=document.createElement('div');
+    qVal.className='selopt-edit-qtyval';
+    qVal.textContent=String(curQty);
+    var plusBtn=document.createElement('button');
+    plusBtn.type='button'; plusBtn.className='selopt-edit-qtybtn'; plusBtn.setAttribute('aria-label','Increase quantity');
+    plusBtn.textContent='+';
+    minusBtn.onclick=function(){ curQty=Math.max(minQ,curQty-1); qVal.textContent=String(curQty); };
+    plusBtn.onclick=function(){ curQty=maxQ!=null?Math.min(maxQ,curQty+1):curQty+1; qVal.textContent=String(curQty); };
+    qRow.appendChild(minusBtn); qRow.appendChild(qVal); qRow.appendChild(plusBtn);
+    pop.appendChild(qRow);
+    if(opts.hintText){
+      var hintC=document.createElement('div');
+      hintC.className='selopt-edit-hint';
+      hintC.textContent=opts.hintText;
+      pop.appendChild(hintC);
+    }else if(minQ>0){
+      var hint=document.createElement('div');
+      hint.className='selopt-edit-hint';
+      hint.textContent=minQ+' included standard \u2014 lowering to '+minQ+' removes the added extra.';
+      pop.appendChild(hint);
+    }else{
+      var hint2=document.createElement('div');
+      hint2.className='selopt-edit-hint';
+      hint2.textContent='Lowering to 0 removes this option.';
+      pop.appendChild(hint2);
+    }
   }
 
   var actions=document.createElement('div');
@@ -24110,8 +24228,24 @@ function _openSelOptEditPopup(opts){
   applyBtn.type='button'; applyBtn.className='selopt-edit-btn selopt-edit-btn-primary';
   applyBtn.textContent='Apply';
   applyBtn.onclick=function(){
+    if(opts.measure){
+      var mVal=parseFloat(measureInput.value);
+      if(isNaN(mVal)||mVal<0) mVal=0;
+      if(opts.measure.warnMismatch&&opts.measure.expected!=null){
+        var expected=typeof opts.measure.expected==='function'?opts.measure.expected():opts.measure.expected;
+        if(expected!=null&&Math.abs(mVal-expected)>0.01){
+          var unitLbl=opts.measure.type==='sqft'?'sq ft':'lin ft';
+          var msg='You entered '+mVal+' '+unitLbl+', but this doesn\u2019t match the selected building size ('+expected+' '+unitLbl+'). Continue with '+mVal+' '+unitLbl+' anyway?';
+          if(!window.confirm(msg)) return;
+        }
+      }
+      closePop();
+      if(opts.onApply) opts.onApply(mVal,selectedVariant);
+      return;
+    }
+    var finalQty=opts.noQty?null:curQty;
     closePop();
-    if(opts.onApply) opts.onApply(curQty,selectedVariant);
+    if(opts.onApply) opts.onApply(finalQty,selectedVariant);
   };
   actions.appendChild(cancelBtn); actions.appendChild(applyBtn);
   pop.appendChild(actions);
@@ -24119,6 +24253,199 @@ function _openSelOptEditPopup(opts){
   document.body.appendChild(overlay);
 }
 
+
+/** Shared renderer for the "added option" tiles in the Selected Options
+ *  window — used by both the main calculator (hostId variants incl. rev) and
+ *  the Custom Order Builder (hostId==='cb_optsSummary'). Every option type
+ *  (qty-based, variant+qty, lin ft / sq ft measured, variant-only) follows the
+ *  same tap-to-edit workflow via _openSelOptEditPopup. */
+function _renderCalcAddonLineCards(host,hostId,isRev,ca,mergedLineKeys,state){
+  var isCb=(hostId==='cb_optsSummary');
+  var _toggleOpt=isCb?cb_toggleOpt:toggleOpt;
+  var _calcRemoveRow=isCb?cb_calcRemoveRow:calcRemoveRow;
+  var _calcRenderRows=isCb?cb_calcRenderRows:calcRenderRows;
+  var _gn=isCb?cb_gn:gn;
+  var _afterChange=isCb?function(){ cb_afterOptsSummaryChange(hostId); }:function(){ _afterOptsSummaryHostChange(hostId); };
+
+  ca.lines.forEach(function(l){
+    (function(l){
+      var lk=l.sourceKey+'|'+l.multiIdx;
+      if(mergedLineKeys[lk]) return;
+      var exKey=_addonExcludeKey(l.sourceKey,l.multiIdx);
+      var split=_splitQtyFromLabel(l.label);
+      var info=_stdMatchInfoForLine(state,l);
+      var tileQty=(info&&info.catKey==='custom')?Math.max(1,parseInt(info.row.qty)||1):split.qty;
+      var cardCfg={
+        isStd:false,exKey:exKey,label:split.base,qty:tileQty,included:!l.excluded,excluded:!!l.excluded,
+        priceText:'+'+fmt(l.val),showRemove:true,
+        onRemove:function(){
+          var sk=l.sourceKey;
+          var mt2=_summaryMultiTypeForKey(sk);
+          var doRemove=function(){
+            if(sk==='shopSurcharge'||sk==='metal'){ _toggleOpt('metal'); }
+            else if(mt2!==null&&l.multiIdx!==null){
+              if(mt2==='custom'){
+                if(state.multiCustom) state.multiCustom.splice(l.multiIdx,1);
+              } else { _calcRemoveRow(mt2,l.multiIdx); }
+            }
+            else if(sk==='twotone'||sk==='custompaint'){ _toggleOpt('paintupgrade'); }
+            else if(sk&&state.addons[sk]){ _toggleOpt(sk); }
+            else if(sk&&sk.indexOf('ins_')===0){ _toggleOpt(sk); }
+            if(state.addonExcluded&&state.addonExcluded[exKey]) delete state.addonExcluded[exKey];
+          };
+          if(isRev) withRevOptsProbe(doRemove); else doRemove();
+          _afterChange();
+        }
+      };
+      if(info&&info.catKey==='custom'){
+        cardCfg.onEdit=function(){
+          _openSelOptEditPopup({
+            title:split.base,variantOpts:null,qty:tileQty,minQty:0,
+            onApply:function(newQty){
+              var doApply=function(){
+                if(newQty<=0){ if(state.multiCustom) state.multiCustom.splice(info.idx,1); }
+                else{ info.row.qty=newQty; }
+              };
+              if(isRev) withRevOptsProbe(doApply); else doApply();
+              _afterChange();
+            }
+          });
+        };
+      } else if(info&&info.catKey==='custom-linft'){
+        cardCfg.onEdit=function(){
+          _openSelOptEditPopup({
+            title:split.base,
+            measure:{type:'linft',value:parseFloat(info.row.linFt)||0,warnMismatch:false},
+            onApply:function(newVal){
+              var doApply=function(){
+                if(newVal<=0){ if(state.multiCustom) state.multiCustom.splice(info.idx,1); }
+                else{ info.row.linFt=newVal; }
+              };
+              if(isRev) withRevOptsProbe(doApply); else doApply();
+              _afterChange();
+            }
+          });
+        };
+      } else if(info&&(info.catKey==='2x6'||info.catKey==='intwall')){
+        var isX6=info.catKey==='2x6';
+        cardCfg.onEdit=function(){
+          _openSelOptEditPopup({
+            title:split.base,
+            variantOpts:_variantOptsForCatKey(info.catKey),
+            currentVariant:info.matchType,
+            measure:{type:'linft',value:parseFloat(info.row.linft)||(state.length||0),
+              warnMismatch:isX6,expected:function(){ return state.length||0; }},
+            onApply:function(newVal,newVariant){
+              var doApply=function(){
+                if(newVariant!=null) info.row.type=newVariant;
+                var mt=_summaryMultiTypeForKey(l.sourceKey);
+                if(newVal<=0){ _calcRemoveRow(mt,info.idx); }
+                else{ info.row.linft=newVal; _calcRenderRows(mt); }
+              };
+              if(isRev) withRevOptsProbe(doApply); else doApply();
+              _afterChange();
+            }
+          });
+        };
+      } else if(info&&info.catKey==='paint'){
+        cardCfg.onEdit=function(){
+          _openSelOptEditPopup({
+            title:split.base,
+            variantOpts:_variantOptsForCatKey('paint'),
+            currentVariant:info.matchType,
+            noQty:true,
+            onApply:function(_q,newVariant){
+              var doApply=function(){
+                if(newVariant!=null&&newVariant!==info.matchType){
+                  info.row.type=newVariant;
+                  _calcRenderRows('paint');
+                }
+              };
+              if(isRev) withRevOptsProbe(doApply); else doApply();
+              _afterChange();
+            }
+          });
+        };
+      } else if(info){
+        cardCfg.onEdit=function(){
+          _openSelOptEditPopup({
+            title:split.base,
+            variantOpts:_variantOptsForCatKey(info.catKey),
+            currentVariant:info.matchType,
+            qty:split.qty,minQty:0,
+            onApply:function(newQty,newVariant){
+              var doApply=function(){
+                if(newVariant!=null){
+                  if(info.catKey==='garagedoor-rollup'||info.catKey==='garagedoor-sectional') info.row.customSize=newVariant;
+                  else info.row.type=newVariant;
+                }
+                var mt=_summaryMultiTypeForKey(l.sourceKey);
+                if(newQty<=0){ _calcRemoveRow(mt,info.idx); }
+                else{ info.row.qty=newQty; _calcRenderRows(mt); }
+              };
+              if(isRev) withRevOptsProbe(doApply); else doApply();
+              _afterChange();
+            }
+          });
+        };
+      } else if(l.sourceKey&&/^ins_/.test(l.sourceKey)){
+        var insVariants=_insulationVariantOptsForKey(l.sourceKey);
+        if(insVariants&&insVariants.length>1){
+          cardCfg.onEdit=function(){
+            _openSelOptEditPopup({
+              title:split.base,
+              variantOpts:insVariants,
+              currentVariant:l.sourceKey,
+              noQty:true,
+              onApply:function(_q,newVariant){
+                var doApply=function(){
+                  if(newVariant!=null&&newVariant!==l.sourceKey){
+                    state.addons[l.sourceKey]=false;
+                    _toggleOpt(newVariant);
+                  }
+                };
+                if(isRev) withRevOptsProbe(doApply); else doApply();
+                _afterChange();
+              }
+            });
+          };
+        }
+      } else {
+        var mMeta=_MEASURE_OPT_META[l.sourceKey];
+        if(mMeta){
+          var fieldId=_measureFieldId(l.sourceKey,isCb);
+          var expectedFn=mMeta.type==='sqft'
+            ? function(){ return (state.width&&state.length)?state.width*state.length:0; }
+            : function(){ return state.length||0; };
+          var curVal=fieldId?_gn(fieldId,expectedFn()):expectedFn();
+          cardCfg.onEdit=function(){
+            _openSelOptEditPopup({
+              title:split.base,
+              measure:{type:mMeta.type,value:curVal,warnMismatch:mMeta.warn,expected:expectedFn},
+              onApply:function(newVal){
+                var doApply=function(){
+                  if(newVal<=0){ if(state.addons[l.sourceKey]) _toggleOpt(l.sourceKey); }
+                  else{
+                    var el=fieldId?document.getElementById(fieldId):null;
+                    if(el) el.value=String(newVal);
+                    if(l.sourceKey==='osb_intwall'){
+                      state.osbIntwallFtManual=true;
+                      var ssEl=document.getElementById('ss_'+fieldId);
+                      if(ssEl) ssEl.value=String(newVal);
+                    }
+                  }
+                };
+                if(isRev) withRevOptsProbe(doApply); else doApply();
+                _afterChange();
+              }
+            });
+          };
+        }
+      }
+      _appendSelOptCard(host,hostId,isRev,cardCfg);
+    })(l);
+  });
+}
 
 // ── Color / Two-Tone helpers ───────────────────────────────────────────────
 function toggleTwoTone(prefix){
@@ -24422,42 +24749,16 @@ function _afterOptsSummaryHostChange(hostId){
 function _appendSelOptCard(host,hostId,isRev,cfg){
   var card=document.createElement('div');
   card.className='sel-opt-card'+(cfg.excluded?' is-excluded':'')+(cfg.onEdit?' sel-opt-card-editable':'');
-  if(cfg.isStd&&cfg.maxQty>1){
-    var maxQ=cfg.maxQty;
-    var curRemoved=Math.max(0,Math.min(maxQ,cfg.removedQty||0));
-    var curKept=maxQ-curRemoved;
-    var qtyInp=document.createElement('input');
-    qtyInp.type='number';
-    qtyInp.className='sel-opt-qty';
-    qtyInp.min='0';
-    qtyInp.max=String(maxQ);
-    qtyInp.step='1';
-    qtyInp.inputMode='numeric';
-    qtyInp.value=String(curKept);
-    qtyInp.setAttribute('aria-label','Quantity included for '+cfg.label+' (standard qty: '+maxQ+')');
-    var applyQtyInp=function(){
-      var n=parseInt(qtyInp.value,10);
-      if(isNaN(n)) n=maxQ;
-      n=Math.max(0,Math.min(maxQ,n));
-      qtyInp.value=String(n);
-      var removed=maxQ-n;
-      var doSet=function(){ if(cfg.onQtyChange) cfg.onQtyChange(removed); else setStdQty(cfg.stdId,removed); };
-      if(isRev) withRevOptsProbe(doSet); else doSet();
-      _afterOptsSummaryHostChange(hostId);
-    };
-    qtyInp.onchange=applyQtyInp;
-    qtyInp.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); qtyInp.blur(); } });
-    qtyInp.onclick=function(e){ e.stopPropagation(); };
-    card.appendChild(qtyInp);
-  }else{
+  {
     var chk=document.createElement('button');
     chk.type='button';
     chk.className='sel-opt-chk'+(cfg.included?' is-included':'');
     chk.setAttribute('aria-label',cfg.included?'Included in price':'Excluded from price');
     chk.textContent=cfg.included?'\u2713':'';
-    chk.onclick=function(){
+    chk.onclick=function(e){
+      e.stopPropagation();
       if(cfg.isStd){
-        var doTog=function(){ toggleStdRemove(cfg.stdId); };
+        var doTog=function(){ if(cfg.onToggleStd) cfg.onToggleStd(); else toggleStdRemove(cfg.stdId); };
         if(isRev) withRevOptsProbe(doTog); else doTog();
       }else{
         var doTog2=function(){ toggleAddonExcluded(cfg.exKey); };
@@ -24602,89 +24903,34 @@ function _renderOptsSummaryInto(hostId){
         })(match,remainingStd,combinedQty,baseLabel);
         return;
       }
-      var lbl=it.label+(maxQ>1?' ('+maxQ+'×)':'');
-      _appendSelOptCard(host,hostId,isRev,{
-        isStd:true,stdId:it.id,label:lbl,included:!removed,excluded:removed,
-        maxQty:maxQ,removedQty:rq,creditEach:it.credit,
-        priceText:removed?('-'+fmt(rq*it.credit)):'Std',
-        showRemove:true,
-        onRemove:function(){
-          var doHide=function(){ hideStdOption(it.id); };
-          if(isRev) withRevOptsProbe(doHide); else doHide();
-          _afterOptsSummaryHostChange(hostId);
-        }
-      });
-    });
-    ca.lines.forEach(function(l){
-      (function(l){
-        var lk=l.sourceKey+'|'+l.multiIdx;
-        if(mergedLineKeys[lk]) return;
-        var exKey=_addonExcludeKey(l.sourceKey,l.multiIdx);
-        var split=_splitQtyFromLabel(l.label);
-        var info=_stdMatchInfoForLine(calcState,l);
-        var tileQty=(info&&info.catKey==='custom')?Math.max(1,parseInt(info.row.qty)||1):split.qty;
-        var cardCfg={
-          isStd:false,exKey:exKey,label:split.base,qty:tileQty,included:!l.excluded,excluded:!!l.excluded,
-          priceText:'+'+fmt(l.val),showRemove:true,
-          onRemove:function(){
-            var sk=l.sourceKey;
-            var mt2=_summaryMultiTypeForKey(sk);
-            var doRemove=function(){
-              if(sk==='shopSurcharge'||sk==='metal'){ toggleOpt('metal'); }
-              else if(mt2!==null&&l.multiIdx!==null){
-                if(mt2==='custom'){
-                  if(calcState.multiCustom) calcState.multiCustom.splice(l.multiIdx,1);
-                } else { calcRemoveRow(mt2,l.multiIdx); }
+      (function(it,maxQ,rq,removed){
+        var remainingQty=maxQ-rq;
+        _appendSelOptCard(host,hostId,isRev,{
+          isStd:true,stdId:it.id,label:it.label,qty:remainingQty,included:!removed,excluded:removed,
+          maxQty:maxQ,removedQty:rq,creditEach:it.credit,
+          priceText:removed?('-'+fmt(rq*it.credit)):'Std',
+          showRemove:true,
+          onEdit:function(){
+            _openSelOptEditPopup({
+              title:it.label,
+              qty:remainingQty,minQty:0,maxQty:maxQ,
+              hintText:'Comes standard with this building (up to '+maxQ+'). Lowering the quantity removes it from your quote.',
+              onApply:function(newQty){
+                var doApply=function(){ setStdQty(it.id,maxQ-newQty); };
+                if(isRev) withRevOptsProbe(doApply); else doApply();
+                _afterOptsSummaryHostChange(hostId);
               }
-              else if(sk==='twotone'||sk==='custompaint'){ toggleOpt('paintupgrade'); }
-              else if(sk&&calcState.addons[sk]){ toggleOpt(sk); }
-              else if(sk&&sk.indexOf('ins_')===0){ toggleOpt(sk); }
-              if(calcState.addonExcluded&&calcState.addonExcluded[exKey]) delete calcState.addonExcluded[exKey];
-            };
-            if(isRev) withRevOptsProbe(doRemove); else doRemove();
+            });
+          },
+          onRemove:function(){
+            var doHide=function(){ hideStdOption(it.id); };
+            if(isRev) withRevOptsProbe(doHide); else doHide();
             _afterOptsSummaryHostChange(hostId);
           }
-        };
-        if(info&&info.catKey==='custom'){
-          cardCfg.onEdit=function(){
-            _openSelOptEditPopup({
-              title:split.base,variantOpts:null,qty:tileQty,minQty:0,
-              onApply:function(newQty){
-                var doApply=function(){
-                  if(newQty<=0){ if(calcState.multiCustom) calcState.multiCustom.splice(info.idx,1); }
-                  else{ info.row.qty=newQty; }
-                };
-                if(isRev) withRevOptsProbe(doApply); else doApply();
-                _afterOptsSummaryHostChange(hostId);
-              }
-            });
-          };
-        } else if(info){
-          cardCfg.onEdit=function(){
-            _openSelOptEditPopup({
-              title:split.base,
-              variantOpts:_variantOptsForCatKey(info.catKey),
-              currentVariant:info.matchType,
-              qty:split.qty,minQty:0,
-              onApply:function(newQty,newVariant){
-                var doApply=function(){
-                  if(newVariant!=null){
-                    if(info.catKey==='garagedoor-rollup'||info.catKey==='garagedoor-sectional') info.row.customSize=newVariant;
-                    else info.row.type=newVariant;
-                  }
-                  var mt=_summaryMultiTypeForKey(l.sourceKey);
-                  if(newQty<=0){ calcRemoveRow(mt,info.idx); }
-                  else{ info.row.qty=newQty; calcRenderRows(mt); }
-                };
-                if(isRev) withRevOptsProbe(doApply); else doApply();
-                _afterOptsSummaryHostChange(hostId);
-              }
-            });
-          };
-        }
-        _appendSelOptCard(host,hostId,isRev,cardCfg);
-      })(l);
+        });
+      })(it,maxQ,rq,removed);
     });
+    _renderCalcAddonLineCards(host,hostId,isRev,ca,mergedLineKeys,calcState);
     return;
   }
 
@@ -24931,7 +25177,8 @@ function toggleStdRemove(itemId){
   var item=null;
   for(var i=0;i<items.length;i++){if(items[i].id===itemId){item=items[i];break;}}
   if(!item) return;
-  calcState.stdRemoved[itemId]=calcState.stdRemoved[itemId]>0?0:1;
+  var maxQ=item.qty||1;
+  calcState.stdRemoved[itemId]=calcState.stdRemoved[itemId]>0?0:maxQ;
   if(!(calcState.stdRemoved[itemId]>0)&&calcState.stdHidden){ delete calcState.stdHidden[itemId]; }
   buildRemoveStdPanel();
   refreshOsbIntwallFtDefault(false);
@@ -25059,7 +25306,7 @@ function updateAutoWidthPrices(){
   if(pfjEl) pfjEl.textContent=joFt?fmt(joP)+' ('+joFt+' lin ft)':(_fmtOptMoney(joRate)+'/lin ft');
   var prevFJ=document.getElementById('prev_floorjoists');
   if(prevFJ) prevFJ.textContent=joP&&calcState.addons['floorjoists']?'→ '+fmt(joP):'';
-  var dtpFt=l;
+  var dtpFt=gn('c_doubletopplateFt',0)||l;
   var dtpRate=getOptionLinFtRate('doubletopplate');
   var dtpP=dtpFt*dtpRate;
   var pdtpEl=document.getElementById('price_doubletopplate');
@@ -25333,7 +25580,7 @@ function calcAddons(forDisplay){
   if(calcState.addons['flooring']){var sq=gn('c_flooringSqFt',0)||((w&&l)?w*l:0);add('¾" Flooring ('+sq+' sqft)',sq*getOptionSqFtRate('flooring')*_aq('flooring'),'flooring');}
   if(calcState.addons['rooftrusses']){var ft=gn('c_rooftrussft',0)||l;add('16" OC Trusses ('+ft+' ft)',ft*getOptionLinFtRate('rooftrusses')*_aq('rooftrusses'),'rooftrusses');}
   if(calcState.addons['floorjoists']){var ft=gn('c_floorjoistFt',0)||l;add('12" OC Floor Joists ('+ft+' ft)',ft*getOptionLinFtRate('floorjoists')*_aq('floorjoists'),'floorjoists');}
-  if(calcState.addons['doubletopplate']){var ft=l;add('Double Top Plate ('+ft+' ft)',ft*getOptionLinFtRate('doubletopplate')*_aq('doubletopplate'),'doubletopplate');}
+  if(calcState.addons['doubletopplate']){var ft=gn('c_doubletopplateFt',0)||l;add('Double Top Plate ('+ft+' ft)',ft*getOptionLinFtRate('doubletopplate')*_aq('doubletopplate'),'doubletopplate');}
   if(calcState.addons['4ineves']){add('4″ Eaves',getOptionFlatPrice('4ineves')*_aq('4ineves'),'4ineves');}
   if(calcState.addons['housewrap']){var ft=gn('c_housewrapFt',0)||l;add('House Wrap ('+ft+' ft)',ft*getOptionLinFtRate('housewrap')*_aq('housewrap'),'housewrap');}
   if(calcState.addons['rooffelt']){var ft=gn('c_rooffeltFt',0)||l;add('Roof Felt ('+ft+' ft)',ft*getOptionLinFtRate('rooffelt')*_aq('rooffelt'),'rooffelt');}
@@ -32753,8 +33000,20 @@ function cb_hideStdOption(stdId){
   var it=items.find?items.find(function(x){return x.id===stdId;}):null;
   if(!it){ for(var i=0;i<items.length;i++){ if(items[i].id===stdId){ it=items[i]; break; } } }
   var maxQ=it?(it.qty||1):1;
-  var cur=cbCalcState.stdRemoved[stdId]||0;
-  cbCalcState.stdRemoved[stdId]=Math.min(maxQ,cur+1);
+  cbCalcState.stdRemoved[stdId]=maxQ;
+  cb_updateQuickPrice();
+  cb_renderOptsSummary();
+}
+/** Checkbox on a cb std option card: toggle fully in vs. fully out. */
+function cb_toggleStdRemove(stdId){
+  if(!cbCalcState.stdRemoved) cbCalcState.stdRemoved={};
+  var items=STD_OPTIONS[cbCalcState.type]||[];
+  var it=null;
+  for(var i=0;i<items.length;i++){ if(items[i].id===stdId){ it=items[i]; break; } }
+  if(!it) return;
+  var maxQ=it.qty||1;
+  cbCalcState.stdRemoved[stdId]=cbCalcState.stdRemoved[stdId]>0?0:maxQ;
+  if(!(cbCalcState.stdRemoved[stdId]>0)&&cbCalcState.stdHidden){ delete cbCalcState.stdHidden[stdId]; }
   cb_updateQuickPrice();
   cb_renderOptsSummary();
 }
@@ -32786,7 +33045,7 @@ function cb_updateAddOptionBtnState(){
 }
 function cb_syncDimensionBasedOptionFields(){
   var w=cbCalcState.width||0, l=cbCalcState.length||0, sq=(w&&l)?w*l:0;
-  var linftFieldMap={rooffelt:'cb_c_rooffeltFt',housewrap:'cb_c_housewrapFt',rooftrusses:'cb_c_rooftrussft',floorjoists:'cb_c_floorjoistFt',shelves:'cb_c_shelvesLinFt',loft:'cb_c_loftFt',porch:'cb_c_porchFt'};
+  var linftFieldMap={rooffelt:'cb_c_rooffeltFt',housewrap:'cb_c_housewrapFt',rooftrusses:'cb_c_rooftrussft',floorjoists:'cb_c_floorjoistFt',shelves:'cb_c_shelvesLinFt',loft:'cb_c_loftFt',porch:'cb_c_porchFt',doubletopplate:'cb_c_doubletopplateFt'};
   Object.keys(linftFieldMap).forEach(function(key){
     if(!cbCalcState.addons[key]) return;
     var el=document.getElementById(linftFieldMap[key]);
@@ -33313,7 +33572,7 @@ function cb_calcAddons(forDisplay){
   if(cbCalcState.addons['flooring']){var sq=cb_gn('cb_c_flooringSqFt',0)||((w&&l)?w*l:0);add('¾" Flooring ('+sq+' sqft)',sq*getOptionSqFtRate('flooring')*_aq('flooring'),'flooring');}
   if(cbCalcState.addons['rooftrusses']){var ft=cb_gn('cb_c_rooftrussft',0)||l;add('16" OC Trusses ('+ft+' ft)',ft*getOptionLinFtRate('rooftrusses')*_aq('rooftrusses'),'rooftrusses');}
   if(cbCalcState.addons['floorjoists']){var ft=cb_gn('cb_c_floorjoistFt',0)||l;add('12" OC Floor Joists ('+ft+' ft)',ft*getOptionLinFtRate('floorjoists')*_aq('floorjoists'),'floorjoists');}
-  if(cbCalcState.addons['doubletopplate']){var ft=l;add('Double Top Plate ('+ft+' ft)',ft*getOptionLinFtRate('doubletopplate')*_aq('doubletopplate'),'doubletopplate');}
+  if(cbCalcState.addons['doubletopplate']){var ft=cb_gn('cb_c_doubletopplateFt',0)||l;add('Double Top Plate ('+ft+' ft)',ft*getOptionLinFtRate('doubletopplate')*_aq('doubletopplate'),'doubletopplate');}
   if(cbCalcState.addons['4ineves']){add('4″ Eaves',getOptionFlatPrice('4ineves')*_aq('4ineves'),'4ineves');}
   if(cbCalcState.addons['housewrap']){var ft=cb_gn('cb_c_housewrapFt',0)||l;add('House Wrap ('+ft+' ft)',ft*getOptionLinFtRate('housewrap')*_aq('housewrap'),'housewrap');}
   if(cbCalcState.addons['rooffelt']){var ft=cb_gn('cb_c_rooffeltFt',0)||l;add('Roof Felt ('+ft+' ft)',ft*getOptionLinFtRate('rooffelt')*_aq('rooffelt'),'rooffelt');}
@@ -33485,7 +33744,7 @@ function cb_updateAutoWidthPrices(){
   if(pfjEl) pfjEl.textContent=joFt?fmt(joP)+' ('+joFt+' lin ft)':(_fmtOptMoney(joRate)+'/lin ft');
   var prevFJ=document.getElementById('cb_prev_floorjoists');
   if(prevFJ) prevFJ.textContent=joP&&cbCalcState.addons['floorjoists']?'→ '+fmt(joP):'';
-  var dtpFt=l;
+  var dtpFt=cb_gn('cb_c_doubletopplateFt',0)||l;
   var dtpRate=getOptionLinFtRate('doubletopplate');
   var dtpP=dtpFt*dtpRate;
   var pdtpEl=document.getElementById('cb_price_doubletopplate');
@@ -33708,84 +33967,33 @@ function cb_renderOptsSummaryInto(hostId){
         })(match,remainingStd,combinedQty,baseLabel);
         return;
       }
-      var lbl=it.label+(maxQ>1?' ('+maxQ+'×)':'');
-      _appendSelOptCard(host,hostId,false,{
-        isStd:true,stdId:it.id,label:lbl,included:!removed,excluded:removed,
-        maxQty:maxQ,removedQty:rq,creditEach:it.credit,
-        onQtyChange:function(n){ cb_setStdQty(it.id,n); },
-        priceText:removed?('-'+fmt(rq*it.credit)):'Std',
-        showRemove:true,
-        onRemove:function(){
-          var doHide=function(){ cb_hideStdOption(it.id); };
-          doHide();
-          cb_afterOptsSummaryChange(hostId);
-        }
-      });
-    });
-    ca.lines.forEach(function(l){
-      (function(l){
-        var lk=l.sourceKey+'|'+l.multiIdx;
-        if(mergedLineKeys[lk]) return;
-        var exKey=_addonExcludeKey(l.sourceKey,l.multiIdx);
-        var split=_splitQtyFromLabel(l.label);
-        var info=_stdMatchInfoForLine(cbCalcState,l);
-        var tileQty=(info&&info.catKey==='custom')?Math.max(1,parseInt(info.row.qty)||1):split.qty;
-        var cardCfg={
-          isStd:false,exKey:exKey,label:split.base,qty:tileQty,included:!l.excluded,excluded:!!l.excluded,
-          priceText:'+'+fmt(l.val),showRemove:true,
-          onRemove:function(){
-            var sk=l.sourceKey;
-            var mt2=_summaryMultiTypeForKey(sk);
-            var doRemove=function(){
-              if(sk==='shopSurcharge'||sk==='metal'){ cb_toggleOpt('metal'); }
-              else if(mt2!==null&&l.multiIdx!==null){
-                if(mt2==='custom'){
-                  if(cbCalcState.multiCustom) cbCalcState.multiCustom.splice(l.multiIdx,1);
-                } else { cb_calcRemoveRow(mt2,l.multiIdx); }
+      (function(it,maxQ,rq,removed){
+        var remainingQty=maxQ-rq;
+        _appendSelOptCard(host,hostId,false,{
+          isStd:true,stdId:it.id,label:it.label,qty:remainingQty,included:!removed,excluded:removed,
+          maxQty:maxQ,removedQty:rq,creditEach:it.credit,
+          onToggleStd:function(){ cb_toggleStdRemove(it.id); },
+          priceText:removed?('-'+fmt(rq*it.credit)):'Std',
+          showRemove:true,
+          onEdit:function(){
+            _openSelOptEditPopup({
+              title:it.label,
+              qty:remainingQty,minQty:0,maxQty:maxQ,
+              hintText:'Comes standard with this building (up to '+maxQ+'). Lowering the quantity removes it from your quote.',
+              onApply:function(newQty){
+                cb_setStdQty(it.id,maxQ-newQty);
+                cb_afterOptsSummaryChange(hostId);
               }
-              else if(sk==='twotone'||sk==='custompaint'){ cb_toggleOpt('paintupgrade'); }
-              else if(sk&&cbCalcState.addons[sk]){ cb_toggleOpt(sk); }
-              else if(sk&&sk.indexOf('ins_')===0){ cb_toggleOpt(sk); }
-              if(cbCalcState.addonExcluded&&cbCalcState.addonExcluded[exKey]) delete cbCalcState.addonExcluded[exKey];
-            };
-            doRemove();
+            });
+          },
+          onRemove:function(){
+            cb_hideStdOption(it.id);
             cb_afterOptsSummaryChange(hostId);
           }
-        };
-        if(info&&info.catKey==='custom'){
-          cardCfg.onEdit=function(){
-            _openSelOptEditPopup({
-              title:split.base,variantOpts:null,qty:tileQty,minQty:0,
-              onApply:function(newQty){
-                if(newQty<=0){ if(cbCalcState.multiCustom) cbCalcState.multiCustom.splice(info.idx,1); }
-                else{ info.row.qty=newQty; }
-                cb_afterOptsSummaryChange(hostId);
-              }
-            });
-          };
-        } else if(info){
-          cardCfg.onEdit=function(){
-            _openSelOptEditPopup({
-              title:split.base,
-              variantOpts:_variantOptsForCatKey(info.catKey),
-              currentVariant:info.matchType,
-              qty:split.qty,minQty:0,
-              onApply:function(newQty,newVariant){
-                if(newVariant!=null){
-                  if(info.catKey==='garagedoor-rollup'||info.catKey==='garagedoor-sectional') info.row.customSize=newVariant;
-                  else info.row.type=newVariant;
-                }
-                var mt=_summaryMultiTypeForKey(l.sourceKey);
-                if(newQty<=0){ cb_calcRemoveRow(mt,info.idx); }
-                else{ info.row.qty=newQty; cb_calcRenderRows(mt); }
-                cb_afterOptsSummaryChange(hostId);
-              }
-            });
-          };
-        }
-        _appendSelOptCard(host,hostId,false,cardCfg);
-      })(l);
+        });
+      })(it,maxQ,rq,removed);
     });
+    _renderCalcAddonLineCards(host,hostId,false,ca,mergedLineKeys,cbCalcState);
     return;
   }
 
